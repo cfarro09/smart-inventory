@@ -18,10 +18,10 @@ import {
 } from '../../types';
 
 const DEFAULTPROPERTIES = {
-    sys_company_name: "INTELOGIS",
-    sys_company_img: "https://media-exp1.licdn.com/dms/image/C4E0BAQHiiKijXocUrg/company-logo_200_200/0?e=2159024400&v=beta&t=nmspCjjGq3UZl4JVptDWNLaQ2EoWzmncDaGUAOvI6AI",
-    sys_company_color_primary: "#9dbe63",
-    sys_company_color_secondary: "#0b2e18",
+    sys_company_name: "QAYARIX",
+    sys_company_img: "https://app.qayarix.com/logotipo.png",
+    sys_company_color_primary: "#da042e",
+    sys_company_color_secondary: "#010025",
 }
 
 

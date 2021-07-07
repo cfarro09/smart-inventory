@@ -269,7 +269,7 @@ const Layout = ({ children }) => {
                 `}
             />
             <Head>
-                <title>{infosys.sys_company_name}</title>
+                {infosys.sys_company_name && <title key={infosys.sys_company_name}>{infosys.sys_company_name}</title>}
             </Head>
 
             <div className={classes.root}>

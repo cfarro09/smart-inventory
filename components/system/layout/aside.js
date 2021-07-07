@@ -54,7 +54,7 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
             }
         }, [router]);
 
-        const ff = user.menu.find(x => ["bill-list", "purchase-order-list", "purchase-order-load", "bill-list"].includes(x.application) && !!x.view);
+        const ff = user?.menu.find(x => ["bill-list", "purchase-order-list", "purchase-order-load", "bill-list"].includes(x.application) && !!x.view);
         
         if (ff) 
             return (
@@ -124,67 +124,11 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
             <Divider />
 
             <List>
-                <ListItemCollapse
-                    itemName="Nota ingreso"
-                    listRoutes={listsend}
-                    IconLink={() => (
-                        <MonetizationOn style={{ color: theme.palette.primary.light }} />
-                    )}
-                >
-                    <LinkList
-                        application="bill-load"
-                        routeLink="/bill/load"
-                    />
-                    <LinkList
-                        application="bill-list"
-                        routeLink="/bill/list"
-                    />
-                </ListItemCollapse>
-                <ListItemCollapse
-                    itemName="Orden compra"
-                    listRoutes={listbuy}
-                    IconLink={() => (
-                        <ShoppingCart style={{ color: theme.palette.primary.light }} />
-                    )}
-                >
-                    <LinkList
-                        application="purchase-order-load"
-                        routeLink="/purchase-order/load"
-                    />
-                    <LinkList
-                        application="purchase-order-list"
-                        routeLink="/purchase-order/list"
-                    />
-                </ListItemCollapse>
+               
                 <LinkList
-                    application="inventory"
+                    application="order"
                     IconLink={() => (
                         <ViewComfy style={{ color: theme.palette.primary.light }} />
-                    )}
-                />
-                <Divider />
-                <LinkList
-                    application="template"
-                    IconLink={() => (
-                        <TuneIcon style={{ color: theme.palette.primary.light }} />
-                    )}
-                />
-                <LinkList
-                    application="product"
-                    IconLink={() => (
-                        <LabelIcon style={{ color: theme.palette.primary.light }} />
-                    )}
-                /> 
-                <LinkList
-                    application="client"
-                    IconLink={() => (
-                        <StoreIcon style={{ color: theme.palette.primary.light }} />
-                    )}
-                />
-                <LinkList
-                    application="buyer"
-                    IconLink={() => (
-                        <BusinessCenter style={{ color: theme.palette.primary.light }} />
                     )}
                 />
                 <LinkList
@@ -194,15 +138,9 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                     )}
                 />
                 <LinkList
-                    application="vehicle"
+                    application="driver"
                     IconLink={() => (
                         <LocalShipping style={{ color: theme.palette.primary.light }} />
-                    )}
-                />
-                <LinkList
-                    application="corporation"
-                    IconLink={() => (
-                        <Business style={{ color: theme.palette.primary.light }} />
                     )}
                 />
                 <Divider />

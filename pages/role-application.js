@@ -95,7 +95,7 @@ const RoleApplication = () => {
     const fetchData = React.useCallback(async () => {
         setloadingglobal(true);
         const datatosend = {
-            method: "SP_SEL_ROLE",
+            method: "SP_SEL_ROLES",
             data: { status: "ACTIVO" }
         }
         const res = await triggeraxios('post', process.env.endpoints.selsimple, datatosend)

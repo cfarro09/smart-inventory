@@ -53,10 +53,8 @@ const AuthState = ({ children }) => {
     }
 
     useEffect(() => {
-        console.log('dddddddddd');
         if (state.user && state.user.menu) {
-            const routeraux = router.pathname === "/bill/[id]" ? "/bill/list" : (router.pathname === "/purchase-order/[id]" ? "/purchase-order/list" : router.pathname);
-            const appfound = state.user.menu.find(x => x.path === routeraux);
+            const appfound = state.user.menu.find(x => x.path === router.pathname);
             dispatch({
                 type: CHANGEAPP,
                 payload: appfound
@@ -125,7 +123,7 @@ const AuthState = ({ children }) => {
     const login = async (payload, setisloading, setresultrequest) => {
         setisloading(true);
         try {
-            const result = await clientAxios.post(process.env.endpoints.login, { data: payload });
+            const result = await clientAxios.post(process.env.endpoints.login, { data: { ...payload, origin: "WEB" } });
 
             localStorage.setItem('typeuser', result.data.data.type);
             dispatch({

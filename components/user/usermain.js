@@ -16,17 +16,10 @@ import { getDomain, validateResArray } from '../../config/helper';
 import SelectFunction from '../system/form/select-function';
 
 const REQUESTROLES = {
-    method: "SP_SEL_ROLE",
+    method: "SP_SEL_ROLES",
     data: { status: 'ACTIVO' }
 }
 
-const getREQUESTORGUSER = (id_user) => ({
-    method: "SP_SEL_ORGUSER",
-    data: {
-        id_user,
-        status: null
-    }
-})
 
 import IconButton from '@material-ui/core/IconButton';
 import {
@@ -39,9 +32,9 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
     const { setOpenBackdrop, setOpenSnackBack, setModalQuestion } = useContext(popupsContext);
 
     //#region orguser
-    const [openModalOrganization, setOpenModalOrganization] = useState(false);
-    const [orgrowselected, setorgrowselected] = useState(null);
-    const [dataorg, setdataorg] = useState([]);
+    // const [openModalOrganization, setOpenModalOrganization] = useState(false);
+    // const [orgrowselected, setorgrowselected] = useState(null);
+    // const [dataorg, setdataorg] = useState([]);
     const [showtable, setshowtable] = useState(false);
     const [dataRoles, setDataRoles] = useState([]);
     const [domains, setdomains] = useState({ doc_type: [], status: [], type: [] });
@@ -54,7 +47,7 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
             await Promise.all([
                 triggeraxios('post', process.env.endpoints.selsimple, getDomain("TIPODOCUMENTO")).then(r => setdomains(p => ({ ...p, doc_type: validateResArray(r, continuezyx) }))),
                 triggeraxios('post', process.env.endpoints.selsimple, getDomain("ESTADO")).then(r => setdomains(p => ({ ...p, status: validateResArray(r, continuezyx) }))),
-                triggeraxios('post', process.env.endpoints.selsimple, getDomain("TIPOUSUARIO")).then(r => setdomains(p => ({ ...p, type: validateResArray(r, continuezyx) }))),
+                // triggeraxios('post', process.env.endpoints.selsimple, getDomain("TIPOUSUARIO")).then(r => setdomains(p => ({ ...p, type: validateResArray(r, continuezyx) }))),
                 triggeraxios('post', process.env.endpoints.selsimple, REQUESTROLES).then(r => setDataRoles(validateResArray(r, continuezyx))),
             ]);
 
@@ -63,94 +56,6 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
     }, [])
 
 
-    const columnsOrganization = React.useMemo(
-        () => [
-            {
-                Header: '',
-                accessor: 'id_orguser',
-                activeOnHover: true,
-                Cell: props => {
-                    return (
-                        <div className="container-button-floating">
-                            <IconButton
-                                aria-label="delete"
-                                size="small"
-                                className="button-floating"
-                                onClick={() => {
-                                    selectrow(props.cell.row.original);
-                                }}
-                            >
-                                <EditIcon
-                                    fontSize="inherit"
-                                    size="small"
-                                />
-                            </IconButton>
-                            <IconButton
-                                className="button-floating"
-                                aria-label="delete"
-                                size="small"
-                                onClick={() => deleterow(props.cell.row.original)}
-                            >
-                                <DeleteIcon
-                                    fontSize="inherit"
-                                    size="small"
-                                />
-                            </IconButton>
-                        </div>
-                    )
-                }
-            },
-            {
-                Header: 'ORGANIZACION',
-                accessor: 'org_name'
-            },
-            {
-                Header: 'CLIENTES',
-                accessor: 'clients'
-            },
-            {
-                Header: 'ORG X DEFECTO',
-                accessor: 'bydefault'
-            },
-            {
-                Header: 'ESTADO',
-                accessor: 'status'
-            },
-            {
-                Header: 'F. REGISTRO',
-                accessor: 'date_created'
-            },
-            {
-                Header: 'F. MODIFICADO',
-                accessor: 'date_updated'
-            },
-            {
-                Header: 'CREADO POR',
-                accessor: 'created_by'
-            },
-            {
-                Header: 'MODIFICADO POR',
-                accessor: 'modified_by'
-            },
-        ],
-        []
-    );
-
-    useEffect(() => {
-        setdataorg([]);
-        let continuezyx = true;
-        (async () => {
-            if (rowselected) {
-                await triggeraxios('post', process.env.endpoints.selsimple, getREQUESTORGUSER(rowselected.id_user)).then(r => setdataorg(validateResArray(r, continuezyx).map(x => ({ ...x, bydefault: x.bydefault === 1 ? "SI" : "NO" }))));
-            }
-        })();
-        return () => continuezyx = false;
-    }, [openModal])
-
-    const selectrow = React.useCallback((row) => {
-        setOpenModalOrganization(true);
-        setorgrowselected(row);
-    }, [])
     //    #endregion
 
     const formik = useFormik({
@@ -181,11 +86,11 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                 setOpenSnackBack(true, { success: false, message: 'Debe ingresar una contraseña al usuario.' });
                 return;
             }
-            const thereisdefault = dataorg.some(x => x.bydefault === "SI");
-            if (!thereisdefault) {
-                setOpenSnackBack(true, { success: false, message: 'Debe establecer una organización por defecto.' });
-                return;
-            }
+            // const thereisdefault = dataorg.some(x => x.bydefault === "SI");
+            // if (!thereisdefault) {
+            //     setOpenSnackBack(true, { success: false, message: 'Debe establecer una organización por defecto.' });
+            //     return;
+            // }
             const callback = async () => {
                 setModalQuestion({ visible: false });
                 const dattosend = {
@@ -198,15 +103,6 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                             password: values.password ? values.password : "",
                         }
                     },
-                    details: {
-                        data: dataorg.filter(x => !!x.operation).map(x => ({
-                                ...x,
-                                id_role: 1,
-                                id_orguser: x.id_orguser < 0 ? 0 : x.id_orguser,
-                                bydefault: x.bydefault === "SI" ? 1 : 0,
-                            }
-                        ))
-                    }
                 }
 
                 setOpenBackdrop(true);
@@ -229,14 +125,7 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
 
     const handleClick = () => setOpenModal(false);
 
-    const deleterow = (row) => {
-        const callback = () => {
-            setdataorg(prev => [...prev.map(o => o.id_organization === row.id_organization ? { ...row, status: 'ELIMINADO', deleted: true, bydefault: "NO", operation: (row.id_organization > 0) } : o)]);
-            setModalQuestion({ visible: false })
-        }
-
-        setModalQuestion({ visible: true, question: `¿Está seguro de eliminar el registro?`, callback })
-    }
+ 
 
     return (
         <>
@@ -334,13 +223,6 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                                 formik={formik}
                             />
                         </div>
-                        <TableZyx
-                            columns={columnsOrganization}
-                            titlemodule='Organizaciones'
-                            data={React.useMemo(() => dataorg.filter(x => !x.deleted), [dataorg])}
-                            register={true}
-                            selectrow={selectrow}
-                        />
                     </DialogContent>
                     <DialogActions>
                         <Button
@@ -360,13 +242,6 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                     </DialogActions>
                 </form>
             </Dialog>
-            <UserOrganization
-                openModal={openModalOrganization}
-                setOpenModal={setOpenModalOrganization}
-                setdataorg={setdataorg}
-                rowselected={orgrowselected}
-                selectedorgs={dataorg}
-            />
         </>
     );
 }

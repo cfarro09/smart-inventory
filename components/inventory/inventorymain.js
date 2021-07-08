@@ -136,7 +136,7 @@ const InventaryMain = ({ title, openModal, setOpenModal, rowselected }) => {
                     </div>
                     <TableZyx
                         columns={columns}
-                        fetchData={datafetch}
+                        // fetchData={datafetch}
                         data={kardex}
                     />
                 </DialogContent>

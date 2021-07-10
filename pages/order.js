@@ -144,6 +144,9 @@ const Home = () => {
                 accessor: 'id_oder',
                 activeOnHover: true,
                 Cell: props => {
+                    if (props.cell.row.original !== "PENDIENTE")
+                        return null
+                        
                     return (
                         <div className="container-button-floating">
                             <IconButton

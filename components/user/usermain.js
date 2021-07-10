@@ -87,11 +87,10 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                     method: "SP_INS_USER",
                     data: {
                         ...values,
-                        type: 'NINGUNO',
                         id: rowselected ? rowselected.id_user : 0,
                         user: values.username,
                         type: 'USER',
-                        phone: '943856850',
+                        phone: '999999999',
                         password: values.password ? values.password : "",
                     }
                 }
@@ -115,8 +114,6 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
     });
 
     const handleClick = () => setOpenModal(false);
-
-//  #create a function returning string
 
     return (
         <>

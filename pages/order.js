@@ -4,27 +4,129 @@ import TableZyx from '../components/system/form/table-paginated'
 import triggeraxios from '../config/axiosv2';
 import Typography from '@material-ui/core/Typography';
 import popupsContext from '../context/pop-ups/pop-upsContext';
-
+import Dialog from '@material-ui/core/Dialog';
+import InputFormk from '../components/system/form/inputformik';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import { getDomain, validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
 import Button from '@material-ui/core/Button';
 import HistoryIcon from '@material-ui/icons/History';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
+import Avatar from '@material-ui/core/Avatar';
+import AvatarGroup from '@material-ui/lab/AvatarGroup';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 
+const SEL_DRIVER = {
+    method: "SP_SEL_DRIVER",
+    data: { status: 'ACTIVO', type: 'DRIVER' }
+}
 
-import {
-    Delete as DeleteIcon,
-    Build as BuildIcon
-} from '@material-ui/icons';
+const AssignmentModal = ({ openModal, setOpenModal, rowselected, fetchDataUser }) => {
+    const [drivers, setdrivers] = useState([]);
+    const [driverSelected, setDriverSelected] = useState(null)
+
+    useEffect(() => {
+        let continuezyx = true;
+
+        (async () => {
+            await triggeraxios('post', process.env.endpoints.selsimple, SEL_DRIVER).then(r => setdrivers(validateResArray(r, continuezyx).map(x => ({
+                ...x,
+                description: `${x.first_name} ${x.last_name} - ${x.plate_number}`
+            }))))
+        })()
+
+        return () => continuezyx = false;
+
+    }, [])
+    const { setOpenBackdrop, setOpenSnackBack, setModalQuestion } = useContext(popupsContext);
+
+    const callback = ({ newValue }) => {
+        console.log(newValue);
+        setDriverSelected(newValue)
+    }
+
+    const assignorder = async () => {
+        if (driverSelected) {
+            const dattosend = {
+                method: "SP_ASSIGN_ORDER_WEB",
+                data: {
+                    id_order: rowselected.id_order,
+                    id_driver: driverSelected.id_driver
+                }
+            }
+            setOpenBackdrop(true);
+            const res = await triggeraxios('post', process.env.endpoints.selsimple, dattosend);
+            if (res.success) {
+                fetchDataUser({});
+                setOpenModal(false);
+    
+                setOpenSnackBack(true, { success: true, message: 'Se asignó correctamente.' });
+            } else {
+                setOpenSnackBack(true, { success: false, message: res.msg });
+            }
+    
+            setOpenBackdrop(false);
+        }
+    }
+
+    const handleClick = () => setOpenModal(false);
+
+    return (
+        <>
+            <Dialog
+                open={openModal}
+                fullWidth={true}
+                maxWidth='sm'
+                onClose={handleClick}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">Asignar chofer a {rowselected?.guide_number}</DialogTitle>
+                <DialogContent>
+                    <div className="row-zyx">
+                        <SelectFunction
+                            title="CONDUCTOR"
+                            datatosend={drivers}
+                            classname="col-12"
+                            optionvalue="id_user"
+                            callback={callback}
+                            optiondesc="description"
+                        />
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        type="button"
+                        color="primary"
+                        onClick={assignorder}
+                    >
+                        ASIGNAR
+                    </Button>
+                    <Button
+                        type="button"
+                        color="secondary"
+                        style={{ marginLeft: '1rem' }}
+                        onClick={() => setOpenModal(false)}
+                    >
+                        Cerrar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
+    );
+}
 
 const Home = () => {
-    const { setloadingglobal, setOpenBackdrop, setModalQuestion, setOpenSnackBack } = useContext(popupsContext);
+    const { setloadingglobal, setOpenBackdrop, setModalQuestion, setOpenSnackBack, setLightBox } = useContext(popupsContext);
 
     const [openModalChangeStatus, setOpenModalChangeStatus] = useState(false);
 
     const [rowselected, setrowselected] = useState(null);
     const [loading, setloading] = useState(true);
+    const [openModal, setOpenModal] = useState(false);
     const [datafetch, setdatafetch] = useState({})
     const [datatable, setdatatable] = useState([]);
     const [pageCount, setPageCount] = useState(0);
@@ -38,232 +140,156 @@ const Home = () => {
     const columns = React.useMemo(
         () => [
             {
-                Header: "",
-                accessor: "id_guide",
-                isComponent: true,
+                Header: '',
+                accessor: 'id_oder',
+                activeOnHover: true,
                 Cell: props => {
-                    if (props.cell.row.original.status !== 'PENDIENTE')
-                        return null;
-
                     return (
-                        <Tooltip title="Eliminar Guia">
+                        <div className="container-button-floating">
                             <IconButton
-                                aria-label="delete"
                                 size="small"
+                                className="button-floating"
                                 onClick={() => {
-                                    removeguide(props.cell.row.original.id_guide);
+                                    selectrow(props.cell.row.original);
                                 }}
                             >
-                                <DeleteIcon
+                                <AssignmentIcon
                                     fontSize="inherit"
                                     size="small"
                                 />
                             </IconButton>
-                        </Tooltip>
+                        </div>
                     )
                 }
             },
             {
-                Header: "",
-                accessor: "id_massive_load",
-                isComponent: true,
-                Cell: props => {
-                    if (props.cell.row.original.status === 'PENDIENTE')
-                        return null;
-                    const { status } = props.cell.row.original;
-                    const [anchorEl, setAnchorEl] = React.useState(null);
-                    const open = Boolean(anchorEl);
-                    const handleClick = (event) => {
-                        setAnchorEl(event.currentTarget);
-                    };
+                Header: "N° GUIA",
+                accessor: "guide_number"
+            },
+            {
+                Header: "ESTADO",
+                accessor: "status"
+            },
+            {
+                Header: "PRODUCTO",
+                accessor: "products"
+            },
+            {
+                Header: "F. CREADO",
+                accessor: "date_created"
+            },
+            {
+                Header: "ULTIMA F.",
+                accessor: "date_updated"
+            },
+            {
+                Header: "E. DIRECCION",
+                accessor: "delivery_address"
+            },
+            {
+                Header: "E. DIRECCION REF.",
+                accessor: "delivery_reference"
+            },
+            {
+                Header: "E. CONTACTO",
+                accessor: "delivery_contact_name"
+            },
+            {
+                Header: "E. CONTACTO TEL",
+                accessor: "delivery_phone"
+            },
+            {
+                Header: "E. UBIGEO",
+                accessor: "delivery_ubigeo"
+            },
 
-                    const handleClose = () => {
-                        setAnchorEl(null);
-                    };
+            // {
+            //     Header: "n_products",
+            //     accessor: "n_products"
+            // },
+            {
+                Header: "R. DIRECCIÓN",
+                accessor: "pickup_address"
+            },
+            {
+                Header: "pickup_reference",
+                accessor: "R. REFERENCIA"
+            },
+            {
+                Header: "R. CONTACTO",
+                accessor: "pickup_contact_name"
+            },
+            {
+                Header: "R. CONTACTO TEL",
+                accessor: "pickup_phone"
+            },
+
+            {
+                Header: "R. UBIGEO",
+                accessor: "pickup_ubigeo"
+            },
+            {
+                Header: "CONDUCTOR",
+                accessor: "driver_name"
+            },
+            {
+                Header: "PLACA",
+                accessor: "plate_number"
+            },
+            {
+                Header: "IMÁGENES CHOFER",
+                accessor: "images_order",
+                isComponent: true,
+                Cell: (props) => {
+                    const { images_order } = props.cell.row.original;
+                    if (!images_order)
+                        return null;
                     return (
-                        <>
-                            <IconButton
-                                aria-label="more"
-                                aria-controls="long-menu"
-                                aria-haspopup="true"
-                                size="small"
-                                onClick={handleClick}
-                            >
-                                <BuildIcon
-                                    fontSize="inherit"
-                                    size="small"
+                        <AvatarGroup max={3} onClick={() => setLightBox({ open: true, index: 0, images: images_order.split(",") })}>
+                            {images_order.split(",").map(image => (
+                                <Avatar
+                                    key={image}
+                                    src={image}
+                                    onClick={() => 'hola ' + image}
                                 />
-                            </IconButton>
-                           
-                        </>
+                            ))}
+                        </AvatarGroup>
                     )
                 }
             },
             {
-                Header: 'N° Guia',
-                accessor: 'guide_number'
-            },
-            {
-                Header: 'N° Orden',
-                accessor: 'order_number'
-            },
-            {
-                Header: 'Cod Seguimiento',
-                accessor: 'seg_code'
-            },
-            {
-                Header: 'Cod. Alternativo',
-                accessor: 'alt_code1'
-            },
-            {
-                Header: 'Cod. Alternativo 2',
-                accessor: 'alt_code2'
-            },
-            {
-                Header: 'Fecha Cliente',
-                accessor: 'client_date'
-            },
-            {
-                Header: 'Cod barras Cliente',
-                accessor: 'client_barcode'
-            },
-            {
-                Header: 'Fecha Cliente 2',
-                accessor: 'client_date2'
-            },
-            {
-                Header: 'Peso total',
-                accessor: 'total_weight'
-            },
-            {
-                Header: 'Total Piezas',
-                accessor: 'total_pieces'
-            },
-            {
-                Header: 'DNI Cliente',
-                accessor: 'client_dni'
-            },
-            {
-                Header: 'Nombre Cliente',
-                accessor: 'client_name'
-            },
-            {
-                Header: 'Telefono Cliente',
-                accessor: 'client_phone1'
-            },
-            {
-                Header: 'Teléfono Cliente 2',
-                accessor: 'client_phone2'
-            },
-            {
-                Header: 'Teléfono Cliente 3',
-                accessor: 'client_phone3'
-            },
-            {
-                Header: 'Correo Cliente',
-                accessor: 'client_email'
-            },
-            {
-                Header: 'Estado',
-                accessor: 'status'
-            },
-            {
-                Header: 'Tipo',
-                accessor: 'type'
-            },
-            {
-                Header: 'Intento',
-                accessor: 'attempt'
-            },
-            {
-                Header: 'Creado por',
-                accessor: 'created_by'
-            },
-            {
-                Header: 'Fecha creado',
-                accessor: 'date_created'
-            },
-            {
-                Header: 'Modificado por',
-                accessor: 'modified_by'
-            },
-            {
-                Header: 'Fecha actualizada',
-                accessor: 'date_updated'
-            },
-            {
-                Header: 'Integración reportada',
-                accessor: 'reportado_integracion'
-            },
-            {
-                Header: 'Organización',
-                accessor: 'org_name'
-            },
-            {
-                Header: 'Dirección',
-                accessor: 'address'
-            },
-            {
-                Header: 'Deparatmento',
-                accessor: 'department'
-            },
-            {
-                Header: 'Provincia',
-                accessor: 'province'
-            },
-            {
-                Header: 'Distrito',
-                accessor: 'district'
-            },
+                Header: "IMÁGENES CLIENTE",
+                accessor: "images_product",
+                isComponent: true,
+                Cell: (props) => {
+                    const { images_product } = props.cell.row.original;
+                    if (!images_product)
+                        return null;
+                    return (
+                        <AvatarGroup max={3} onClick={() => setLightBox({ open: true, index: 0, images: images_product.split(",") })}>
+                            {images_product.split(",").map((image, i) => (
+                                <Avatar
+                                    key={image + i}
+                                    src={image}
+                                    onClick={() => 'hola ' + image}
+                                />
+                            ))}
+                        </AvatarGroup>
+                    )
+                }
+
+            }
         ],
         []
     );
 
-    const removeguide = (id_guide) => {
-        const callback = async () => {
-            setModalQuestion({ visible: false });
-            const dattosend = {
-                method: "SP_ELIMINAR_GUIA",
-                data: { id_guide }
-            }
 
-            setOpenBackdrop(true);
-            const res = await triggeraxios('post', '/api/web/main', dattosend);
-            if (res.success) {
-                setOpenSnackBack(true, { success: true, message: 'Guia eliminada satisfactoriamente.' });
-                fetchData(datafetch);
-            } else
-                setOpenSnackBack(true, { success: false, message: 'Hubo un error, vuelva a intentarlo' });
-
-            setOpenBackdrop(false)
-        }
-        setModalQuestion({ visible: true, question: `¿Está seguro de eliminar la guia?`, callback })
+    const selectrow = (row) => {
+        setOpenModal(true);
+        setrowselected(row);
     }
 
-    const unassignguide = (id_guide) => {
-        const callback = async () => {
-            setModalQuestion({ visible: false });
-            const dattosend = {
-                method: "SP_DESASIGNAR_GUIA",
-                data: { id_guide }
-            }
-
-            setOpenBackdrop(true);
-            const res = await triggeraxios('post', '/api/web/main', dattosend);
-            if (res.success) {
-                setOpenSnackBack(true, { success: true, message: 'Guia desasignada satisfactoriamente.' });
-                fetchData(datafetch);
-            } else
-                setOpenSnackBack(true, { success: false, message: 'Hubo un error, vuelva a intentarlo' });
-
-            setOpenBackdrop(false)
-        }
-        setModalQuestion({ visible: true, question: `¿Está seguro de deasignar la guia?`, callback })
-    }
-
-    const updateData = () => {
-        fetchData(datafetch);
-    }
+    const updateFetchData = () => fetchData(datafetch)
 
     const fetchData = React.useCallback(({ pageSize, pageIndex, filters, sorts, daterange }) => {
         setloadingglobal(true);
@@ -305,7 +331,13 @@ const Home = () => {
                 loading={loading}
                 pageCount={pageCount}
                 fetchData={fetchData}
-                titlemodule='Pedidos' 
+                titlemodule='Pedidos'
+            />
+            <AssignmentModal
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                rowselected={rowselected}
+                fetchDataUser={updateFetchData}
             />
             {/* <ChangeStatusMain
                 title="Cambiar estado"

@@ -219,51 +219,56 @@ const Layout = ({ children }) => {
                         display: flex;
                         justify-content: space-between;
                     }
-                    .row-zyx > .col-2, .row-zyx > .col-3, .row-zyx > .col-4, .row-zyx > .col-6, .row-zyx > .col-9 {
+                    .row-zyx > .col-2, .row-zyx > .col-3, .row-zyx > .col-4, .row-zyx > .col-6, .row-zyx > .col-9, .row-zyx > .col-8 {
                         margin-bottom: ${theme.spacing(2)}px
                     }
                     @media (min-width: 768px) {
                         .row-zyx {
-                            margin-bottom: 0!important;
+                            margin-bottom: ${theme.spacing(1)}px;
                         }
-                        .row-zyx > .col-2, .row-zyx > .col-3, .row-zyx > .col-4, .row-zyx > .col-6, .row-zyx > .col-9 {
-                            width: calc(50% - ${theme.spacing(1)}px);
-                            margin-right: ${theme.spacing(1)}px;
-                            margin-bottom: ${theme.spacing(2)}px
+                        .row-zyx > .col-2, .row-zyx > .col-3, .row-zyx > .col-4, .row-zyx > .col-6, .row-zyx > .col-9, .row-zyx > .col-8 {
+                            width: 50%;
+                            padding-right: ${theme.spacing(2)}px;
+                            margin-bottom: ${theme.spacing(1)}px
                         }
-                        .row-zyx > .col-4:last-child, .row-zyx > .col-6:last-child, .row-zyx > .col-3:last-child, .row-zyx > .col-2:last-child {
-                            margin-right: 0px;
+                        .row-zyx > .col-4:last-child, .row-zyx > .col-6:last-child, .row-zyx > .col-3:last-child, .row-zyx > .col-2:last-child, .row-zyx > .col-8:last-child {
+                            padding-right: 0px;
+                        }
+                        .row-zyx > .col-4:first-of-type, .row-zyx > .col-6:first-of-type, .row-zyx > .col-3:first-of-type, .row-zyx > .col-2:first-of-type, .row-zyx > .col-8:first-of-type {
+                            padding-right: ${theme.spacing(2)}px;
                         }
                     }
                     @media (min-width: 992px) {
                         .row-zyx {
-                            margin-bottom: ${theme.spacing(1)}px!important;
+                            margin-bottom: ${theme.spacing(1)}px;
                         }
                         .row-zyx > .col-9 {
-                            width: calc(75% - ${theme.spacing(1)}px);
-                            margin-right: ${theme.spacing(1)}px;
+                            width: 75%;
+                            padding-right: ${theme.spacing(2)}px;
+                            margin-bottom: ${theme.spacing(1)}px
+                        }
+                        .row-zyx > .col-8 {
+                            width: 66.66%;
+                            padding-right: ${theme.spacing(2)}px;
                             margin-bottom: ${theme.spacing(1)}px
                         }
                         .row-zyx > .col-3 {
-                            width: calc(25% - ${theme.spacing(1)}px);
-                            margin-right: ${theme.spacing(1)}px;
+                            width: 25%;
+                            padding-right: ${theme.spacing(2)}px;
                             margin-bottom: ${theme.spacing(1)}px
                         }
                         .row-zyx > .col-2 {
-                            width: calc(16.6% - ${theme.spacing(1)}px);
-                            margin-right: ${theme.spacing(1)}px;
+                            width: 16.6%;
+                            padding-right: ${theme.spacing(2)}px;
                             margin-bottom: ${theme.spacing(1)}px
                         }
                         .row-zyx > .col-4 {
-                            width: calc(33.3% - ${theme.spacing(1)}px);
-                            margin-right: ${theme.spacing(1)}px;
+                            width: 33.33%;
+                            padding-right: ${theme.spacing(2)}px;
                             margin-bottom: ${theme.spacing(1)}px
                         }
-                        .row-zyx > .col-3:last-child {
-                            margin-right: 0px
-                        }
-                        .row-zyx > .col-2:last-child {
-                            margin-right: 0px
+                        .row-zyx > .col-3:last-child, .row-zyx > .col-2:last-child, .row-zyx > .col-8:last-child {
+                            padding-right: 0px
                         }
                     }
                 `}

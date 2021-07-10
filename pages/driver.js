@@ -15,10 +15,10 @@ import {
 
 const DATASEL = {
     method: "SP_SEL_DRIVER",
-    data: { status: null, type: null }
+    data: { status: null, type: 'DRIVER' }
 }
 
-const METHOD_INS = "SP_INS_VEHICLE";
+const METHOD_INS = "SP_INS_DRIVER";
 
 const Vehicle = () => {
     const { setloadingglobal, setModalQuestion, setOpenBackdrop, setOpenSnackBack } = useContext(popupsContext);
@@ -41,7 +41,7 @@ const Vehicle = () => {
                                     aria-label="delete"
                                     size="small"
                                     className="button-floating"
-                                    disabled={ !appfound.update}
+                                    disabled={!appfound.update}
                                     onClick={() => {
                                         selectrow(props.cell.row.original);
                                     }}
@@ -57,7 +57,7 @@ const Vehicle = () => {
                                     className="button-floating"
                                     aria-label="delete"
                                     size="small"
-                                    disabled={ !appfound.delete}
+                                    disabled={!appfound.delete}
                                     onClick={() => deleterow(props.cell.row.original)}
                                 >
                                     <DeleteIcon
@@ -71,28 +71,44 @@ const Vehicle = () => {
                 }
             },
             {
-                Header: 'PROVEEDOR',
-                accessor: 'provider_name'
+                Header: "NOMBRE",
+                accessor: "first_name"
             },
             {
-                Header: 'MARCA',
-                accessor: 'brand'
+                Header: "APELLIDO",
+                accessor: "last_name"
             },
             {
-                Header: 'MODELO',
-                accessor: 'model'
+                Header: "TIPO DOC",
+                accessor: "doc_type"
             },
             {
-                Header: 'PLACA',
-                accessor: 'plate_number'
+                Header: "N° DOC",
+                accessor: "doc_number"
             },
             {
-                Header: 'LICENCIA',
-                accessor: 'driver_license'
+                Header: "CORREO",
+                accessor: "user_email"
             },
             {
-                Header: 'SOAT',
-                accessor: 'soat'
+                Header: "USUARIO",
+                accessor: "username"
+            },
+            {
+                Header: "LICENCIA",
+                accessor: "license"
+            },
+            {
+                Header: "LINCECIA EXPIRACIon",
+                accessor: "license_expire_date"
+            },
+            {
+                Header: "PLACA",
+                accessor: "plate_number"
+            },
+            {
+                Header: "SOAT",
+                accessor: "soat"
             },
             {
                 Header: 'ESTADO',
@@ -158,14 +174,14 @@ const Vehicle = () => {
         <Layout>
             <TableZyx
                 columns={columns}
-                titlemodule='Vehiculos'
+                titlemodule='Conductores'
                 data={datatable}
                 fetchData={fetchData}
                 register={!!appfound.insert}
                 selectrow={selectrow}
             />
             <VehicleMain
-                title="Vehiculo"
+                title="Conductor"
                 method_ins={METHOD_INS}
                 openModal={openModal}
                 setOpenModal={setOpenModal}

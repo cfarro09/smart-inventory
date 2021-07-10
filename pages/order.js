@@ -4,7 +4,7 @@ import TableZyx from '../components/system/form/table-paginated'
 import triggeraxios from '../config/axiosv2';
 import Typography from '@material-ui/core/Typography';
 import popupsContext from '../context/pop-ups/pop-upsContext';
-import InventoryMain from '../components/inventory/inventorymain';
+
 import { getDomain, validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
 import Button from '@material-ui/core/Button';
@@ -12,229 +12,270 @@ import HistoryIcon from '@material-ui/icons/History';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 
-const REQUESTCLIENT = {
-    method: "SP_SEL_CLIENT",
-    data: { status: 'ACTIVO' }
-}
-const dataRequestStore = (id_client) => ({
-    method: "SP_SEL_CLIENT_STORE",
-    data: {
-        id_client,
-        status: null
-    }
-})
 
-const TYPEREPORTS = [
-    { id: "DETALLADO", description: "DETALLADO" },
-    { id: "CONSOLIDADO", description: "CONSOLIDADO" },
-]
+import {
+    Delete as DeleteIcon,
+    Build as BuildIcon
+} from '@material-ui/icons';
 
-const Example = () => {
+const Home = () => {
+    const { setloadingglobal, setOpenBackdrop, setModalQuestion, setOpenSnackBack } = useContext(popupsContext);
 
-    const { setloadingglobal, setModalQuestion, setOpenBackdrop, setOpenSnackBack } = useContext(popupsContext);
-    const [openModal, setOpenModal] = useState(false);
+    const [openModalChangeStatus, setOpenModalChangeStatus] = useState(false);
+
     const [rowselected, setrowselected] = useState(null);
-
     const [loading, setloading] = useState(true);
     const [datafetch, setdatafetch] = useState({})
     const [datatable, setdatatable] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [totalrow, settotalrow] = useState(0);
-    const [dataClient, setDataClient] = useState([]);
-    const [dataStore, setDataStore] = useState([]);
-    const [selected, setSelected] = useState({ id_client_store: 0, id_client: 0, type: "DETALLADO" })
+
+    const changestatus = (r) => {
+        setrowselected(r);
+        setOpenModalChangeStatus(true);
+    }
 
     const columns = React.useMemo(
         () => [
             {
                 Header: "",
-                accessor: "id_client",
-                activeOnHover: true,
+                accessor: "id_guide",
+                isComponent: true,
                 Cell: props => {
+                    if (props.cell.row.original.status !== 'PENDIENTE')
+                        return null;
+
                     return (
-                        <div className="container-button-floating">
-                            <Tooltip title="Ver historial">
-                                <IconButton
-                                    aria-label="show_history"
+                        <Tooltip title="Eliminar Guia">
+                            <IconButton
+                                aria-label="delete"
+                                size="small"
+                                onClick={() => {
+                                    removeguide(props.cell.row.original.id_guide);
+                                }}
+                            >
+                                <DeleteIcon
+                                    fontSize="inherit"
                                     size="small"
-                                    className="button-floating"
-                                    onClick={() => {
-                                        selectrow(props.cell.row.original);
-                                    }}
-                                >
-                                    <HistoryIcon
-                                        fontSize="inherit"
-                                        size="small"
-                                    />
-                                </IconButton>
-                            </Tooltip>
-                        </div>
+                                />
+                            </IconButton>
+                        </Tooltip>
                     )
                 }
             },
             {
-                Header: 'TIENDA',
-                accessor: 'store_name'
+                Header: "",
+                accessor: "id_massive_load",
+                isComponent: true,
+                Cell: props => {
+                    if (props.cell.row.original.status === 'PENDIENTE')
+                        return null;
+                    const { status } = props.cell.row.original;
+                    const [anchorEl, setAnchorEl] = React.useState(null);
+                    const open = Boolean(anchorEl);
+                    const handleClick = (event) => {
+                        setAnchorEl(event.currentTarget);
+                    };
+
+                    const handleClose = () => {
+                        setAnchorEl(null);
+                    };
+                    return (
+                        <>
+                            <IconButton
+                                aria-label="more"
+                                aria-controls="long-menu"
+                                aria-haspopup="true"
+                                size="small"
+                                onClick={handleClick}
+                            >
+                                <BuildIcon
+                                    fontSize="inherit"
+                                    size="small"
+                                />
+                            </IconButton>
+                           
+                        </>
+                    )
+                }
             },
             {
-                Header: 'COD PRODUCTO',
-                accessor: 'product_code'
+                Header: 'N° Guia',
+                accessor: 'guide_number'
             },
             {
-                Header: 'DESC PROD',
-                accessor: 'product_description'
-            },
-            ...(selected.type === "DETALLADO" ? [{
-                Header: 'PASILLO',
-                accessor: 'hallway'
-            }] : []),
-            ...(selected.type === "DETALLADO" ? [{
-                Header: 'COLUMNA',
-                accessor: 'column'
-            }] : []),
-            ...(selected.type === "DETALLADO" ? [{
-                Header: 'NIVEL',
-                accessor: 'level'
-            }] : []),
-            {
-                Header: 'EN CUARENTENA',
-                accessor: 'quarantine'
+                Header: 'N° Orden',
+                accessor: 'order_number'
             },
             {
-                Header: 'EN MERMA',
-                accessor: 'shrinkage'
+                Header: 'Cod Seguimiento',
+                accessor: 'seg_code'
             },
             {
-                Header: 'SCRAP',
-                accessor: 'scrap'
+                Header: 'Cod. Alternativo',
+                accessor: 'alt_code1'
             },
             {
-                Header: 'DEMO',
-                accessor: 'demo'
+                Header: 'Cod. Alternativo 2',
+                accessor: 'alt_code2'
             },
             {
-                Header: 'STOCK DISP',
-                accessor: 'available'
+                Header: 'Fecha Cliente',
+                accessor: 'client_date'
             },
             {
-                Header: 'STOCK',
-                accessor: 'quantity'
+                Header: 'Cod barras Cliente',
+                accessor: 'client_barcode'
             },
             {
-                Header: 'METRO CUBICO/CAJA',
-                accessor: 'product_cmtr_pbox'
+                Header: 'Fecha Cliente 2',
+                accessor: 'client_date2'
             },
             {
-                Header: 'CANTIDAD METROS CUBICOS',
-                accessor: 'product_cmtr_quantity'
+                Header: 'Peso total',
+                accessor: 'total_weight'
             },
             {
-                Header: 'COLOR',
-                accessor: 'product_color'
+                Header: 'Total Piezas',
+                accessor: 'total_pieces'
             },
             {
-                Header: 'FECHA DE EXPIRACION',
-                accessor: 'product_exp_date'
+                Header: 'DNI Cliente',
+                accessor: 'client_dni'
             },
             {
-                Header: 'LINEA',
-                accessor: 'product_line'
+                Header: 'Nombre Cliente',
+                accessor: 'client_name'
             },
             {
-                Header: 'LOTE',
-                accessor: 'product_lots'
+                Header: 'Telefono Cliente',
+                accessor: 'client_phone1'
             },
             {
-                Header: 'NUM° PAQUETE',
-                accessor: 'product_package_number'
+                Header: 'Teléfono Cliente 2',
+                accessor: 'client_phone2'
             },
             {
-                Header: 'SERIE',
-                accessor: 'product_serie'
+                Header: 'Teléfono Cliente 3',
+                accessor: 'client_phone3'
             },
             {
-                Header: 'TAMAÑO',
-                accessor: 'product_size'
+                Header: 'Correo Cliente',
+                accessor: 'client_email'
             },
             {
-                Header: 'UNIDAD/CAJA',
-                accessor: 'product_unitp_box'
+                Header: 'Estado',
+                accessor: 'status'
+            },
+            {
+                Header: 'Tipo',
+                accessor: 'type'
+            },
+            {
+                Header: 'Intento',
+                accessor: 'attempt'
+            },
+            {
+                Header: 'Creado por',
+                accessor: 'created_by'
+            },
+            {
+                Header: 'Fecha creado',
+                accessor: 'date_created'
+            },
+            {
+                Header: 'Modificado por',
+                accessor: 'modified_by'
+            },
+            {
+                Header: 'Fecha actualizada',
+                accessor: 'date_updated'
+            },
+            {
+                Header: 'Integración reportada',
+                accessor: 'reportado_integracion'
+            },
+            {
+                Header: 'Organización',
+                accessor: 'org_name'
+            },
+            {
+                Header: 'Dirección',
+                accessor: 'address'
+            },
+            {
+                Header: 'Deparatmento',
+                accessor: 'department'
+            },
+            {
+                Header: 'Provincia',
+                accessor: 'province'
+            },
+            {
+                Header: 'Distrito',
+                accessor: 'district'
             },
         ],
-        [datatable]
+        []
     );
 
-    const handlerSelectClient = React.useCallback(async ({ newValue }) => {
-        if (newValue) {
-            setSelected({ ...selected, id_client: newValue.id_client });
-            const res = await triggeraxios('post', process.env.endpoints.selsimple, dataRequestStore(newValue.id_client));
-            setDataStore(validateResArray(res, true));
-        } else {
-            setSelected({ ...selected, id_client: 0 });
-            setDataStore([]);
-        }
-    });
+    const removeguide = (id_guide) => {
+        const callback = async () => {
+            setModalQuestion({ visible: false });
+            const dattosend = {
+                method: "SP_ELIMINAR_GUIA",
+                data: { id_guide }
+            }
 
-    const selectrow = (row) => {
-        setOpenModal(true);
-        setrowselected(row);
+            setOpenBackdrop(true);
+            const res = await triggeraxios('post', '/api/web/main', dattosend);
+            if (res.success) {
+                setOpenSnackBack(true, { success: true, message: 'Guia eliminada satisfactoriamente.' });
+                fetchData(datafetch);
+            } else
+                setOpenSnackBack(true, { success: false, message: 'Hubo un error, vuelva a intentarlo' });
+
+            setOpenBackdrop(false)
+        }
+        setModalQuestion({ visible: true, question: `¿Está seguro de eliminar la guia?`, callback })
     }
 
-    const handlerSelectStore = React.useCallback(async ({ newValue }) => {
-        if (newValue)
-            setSelected({ ...selected, id_client_store: newValue.id_client_store });
-        else
-            setSelected({ ...selected, id_client_store: 0 });
-    });
+    const unassignguide = (id_guide) => {
+        const callback = async () => {
+            setModalQuestion({ visible: false });
+            const dattosend = {
+                method: "SP_DESASIGNAR_GUIA",
+                data: { id_guide }
+            }
 
-    const handlerSelectTypeReport = React.useCallback(async ({ newValue }) => {
-        if (newValue)
-            setSelected({ ...selected, type: newValue.id });
-        else
-            setSelected({ ...selected, type: 0 });
-    });
+            setOpenBackdrop(true);
+            const res = await triggeraxios('post', '/api/web/main', dattosend);
+            if (res.success) {
+                setOpenSnackBack(true, { success: true, message: 'Guia desasignada satisfactoriamente.' });
+                fetchData(datafetch);
+            } else
+                setOpenSnackBack(true, { success: false, message: 'Hubo un error, vuelva a intentarlo' });
 
-    useEffect(() => {
-        let continuezyx = true;
-        (async () => {
-            await Promise.all([
-                triggeraxios('post', process.env.endpoints.selsimple, REQUESTCLIENT).then(r => setDataClient(p => (validateResArray(r, continuezyx))))
-            ]);
+            setOpenBackdrop(false)
+        }
+        setModalQuestion({ visible: true, question: `¿Está seguro de deasignar la guia?`, callback })
+    }
 
-        })();
-        return () => continuezyx = false;
-    }, [])
+    const updateData = () => {
+        fetchData(datafetch);
+    }
 
     const fetchData = React.useCallback(({ pageSize, pageIndex, filters, sorts, daterange }) => {
-        setdatafetch({ pageSize, pageIndex, filters, sorts, daterange });
-        if (!selected.id_client || !selected.type) {
-            setdatatable([]);
-            setPageCount(0);
-            settotalrow(0);
-            return;
-        }
         setloadingglobal(true);
-
+        setdatafetch({ pageSize, pageIndex, filters, sorts, daterange })
         const datatosend = {
-            methodcollection: selected.type === "DETALLADO" ? "SP_REPORTE_INVENTARIO" : "SP_REPORTE_INVENTARIO_PRODUCTO",
-            methodcount: selected.type === "DETALLADO" ? "SP_REPORTE_INVENTARIO_COUNT" : "SP_REPORTE_INVENTARIO_PRODUCTO_COUNT",
+            methodcollection: "SP_SEL_ORDER_USER",
+            methodcount: "SP_SEL_ORDER_USER_COUNT",
             take: pageSize,
             skip: pageIndex,
-            filters: {
-                ...filters,
-                id_client: {
-                    operator: 'equals',
-                    value: selected.id_client
-                },
-                ...(selected.id_client_store && {
-                    id_client_store: {
-                        operator: 'equals',
-                        value: selected.id_client_store
-                    }
-                }),
-            },
+            filters,
             sorts,
-            origin: 'reporte_inventario',
+            origin: 'SP_SEL_ORDER_USER',
             daterange,
             offset: (new Date().getTimezoneOffset() / 60) * -1
         }
@@ -252,98 +293,29 @@ const Example = () => {
             setloading(false);
             setloadingglobal(false)
         });
-
-    }, [selected]);
-
-    const exportList = React.useCallback(async () => {
-        if (!selected.id_client || !selected.type) {
-            setOpenSnackBack(true, { success: false, message: 'Debe seleccionar un cliente.' })
-            return;
-        }
-        const r = await triggeraxios('post', selected.type === "DETALLADO" ? "/api/web/reportes/inventario" : "/api/web/reportes/inventario_producto", {
-            ...datafetch, filters: {
-                ...datafetch.filters, id_client: {
-                    operator: 'equals',
-                    value: selected.id_client
-                },
-                ...(selected.id_client_store && {
-                    id_client_store: {
-                        operator: 'equals',
-                        value: selected.id_client_store
-                    }
-                }),
-            }
-        });
-        if (r.success) {
-            window.open(r.result.data.reporte);
-        } else
-            setOpenSnackBack(true, { success: false, message: 'Hubo un error, intentelo mas tarde.' });
-    }, [datafetch])
+    }, []);
 
     return (
         <Layout>
-            <div style={{ position: 'relative' }}>
-                <Typography variant="h6" id="tableTitle" component="div" style={{ marginBottom: '1rem' }}>
-                    Inventario
-                </Typography>
-                <div className="row-zyx">
-                    <SelectFunction
-                        title="Cliente"
-                        datatosend={dataClient}
-                        classname="col-3"
-                        optionvalue="id_client"
-                        optiondesc="company_name"
-                        callback={handlerSelectClient}
-                    />
-                    <SelectFunction
-                        classname="col-3"
-                        title="Tienda"
-                        datatosend={dataStore}
-                        callback={handlerSelectStore}
-                        optionvalue="id_client_store"
-                        optiondesc="store_name"
-                    />
-                    <SelectFunction
-                        classname="col-3"
-                        title="Reporte"
-                        datatosend={TYPEREPORTS}
-                        valueselected="DETALLADO"
-                        callback={handlerSelectTypeReport}
-                        optionvalue="id"
-                        optiondesc="description"
-                    />
-                    <div className="col-2 mb-0">
-                        <Button
-                            color="primary"
-                            component="span"
-                            variant="contained"
-                            onClick={() => fetchData(datafetch)}
-                            disabled={!(selected.id_client && selected.type)}
-                        >
-                            BUSCAR
-                        </Button>
-                    </div>
-                </div>
-
-                <TableZyx
-                    columns={columns}
-                    data={datatable}
-                    totalrow={totalrow}
-                    exportPersonalized={exportList}
-                    loading={loading}
-                    pageCount={pageCount}
-                    fetchData={fetchData}
-                />
-                <InventoryMain
-                    title="Clientes"
-                    openModal={openModal}
-                    setOpenModal={setOpenModal}
-                    rowselected={rowselected}
-                />
-            </div>
-
+            <TableZyx
+                columns={columns}
+                data={datatable}
+                totalrow={totalrow}
+                filterrange={true}
+                loading={loading}
+                pageCount={pageCount}
+                fetchData={fetchData}
+                titlemodule='Pedidos' 
+            />
+            {/* <ChangeStatusMain
+                title="Cambiar estado"
+                openModal={openModalChangeStatus}
+                setOpenModal={setOpenModalChangeStatus}
+                rowselected={rowselected}
+                fetchData={updateData}
+            /> */}
         </Layout>
     );
 }
 
-export default Example;
+export default Home;

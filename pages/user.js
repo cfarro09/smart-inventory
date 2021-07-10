@@ -15,7 +15,8 @@ import {
 const REQUESTUSER = {
     method: "SP_SEL_USER",
     data: {
-        status: null
+        status: null,
+        type: 'USER'
     }
 }
 

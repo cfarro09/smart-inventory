@@ -65,7 +65,7 @@ const AuthState = ({ children }) => {
     useEffect(() => {
         async function loadUserFromCookies() {
             try {
-                const resultproperties = await clientAxios.get('/api/web/properties');
+                const resultproperties = await clientAxios.get('/api/public/properties');
                 if (resultproperties.data.data.length > 0) {
                     const auxx = resultproperties.data.data[0].reduce((o, x) => ({
                         ...o,

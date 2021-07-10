@@ -14,8 +14,8 @@ import {
 } from '@material-ui/icons';
 
 const DATASEL = {
-    method: "SP_SEL_VEHICLE",
-    data: { status: null, doc_number: null }
+    method: "SP_SEL_DRIVER",
+    data: { status: null, type: null }
 }
 
 const METHOD_INS = "SP_INS_VEHICLE";

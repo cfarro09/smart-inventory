@@ -21,20 +21,10 @@ const REQUESTROLES = {
 }
 
 
-import IconButton from '@material-ui/core/IconButton';
-import {
-    Delete as DeleteIcon,
-    Edit as EditIcon,
-} from '@material-ui/icons';
-
 const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser }) => {
 
     const { setOpenBackdrop, setOpenSnackBack, setModalQuestion } = useContext(popupsContext);
 
-    //#region orguser
-    // const [openModalOrganization, setOpenModalOrganization] = useState(false);
-    // const [orgrowselected, setorgrowselected] = useState(null);
-    // const [dataorg, setdataorg] = useState([]);
     const [showtable, setshowtable] = useState(false);
     const [dataRoles, setDataRoles] = useState([]);
     const [domains, setdomains] = useState({ doc_type: [], status: [], type: [] });
@@ -95,18 +85,19 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                 setModalQuestion({ visible: false });
                 const dattosend = {
                     method: "SP_INS_USER",
-                    header: {
-                        data: {
-                            ...values,
-                            type: 'NINGUNO',
-                            id_user: rowselected ? rowselected.id_user : 0,
-                            password: values.password ? values.password : "",
-                        }
-                    },
+                    data: {
+                        ...values,
+                        type: 'NINGUNO',
+                        id: rowselected ? rowselected.id_user : 0,
+                        user: values.username,
+                        type: 'USER',
+                        phone: '943856850',
+                        password: values.password ? values.password : "",
+                    }
                 }
 
                 setOpenBackdrop(true);
-                const res = await triggeraxios('post', process.env.endpoints.transaction, dattosend);
+                const res = await triggeraxios('post', process.env.endpoints.selsimple, dattosend);
                 if (res.success) {
                     fetchDataUser({});
                     setOpenModal(false);
@@ -125,7 +116,7 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
 
     const handleClick = () => setOpenModal(false);
 
- 
+//  #create a function returning string
 
     return (
         <>
@@ -162,6 +153,7 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                                 classname="col-3"
                                 label="Usuario"
                                 formik={formik}
+                                disabled={!!rowselected}
                             />
                             <InputFormk
                                 name="user_email"

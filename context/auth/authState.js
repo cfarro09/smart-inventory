@@ -93,7 +93,7 @@ const AuthState = ({ children }) => {
                         type: AUTH_SUCCESS,
                         payload: { firstname, lastname, role_name, menu }
                     });
-                    const routeraux = router.pathname === "/bill/[id]" ? "/bill/list" : (router.pathname === "/purchase-order/[id]" ? "/purchase-order/list" : router.pathname);
+                    const routeraux = router.pathname === "/bulkload/[id]" ? "/bulkload/list" : (router.pathname === "/purchase-order/[id]" ? "/purchase-order/list" : router.pathname);
                     const appfound = menu.find(x => x.path === routeraux);
 
                     if (appfound && appfound.view){

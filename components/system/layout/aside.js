@@ -80,10 +80,9 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
         //     return null;
         if (user) {
             let routertmp = router.pathname;
-            if (application === "bill-list" && routertmp === "/bill/[id]")
-            routertmp = "/bill/list";
-            if (application === "purchase-order-list" && routertmp === "/purchase-order/[id]")
-            routertmp = "/purchase-order/list";
+            if (application === "bulkload-list" || routertmp === "/bulkload/[id]") {
+                routertmp = "/bulkload/list";
+            }
             
             const appfound = user.menu.find(x => x.application === application);
             
@@ -124,7 +123,18 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
             <Divider />
 
             <List>
-               
+            <LinkList
+                    application="bulkload-list"
+                    IconLink={() => (
+                        <ViewComfy style={{ color: theme.palette.primary.light }} />
+                    )}
+                />
+                <LinkList
+                    application="bulkload"
+                    IconLink={() => (
+                        <ViewComfy style={{ color: theme.palette.primary.light }} />
+                    )}
+                />
                 <LinkList
                     application="order"
                     IconLink={() => (

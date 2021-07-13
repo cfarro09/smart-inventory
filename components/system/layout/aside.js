@@ -80,9 +80,6 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
         //     return null;
         if (user) {
             let routertmp = router.pathname;
-            if (application === "bulkload-list" || routertmp === "/bulkload/[id]") {
-                routertmp = "/bulkload/list";
-            }
             
             const appfound = user.menu.find(x => x.application === application);
             

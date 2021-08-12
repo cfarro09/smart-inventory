@@ -3,8 +3,8 @@ import React, { useState, useContext, useEffect } from 'react';
 import clsx from 'clsx';
 import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
-import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Menu from '@material-ui/core/Menu';
@@ -55,6 +55,7 @@ const Header = ({ classes, open, setOpen }) => {
                 >
                     <MenuIcon color="secondary" />
                 </IconButton>
+
                 <div className={classes.title}>
                     <h1 style={{ margin: 0, padding: 0 }}>{infosys.sys_company_name}</h1>
                 </div>

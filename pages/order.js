@@ -2,27 +2,154 @@ import React, { useState, useContext, useEffect } from 'react';
 import Layout from '../components/system/layout/layout'
 import TableZyx from '../components/system/form/table-paginated'
 import triggeraxios from '../config/axiosv2';
-import Typography from '@material-ui/core/Typography';
 import popupsContext from '../context/pop-ups/pop-upsContext';
-import Dialog from '@material-ui/core/Dialog';
-import InputFormk from '../components/system/form/inputformik';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import { getDomain, validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
-import Button from '@material-ui/core/Button';
-import HistoryIcon from '@material-ui/icons/History';
-import Tooltip from '@material-ui/core/Tooltip';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import InputFormk from '../components/system/form/inputformik';
+
 const SEL_DRIVER = {
     method: "SP_SEL_DRIVER",
     data: { status: 'ACTIVO', type: 'DRIVER' }
 }
+
+
+const InfoModal = ({ openModal, setOpenModal, rowselected }) => {
+
+    return (
+        <Dialog
+            open={openModal}
+            fullWidth={true}
+            maxWidth='lg'
+            onClose={() => setOpenModal(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">Datos del pedido {rowselected?.guide_number || ""}</DialogTitle>
+            <DialogContent>
+                <div className="row-zyx">
+                    <InputFormk
+                        valuedefault={rowselected?.guide_number || ""}
+                        classname="col-3"
+                        label="Nª orden"
+                        disabled={true}
+                    />
+                    <InputFormk
+                        valuedefault={rowselected?.products || ""}
+                        classname="col-3"
+                        label="Producto"
+                        disabled={true}
+                    />
+                    <InputFormk
+                        valuedefault={rowselected?.client_name || ""}
+                        classname="col-3"
+                        label="Cliente"
+                        disabled={true}
+                    />
+                    <InputFormk
+                        valuedefault={rowselected?.driver_name || ""}
+                        classname="col-3"
+                        label="Chofer"
+                        disabled={true}
+                    />
+                </div>
+                <div className="row-zyx">
+                    <InputFormk
+                        valuedefault={rowselected?.plate_number || ""}
+                        classname="col-3"
+                        label="Placa"
+                        disabled={true}
+                    />
+                    <InputFormk
+                        valuedefault={rowselected?.delivery_address || ""}
+                        classname="col-3"
+                        label="Delivery dirección"
+                        disabled={true}
+                    />
+                    <InputFormk
+                        valuedefault={rowselected?.delivery_reference || ""}
+                        classname="col-3"
+                        label="Delivery referencia"
+                        disabled={true}
+                    />
+                    <InputFormk
+                        valuedefault={rowselected?.delivery_contact_name || ""}
+                        classname="col-3"
+                        label="Delivery contacto"
+                        disabled={true}
+                    />
+                </div>
+                <div className="row-zyx">
+                    <InputFormk
+                        valuedefault={rowselected?.delivery_phone || ""}
+                        classname="col-3"
+                        label="Delivery teléfono"
+                        disabled={true}
+                    />
+                    <InputFormk
+                        valuedefault={rowselected?.delivery_ubigeo || ""}
+                        classname="col-3"
+                        label="Delivery ubigeo"
+                        disabled={true}
+                    />
+                    <InputFormk
+                        valuedefault={rowselected?.pickup_address || ""}
+                        classname="col-3"
+                        label="Pickup dirección"
+                        disabled={true}
+                    />
+                    <InputFormk
+                        valuedefault={rowselected?.pickup_reference || ""}
+                        classname="col-3"
+                        label="Pickup referencia"
+                        disabled={true}
+                    />
+                </div>
+                <div className="row-zyx">
+                    <InputFormk
+                        valuedefault={rowselected?.pickup_contact_name || ""}
+                        classname="col-3"
+                        label="Pickup contacto"
+                        disabled={true}
+                    />
+                    <InputFormk
+                        valuedefault={rowselected?.pickup_phone || ""}
+                        classname="col-3"
+                        label="Pickup  teléfono"
+                        disabled={true}
+                    />
+                    <InputFormk
+                        valuedefault={rowselected?.pickup_ubigeo || ""}
+                        classname="col-3"
+                        label="Pickup ubigeo"
+                        disabled={true}
+                    />
+                </div>
+            </DialogContent>
+            <DialogActions>
+                <Button
+                    type="button"
+                    color="secondary"
+                    style={{ marginLeft: '1rem' }}
+                    onClick={() => setOpenModal(false)}
+                >
+                    Cerrar
+                </Button>
+            </DialogActions>
+        </Dialog>
+    )
+}
+
 
 const AssignmentModal = ({ openModal, setOpenModal, rowselected, fetchDataUser }) => {
     const [drivers, setdrivers] = useState([]);
@@ -62,12 +189,12 @@ const AssignmentModal = ({ openModal, setOpenModal, rowselected, fetchDataUser }
             if (res.success) {
                 fetchDataUser({});
                 setOpenModal(false);
-    
+
                 setOpenSnackBack(true, { success: true, message: 'Se asignó correctamente.' });
             } else {
                 setOpenSnackBack(true, { success: false, message: res.msg });
             }
-    
+
             setOpenBackdrop(false);
         }
     }
@@ -123,6 +250,7 @@ const Home = () => {
     const { setloadingglobal, setOpenBackdrop, setModalQuestion, setOpenSnackBack, setLightBox } = useContext(popupsContext);
 
     const [openModalChangeStatus, setOpenModalChangeStatus] = useState(false);
+    const [openmodalinfo, setopenmodalinfo] = useState(false)
 
     const [rowselected, setrowselected] = useState(null);
     const [loading, setloading] = useState(true);
@@ -144,23 +272,34 @@ const Home = () => {
                 accessor: 'id_oder',
                 activeOnHover: true,
                 Cell: props => {
-                    if (props.cell.row.original.status !== "PENDIENTE")
-                        return null
-
                     return (
                         <div className="container-button-floating">
                             <IconButton
                                 size="small"
                                 className="button-floating"
                                 onClick={() => {
-                                    selectrow(props.cell.row.original);
+                                    selectrow2(props.cell.row.original);
                                 }}
                             >
-                                <AssignmentIcon
+                                <VisibilityIcon
                                     fontSize="inherit"
                                     size="small"
                                 />
                             </IconButton>
+                            {props.cell.row.original.status === "PENDIENTE" &&
+                                <IconButton
+                                    size="small"
+                                    className="button-floating"
+                                    onClick={() => {
+                                        selectrow(props.cell.row.original);
+                                    }}
+                                >
+                                    <AssignmentIcon
+                                        fontSize="inherit"
+                                        size="small"
+                                    />
+                                </IconButton>
+                            }
                         </div>
                     )
                 }
@@ -178,62 +317,16 @@ const Home = () => {
                 accessor: "products"
             },
             {
-                Header: "F. CREADO",
+                Header: "F. REGISTRO",
                 accessor: "date_created"
-            },
-            {
-                Header: "ULTIMA F.",
-                accessor: "date_updated"
-            },
-            {
-                Header: "E. DIRECCION",
-                accessor: "delivery_address"
-            },
-            {
-                Header: "E. DIRECCION REF.",
-                accessor: "delivery_reference"
-            },
-            {
-                Header: "E. CONTACTO",
-                accessor: "delivery_contact_name"
-            },
-            {
-                Header: "E. CONTACTO TEL",
-                accessor: "delivery_phone"
-            },
-            {
-                Header: "E. UBIGEO",
-                accessor: "delivery_ubigeo"
-            },
-
-            // {
-            //     Header: "n_products",
-            //     accessor: "n_products"
-            // },
-            {
-                Header: "R. DIRECCIÓN",
-                accessor: "pickup_address"
-            },
-            {
-                Header: "pickup_reference",
-                accessor: "R. REFERENCIA"
-            },
-            {
-                Header: "R. CONTACTO",
-                accessor: "pickup_contact_name"
-            },
-            {
-                Header: "R. CONTACTO TEL",
-                accessor: "pickup_phone"
-            },
-
-            {
-                Header: "R. UBIGEO",
-                accessor: "pickup_ubigeo"
             },
             {
                 Header: "CONDUCTOR",
                 accessor: "driver_name"
+            },
+            {
+                Header: "CLIENTE",
+                accessor: "client_name"
             },
             {
                 Header: "PLACA",
@@ -291,6 +384,10 @@ const Home = () => {
         setOpenModal(true);
         setrowselected(row);
     }
+    const selectrow2 = (row) => {
+        setopenmodalinfo(true);
+        setrowselected(row);
+    }
 
     const updateFetchData = () => fetchData(datafetch)
 
@@ -341,6 +438,11 @@ const Home = () => {
                 setOpenModal={setOpenModal}
                 rowselected={rowselected}
                 fetchDataUser={updateFetchData}
+            />
+            <InfoModal
+                openModal={openmodalinfo}
+                setOpenModal={setopenmodalinfo}
+                rowselected={rowselected}
             />
             {/* <ChangeStatusMain
                 title="Cambiar estado"

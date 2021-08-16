@@ -178,7 +178,7 @@ const AssignmentModal = ({ openModal, setOpenModal, rowselected, fetchDataUser }
     const assignorder = async () => {
         if (driverSelected) {
             const dattosend = {
-                method: "SP_ASSIGN_ORDER_WEB",
+                method: rowselected.status === "PENDIENTE" ? "SP_ASSIGN_ORDER_WEB" : "SP_REASIGN_ORDER",
                 data: {
                     id_order: rowselected.id_order,
                     id_driver: driverSelected.id_driver
@@ -286,7 +286,7 @@ const Home = () => {
                                     size="small"
                                 />
                             </IconButton>
-                            {props.cell.row.original.status === "PENDIENTE" &&
+                            {(props.cell.row.original.status === "PENDIENTE" || props.cell.row.original.status === "ASIGNADO") &&
                                 <IconButton
                                     size="small"
                                     className="button-floating"

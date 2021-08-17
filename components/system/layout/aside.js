@@ -150,6 +150,12 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                         <LocalShipping style={{ color: theme.palette.primary.light }} />
                     )}
                 />
+                <LinkList
+                    application="client"
+                    IconLink={() => (
+                        <AccountCircle style={{ color: theme.palette.primary.light }} />
+                    )}
+                />
                 <Divider />
                 <LinkList
                     application="user"

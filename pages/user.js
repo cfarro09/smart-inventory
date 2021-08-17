@@ -41,7 +41,7 @@ const User = () => {
                                 aria-label="delete"
                                 size="small"
                                 className="button-floating"
-                                disabled={ !appfound.update}
+                                disabled={!appfound.update}
                                 onClick={() => {
                                     selectrow(props.cell.row.original);
                                 }}
@@ -55,7 +55,7 @@ const User = () => {
                                 className="button-floating"
                                 aria-label="delete"
                                 size="small"
-                                disabled={ !appfound.delete}
+                                disabled={!appfound.delete}
                                 onClick={() => deleteuser(props.cell.row.original)}
                             >
                                 <DeleteIcon
@@ -144,20 +144,19 @@ const User = () => {
             setModalQuestion({ visible: false });
             const dattosend = {
                 method: "SP_INS_USER",
-                header: {
-                    data: {
-                        ...row,
-                        password: '',
-                        status: 'ELIMINADO'
-                    }
-                },
-                details: {
-                    data: []
+                data: {
+                    ...row,
+                    id: row.id_user,
+                    password: '',
+                    type: 'USER',
+                    phone: '999999999',
+                    user: row.username,
+                    status: 'ELIMINADO'
                 }
             }
 
             setOpenBackdrop(true);
-            const res = await triggeraxios('post', process.env.endpoints.transaction, dattosend);
+            const res = await triggeraxios('post', process.env.endpoints.selsimple, dattosend);
             if (res.success) {
                 setOpenSnackBack(true, { success: true, message: 'Transacción ejecutada satisfactoriamente.' });
                 fetchData();

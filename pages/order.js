@@ -56,12 +56,7 @@ const InfoModal = ({ openModal, setOpenModal, rowselected }) => {
                         label="Cliente"
                         disabled={true}
                     />
-                    <InputFormk
-                        valuedefault={rowselected?.driver_name || ""}
-                        classname="col-3"
-                        label="Chofer"
-                        disabled={true}
-                    />
+
                 </div>
                 <div className="row-zyx">
                     <InputFormk
@@ -70,6 +65,14 @@ const InfoModal = ({ openModal, setOpenModal, rowselected }) => {
                         label="Placa"
                         disabled={true}
                     />
+                    <InputFormk
+                        valuedefault={rowselected?.driver_name || ""}
+                        classname="col-3"
+                        label="Chofer"
+                        disabled={true}
+                    />
+                </div>
+                <div className="row-zyx">
                     <InputFormk
                         valuedefault={rowselected?.delivery_address || ""}
                         classname="col-3"
@@ -88,20 +91,23 @@ const InfoModal = ({ openModal, setOpenModal, rowselected }) => {
                         label="Delivery contacto"
                         disabled={true}
                     />
-                </div>
-                <div className="row-zyx">
                     <InputFormk
                         valuedefault={rowselected?.delivery_phone || ""}
                         classname="col-3"
                         label="Delivery teléfono"
                         disabled={true}
                     />
+                </div>
+                <div className="row-zyx">
                     <InputFormk
                         valuedefault={rowselected?.delivery_ubigeo || ""}
                         classname="col-3"
+                        style={{paddingRight: '16px'}}
                         label="Delivery ubigeo"
                         disabled={true}
                     />
+                </div>
+                <div className="row-zyx">
                     <InputFormk
                         valuedefault={rowselected?.pickup_address || ""}
                         classname="col-3"
@@ -114,8 +120,6 @@ const InfoModal = ({ openModal, setOpenModal, rowselected }) => {
                         label="Pickup referencia"
                         disabled={true}
                     />
-                </div>
-                <div className="row-zyx">
                     <InputFormk
                         valuedefault={rowselected?.pickup_contact_name || ""}
                         classname="col-3"
@@ -128,7 +132,10 @@ const InfoModal = ({ openModal, setOpenModal, rowselected }) => {
                         label="Pickup  teléfono"
                         disabled={true}
                     />
+                </div>
+                <div className="row-zyx" >
                     <InputFormk
+                        style={{paddingRight: '16px'}}
                         valuedefault={rowselected?.pickup_ubigeo || ""}
                         classname="col-3"
                         label="Pickup ubigeo"

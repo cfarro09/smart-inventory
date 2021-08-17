@@ -153,7 +153,12 @@ const Vehicle = () => {
                 method: METHOD_INS,
                 data: {
                     ...row,
-                    status: 'ELIMINADO'
+                    type: "",
+                    id_new_user: row ? row.id_user : 0,
+                    status: 'ELIMINADO',
+                    new_username: row.username,
+                    phone: '999999999',
+                    password: ''
                 }
             }
 

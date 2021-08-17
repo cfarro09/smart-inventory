@@ -40,7 +40,6 @@ const VehicleMAin = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
             doc_type: '',
             doc_number: '',
             password: '',
-
             plate_number: '',
             license: '',
             license_expire_date: '',

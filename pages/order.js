@@ -76,25 +76,25 @@ const InfoModal = ({ openModal, setOpenModal, rowselected }) => {
                     <InputFormk
                         valuedefault={rowselected?.delivery_address || ""}
                         classname="col-3"
-                        label="Delivery dirección"
+                        label="Dirección entrega"
                         disabled={true}
                     />
                     <InputFormk
                         valuedefault={rowselected?.delivery_reference || ""}
                         classname="col-3"
-                        label="Delivery referencia"
+                        label="Referencia entrega"
                         disabled={true}
                     />
                     <InputFormk
                         valuedefault={rowselected?.delivery_contact_name || ""}
                         classname="col-3"
-                        label="Delivery contacto"
+                        label="Contacto entrega"
                         disabled={true}
                     />
                     <InputFormk
                         valuedefault={rowselected?.delivery_phone || ""}
                         classname="col-3"
-                        label="Delivery teléfono"
+                        label="Teléfono entrega"
                         disabled={true}
                     />
                 </div>
@@ -103,7 +103,7 @@ const InfoModal = ({ openModal, setOpenModal, rowselected }) => {
                         valuedefault={rowselected?.delivery_ubigeo || ""}
                         classname="col-3"
                         style={{paddingRight: '16px'}}
-                        label="Delivery ubigeo"
+                        label="Ubigeo entrega"
                         disabled={true}
                     />
                 </div>
@@ -111,25 +111,25 @@ const InfoModal = ({ openModal, setOpenModal, rowselected }) => {
                     <InputFormk
                         valuedefault={rowselected?.pickup_address || ""}
                         classname="col-3"
-                        label="Pickup dirección"
+                        label="Dirección recojo"
                         disabled={true}
                     />
                     <InputFormk
                         valuedefault={rowselected?.pickup_reference || ""}
                         classname="col-3"
-                        label="Pickup referencia"
+                        label="Referencia recojo"
                         disabled={true}
                     />
                     <InputFormk
                         valuedefault={rowselected?.pickup_contact_name || ""}
                         classname="col-3"
-                        label="Pickup contacto"
+                        label="Contacto recojo"
                         disabled={true}
                     />
                     <InputFormk
                         valuedefault={rowselected?.pickup_phone || ""}
                         classname="col-3"
-                        label="Pickup  teléfono"
+                        label="Teléfono recojo"
                         disabled={true}
                     />
                 </div>
@@ -138,7 +138,7 @@ const InfoModal = ({ openModal, setOpenModal, rowselected }) => {
                         style={{paddingRight: '16px'}}
                         valuedefault={rowselected?.pickup_ubigeo || ""}
                         classname="col-3"
-                        label="Pickup ubigeo"
+                        label="Ubigeo recojo"
                         disabled={true}
                     />
                 </div>
@@ -293,7 +293,7 @@ const Home = () => {
                                     size="small"
                                 />
                             </IconButton>
-                            {(props.cell.row.original.status === "PENDIENTE" || props.cell.row.original.status === "ASIGNADO") &&
+                            {true &&
                                 <IconButton
                                     size="small"
                                     className="button-floating"

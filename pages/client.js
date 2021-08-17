@@ -6,10 +6,6 @@ import popupsContext from '../context/pop-ups/pop-upsContext';
 import { validateResArray } from '../config/helper';
 import IconButton from '@material-ui/core/IconButton';
 import authContext from '../context/auth/authContext';
-import {
-    Delete as DeleteIcon,
-    Edit as EditIcon,
-} from '@material-ui/icons';
 
 const selproperty = {
     method: "SP_SEL_CLIENT",

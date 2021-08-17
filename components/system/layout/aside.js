@@ -30,6 +30,7 @@ import {
     Tune as TuneIcon,
     Label as LabelIcon,
     EmojiTransportation,
+    Timeline,
     LocalShipping
 } from '@material-ui/icons/';
 
@@ -144,12 +145,19 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                         <EmojiTransportation style={{ color: theme.palette.primary.light }} />
                     )}
                 />
+               
                 <LinkList
                     application="driver"
                     IconLink={() => (
                         <LocalShipping style={{ color: theme.palette.primary.light }} />
                     )}
                 />
+                 {/* <LinkList
+                    application="tracking"
+                    IconLink={() => (
+                        <Timeline style={{ color: theme.palette.primary.light }} />
+                    )}
+                /> */}
                 <LinkList
                     application="client"
                     IconLink={() => (

@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
     },
     appBar: {
-        zIndex: theme.zIndex.drawer + 1,
+        zIndex: 1301,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -57,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
     drawer: {
         width: drawerWidth,
         flexShrink: 0,
+        zIndex: 1301,
     },
     drawerPaper: {
         width: drawerWidth,

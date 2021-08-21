@@ -10,6 +10,9 @@
     "deploy": "pm2 stop 0 && git pull && npm install && next build && next export && pm2 start 0"
   },
   "dependencies": {
+    "@devexpress/dx-react-core": "^2.7.6",
+    "@devexpress/dx-react-scheduler": "^2.7.6",
+    "@devexpress/dx-react-scheduler-material-ui": "^2.7.6",
     "@emotion/core": "^10.0.28",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",

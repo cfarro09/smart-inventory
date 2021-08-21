@@ -27,7 +27,7 @@ function Copyright() {
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
             <Link href="/">
-                <a>DII {new Date().getFullYear()}</a>
+                <a>Zyxme {new Date().getFullYear()}</a>
             </Link>
         </Typography>
     );
@@ -76,11 +76,11 @@ export default function SignIn() {
     const [showPassword, setShowPassword] = useState(false);
     const formik = useFormik({
         initialValues: {
-            usr: '',
+            user: '',
             password: ''
         },
         validationSchema: Yup.object({
-            usr: Yup.string().required('El usuario es obligatorio'),
+            user: Yup.string().required('El usuario es obligatorio'),
             password: Yup.string().required('El password es obligatorio')
         }),
         onSubmit: async values => {
@@ -117,12 +117,12 @@ export default function SignIn() {
                         margin="normal"
                         fullWidth
                         label="Usuario"
-                        name="usr"
-                        value={formik.values.usr}
+                        name="user"
+                        value={formik.values.user}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={!!formik.errors.usr}
-                        helperText={formik.errors.usr}
+                        error={!!formik.errors.user}
+                        helperText={formik.errors.user}
                     />
                     <TextField
                         variant="outlined"

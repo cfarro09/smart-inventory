@@ -86,8 +86,8 @@ const SelectFunction = React.memo(({ title, datatosend, optionvalue, optiondesc,
                     {...params}
                     label={title}
                     variant="outlined"
-                    error={formik?.errors[namefield] ? true : false}
-                    helperText={formik?.errors[namefield]}
+                    error={formik ? (formik?.errors[namefield] ? true : false) : false}
+                    helperText={formik ? (formik?.errors[namefield]) : false}
                     InputProps={{
                         ...params.InputProps,
                         endAdornment: (

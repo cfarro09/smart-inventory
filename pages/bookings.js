@@ -1,244 +1,184 @@
 import React, { useState, useContext } from 'react';
-import Layout from '../components/system/layout/layout'
-import Paper from '@material-ui/core/Paper';
-import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
+import Layout from 'components/system/layout/layout'
+import TableZyx from 'components/system/form/table-simple';
+import ClientMain from 'components/client/clientmain';
+import triggeraxios from 'config/axiosv2';
+import popupsContext from 'context/pop-ups/pop-upsContext';
+import { validateResArray, getDomain } from 'config/helper';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import authContext from 'context/auth/authContext';
 import {
-    Scheduler,
-    Resources,
-    MonthView,
-    Appointments,
-    AppointmentTooltip,
-    AppointmentForm,
-    EditRecurrenceMenu,
-    DragDropProvider,
-    ConfirmationDialog,
-    DayView,
-    WeekView,
-    Toolbar,
-    DateNavigator,
-    CurrentTimeIndicator,
-    AllDayPanel
-} from '@devexpress/dx-react-scheduler-material-ui';
+    Delete as DeleteIcon,
+    Edit as EditIcon,
+} from '@material-ui/icons';
 
-const appointments = [
-    {
-        id: 20,
-        title: "Watercolor Landscape",
-        roomId: 1,
-        members: [1],
-        startDate: new Date(2021, 7, 16, 9, 0),
-        endDate: new Date(2021, 7, 16, 10, 0),
-    },
-    {
-        id: 1,
-        title: "Oil Painting for Beginners",
-        roomId: 2,
-        members: [2],
-        startDate: new Date(2017, 4, 1, 9, 30),
-        endDate: new Date(2017, 4, 1, 11),
-        rRule: "FREQ=WEEKLY;BYDAY=MO,TH;COUNT=10"
-    },
-];
-const resourcesData = [
-    {
-        text: "Room CDFD",
-        id: 1,
-        color: "#8EC3E0"
-    },
-    {
-        text: "Room 102",
-        id: 2,
-        color: "red"
-    },
-    {
-        text: "Room 103",
-        id: 3,
-        color: "green"
-    },
-    {
-        text: "Meeting room",
-        id: 4,
-        color: "black"
-    },
-    {
-        text: "Conference hall",
-        id: 5,
-        color: "#e1e1e1"
+const DATASEL = {
+    method: "fn_sel_client",
+    data: { status: 'ACTIVO' }
+}
+
+const METHOD_INS = "fn_ins_client";
+
+const Clients = () => {
+    const { setloadingglobal, setModalQuestion, setOpenBackdrop, setOpenSnackBack } = useContext(popupsContext);
+    const { appselected: appfound } = useContext(authContext);
+    const [openModal, setOpenModal] = useState(false);
+    const [datatable, setdatatable] = useState([]);
+    const [rowselected, setrowselected] = useState(null);
+
+    const columns = React.useMemo(
+        () => [
+            {
+                Header: "",
+                accessor: "id_client",
+                activeOnHover: true,
+                Cell: props => {
+                    return (
+                        <div className="container-button-floating">
+                            <Tooltip title="Editar">
+                                <IconButton
+                                    aria-label="delete"
+                                    size="small"
+                                    className="button-floating"
+                                    disabled={!appfound.update}
+                                    onClick={() => {
+                                        selectrow(props.cell.row.original);
+                                    }}
+                                >
+                                    <EditIcon
+                                        fontSize="inherit"
+                                        size="small"
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Eliminar">
+                                <IconButton
+                                    className="button-floating"
+                                    aria-label="delete"
+                                    size="small"
+                                    disabled={!appfound.delete}
+                                    onClick={() => deleterow(props.cell.row.original)}
+                                >
+                                    <DeleteIcon
+                                        fontSize="inherit"
+                                        size="small"
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                        </div>
+                    )
+                }
+            },
+            {
+                Header: "NOMBRE",
+                accessor: "first_name"
+            },
+            {
+                Header: "APELLIDO",
+                accessor: "last_name"
+            },
+            {
+                Header: "TIPO DOC",
+                accessor: "doc_type"
+            },
+            {
+                Header: "N° DOC",
+                accessor: "doc_number"
+            },
+            {
+                Header: "CORREO",
+                accessor: "email"
+            },
+            {
+                Header: "N° FACTURACION",
+                accessor: "bill_number"
+            },
+            {
+                Header: "TIP FACTURACION",
+                accessor: "bill_type"
+            },
+            {
+                Header: 'ESTADO',
+                accessor: 'status'
+            },
+            {
+                Header: 'F. REGISTRO',
+                accessor: 'date_created'
+            },
+            {
+                Header: 'F. MODIFICADO',
+                accessor: 'date_updated'
+            },
+            {
+                Header: 'CREADO POR',
+                accessor: 'created_by'
+            },
+            {
+                Header: 'MODIFICADO POR',
+                accessor: 'modified_by'
+            },
+        ],
+        [appfound]
+    );
+
+    const fetchData = React.useCallback(async () => {
+        setloadingglobal(true);
+
+        const res = await triggeraxios('post', process.env.endpoints.selsimple, DATASEL)
+        setdatatable(validateResArray(res, true));
+        setloadingglobal(false)
+    }, []);
+
+    const selectrow = (row) => {
+        setOpenModal(true);
+        setrowselected(row);
     }
-];
-
-const owners = [
-    {
-        text: 'Carlos Farro',
-        id: 1,
-        color: '#FF7043',
-    }, {
-        text: 'Arnie Schwartz',
-        id: 2,
-        color: '#FF7043',
-    }, {
-        text: 'John Heart',
-        id: 3,
-        color: '#E91E63',
-    }, {
-        text: 'Taylor Riley',
-        id: 4,
-        color: '#E91E63',
-    }, {
-        text: 'Brad Farkus',
-        id: 5,
-        color: '#AB47BC',
-    }, {
-        text: 'Arthur Miller',
-        id: 6,
-        color: '#FFA726',
-    },
-];
-
-const resources = [
-    {
-        fieldName: 'roomId',
-        title: 'Room',
-        instances: resourcesData,
-    },
-    {
-        fieldName: 'members',
-        title: 'Members',
-        instances: owners,
-        allowMultiple: true,
-    },
-]
-
-const Boooking = () => {
-    const [data, setData] = useState(appointments);
-    const [showAppointment, setshowAppointment] = useState(true);
-    const [currentDate, setCurrentDate] = useState(new Date().toISOString().substring(0, 10));
-
-    const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
-        const onCustomFieldChange = (nextValue) => {
-            onFieldChange({ customField: nextValue });
-        };
-
-        return (
-            <AppointmentForm.BasicLayout
-                appointmentData={appointmentData}
-                onFieldChange={onFieldChange}
-                {...restProps}
-            >
-                <AppointmentForm.Label
-                    text="Custom Field"
-                    type="title"
-                />
-                <AppointmentForm.TextEditor
-                    value={appointmentData.customField}
-                    onValueChange={onCustomFieldChange}
-                    placeholder="Custom field"
-                />
-            </AppointmentForm.BasicLayout>
-        );
-    };
-
-    const commitChanges = ({ added, changed, deleted }) => {
-        setData((data) => {
-            if (added) {
-                console.log(added);
-                const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-                data = [...data, { id: startingAddedId, ...added }];
+    const deleterow = (row) => {
+        const callback = async () => {
+            setModalQuestion({ visible: false });
+            const DATASEL = {
+                method: METHOD_INS,
+                data: {
+                    ...row,
+                    id_client: row ? row.id_client : 0,
+                    status: 'ELIMINADO',
+                }
             }
-            if (changed) {
-                data = data.map(appointment => (
-                    changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
+
+            setOpenBackdrop(true);
+            const res = await triggeraxios('post', process.env.endpoints.selsimple, DATASEL);
+            if (res.success) {
+                setOpenSnackBack(true, { success: true, message: 'Registro eliminado satisfactoriamente.' });
+                fetchData();
+            } else {
+                setOpenSnackBack(true, { success: false, message: 'Hubo un error, vuelva a intentarlo' });
             }
-            if (deleted !== undefined) {
-                data = data.filter(appointment => appointment.id !== deleted);
-            }
-            return data;
-            setTimeout(() => {
-                
-            }, 5000);
-        });
+            setOpenBackdrop(false)
+        }
+
+        setModalQuestion({ visible: true, question: `¿Está seguro de de borrar el comprador?`, callback })
     }
-
-    const TimeTableCell = React.useCallback(React.memo(({ onDoubleClick, endDate, ...restProps }) => (
-        <WeekView.TimeTableCell
-            {...restProps}
-            onDoubleClick={endDate < new Date() ? null : onDoubleClick}
-        />
-    )), [showAppointment]);
-
     return (
-        <Layout withPadding={false}>
-            <div style={{ zIndex: 2 }}>
-                <Scheduler
-                    locale="es-ES"
-                    data={data}
-                    style={{ zIndex: '1000' }}
-                >
-                    <ViewState
-                        defaultCurrentDate={currentDate}
-                    />
-                    <EditingState
-                        onAddedAppointmentChange={e => {
-                            console.log('ddddddd', e);
-                            return null;
-                        }}
-                        onCommitChanges={commitChanges}
-                    />
-                    <IntegratedEditing />
-                    <WeekView
-                        cellDuration={60}
-                        startDayHour={8}
-                        endDayHour={23}
-                        timeTableCellComponent={TimeTableCell}
-                    />
-                    <Toolbar />
-                    <DateNavigator />
-                    <Appointments />
-                    <AppointmentTooltip
-                        showOpenButton
-                        showDeleteButton
-                    />
-                    <AppointmentForm
-                        locale="es-ES"
-                        style={{ zIndex: '1000' }}
-                        fullSize={false}
-                        BasicLayout={BasicLayout}
-                        messages={{
-                            moreInformationLabel: 'Mas información',
-                            weekly: "Semanalmente",
-                            monthly: "Mensual",
-                            yearly: "Anualmente",
-                            titleLabel: "Título",
-                            repeatLabel: "Repetir",
-                            repeatEveryLabel: "Repetir cada",
-                            endRepeatLabel: "Fin de repetición",
-                            occurrencesLabel: "ocurrencias",
-                            afterLabel: "Hasta",
-                            daysLabel: "días",
-                            neverLabel: "Nunca",
-                            detailsLabel: "Detalles",
-                            commitCommand: "Guardar",
-                            allDayLabel: "Todo el día",
-                            never: "Nunca",
-                            onLabel: "En",
-                            daily: "Diario",
-                            notesLabel: "Notas",
-
-                        }}
-                    // readOnly={!showAppointment}
-                    />
-                    <Resources
-                        data={resources}
-                        mainResourceName="roomId"
-                    />
-                    <CurrentTimeIndicator
-                        shadePreviousCells={true}
-                    // shadePreviousAppointments={shadePreviousAppointments}
-                    />
-                </Scheduler>
-            </div>
+        <Layout>
+            <TableZyx
+                columns={columns}
+                titlemodule='Clientes'
+                data={datatable}
+                fetchData={fetchData}
+                register={!!appfound.insert}
+                selectrow={selectrow}
+            />
+            <ClientMain
+                title="Cliente"
+                method_ins={METHOD_INS}
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                fetchDataUser={fetchData}
+                rowselected={rowselected}
+            />
         </Layout>
     );
 }
 
-export default Boooking;
+export default Clients;

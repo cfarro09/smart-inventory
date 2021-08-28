@@ -41,7 +41,6 @@ const listbuy = ['/purchase-order/load', '/purchase-order/list', '/purchase-orde
 const listsend = ['/bill/load', '/bill/list', '/bill/[id]'];
 
 const Aside = React.memo(({ open, setOpen, classes, theme }) => {
-    console.log('aside render');
     const router = useRouter();
     const { user, appselected } = useContext(authContext);
 

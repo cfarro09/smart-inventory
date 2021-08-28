@@ -53,49 +53,17 @@ const AuthState = ({ children }) => {
     }
 
     useEffect(() => {
-        if (state.user && state.user.menu) {
-            // const appfound = state.user.menu.find(x => x.path === router.pathname);
-            // dispatch({
-            //     type: CHANGEAPP,
-            //     payload: appfound
-            // });
-        }
-    }, [router])
-
-    useEffect(() => {
         async function loadUserFromCookies() {
-            // try {
-            //     const resultproperties = await clientAxios.get('/api/public/properties');
-            //     if (resultproperties.data.data.length > 0) {
-            //         const auxx = resultproperties.data.data[0].reduce((o, x) => ({
-            //             ...o,
-            //             sys_company_name: x.name === "sys_company_name" ? x.value : o.sys_company_name,
-            //             sys_company_img: x.name === "sys_company_img" ? x.value : o.sys_company_img,
-            //             sys_company_color_primary: x.name === "sys_company_color_primary" ? x.value : o.sys_company_color_primary,
-            //             sys_company_color_secondary: x.name === "sys_company_color_secondary" ? x.value : o.sys_company_color_secondary,
-            //         }), DEFAULTPROPERTIES);
-
-            //         dispatch({
-            //             type: INFOSYS,
-            //             payload: auxx
-            //         });
-            //     }
-            // } catch (error) {
-            //     console.log(error);
-            // }
-
             if (token) {
-                
                 try {
                     const result = await clientAxios.get(process.env.endpoints.validatetoken);
 
                     const { first_name: firstname, last_name: lastname, rol_name: role_name, menu } = result.data.data;
-                    console.log(result.data.data);
                     dispatch({
                         type: AUTH_SUCCESS,
                         payload: { firstname, lastname, role_name, menu }
                     });
-                    const routeraux = router.pathname === "/bulkload/[id]" ? "/bulkload/list" : (router.pathname === "/purchase-order/[id]" ? "/purchase-order/list" : router.pathname);
+                    const routeraux = router.pathname === "/bookings/[id]" ? "/bookings" : router.pathname;
                     const appfound = menu.find(x => x.path === routeraux);
 
                     if (appfound && appfound.view){
@@ -115,15 +83,8 @@ const AuthState = ({ children }) => {
                     });
                     router.push('/sign-in').then(() => settologged({ isloading: false, logged: false }))
                 }
-            } else { 
-                console.log('holaaaaaa');
-                // dispatch({
-                //     type: AUTH_SUCCESS,
-                //     payload: { firstname: "carlos", lastname: "farro", role_name: "ADMIN", menu: [{}] }
-                // });
-                // settologged({ isloading: false, logged: true, appfound: {} });
+            } else 
                 router.push('/sign-in').then(() => settologged({ isloading: false, logged: false }))
-            }
         }
         loadUserFromCookies()
     }, [token])

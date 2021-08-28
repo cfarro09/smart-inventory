@@ -254,7 +254,7 @@ const DomainModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
                         <TableZyx
                             columns={columnsDomainValues}
                             titlemodule='Horarios'
-                            data={dataFieldHour.filter(x => !x.deleted)}
+                            data={dataFieldHour}
                             register={true}
                             selectrow={selectrow}
                         />

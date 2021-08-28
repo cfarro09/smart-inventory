@@ -1,17 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
-import Layout from '../../components/system/layout/layout'
-import TableZyx from '../../components/system/form/table-simple';
-import triggeraxios from '../../config/axiosv2';
+import Layout from '/components/system/layout/layout'
+import TableZyx from '/components/system/form/table-simple';
+import triggeraxios from '/config/axiosv2';
 import popupsContext from '../../context/pop-ups/pop-upsContext';
 import { validateResArray } from '../../config/helper';
 import IconButton from '@material-ui/core/IconButton';
 import authContext from '../../context/auth/authContext';
 import { useRouter } from 'next/router'
-
-import {
-    Delete as DeleteIcon,
-    Edit as EditIcon,
-} from '@material-ui/icons';
 
 const selproperty = {
     method: "SP_SEL_PROPERTIES",

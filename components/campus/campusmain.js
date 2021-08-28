@@ -14,7 +14,7 @@ import UseSelectDomain from '../system/form/select-domain';
 
 import { validateResArray, getDomain } from '../../config/helper';
 
-const VehicleMAin = ({ title, openModal, setOpenModal, rowselected, fetchDataUser, disabled = false, method_ins }) => {
+const CampusMain = ({ title, openModal, setOpenModal, rowselected, fetchDataUser, disabled = false, method_ins }) => {
     const { setOpenBackdrop, setModalQuestion, setOpenSnackBack } = useContext(popupsContext);
     const [domains, setdomains] = useState({ status: [] })
 
@@ -23,7 +23,6 @@ const VehicleMAin = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
         (async () => {
             await Promise.all([
                 triggeraxios('post', process.env.endpoints.selsimple, getDomain("ESTADO")).then(r => setdomains(p => ({ ...p, status: validateResArray(r, continuezyx) }))),
-                triggeraxios('post', process.env.endpoints.selsimple, getDomain("TIPODOCUMENTO")).then(r => setdomains(p => ({ ...p, doc_type: validateResArray(r, continuezyx) }))),
             ]);
 
         })();
@@ -33,35 +32,16 @@ const VehicleMAin = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: rowselected || {
-            id_client: 0,
-            first_name: '',
-            last_name: '',
-            doc_type: '',
-            doc_number: '',
-            address: '',
-            phone: '',
-            email: '',
-            bill_type: '',
-            bill_number: '',
-            photo: '',
+            id_campus: 0,
+            description: '',
             status: 'ACTIVO',
         },
         validationSchema: Yup.object({
-            first_name: Yup.string().required('Elnombre es obligatorio'),
-            last_name: Yup.string().required('El apellido es obligatorio'),
-            doc_number: Yup.string().required('El documento es obligatorio'),
-            doc_type: Yup.string().required('El tipo documento es obligatorio'),
-            // address: Yup.string().required('El address es obligatorio'),
-            // phone: Yup.string().required('El phone es obligatorio'),
-            email: Yup.string().email('El correo no es valido'),
-            // bill_type: Yup.string().required('El bill_type es obligatorio'),
-            // bill_number: Yup.string().required('El bill_number es obligatorio'),
-            // photo: '',
-
+            description: Yup.string().required('La descripción es obligatorio'),
             status: Yup.string().required('El estado es obligatorio')
         }),
         onSubmit: async values => {
-            
+
             const callback = async () => {
                 setModalQuestion({ visible: false });
                 const dattosend = {
@@ -80,7 +60,7 @@ const VehicleMAin = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
 
                 setOpenBackdrop(false);
             }
-            setModalQuestion({ visible: true, question: `¿Está seguro de guardar el cliente?`, callback })
+            setModalQuestion({ visible: true, question: `¿Está seguro de guardar la sede?`, callback })
         }
     });
     return (
@@ -88,7 +68,7 @@ const VehicleMAin = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
             <Dialog
                 open={openModal}
                 fullWidth={true}
-                maxWidth='md'
+                maxWidth='sm'
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
@@ -101,67 +81,13 @@ const VehicleMAin = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
                         <div className="row-zyx">
 
                             <InputFormk
-                                name="first_name"
-                                classname="col-3"
-                                label="Nombre"
-                                formik={formik}
-                            />
-                            <InputFormk
-                                name="last_name"
-                                classname="col-3"
-                                label="Apellido"
-                                formik={formik}
-                            />
-                            <InputFormk
-                                name="email"
-                                classname="col-3"
-                                label="Correo"
-                                formik={formik}
-                            />
-                            <InputFormk
-                                name="phone"
-                                classname="col-3"
-                                label="Teléfono"
-                                formik={formik}
-                            />
-                        </div>
-                        <div className="row-zyx">
-                            <UseSelectDomain
-                                classname="col-3"
-                                title="Tipo Doc"
-                                domainname={domains.doc_type}
-                                valueselected={formik.values.doc_type}
-                                namefield="doc_type"
-                                formik={formik}
-                            />
-                            <InputFormk
-                                name="doc_number"
-                                classname="col-3"
-                                label="N° Doc"
-                                formik={formik}
-                            />
-                            <InputFormk
-                                name="address"
+                                name="description"
                                 classname="col-6"
-                                label="Dirección"
-                                formik={formik}
-                            />
-                        </div>
-                        <div className="row-zyx">
-                            <InputFormk
-                                name="bill_type"
-                                classname="col-3"
-                                label="Tipo facturación"
-                                formik={formik}
-                            />
-                            <InputFormk
-                                name="bill_number"
-                                classname="col-3"
-                                label="N° Facturación"
+                                label="Nombre sede"
                                 formik={formik}
                             />
                             <UseSelectDomain
-                                classname="col-3"
+                                classname="col-6"
                                 title="Estado"
                                 domainname={domains.status}
                                 valueselected={formik.values.status}
@@ -192,4 +118,4 @@ const VehicleMAin = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
     );
 }
 
-export default VehicleMAin;
+export default CampusMain;

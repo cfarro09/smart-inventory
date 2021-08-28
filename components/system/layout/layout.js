@@ -18,7 +18,6 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
     },
     appBar: {
-        zIndex: 1301,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -37,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
             maxWidth: `60vw`,
         },
         [theme.breakpoints.up('sm')]: {
-            maxWidth: `calc(100vw - ${drawerWidth}px - 49px)`,
+            maxWidth: `calc(100vw - ${drawerWidth}px)`,
         },
     },
     containermainclose: {
@@ -45,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
             maxWidth: `100vw`,
         },
         [theme.breakpoints.up('sm')]: {
-            maxWidth: `calc(100vw - 49px)`,
+            maxWidth: `calc(100vw)`,
         },
     },
     menuButton: {
@@ -57,7 +56,6 @@ const useStyles = makeStyles((theme) => ({
     drawer: {
         width: drawerWidth,
         flexShrink: 0,
-        zIndex: 1301,
     },
     drawerPaper: {
         width: drawerWidth,
@@ -96,12 +94,15 @@ const useStyles = makeStyles((theme) => ({
     },
     content: {
         flexGrow: 1,
-        padding: theme.spacing(2),
+        // padding: theme.spacing(2),
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
         marginLeft: -drawerWidth,
+    },
+    withPadding: {
+        padding: theme.spacing(2),
     },
     contentShift: {
         transition: theme.transitions.create('margin', {
@@ -135,7 +136,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const Layout = ({ children }) => {
+const Layout = ({ children, withPadding = true }) => {
     const { user, infosys } = useContext(authContext);
     const router = useRouter();
 
@@ -302,7 +303,7 @@ const Layout = ({ children }) => {
                                     theme={theme}
                                 />
 
-                                <main className={clsx(classes.content, {
+                                <main className={clsx(classes.content, { padding: '16px' }, {
                                     [classes.contentShift]: openDrawer,
                                 })}>
                                     <div className={classes.toolbar} />
@@ -314,7 +315,11 @@ const Layout = ({ children }) => {
                                                 [classes.containermainopen]: openDrawer,
                                                 [classes.containermainclose]: !openDrawer,
                                             })} >
-                                            {children}
+                                            <div className={clsx({
+                                                [classes.withPadding]: withPadding,
+                                            })}>
+                                                {children}
+                                            </div>
                                         </Box>
                                         <Box component="footer" px={2} pt={1} bgcolor="white">
                                             Todos los derechos reservados, Copyright © 2021

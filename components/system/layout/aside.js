@@ -16,6 +16,7 @@ import {
     ChevronLeft,
     ChevronRight,
     VpnKey,
+    Person as PersonIcon,
     List as ListIcon,
     AccountCircle,
     ExpandLess,
@@ -30,7 +31,9 @@ import {
     Tune as TuneIcon,
     Label as LabelIcon,
     EmojiTransportation,
+    Event as EventIcon,
     Timeline,
+    Apps as AppsIcon,
     LocalShipping
 } from '@material-ui/icons/';
 
@@ -56,12 +59,12 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
         }, [router]);
 
         const ff = user?.menu.find(x => ["bill-list", "purchase-order-list", "purchase-order-load", "bill-list"].includes(x.application) && !!x.view);
-        
-        if (ff) 
+
+        if (ff)
             return (
                 <>
-                    <ListItem style={{paddingBottom: '5px', paddingTop: '5px'}} button onClick={() => setIsCollapse(!isCollapse)}>
-                        <ListItemIcon style={{minWidth: '45px'}}><IconLink /></ListItemIcon>
+                    <ListItem style={{ paddingBottom: '5px', paddingTop: '5px' }} button onClick={() => setIsCollapse(!isCollapse)}>
+                        <ListItemIcon style={{ minWidth: '45px' }}><IconLink /></ListItemIcon>
                         <ListItemText style={{ color: 'white' }} primary={itemName} />
                         {isCollapse ? <ExpandLess style={{ color: 'white' }} /> : <ExpandMore style={{ color: 'white' }} />}
                     </ListItem>
@@ -72,7 +75,7 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                     </Collapse>
                 </>
             )
-        else 
+        else
             return null;
     }, [])
 
@@ -81,20 +84,20 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
         //     return null;
         if (user) {
             let routertmp = router.pathname;
-            
+
             const appfound = user.menu.find(x => x.application === application);
-            
+
 
             if (appfound && appfound.view)
                 return (
                     <Link href={appfound.path}>
-                        <ListItem 
-                            button 
-                            key={appfound.path} 
-                            style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: theme.spacing(IconLink ? 2 : 9) }} 
+                        <ListItem
+                            button
+                            key={appfound.path}
+                            style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: theme.spacing(IconLink ? 2 : 9) }}
                             className={classes.listItem, (routertmp === appfound.path ? classes.activelink : undefined)}
                         >
-                            {IconLink && <ListItemIcon style={{minWidth: '45px'}}><IconLink /></ListItemIcon>}
+                            {IconLink && <ListItemIcon style={{ minWidth: '45px' }}><IconLink /></ListItemIcon>}
                             <ListItemText style={{ color: 'white' }} primary={appfound.description} />
                         </ListItem>
                     </Link>
@@ -121,60 +124,42 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
             <Divider />
 
             <List>
-            <LinkList
-                    application="bulkload-list"
-                    IconLink={() => (
-                        <ViewComfy style={{ color: theme.palette.primary.light }} />
-                    )}
-                />
                 <LinkList
-                    application="bulkload"
+                    application="booking"
                     IconLink={() => (
-                        <ViewComfy style={{ color: theme.palette.primary.light }} />
+                        <EventIcon style={{ color: theme.palette.primary.light }} />
                     )}
                 />
-                <LinkList
-                    application="order"
-                    IconLink={() => (
-                        <ViewComfy style={{ color: theme.palette.primary.light }} />
-                    )}
-                />
-                <LinkList
-                    application="provider"
-                    IconLink={() => (
-                        <EmojiTransportation style={{ color: theme.palette.primary.light }} />
-                    )}
-                />
-               
-                <LinkList
-                    application="driver"
-                    IconLink={() => (
-                        <LocalShipping style={{ color: theme.palette.primary.light }} />
-                    )}
-                />
-                 {/* <LinkList
-                    application="tracking"
-                    IconLink={() => (
-                        <Timeline style={{ color: theme.palette.primary.light }} />
-                    )}
-                /> */}
-                <LinkList
-                    application="client"
-                    IconLink={() => (
-                        <AccountCircle style={{ color: theme.palette.primary.light }} />
-                    )}
-                />
-                <Divider />
                 <LinkList
                     application="user"
                     IconLink={() => (
                         <AccountCircle style={{ color: theme.palette.primary.light }} />
                     )}
                 />
+                <Divider />
                 <LinkList
+                    application="campus"
+                    IconLink={() => (
+                        <StoreIcon style={{ color: theme.palette.primary.light }} />
+                    )}
+                />
+                <LinkList
+                    application="field"
+                    IconLink={() => (
+                        <AppsIcon style={{ color: theme.palette.primary.light }} />
+                    )}
+                />
+
+                {/* <LinkList
                     application="property"
                     IconLink={() => (
                         <VpnKey style={{ color: theme.palette.primary.light }} />
+                    )}
+                /> */}
+                <LinkList
+                    application="client"
+                    IconLink={() => (
+                        <PersonIcon style={{ color: theme.palette.primary.light }} />
                     )}
                 />
                 <LinkList

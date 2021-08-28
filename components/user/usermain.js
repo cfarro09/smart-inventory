@@ -16,7 +16,7 @@ import { getDomain, validateResArray } from '../../config/helper';
 import SelectFunction from '../system/form/select-function';
 
 const REQUESTROLES = {
-    method: "SP_SEL_ROLES",
+    method: "fn_sel_role",
     data: { status: 'ACTIVO' }
 }
 
@@ -51,10 +51,11 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: rowselected || {
+            id_user: 0,
             first_name: '',
             last_name: '',
             username: '',
-            user_email: '',
+            email: '',
             doc_type: '',
             doc_number: '',
             status: 'ACTIVO',
@@ -62,34 +63,27 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
             id_role: 0,
         },
         validationSchema: Yup.object({
-            first_name: Yup.string().required('El mensaje es obligatorio'),
-            id_role: Yup.number().min(1),
-            last_name: Yup.string().required('El mensaje es obligatorio'),
-            username: Yup.string().required('El mensaje es obligatorio'),
-            user_email: Yup.string().email('El user_email no es valido').required('El user_email es obligatorio'),
-            doc_number: Yup.string().required('El mensaje es obligatorio'),
-            doc_type: Yup.string().required('El mensaje es obligatorio'),
-            confirmpassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match')
+            first_name: Yup.string().required('El nombre es obligatorio'),
+            id_role: Yup.number().min(1, 'El rol es obligatorio'),
+            last_name: Yup.string().required('El apellido es obligatorio'),
+            username: Yup.string().required('El usuario es obligatorio'),
+            email: Yup.string().email('El correo no es valido').required('El correo es obligatorio'),
+            doc_number: Yup.string().required('El n° documento es obligatorio'),
+            doc_type: Yup.string().required('El tipo de documento es obligatorio'),
+            confirmpassword: Yup.string().oneOf([Yup.ref('password'), null], 'Las contraseñas deben ser iguales')
         }),
         onSubmit: async values => {
             if (!values.password && !rowselected) {
                 setOpenSnackBack(true, { success: false, message: 'Debe ingresar una contraseña al usuario.' });
                 return;
             }
-            // const thereisdefault = dataorg.some(x => x.bydefault === "SI");
-            // if (!thereisdefault) {
-            //     setOpenSnackBack(true, { success: false, message: 'Debe establecer una organización por defecto.' });
-            //     return;
-            // }
             const callback = async () => {
                 setModalQuestion({ visible: false });
                 const dattosend = {
-                    method: "SP_INS_USER",
+                    method: "fn_ins_user",
                     data: {
                         ...values,
-                        id: rowselected ? rowselected.id_user : 0,
                         user: values.username,
-                        type: 'USER',
                         phone: '999999999',
                         password: values.password ? values.password : "",
                     }
@@ -153,20 +147,13 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                                 disabled={!!rowselected}
                             />
                             <InputFormk
-                                name="user_email"
+                                name="email"
                                 classname="col-3"
                                 label="Correo"
                                 formik={formik}
                             />
                         </div>
                         <div className="row-zyx">
-                            <InputFormk
-                                name="doc_number"
-                                classname="col-3"
-                                label="N° Doc"
-                                formik={formik}
-                            />
-
                             <UseSelectDomain
                                 classname="col-3"
                                 title="Tipo Doc"
@@ -175,6 +162,13 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                                 namefield="doc_type"
                                 formik={formik}
                             />
+                            <InputFormk
+                                name="doc_number"
+                                classname="col-3"
+                                label="N° Doc"
+                                formik={formik}
+                            />
+
                             <UseSelectDomain
                                 classname="col-3"
                                 title="Estado"

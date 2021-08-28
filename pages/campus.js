@@ -1,20 +1,26 @@
 import React, { useState, useContext } from 'react';
 import Layout from '../components/system/layout/layout'
 import TableZyx from '../components/system/form/table-simple';
-import DomainMain from '../components/domain/domainmain';
+import CampusMain from '../components/campus/campusmain';
 import triggeraxios from '../config/axiosv2';
 import popupsContext from '../context/pop-ups/pop-upsContext';
-import { validateResArray } from '../config/helper';
-import authContext from '../context/auth/authContext';
-import Tooltip from '@material-ui/core/Tooltip';
+import { validateResArray, getDomain } from '../config/helper';
 import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import authContext from '../context/auth/authContext';
 import {
     Delete as DeleteIcon,
     Edit as EditIcon,
 } from '@material-ui/icons';
 
-const Domain = () => {
+const DATASEL = {
+    method: "fn_sel_campus",
+    data: { status: 'ACTIVO' }
+}
 
+const METHOD_INS = "fn_ins_campus";
+
+const Campus = () => {
     const { setloadingglobal, setModalQuestion, setOpenBackdrop, setOpenSnackBack } = useContext(popupsContext);
     const { appselected: appfound } = useContext(authContext);
     const [openModal, setOpenModal] = useState(false);
@@ -24,8 +30,8 @@ const Domain = () => {
     const columns = React.useMemo(
         () => [
             {
-                Header: '',
-                accessor: 'id_domain',
+                Header: "",
+                accessor: "id_campus",
                 activeOnHover: true,
                 Cell: props => {
                     return (
@@ -35,8 +41,10 @@ const Domain = () => {
                                     aria-label="delete"
                                     size="small"
                                     className="button-floating"
-                                    disabled={ !appfound.update}
-                                    onClick={() => selectrow(props.cell.row.original)}
+                                    disabled={!appfound.update}
+                                    onClick={() => {
+                                        selectrow(props.cell.row.original);
+                                    }}
                                 >
                                     <EditIcon
                                         fontSize="inherit"
@@ -49,7 +57,7 @@ const Domain = () => {
                                     className="button-floating"
                                     aria-label="delete"
                                     size="small"
-                                    disabled={ !appfound.delete}
+                                    disabled={!appfound.delete}
                                     onClick={() => deleterow(props.cell.row.original)}
                                 >
                                     <DeleteIcon
@@ -63,8 +71,8 @@ const Domain = () => {
                 }
             },
             {
-                Header: 'DOMINIO',
-                accessor: 'domain_name'
+                Header: "NOMBRE",
+                accessor: "description"
             },
             {
                 Header: 'ESTADO',
@@ -86,43 +94,14 @@ const Domain = () => {
                 Header: 'MODIFICADO POR',
                 accessor: 'modified_by'
             },
-
         ],
         [appfound]
     );
 
-    const deleterow = (row) => {
-        const callback = async () => {
-            setModalQuestion({ visible: false });
-            const datatosend = {
-                method: "SP_INS_DOMAIN",
-                data: {
-                    ...row,
-                    status: 'ELIMINADO'
-                }
-            }
-
-            setOpenBackdrop(true);
-            const res = await triggeraxios('post', process.env.endpoints.selsimple, datatosend);
-            if (res.success) {
-                setOpenSnackBack(true, { success: true, message: 'Transacción ejecutada satisfactoriamente.' });
-                fetchData();
-            } else {
-                setOpenSnackBack(true, { success: false, message: 'Hubo un error, vuelva a intentarlo' });
-            }
-
-            setOpenBackdrop(false)
-        }
-
-        setModalQuestion({ visible: true, question: `¿Está seguro de de borrar la plantilla?`, callback })
-    }
     const fetchData = React.useCallback(async () => {
         setloadingglobal(true);
-        const datatosend = {
-            method: "SP_SEL_DOMAIN",
-            data: { domain_name: null, status: null }
-        }
-        const res = await triggeraxios('post', process.env.endpoints.selsimple, datatosend)
+
+        const res = await triggeraxios('post', process.env.endpoints.selsimple, DATASEL)
         setdatatable(validateResArray(res, true));
         setloadingglobal(false)
     }, []);
@@ -131,19 +110,44 @@ const Domain = () => {
         setOpenModal(true);
         setrowselected(row);
     }
+    const deleterow = (row) => {
+        const callback = async () => {
+            setModalQuestion({ visible: false });
+            const DATASEL = {
+                method: METHOD_INS,
+                data: {
+                    ...row,
+                    id_campus: row ? row.id_campus : 0,
+                    status: 'ELIMINADO',
+                }
+            }
 
+            setOpenBackdrop(true);
+            const res = await triggeraxios('post', process.env.endpoints.selsimple, DATASEL);
+            if (res.success) {
+                setOpenSnackBack(true, { success: true, message: 'Registro eliminado satisfactoriamente.' });
+                fetchData();
+            } else {
+                setOpenSnackBack(true, { success: false, message: 'Hubo un error, vuelva a intentarlo' });
+            }
+            setOpenBackdrop(false)
+        }
+
+        setModalQuestion({ visible: true, question: `¿Está seguro de de borrar la sede?`, callback })
+    }
     return (
         <Layout>
             <TableZyx
                 columns={columns}
-                titlemodule='Dominios'
+                titlemodule='Sedes'
                 data={datatable}
                 fetchData={fetchData}
                 register={!!appfound.insert}
                 selectrow={selectrow}
             />
-            <DomainMain
-                title="Dominio"
+            <CampusMain
+                title="Sede"
+                method_ins={METHOD_INS}
                 openModal={openModal}
                 setOpenModal={setOpenModal}
                 fetchDataUser={fetchData}
@@ -153,4 +157,4 @@ const Domain = () => {
     );
 }
 
-export default Domain;
+export default Campus;

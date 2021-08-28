@@ -13,7 +13,7 @@ import {
 } from '@material-ui/icons';
 
 const REQUESTUSER = {
-    method: "SP_SEL_USER",
+    method: "fn_sel_user",
     data: {
         status: null,
         type: 'USER'
@@ -84,7 +84,7 @@ const User = () => {
             },
             {
                 Header: 'CORREO ELECTRONICO',
-                accessor: 'user_email',
+                accessor: 'email',
                 type: 'string',
             },
             {
@@ -143,12 +143,10 @@ const User = () => {
         const callback = async () => {
             setModalQuestion({ visible: false });
             const dattosend = {
-                method: "SP_INS_USER",
+                method: "fn_ins_user",
                 data: {
                     ...row,
-                    id: row.id_user,
                     password: '',
-                    type: 'USER',
                     phone: '999999999',
                     user: row.username,
                     status: 'ELIMINADO'
@@ -167,7 +165,7 @@ const User = () => {
             setOpenBackdrop(false)
         }
 
-        setModalQuestion({ visible: true, question: `¿Está seguro de de borrar al usuario ${row.user_email}?`, callback })
+        setModalQuestion({ visible: true, question: `¿Está seguro de de borrar al usuario ${row.username}?`, callback })
     }
 
     return (

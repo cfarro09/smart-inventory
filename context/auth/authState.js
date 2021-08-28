@@ -117,12 +117,12 @@ const AuthState = ({ children }) => {
                 }
             } else { 
                 console.log('holaaaaaa');
-                dispatch({
-                    type: AUTH_SUCCESS,
-                    payload: { firstname: "carlos", lastname: "farro", role_name: "ADMIN", menu: [{}] }
-                });
-                settologged({ isloading: false, logged: true, appfound: {} });
-                // router.push('/sign-in').then(() => settologged({ isloading: false, logged: false }))
+                // dispatch({
+                //     type: AUTH_SUCCESS,
+                //     payload: { firstname: "carlos", lastname: "farro", role_name: "ADMIN", menu: [{}] }
+                // });
+                // settologged({ isloading: false, logged: true, appfound: {} });
+                router.push('/sign-in').then(() => settologged({ isloading: false, logged: false }))
             }
         }
         loadUserFromCookies()

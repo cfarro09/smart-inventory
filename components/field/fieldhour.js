@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -8,48 +8,39 @@ import InputFormk from '../system/form/inputformik';
 import Button from '@material-ui/core/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import SelectDomain from '../system/form/select-domain';
 import triggeraxios from '../../config/axiosv2';
-import { validateres, getDomain } from '../../config/helper';
+import { validateResArray, getDomain } from '../../config/helper';
 
-const StoreMain = ({ openModal, setOpenModal, setData, rowselected }) => {
+import SelectDomain from '../system/form/select-domain';
 
-    const [domains, setdomains] = useState({ status: [] })
-
-    useEffect(() => {
-        let continuezyx = true;
-        (async () => {
-            await Promise.all([
-                triggeraxios('post', '/api/web/main/', getDomain("ESTADO")).then(r => setdomains(p => ({ ...p, status: validateres(r, continuezyx) }))),
-            ]);
-
-        })();
-        return () => continuezyx = false;
-    }, [])
-
+const Organization = ({ openModal, setOpenModal, setDataFieldHour, rowselected }) => {
     useEffect(() => {
         if (openModal) {
             formik.resetForm();
         }
     }, [openModal])
 
+
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: rowselected || {
-            store_name: '',
-            description: '',
-            address: '',
-            status: 'ACTIVO'
+            start_time: '00:00',
+            end_time: '00:00',
+            price: 0,
+            status: 'ACTIVO',
+            shift: 'DAY'
         },
         validationSchema: Yup.object({
-            store_name: Yup.string().required('El name es obligatorio'),
-            description: Yup.string().required('El name es obligatorio'),
-            address: Yup.string().required('La dirección es obligatorio'),
-            status: Yup.string().required('La dirección es obligatorio'),
+            start_time: Yup.string().required('La hora de inicio es obligatorio'),
+            end_time: Yup.string().required('La hora de fin es obligatorio'),
+            price: Yup.string().required('El precio es obligatorio'),
         }),
-
         onSubmit: async values => {
-            setData(values, rowselected)
+            if (!rowselected) {
+                setDataFieldHour(prev => [...prev, { ...values, id_time_field: prev.length * -1, operation: true }]);
+            } else {
+                setDataFieldHour(prev => [...prev.map(o => o.id_time_field === values.id_time_field ? { ...values, operation: true } : o)]);
+            }
             setOpenModal(false);
         }
     });
@@ -57,7 +48,7 @@ const StoreMain = ({ openModal, setOpenModal, setData, rowselected }) => {
         <Dialog
             open={openModal}
             fullWidth={true}
-            maxWidth='md'
+            maxWidth='sm'
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
@@ -65,38 +56,33 @@ const StoreMain = ({ openModal, setOpenModal, setData, rowselected }) => {
                 noValidate
                 onSubmit={formik.handleSubmit}
             >
-                <DialogTitle id="alert-dialog-title">Tienda</DialogTitle>
+                <DialogTitle id="alert-dialog-title">Dominio Valor</DialogTitle>
                 <DialogContent>
                     <div className="row-zyx">
-                    <InputFormk
-                            name="store_name"
+                        <InputFormk
+                            name="start_time"
                             classname="col-6"
-                            label="Tienda"
+                            label="Hora inicio"
+                            type="time"
                             formik={formik}
                         />
                         <InputFormk
-                            name="description"
-                            classname="col-3"
-                            label="Descripción"
-                            formik={formik}
-                        />
-                        
-                        <SelectDomain
-                            classname="col-3"
-                            title="Estado"
-                            domainname={domains.status}
-                            valueselected={formik.values.status}
-                            namefield="status"
-                            formik={formik}
-                        />
-                        <InputFormk
-                            name="address"
+                            name="end_time"
                             classname="col-6"
-                            label="Dirección"
+                            label="Hora Fin"
+                            type="time"
                             formik={formik}
                         />
                     </div>
-                
+                    <div className="row-zyx">
+                        <InputFormk
+                            name="price"
+                            classname="col-6"
+                            label="Precio"
+                            type="number"
+                            formik={formik}
+                        />
+                    </div>
                 </DialogContent>
                 <DialogActions>
                     <Button
@@ -119,4 +105,4 @@ const StoreMain = ({ openModal, setOpenModal, setData, rowselected }) => {
     );
 }
 
-export default StoreMain;
+export default Organization;

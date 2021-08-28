@@ -9,28 +9,37 @@ import InputFormk from '../system/form/inputformik';
 import { useFormik } from 'formik';
 import TableZyx from '../system/form/table-simple';
 import triggeraxios from '../../config/axiosv2';
-import DomainValue from './domainvalue';
+import FieldHour from './fieldhour';
 import * as Yup from 'yup';
-import { validateResArray } from '../../config/helper';
-
+import { validateResArray, getDomain } from '../../config/helper';
+import SelectFunction from '../system/form/select-function';
 import IconButton from '@material-ui/core/IconButton';
+import UseSelectDomain from '../system/form/select-domain';
+
 import {
     Delete as DeleteIcon,
     Edit as EditIcon,
 } from '@material-ui/icons';
 
+const SET_CAMPUS = {
+    method: "fn_sel_campus",
+    data: { status: 'ACTIVO' }
+}
+
 const DomainModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser }) => {
     const { setOpenBackdrop, setModalQuestion, setOpenSnackBack, disabled = false } = useContext(popupsContext);
+    const [domains, setdomains] = useState({ status: [] })
 
-    const [openModalDomainV, setOpenModalDomainV] = useState(false);
-    const [orgrowselected, setorgrowselected] = useState(null);
-    const [datadomainvalues, setdatadomainvalues] = useState([]);
+    const [openModalHour, setOpenModalHour] = useState(false);
+    const [fieldHourSelected, setFieldHourSelected] = useState(null);
+    const [dataFieldHour, setDataFieldHour] = useState([]);
+    const [dataCampus, setDataCampus] = useState([])
 
     const columnsDomainValues = React.useMemo(
         () => [
             {
                 Header: '',
-                accessor: 'id_domain',
+                accessor: 'id_time_field',
                 activeOnHover: true,
                 Cell: props => {
                     return (
@@ -64,12 +73,16 @@ const DomainModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
                 }
             },
             {
-                Header: 'VALOR',
-                accessor: 'domain_value'
+                Header: 'HORA INICIO',
+                accessor: 'start_time'
             },
             {
-                Header: 'DESCRIPCION',
-                accessor: 'domain_description'
+                Header: 'HORA FIN',
+                accessor: 'end_time'
+            },
+            {
+                Header: 'PRECIO',
+                accessor: 'price'
             },
             {
                 Header: 'ESTADO',
@@ -88,18 +101,18 @@ const DomainModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
 
         if (openModal) {
             formik.resetForm();
-            setdatadomainvalues([]);
+            setDataFieldHour([]);
             (async () => {
                 if (rowselected) {
                     const datatlistorg = {
-                        method: "fn_sel_domain",
+                        method: "fn_sel_time_field",
                         data: {
-                            domain_name: rowselected.domain_name,
+                            id_field: rowselected.id_field,
                             status: null
                         }
                     }
                     const res = await triggeraxios('post', process.env.endpoints.selsimple, datatlistorg);
-                    setdatadomainvalues(validateResArray(res, continuezyx));
+                    setDataFieldHour(validateResArray(res, continuezyx));
                 }
             })();
 
@@ -107,49 +120,62 @@ const DomainModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
         return () => continuezyx = false;
     }, [openModal])
 
-    const selectrow = (row) => {
-        setOpenModalDomainV(true);
-        setorgrowselected(row);
-    }
-    // #endregion
+    useEffect(() => {
+        let continuezyx = true;
+        (async () => {
+            await Promise.all([
+                triggeraxios('post', process.env.endpoints.selsimple, getDomain("ESTADO")).then(r => setdomains(p => ({ ...p, status: validateResArray(r, continuezyx) }))),
+                triggeraxios('post', process.env.endpoints.selsimple, SET_CAMPUS).then(r => setDataCampus(validateResArray(r, continuezyx)))
+            ]);
+
+        })();
+        return () => continuezyx = false;
+    }, [])
+
+
+    const selectrow = React.useCallback((row) => {
+        setOpenModalHour(true);
+        setFieldHourSelected(row);
+    }, [])
 
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: rowselected || {
-            domain_name: '',
+            id_field: 0,
+            id_campus: 0,
+            description: '',
+            status: 'ACTIVO',
+            color: '#e1e1e1'
         },
         validationSchema: Yup.object({
-            domain_name: Yup.string().required('El nombre de dominio es obligatorio'),
+            description: Yup.string().required('El nombre de dominio es obligatorio'),
+            status: Yup.string().required('El estado de dominio es obligatorio'),
+            id_campus: Yup.number().min(1, 'La sede es obligatorio')
         }),
         onSubmit: async values => {
-            if (datadomainvalues.length !== 0) {
+            if (dataFieldHour.length !== 0) {
                 const callback = async () => {
                     setModalQuestion({ visible: false });
                     const dattosend = {
-                        method: "fn_ins_domain",
+                        method: "fn_ins_field",
                         header: {
-                            data: {}
+                            data: values
                         },
                         details: {
-                            data: datadomainvalues.filter(x => !!x.operation).map(x => {
-                                return {
-                                    id_domain: x.id_domain < 0 ? 0 : x.id_domain,
-                                    domain_name: values.domain_name,
-                                    domain_value: x.domain_value,
-                                    domain_description: x.domain_description,
-                                    status: x.status,
-                                }
-                            })
+                            data: dataFieldHour.filter(x => !!x.operation).map(x => ({
+                                ...x,
+                                id_time_field: x.id_time_field < 0 ? 0 : x.id_time_field,
+                            }))
                         }
                     }
-
+                    console.log(JSON.stringify(dattosend));
                     setOpenBackdrop(true);
                     const res = await triggeraxios('post', process.env.endpoints.transaction, dattosend);
                     if (res.success) {
                         fetchDataUser({});
                         setOpenModal(false);
 
-                        setOpenSnackBack(true, { success: true, message: 'Transacción ejecutada satisfactoriamente.' });
+                        setOpenSnackBack(true, { success: true, message: 'Campo guardado satisfactoriamente.' });
                     } else {
                         setOpenSnackBack(true, { success: false, message: !res.msg ? 'Hubo un error, vuelva a intentarlo' : res.msg });
                     }
@@ -157,9 +183,9 @@ const DomainModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
                     setOpenBackdrop(false);
                 }
 
-                setModalQuestion({ visible: true, question: `¿Está seguro de guardar el dominio?`, callback })
+                setModalQuestion({ visible: true, question: `¿Está seguro de guardar el campo?`, callback })
             } else {
-                setOpenSnackBack(true, { success: false, message: 'Necesita insertar regitros al dominio.' });
+                setOpenSnackBack(true, { success: false, message: 'Necesita insertar regitros al campo.' });
             }
         }
     });
@@ -167,7 +193,7 @@ const DomainModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
 
     const deleterow = (row) => {
         const callback = () => {
-            setdatadomainvalues(prev => [...prev.map(o => o.domain_value === row.domain_value ? { ...row, status: 'ELIMINADO', deleted: true, operation: (row.id_domain > 0) } : o)]);
+            setDataFieldHour(prev => [...prev.map(o => o.id_time_field === row.id_time_field ? { ...row, status: 'ELIMINADO', deleted: true, operation: (row.id_time_field > 0) } : o)]);
             setModalQuestion({ visible: false })
         }
 
@@ -191,17 +217,44 @@ const DomainModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
                     <DialogContent>
                         <div className="row-zyx">
                             <InputFormk
-                                name="domain_name"
+                                name="description"
                                 classname="col-3"
                                 label="Nombre"
                                 formik={formik}
                                 disabled={disabled}
                             />
+                            <InputFormk
+                                name="color"
+                                classname="col-3"
+                                label="Color"
+                                type="color"
+                                formik={formik}
+                                disabled={disabled}
+                            />
+                            <SelectFunction
+                                title="Sede"
+                                datatosend={dataCampus}
+                                classname="col-3"
+                                optionvalue="id_campus"
+                                optiondesc="description"
+                                valueselected={formik.values.id_campus}
+                                namefield="id_campus"
+                                descfield="role_name"
+                                formik={formik}
+                            />
+                            <UseSelectDomain
+                                classname="col-3"
+                                title="Estado"
+                                domainname={domains.status}
+                                valueselected={formik.values.status}
+                                namefield="status"
+                                formik={formik}
+                            />
                         </div>
                         <TableZyx
                             columns={columnsDomainValues}
-                            titlemodule='Valores'
-                            data={datadomainvalues.filter(x => x.deleted !== true)}
+                            titlemodule='Horarios'
+                            data={dataFieldHour.filter(x => !x.deleted)}
                             register={true}
                             selectrow={selectrow}
                         />
@@ -224,11 +277,11 @@ const DomainModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
                     </DialogActions>
                 </form>
             </Dialog>
-            <DomainValue
-                openModal={openModalDomainV}
-                setOpenModal={setOpenModalDomainV}
-                setdatadomainvalues={setdatadomainvalues}
-                rowselected={orgrowselected}
+            <FieldHour
+                openModal={openModalHour}
+                setOpenModal={setOpenModalHour}
+                setDataFieldHour={setDataFieldHour}
+                rowselected={fieldHourSelected}
             />
         </>
     );

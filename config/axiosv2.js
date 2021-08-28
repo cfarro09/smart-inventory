@@ -17,7 +17,7 @@ const triggeraxios = async (method, url, data, callback, source) => {
     } catch (error) {
         return {
             success: false,
-            msg: error?.response?.data?.error?.mensaje || "Comuniquese con el administrador."
+            msg: error?.response?.data?.error?.message || "Comuniquese con el administrador."
         }
     }
 }

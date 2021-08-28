@@ -16,7 +16,7 @@ export const validateResArray = (res, continuezyx) => {
 
 export const getDomain = domain_name => {
     return {
-        method: "SP_SEL_DOMAIN",
+        method: "fn_sel_domain",
         data: {
             domain_name,
             status: 'ACTIVO'
@@ -24,15 +24,6 @@ export const getDomain = domain_name => {
     }
 }
 
-export const getDomainx = () => {
-    return {
-        method: "SP_SEL_DOMAIN",
-        data: {
-            domain_name,
-            status: 'ACTIVO'
-        }
-    }
-}
 
 export const validateFile = ({ fileValue, templateSelected }) => {
     console.time("aux1");

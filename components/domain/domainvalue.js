@@ -14,23 +14,12 @@ import { validateResArray, getDomain } from '../../config/helper';
 import SelectDomain from '../system/form/select-domain';
 
 const Organization = ({ openModal, setOpenModal, setdatadomainvalues, rowselected }) => {
-    const [domains, setdomains] = useState({ status: [], type: [] })
     useEffect(() => {
         if (openModal) {
             formik.resetForm();
         }
     }, [openModal])
 
-    useEffect(() => {
-        let continuezyx = true;
-        (async () => {
-            await Promise.all([
-                triggeraxios('post', process.env.endpoints.selsimple, getDomain("ESTADO")).then(r => setdomains(p => ({ ...p, status: validateResArray(r, continuezyx) }))),
-            ]);
-
-        })();
-        return () => continuezyx = false;
-    }, [])
 
     const formik = useFormik({
         enableReinitialize: true,
@@ -58,7 +47,7 @@ const Organization = ({ openModal, setOpenModal, setdatadomainvalues, rowselecte
         <Dialog
             open={openModal}
             fullWidth={true}
-            maxWidth='md'
+            maxWidth='sm'
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
@@ -72,22 +61,14 @@ const Organization = ({ openModal, setOpenModal, setdatadomainvalues, rowselecte
 
                         <InputFormk
                             name="domain_value"
-                            classname="col-3"
+                            classname="col-6"
                             label="Valor"
                             formik={formik}
                         />
                         <InputFormk
                             name="domain_description"
-                            classname="col-3"
+                            classname="col-6"
                             label="Descripcion"
-                            formik={formik}
-                        />
-                        <SelectDomain
-                            classname="col-3"
-                            title="Estado"
-                            domainname={domains.status}
-                            valueselected={formik.values.status}
-                            namefield="status"
                             formik={formik}
                         />
                     </div>

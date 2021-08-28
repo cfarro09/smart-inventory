@@ -10,15 +10,15 @@ const UseSelectDomain = ({title, domainname, valueselected = "", namefield = "",
     const [options, setOptions] = useState([]);
     const [loading, setloading] = useState(true);
     const [value, setValue] = useState(null);
-    const [inputValue, setInputValue] = useState('');
+    // const [inputValue, setInputValue] = useState('');
 
     const setHardValue = (dataoptions, valuetoset) => {
-        setInputValue('');
+        // setInputValue('');
         setValue(null);
         if (valuetoset) {
             const optionfind = dataoptions.find(o => o.domain_value === valuetoset);
             if (optionfind) {
-                setInputValue(optionfind.domain_description);
+                // setInputValue(optionfind.domain_description);
                 setValue(optionfind);
 
                 if (callback)
@@ -33,7 +33,7 @@ const UseSelectDomain = ({title, domainname, valueselected = "", namefield = "",
         (async () => {
             if (typeof domainname === "string") {
                 const datatosend = { 
-                    method: "SP_SEL_DOMAIN",
+                    method: "fn_sel_domain",
                     data: {
                         domain_name: domainname,
                         status: 'ACTIVO'
@@ -46,6 +46,7 @@ const UseSelectDomain = ({title, domainname, valueselected = "", namefield = "",
                 }
                 setloading(false);
             } else if (domainname instanceof Array){
+                console.log(domainname);
                 setloading(false);
                 setOptions(domainname);
                 setHardValue(domainname, valueselected)
@@ -55,14 +56,14 @@ const UseSelectDomain = ({title, domainname, valueselected = "", namefield = "",
         return () => {
             source.cancel();
         }
-    }, []);
+    }, [domainname]);
 
     return (
         <Autocomplete
             className={classname}
             size="small"
             value={value}
-            inputValue={inputValue}
+            // inputValue={inputValue}
             disabled={disabled}
             onChange={(_, newValue) => {
                 if (formik) {
@@ -74,7 +75,7 @@ const UseSelectDomain = ({title, domainname, valueselected = "", namefield = "",
                 if (callback)
                     callback({newValue});
             }}
-            onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
+            // onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
             getOptionLabel={option => option ? option.domain_description : ''}
             options={options}
             loading={loading}
@@ -83,6 +84,8 @@ const UseSelectDomain = ({title, domainname, valueselected = "", namefield = "",
                     {...params}
                     label={title}
                     variant="outlined"
+                    error={formik?.errors[namefield] ? true : false}
+                    helperText={formik?.errors[namefield]}
                     InputProps={{
                         ...params.InputProps,
                         endAdornment: (

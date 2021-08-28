@@ -9,7 +9,7 @@ module.exports = {
     env: {
         urlapi: isProd ? process.env.URLAPI : "http://54.164.96.107",
         endpoints: {
-            transaction: "/api/main/simpleTransaction",
+            transaction: "/api/main/transaction",
             selsimple: "/api/main/",
             selpaginated: "/api/main/paginated",
             login: '/api/auth/login',

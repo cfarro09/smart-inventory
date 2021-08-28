@@ -114,8 +114,6 @@ const Boooking = () => {
     const [showAppointment, setshowAppointment] = useState(true);
     const [currentDate, setCurrentDate] = useState(new Date().toISOString().substring(0, 10));
 
-    console.log(data);
-
     const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
         const onCustomFieldChange = (nextValue) => {
             onFieldChange({ customField: nextValue });
@@ -141,9 +139,9 @@ const Boooking = () => {
     };
 
     const commitChanges = ({ added, changed, deleted }) => {
-        console.log("commited");
         setData((data) => {
             if (added) {
+                console.log(added);
                 const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
                 data = [...data, { id: startingAddedId, ...added }];
             }
@@ -155,81 +153,90 @@ const Boooking = () => {
                 data = data.filter(appointment => appointment.id !== deleted);
             }
             return data;
+            setTimeout(() => {
+                
+            }, 5000);
         });
     }
+
     const TimeTableCell = React.useCallback(React.memo(({ onDoubleClick, endDate, ...restProps }) => (
         <WeekView.TimeTableCell
             {...restProps}
             onDoubleClick={endDate < new Date() ? null : onDoubleClick}
         />
     )), [showAppointment]);
-    return (
-        <Layout>
-            <Scheduler
-                locale="es-ES"
-                data={data}
-            >
-                <ViewState
-                    defaultCurrentDate={currentDate}
-                />
-                <EditingState
-                    onAddedAppointmentChange={e => {
-                        console.log('ddddddd', e);
-                        return null;
-                    }}
-                    onCommitChanges={commitChanges}
-                />
-                <IntegratedEditing />
-                <WeekView
-                    cellDuration={60}
-                    startDayHour={8}
-                    endDayHour={23}
-                    timeTableCellComponent={TimeTableCell}
-                />
-                <Toolbar />
-                <DateNavigator />
-                <Appointments />
-                <AppointmentTooltip
-                    showOpenButton
-                    showDeleteButton
-                />
-                <AppointmentForm
-                    locale="es-ES"
-                    fullSize={false}
-                    // textEditorComponent={() => null}
-                    BasicLayout={BasicLayout}
-                    messages={{
-                        moreInformationLabel: 'Mas información',
-                        weekly: "Semanalmente",
-                        monthly: "Mensual",
-                        yearly: "Anualmente",
-                        titleLabel: "Título",
-                        repeatLabel: "Repetir",
-                        repeatEveryLabel: "Repetir cada",
-                        endRepeatLabel: "Fin de repetición",
-                        occurrencesLabel: "ocurrencias",
-                        afterLabel: "Hasta",
-                        daysLabel: "días",
-                        neverLabel: "Nunca",
-                        detailsLabel: "Detalles",
-                        commitCommand: "Guardar",
-                        allDayLabel: "Todo el día",
-                        never: "Nunca",
-                        onLabel: "En",
-                        daily: "Diario",
 
-                    }}
-                // readOnly={!showAppointment}
-                />
-                {/* <Resources
-                    data={resources}
-                    mainResourceName="roomId"
-                /> */}
-                <CurrentTimeIndicator
-                    shadePreviousCells={true}
-                // shadePreviousAppointments={shadePreviousAppointments}
-                />
-            </Scheduler>
+    return (
+        <Layout withPadding={false}>
+            <div style={{ zIndex: 2 }}>
+                <Scheduler
+                    locale="es-ES"
+                    data={data}
+                    style={{ zIndex: '1000' }}
+                >
+                    <ViewState
+                        defaultCurrentDate={currentDate}
+                    />
+                    <EditingState
+                        onAddedAppointmentChange={e => {
+                            console.log('ddddddd', e);
+                            return null;
+                        }}
+                        onCommitChanges={commitChanges}
+                    />
+                    <IntegratedEditing />
+                    <WeekView
+                        cellDuration={60}
+                        startDayHour={8}
+                        endDayHour={23}
+                        timeTableCellComponent={TimeTableCell}
+                    />
+                    <Toolbar />
+                    <DateNavigator />
+                    <Appointments />
+                    <AppointmentTooltip
+                        showOpenButton
+                        showDeleteButton
+                    />
+                    <AppointmentForm
+                        locale="es-ES"
+                        style={{ zIndex: '1000' }}
+                        fullSize={false}
+                        BasicLayout={BasicLayout}
+                        messages={{
+                            moreInformationLabel: 'Mas información',
+                            weekly: "Semanalmente",
+                            monthly: "Mensual",
+                            yearly: "Anualmente",
+                            titleLabel: "Título",
+                            repeatLabel: "Repetir",
+                            repeatEveryLabel: "Repetir cada",
+                            endRepeatLabel: "Fin de repetición",
+                            occurrencesLabel: "ocurrencias",
+                            afterLabel: "Hasta",
+                            daysLabel: "días",
+                            neverLabel: "Nunca",
+                            detailsLabel: "Detalles",
+                            commitCommand: "Guardar",
+                            allDayLabel: "Todo el día",
+                            never: "Nunca",
+                            onLabel: "En",
+                            daily: "Diario",
+                            notesLabel: "Notas",
+
+                        }}
+                    // readOnly={!showAppointment}
+                    />
+                    <Resources
+                        data={resources}
+                        mainResourceName="roomId"
+                    />
+                    <CurrentTimeIndicator
+                        shadePreviousCells={true}
+                    // shadePreviousAppointments={shadePreviousAppointments}
+                    />
+                </Scheduler>
+            </div>
         </Layout>
     );
 }

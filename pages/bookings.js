@@ -12,26 +12,26 @@ import {
     Delete as DeleteIcon,
     Edit as EditIcon,
 } from '@material-ui/icons';
+import { useRouter } from 'next/router';
 
 const DATASEL = {
-    method: "fn_sel_client",
-    data: { status: 'ACTIVO' }
+    method: "fn_sel_booking",
+    data: { status: null, id_booking: null }
 }
 
 const METHOD_INS = "fn_ins_client";
 
-const Clients = () => {
+const Bookings = () => {
+    const router = useRouter();
     const { setloadingglobal, setModalQuestion, setOpenBackdrop, setOpenSnackBack } = useContext(popupsContext);
     const { appselected: appfound } = useContext(authContext);
-    const [openModal, setOpenModal] = useState(false);
     const [datatable, setdatatable] = useState([]);
-    const [rowselected, setrowselected] = useState(null);
 
     const columns = React.useMemo(
         () => [
             {
                 Header: "",
-                accessor: "id_client",
+                accessor: "id_booking",
                 activeOnHover: true,
                 Cell: props => {
                     return (
@@ -52,71 +52,52 @@ const Clients = () => {
                                     />
                                 </IconButton>
                             </Tooltip>
-                            <Tooltip title="Eliminar">
-                                <IconButton
-                                    className="button-floating"
-                                    aria-label="delete"
-                                    size="small"
-                                    disabled={!appfound.delete}
-                                    onClick={() => deleterow(props.cell.row.original)}
-                                >
-                                    <DeleteIcon
-                                        fontSize="inherit"
+                            {props.cell.row.original.status === "BORRADOR" &&
+                                (<Tooltip title="Eliminar">
+                                    <IconButton
+                                        className="button-floating"
+                                        aria-label="delete"
                                         size="small"
-                                    />
-                                </IconButton>
-                            </Tooltip>
+                                        disabled={!appfound.delete}
+                                        onClick={() => deleterow(props.cell.row.original)}
+                                    >
+                                        <DeleteIcon
+                                            fontSize="inherit"
+                                            size="small"
+                                        />
+                                    </IconButton>
+                                </Tooltip>)}
                         </div>
                     )
                 }
             },
             {
-                Header: "NOMBRE",
-                accessor: "first_name"
+                Header: "CLIENTE",
+                accessor: "client_name"
             },
             {
-                Header: "APELLIDO",
-                accessor: "last_name"
+                Header: 'FECHA CREACIÓN',
+                accessor: 'date_created'
             },
             {
-                Header: "TIPO DOC",
-                accessor: "doc_type"
+                Header: 'IMPORTE TOTAL',
+                accessor: 'booking_amount'
             },
             {
-                Header: "N° DOC",
-                accessor: "doc_number"
+                Header: 'IMPORTE PAGADO',
+                accessor: 'paid_amount'
             },
             {
-                Header: "CORREO",
-                accessor: "email"
-            },
-            {
-                Header: "N° FACTURACION",
-                accessor: "bill_number"
-            },
-            {
-                Header: "TIP FACTURACION",
-                accessor: "bill_type"
+                Header: 'IMPORTE PENDIENTE',
+                accessor: 'pending_amount'
             },
             {
                 Header: 'ESTADO',
                 accessor: 'status'
             },
             {
-                Header: 'F. REGISTRO',
-                accessor: 'date_created'
-            },
-            {
-                Header: 'F. MODIFICADO',
-                accessor: 'date_updated'
-            },
-            {
                 Header: 'CREADO POR',
                 accessor: 'created_by'
-            },
-            {
-                Header: 'MODIFICADO POR',
-                accessor: 'modified_by'
             },
         ],
         [appfound]
@@ -131,8 +112,10 @@ const Clients = () => {
     }, []);
 
     const selectrow = (row) => {
-        setOpenModal(true);
-        setrowselected(row);
+        if (!row) {
+            console.log('/bookings/0');
+            router.replace('/bookings/0')
+        }
     }
     const deleterow = (row) => {
         const callback = async () => {
@@ -163,22 +146,14 @@ const Clients = () => {
         <Layout>
             <TableZyx
                 columns={columns}
-                titlemodule='Clientes'
+                titlemodule='Reservas'
                 data={datatable}
                 fetchData={fetchData}
                 register={!!appfound.insert}
                 selectrow={selectrow}
             />
-            <ClientMain
-                title="Cliente"
-                method_ins={METHOD_INS}
-                openModal={openModal}
-                setOpenModal={setOpenModal}
-                fetchDataUser={fetchData}
-                rowselected={rowselected}
-            />
         </Layout>
     );
 }
 
-export default Clients;
+export default Bookings;

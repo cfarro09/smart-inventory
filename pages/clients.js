@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import Layout from '../components/system/layout/layout'
 import TableZyx from '../components/system/form/table-simple';
-import ClientMain from '../components/client/clientmain';
+import ClientMain from 'components/client/clientmain';
 import triggeraxios from '../config/axiosv2';
 import popupsContext from '../context/pop-ups/pop-upsContext';
 import { validateResArray, getDomain } from '../config/helper';

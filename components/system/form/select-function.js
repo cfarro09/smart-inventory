@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import triggeraxios from '../../../config/axiosv2';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
+import Button from "@material-ui/core/Button";
 import axios from "axios";
 
-const SelectFunction = React.memo(({ title, datatosend, optionvalue, optiondesc, valueselected = "", namefield = "", descfield = "", formik = false, callback, disabled = false, classname = null, style = null }) => {
+const defaultFilterOptions = createFilterOptions();
+
+const SelectFunction = React.memo(({ title, datatosend, optionvalue, optiondesc, valueselected = "", namefield = "", descfield = "", formik = false, callback, disabled = false, classname = null, style = null, noOptions = "", onNoOptions }) => {
 
     const [options, setOptions] = useState([]);
     const [loading, setloading] = useState(true);
     const [value, setValue] = useState(null);
     const [inputValue, setInputValue] = useState('');
+
 
     const setHardValue = (dataoptions, valuetoset) => {
         setInputValue('');
@@ -99,6 +103,16 @@ const SelectFunction = React.memo(({ title, datatosend, optionvalue, optiondesc,
                     }}
                 />
             )}
+            noOptionsText={
+                <Button
+                    fullWidth
+                    onMouseDown={() => {
+                        onNoOptions();
+                    }}
+                >
+                    {noOptions}
+                </Button>
+            }
         />
     )
 })

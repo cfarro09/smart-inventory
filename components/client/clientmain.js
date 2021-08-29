@@ -51,13 +51,7 @@ const VehicleMAin = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
             last_name: Yup.string().required('El apellido es obligatorio'),
             doc_number: Yup.string().required('El documento es obligatorio'),
             doc_type: Yup.string().required('El tipo documento es obligatorio'),
-            // address: Yup.string().required('El address es obligatorio'),
-            // phone: Yup.string().required('El phone es obligatorio'),
             email: Yup.string().email('El correo no es valido'),
-            // bill_type: Yup.string().required('El bill_type es obligatorio'),
-            // bill_number: Yup.string().required('El bill_number es obligatorio'),
-            // photo: '',
-
             status: Yup.string().required('El estado es obligatorio')
         }),
         onSubmit: async values => {

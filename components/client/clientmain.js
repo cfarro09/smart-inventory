@@ -14,7 +14,7 @@ import UseSelectDomain from '../system/form/select-domain';
 
 import { validateResArray, getDomain } from '../../config/helper';
 
-const VehicleMAin = ({ title, openModal, setOpenModal, rowselected, fetchDataUser, disabled = false, method_ins }) => {
+const ClientMain = ({ title, openModal, setOpenModal, rowselected, fetchDataUser, disabled = false, method_ins }) => {
     const { setOpenBackdrop, setModalQuestion, setOpenSnackBack } = useContext(popupsContext);
     const [domains, setdomains] = useState({ status: [] })
 
@@ -186,4 +186,4 @@ const VehicleMAin = ({ title, openModal, setOpenModal, rowselected, fetchDataUse
     );
 }
 
-export default VehicleMAin;
+export default ClientMain;

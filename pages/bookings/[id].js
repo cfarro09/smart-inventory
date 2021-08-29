@@ -139,6 +139,7 @@ const Boooking = () => {
     const [fields, setfields] = useState([]);
     const [fieldshowed, setfieldshowed] = useState([]);
     const [visible, setvisible] = useState(undefined)
+    const [campusSelected, setCampusSelected] = useState(null);
     const [clientselected, setclientselected] = useState(null)
     const [openModalClient, setOpenModalClient] = useState(false)
     const [openModal, setOpenModal] = useState(false);
@@ -177,14 +178,13 @@ const Boooking = () => {
 
     const onChangeCampus = async ({ newValue }) => {
         if (newValue) {
+            setCampusSelected(newValue)
             triggeraxios('post', process.env.endpoints.selsimple, SEL_FIELDS_BY_CAMPUS(newValue.id_campus)).then(res => {
                 const datafields = validateResArray(res, true).map(x => ({ ...x, id_campus: newValue.id_campus, id: x.id_field, text: x.field_name, time_prices: JSON.parse(x.time_prices) }));
                 setfields(datafields);
             });
-            triggeraxios('post', process.env.endpoints.selsimple, SEL_EVENTS_BY_CAMPUS({ id_campus: newValue.id_campus })).then(res => {
-
-            });
         } else {
+            setCampusSelected(null)
             setfields([])
             setappointments([])
         }
@@ -203,9 +203,17 @@ const Boooking = () => {
         setrange(range);
     };
 
-    // useEffect(() => {
-        
-    // }, [range])
+    useEffect(() => {
+        if (campusSelected) {
+            triggeraxios('post', process.env.endpoints.selsimple, SEL_EVENTS_BY_CAMPUS({ 
+                id_campus: campusSelected.id_campus,
+                start_date: getDateZyx(range.startDate),
+                end_date: getDateZyx(range.endDate)
+            })).then(res => {
+                setappointments(validateResArray(res, true));
+            });
+        }
+    }, [range, campusSelected])
 
     const commitChanges = ({ added, changed, deleted }) => {
         setData((data) => {

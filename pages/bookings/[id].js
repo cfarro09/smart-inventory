@@ -74,6 +74,8 @@ const validateRule = (rule, startDate, endDate) => {
 
 const getDateZyx = (date) => new Date(new Date(date).setHours(10)).toISOString().substring(0, 10)
 
+const getStringFromDate = (date) => `${getDateZyx(date)} ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:00`;
+
 const getFieldsFree = (fields, startDate, endDate) => {
     return fields.map(field => {
         const fieldstime = field.time_prices.map(x => ({
@@ -190,6 +192,8 @@ const Boooking = () => {
         }
     }
 
+    console.log(data);
+
     const currentDateChange = currentDate => {
         let range = getRange(currentDate, currentView);
         setCurrentDate(currentDate);
@@ -205,12 +209,23 @@ const Boooking = () => {
 
     useEffect(() => {
         if (campusSelected) {
-            triggeraxios('post', process.env.endpoints.selsimple, SEL_EVENTS_BY_CAMPUS({ 
+            triggeraxios('post', process.env.endpoints.selsimple, SEL_EVENTS_BY_CAMPUS({
                 id_campus: campusSelected.id_campus,
                 start_date: getDateZyx(range.startDate),
                 end_date: getDateZyx(range.endDate)
             })).then(res => {
-                setappointments(validateResArray(res, true));
+                const appauxs = validateResArray(res, true).map(x => ({
+                    ...x,
+                    id: x.id_event_calendar,
+                    title: x.field_name,
+                    startDate: new Date(x.start_date),
+                    endDate: new Date(x.end_date),
+                    allDay: false,
+                    total: parseFloat(x.amount),
+                    hours: x.duration || 1,
+                    price: parseFloat(x.amount) / (x.duration || 1)
+                }));
+                setappointments(appauxs);
             });
         }
     }, [range, campusSelected])
@@ -264,7 +279,7 @@ const Boooking = () => {
             return data;
         });
     }
-
+    console.log(data);
     const onSave = () => {
         const callback = async () => {
             setModalQuestion({ visible: false });
@@ -285,9 +300,10 @@ const Boooking = () => {
                     data: data.map(x => ({
                         ...x,
                         description: '',
+                        duration: x.hours,
                         full_day: false,
-                        start_time: x.startDate,
-                        end_time: x.endDate,
+                        start_time: getStringFromDate(x.startDate),
+                        end_time: getStringFromDate(x.endDate),
                         amount: x.total,
                         status: 'ACTIVO'
                     }))
@@ -372,7 +388,7 @@ const Boooking = () => {
                 <div style={{ zIndex: 2 }}>
                     <Scheduler
                         locale="es-ES"
-                        data={data}
+                        data={appointments}
                         style={{ zIndex: '1000' }}
                     >
                         <ViewState

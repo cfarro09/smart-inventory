@@ -55,6 +55,7 @@ const AuthState = ({ children }) => {
     useEffect(() => {
         async function loadUserFromCookies() {
             if (token) {
+                console.log("validatetoken", router.pathname);
                 try {
                     const result = await clientAxios.get(process.env.endpoints.validatetoken);
 
@@ -89,18 +90,33 @@ const AuthState = ({ children }) => {
         loadUserFromCookies()
     }, [token])
 
+    useEffect(() => {
+        console.log("router.pathname", router.pathname, state.user);
+        if (router.pathname !== "/" && state.user) {
+            const routeraux = router.pathname === "/bookings/[id]" ? "/bookings" : router.pathname;
+            const menu = state.user.menu;
+            const appfound = menu.find(x => x.path === routeraux);
+
+            if (appfound && appfound.view){
+                dispatch({
+                    type: CHANGEAPP,
+                    payload: appfound
+                });
+                settologged({ isloading: false, logged: true, appfound });
+            }
+        }
+    }, [router])
+
     const [state, dispatch] = useReducer(authReducer, initialState)
 
     const login = async (payload, setisloading, setresultrequest) => {
         setisloading(true);
         try {
             const result = await clientAxios.post(process.env.endpoints.login, payload);
-            localStorage.setItem('typeuser', result.data.data.type);
             dispatch({
                 type: LOGIN_SUCCESS,
                 payload: result.data.data
             });
-            // router.push("/")
 
         } catch (e) {
             setresultrequest({

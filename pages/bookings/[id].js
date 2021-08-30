@@ -1,14 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react';
 import Layout from 'components/system/layout/layout'
 import Payment from 'components/payment/payment'
-import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
 import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
 import { useRouter } from 'next/router'
 import triggeraxios from 'config/axiosv2';
 import { validateResArray, getDomain, validateres } from 'config/helper';
 import RadioGroup from 'components/system/form/RadioGroup';
+import Switch from 'components/system/form/switch';
 import popupsContext from 'context/pop-ups/pop-upsContext';
 import SelectFunction from 'components/system/form/select-function';
 import ClientMain from 'components/client/clientmain';
@@ -31,7 +30,6 @@ import {
     TodayButton,
     ViewSwitcher
 } from '@devexpress/dx-react-scheduler-material-ui';
-import { add } from 'date-fns';
 
 const resources = (data) => [{
     fieldName: 'id_field',
@@ -56,9 +54,7 @@ const SEL_FIELDS_BY_CAMPUS = (id_campus) => ({
 
 const SEL_EVENTS_BY_CAMPUS = ({ id_campus = null, id_field = null, start_date, end_date, id_booking = null }) => ({
     method: "fn_sel_calendar_event",
-    data: {
-        id_campus, id_field, start_date, end_date, id_booking
-    }
+    data: { id_campus, id_field, start_date, end_date, id_booking }
 })
 
 const METHOD_INS = "fn_ins_client";
@@ -76,8 +72,12 @@ const getDateZyx = (date) => new Date(new Date(date).setHours(10)).toISOString()
 
 const getStringFromDate = (date) => `${getDateZyx(date)} ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:00`;
 
-const getFieldsFree = (fields, startDate, endDate) => {
-    return fields.map(field => {
+const getFieldsFree = (fields, startDate, endDate, appointments) => {
+    console.log("zyxww", appointments);
+    const aa = fields.map(field => {
+        const aux = appointments.some(x => x.id_field === field.id_field && x.startDate >= startDate && x.endDate <= endDate);
+        if (aux) 
+            return null;
         const fieldstime = field.time_prices.map(x => ({
             ...x,
             start_time: new Date(getDateZyx(startDate) + " " + x.start_time),
@@ -85,7 +85,10 @@ const getFieldsFree = (fields, startDate, endDate) => {
         }));
         const fieldtime = fieldstime.find(x => x.start_time <= startDate && endDate <= x.end_time);
         return fieldtime ? { ...field, price: fieldtime.price, text: field.field_name + " - S/ " + fieldtime.price } : null;
-    }).filter(x => !!x)
+    })
+    console.log("zyxww", aa);
+    console.log("zyxww", aa.filter(x => !!x));
+    return aa.filter(x => !!x)
 }
 
 const validateField = (fields, id_field, startDate, endDate) => {
@@ -116,9 +119,7 @@ const ItemEvent = ({ appointment }) => {
 }
 
 const getRange = (date, view) => {
-    if (view === "Day") {
-        return { startDate: date, endDate: date };
-    }
+    if (view === "Day") return { startDate: date, endDate: date };
     if (view === "Week") {
         let firstDay = date.getDate() - date.getDay();
         let lastDay = firstDay + 6;
@@ -146,8 +147,11 @@ const Boooking = () => {
     const [openModalClient, setOpenModalClient] = useState(false)
     const [openModal, setOpenModal] = useState(false);
     const [currentView, setCurrentView] = useState("Week");
-
-    const [appointments, setappointments] = useState([])
+    const [appointmentsShowed, setAppointmentsShowed] = useState(undefined)
+    const [appointments, setappointments] = useState(undefined)
+    const [showAllEvents, setShowAllEvents] = useState(true); // valor del switch
+    const [readOnly, setReadOnly] = useState(false); //bloquear cuando edite un evento ya creado en otra reserva
+    const [validateResources, setValidateResources] = useState(false);
 
     useEffect(() => {
         let continuezyx = true;
@@ -181,19 +185,19 @@ const Boooking = () => {
     const onChangeCampus = async ({ newValue }) => {
         if (newValue) {
             setCampusSelected(newValue)
-            triggeraxios('post', process.env.endpoints.selsimple, SEL_FIELDS_BY_CAMPUS(newValue.id_campus)).then(res => {
+            setOpenBackdrop(true);
+            await triggeraxios('post', process.env.endpoints.selsimple, SEL_FIELDS_BY_CAMPUS(newValue.id_campus)).then(res => {
                 const datafields = validateResArray(res, true).map(x => ({ ...x, id_campus: newValue.id_campus, id: x.id_field, text: x.field_name, time_prices: JSON.parse(x.time_prices) }));
                 setfields(datafields);
             });
+            setOpenBackdrop(false);
         } else {
             setCampusSelected(null)
             setfields([])
             setappointments([])
         }
     }
-
-    console.log(data);
-
+    console.log("dsad", appointments);
     const currentDateChange = currentDate => {
         let range = getRange(currentDate, currentView);
         setCurrentDate(currentDate);
@@ -201,7 +205,6 @@ const Boooking = () => {
     };
 
     const currentViewChange = currentView => {
-        console.log(currentDate);
         let range = getRange(currentDate, currentView);
         setCurrentView(currentView);
         setrange(range);
@@ -233,7 +236,6 @@ const Boooking = () => {
     const commitChanges = ({ added, changed, deleted }) => {
         setData((data) => {
             if (added) {
-                console.log("added", added);
                 if (!added.id_field) {
                     setOpenSnackBack(true, { success: false, message: "Debe seleccionar el campo." });
                     setvisible(true)
@@ -248,7 +250,7 @@ const Boooking = () => {
                 }
                 const hours = Math.ceil(Math.abs(added.endDate - added.startDate) / 36e5);
                 const startingAddedId = (data.length + 1) * - 1;
-                data = [...data, { id: startingAddedId, ...added, id_campus: fieldselected.id_campus, title: fieldselected.field_name, price: fieldselected.price, hours, total: fieldselected.price * hours }];
+                data = [...data, { id: startingAddedId, ...added, id_campus: fieldselected.id_campus, title: `*${fieldselected.field_name}`, price: fieldselected.price, hours, total: fieldselected.price * hours }];
             }
             if (changed) {
                 try {
@@ -279,7 +281,16 @@ const Boooking = () => {
             return data;
         });
     }
-    console.log(data);
+
+    useEffect(() => {
+        if (appointments) {
+            if (showAllEvents)
+                setAppointmentsShowed([...appointments, ...data])
+            else
+                setAppointmentsShowed(data)
+        }
+    }, [data, appointments])
+
     const onSave = () => {
         const callback = async () => {
             setModalQuestion({ visible: false });
@@ -323,7 +334,7 @@ const Boooking = () => {
 
         setModalQuestion({ visible: true, question: `¿Está seguro de guardar la reserva?`, callback })
     }
-
+    console.log("zyxwww", readOnly);
     const TimeTableCell = React.useCallback(React.memo(({ onDoubleClick, endDate, startDate, ...restProps }) => (
         <WeekView.TimeTableCell {...restProps} onDoubleClick={(e) => {
             if (endDate < new Date())
@@ -332,15 +343,31 @@ const Boooking = () => {
                 setOpenSnackBack(true, { success: false, message: "No hay campos a mostrar" });
                 return null;
             }
-            setfieldshowed(getFieldsFree(fields, startDate, endDate));
+            setfieldshowed(getFieldsFree(fields, startDate, endDate, [...appointments, ...data]));
+            setReadOnly(false)
             onDoubleClick(e)
         }}
         />
-    )), [fields]);
+    )), [fields, appointments, data]);
+
+    const onCheckedShowAllEvents = (checked) => {
+        setShowAllEvents(checked)
+        if (checked)
+            setAppointmentsShowed([...appointments, ...data])
+        else
+            setAppointmentsShowed(data)
+    }
 
     return (
         <Layout withPadding={false}>
             <div style={{ padding: '16px', paddingBottom: '0' }}>
+                <div className="col-2">
+                    <Switch
+                        title="Ver eventos"
+                        valueselected={true}
+                        callback={onCheckedShowAllEvents}
+                    />
+                </div>
                 <div className="row-zyx">
                     <SelectFunction
                         title="Clientes"
@@ -364,7 +391,7 @@ const Boooking = () => {
                         namefield="id_campus"
                         descfield="description"
                     />
-                    <div className="col-4" style={{ textAlign: 'right' }}>
+                    <div className="col-2" style={{ textAlign: 'right' }}>
                         {(booking.status === 'BORRADOR' || booking.status === '') ?
                             <Button
                                 variant="contained"
@@ -383,12 +410,13 @@ const Boooking = () => {
                         }
                     </div>
                 </div>
+
             </div>
             <div style={{ display: 'flex' }}>
                 <div style={{ zIndex: 2 }}>
                     <Scheduler
                         locale="es-ES"
-                        data={appointments}
+                        data={appointmentsShowed}
                         style={{ zIndex: '1000' }}
                     >
                         <ViewState
@@ -400,8 +428,9 @@ const Boooking = () => {
                         <EditingState
                             onEditingAppointmentChange={(e) => {
                                 if (e) {
-                                    const { startDate, endDate } = e
-                                    setfieldshowed(getFieldsFree(fields, startDate, endDate));
+                                    const { startDate, endDate, id } = e
+                                    setReadOnly(id > 0)
+                                    setfieldshowed(getFieldsFree(fields, startDate, endDate, [...appointments, ...data]));
                                 }
                             }}
                             onCommitChanges={commitChanges}
@@ -414,7 +443,10 @@ const Boooking = () => {
                             endDayHour={23}
                             timeTableCellComponent={TimeTableCell}
                         />
-                        <DayView />
+                        <DayView
+                            startDayHour={8}
+                            endDayHour={23}
+                        />
                         <Toolbar />
                         <DateNavigator />
                         <Appointments />
@@ -425,12 +457,16 @@ const Boooking = () => {
                         <AppointmentForm
                             locale="es-ES"
                             style={{ zIndex: '1000' }}
-                            fullSize={false}
+                            fullSize={true}
+                            readOnly={readOnly}
                             radioGroupComponent={RadioGroup}
                             visible={visible}
-                            commandLayoutComponent={({ onCancelButtonClick, ...props }) => {
+                            onVisibilityChange={e => {
+                                setValidateResources(e)
+                                setvisible(undefined)
+                            }}
+                            commandLayoutComponent={({ onCancelButtonClick,  ...props }) => {
                                 return <AppointmentForm.CommandLayout {...props} onCancelButtonClick={(e) => {
-                                    console.log("chau")
                                     setvisible(undefined)
                                     onCancelButtonClick(e)
                                 }} />
@@ -477,7 +513,7 @@ const Boooking = () => {
                             }}
                         />
                         <Resources
-                            data={resources(fieldshowed)}
+                            data={validateResources ? resources(fieldshowed) : resources(fields)}
                             mainResourceName="id_field"
                         />
                         <CurrentTimeIndicator

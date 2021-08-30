@@ -137,7 +137,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Layout = ({ children, withPadding = true }) => {
-    const { user, infosys } = useContext(authContext);
+    const { user, infosys, appselected: appfound } = useContext(authContext);
     const router = useRouter();
 
     const classes = useStyles();

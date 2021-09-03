@@ -11,6 +11,7 @@ import Switch from 'components/system/form/switch';
 import popupsContext from 'context/pop-ups/pop-upsContext';
 import SelectFunction from 'components/system/form/select-function';
 import ClientMain from 'components/client/clientmain';
+
 import {
     Scheduler,
     Resources,
@@ -59,13 +60,93 @@ const SEL_EVENTS_BY_CAMPUS = ({ id_campus = null, id_field = null, start_date, e
 
 const METHOD_INS = "fn_ins_client";
 
+function addDays(date, days) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+}
+
+const daysX = {
+    "SU": 0,
+    "MO": 1,
+    "TU": 2,
+    "WE": 3,
+    "TH": 4,
+    "FR": 5,
+    "SA": 6
+}
+
+const convertDate = (str) => {
+    const year = str.substring(0, 4);
+    const month = str.substring(4, 6);
+    const day = str.substring(6, 8);
+    const hour = str.substring(9, 10);
+    const minute = str.substring(11, 13);
+    const second = str.substring(13, 15);
+    return new Date(year, month - 1, day, hour, minute, second);
+}
+
 const validateRule = (rule, startDate, endDate) => {
+    if (!rule)
+        return null;
     const paramsSplited = rule.replace("RRULE:", "").split(";");
     const rules = paramsSplited.reduce((acc, item) => {
-        const [key, value] = x.split("=");
+        const [key, value] = item.split("=");
         acc[key] = value;
         return acc;
     }, {});
+    console.log("resultarray3", rule, startDate, endDate);
+    const count = rules["COUNT"] ? parseInt(rules["COUNT"]) : 0;
+    const until = rules["UNTIL"] ? convertDate(rules["UNTIL"]) : null;
+    let bydays = rules["BYDAY"] ? rules["BYDAY"].split(",").map(x => daysX[x]) : null;
+    const interval = parseInt(rules["INTERVAL"]);
+    const freq = rules["FREQ"];
+
+    if (freq === "DAILY") {
+        if (count) {
+            return [...Array(count)].map((_, x) => ({
+                startDate: addDays(startDate, (x) * interval),
+                endDate: addDays(endDate, (x) * interval),
+            }))
+        } else {
+            const dates = [];
+            let dateiterative = new Date(startDate);
+            let i = 0;
+            while (until > addDays(startDate, (i) * interval)) {
+                dateiterative = addDays(startDate, (i) * interval);
+                dates.push(dateiterative);
+                i++;
+            }
+            return dates;
+        }
+    } else if (freq === "WEEKLY") {
+        const datecurrent = startDate.getDay();
+        bydays = bydays || [datecurrent]
+        // if (count) {
+        let countDid = count ? 0 : -1;
+        const dates = [];
+        let itt = 0;
+        let validateUntil = true;
+        while (countDid < count && validateUntil) {
+            bydays.forEach(x => {
+                if (!(itt === 0 && x - datecurrent < 0)) {
+                    if (countDid < count) {
+                        const newevent = addDays(startDate, (itt * interval * 7) + (x - datecurrent));
+                        dates.push(newevent);
+                        if (until) {
+                            if (until < newevent)
+                                validateUntil = false
+                        }
+                        if (count)
+                            countDid++;
+                    }
+                }
+                itt++
+            })
+        }
+        console.log(dates);
+        return dates
+    }
 }
 
 const getDateZyx = (date) => new Date(new Date(date).setHours(10)).toISOString().substring(0, 10)
@@ -73,11 +154,10 @@ const getDateZyx = (date) => new Date(new Date(date).setHours(10)).toISOString()
 const getStringFromDate = (date) => `${getDateZyx(date)} ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:00`;
 
 const getFieldsFree = (fields, startDate, endDate, appointments) => {
-    console.log("zyxww", appointments);
     const aa = fields.map(field => {
         const aux = appointments.some(x => x.id_field === field.id_field && x.startDate >= startDate && x.endDate <= endDate);
-        if (aux) 
-            return null;
+        if (aux)
+            return null; // valida q haya un msimo campo en la misma hora
         const fieldstime = field.time_prices.map(x => ({
             ...x,
             start_time: new Date(getDateZyx(startDate) + " " + x.start_time),
@@ -86,8 +166,6 @@ const getFieldsFree = (fields, startDate, endDate, appointments) => {
         const fieldtime = fieldstime.find(x => x.start_time <= startDate && endDate <= x.end_time);
         return fieldtime ? { ...field, price: fieldtime.price, text: field.field_name + " - S/ " + fieldtime.price } : null;
     })
-    console.log("zyxww", aa);
-    console.log("zyxww", aa.filter(x => !!x));
     return aa.filter(x => !!x)
 }
 
@@ -121,17 +199,15 @@ const ItemEvent = ({ appointment }) => {
 const getRange = (date, view) => {
     if (view === "Day") return { startDate: date, endDate: date };
     if (view === "Week") {
-        let firstDay = date.getDate() - date.getDay();
-        let lastDay = firstDay + 6;
         return {
-            startDate: new Date(date.setDate(firstDay)),
-            endDate: new Date(date.setDate(lastDay))
+            startDate: addDays(date, -date.getDay()),
+            endDate: addDays(date, 6 - date.getDay())
         };
     }
 };
 
 const Boooking = () => {
-    const { setloadingglobal, setModalQuestion, setOpenBackdrop, setOpenSnackBack } = useContext(popupsContext);
+    const { setOpenDrawer, setModalQuestion, setOpenBackdrop, setOpenSnackBack } = useContext(popupsContext);
     const [data, setData] = useState([]);
     const [currentDate, setCurrentDate] = useState(new Date());
     const [range, setrange] = useState(getRange(new Date(), "Week"));
@@ -180,6 +256,7 @@ const Boooking = () => {
 
     useEffect(() => {
         getData();
+        setOpenDrawer(false)
     }, [])
 
     const onChangeCampus = async ({ newValue }) => {
@@ -197,7 +274,7 @@ const Boooking = () => {
             setappointments([])
         }
     }
-    console.log("dsad", appointments);
+
     const currentDateChange = currentDate => {
         let range = getRange(currentDate, currentView);
         setCurrentDate(currentDate);
@@ -236,6 +313,7 @@ const Boooking = () => {
     const commitChanges = ({ added, changed, deleted }) => {
         setData((data) => {
             if (added) {
+                const fd = validateRule(added.rRule, added.startDate, added.endDate);
                 if (!added.id_field) {
                     setOpenSnackBack(true, { success: false, message: "Debe seleccionar el campo." });
                     setvisible(true)
@@ -334,7 +412,7 @@ const Boooking = () => {
 
         setModalQuestion({ visible: true, question: `¿Está seguro de guardar la reserva?`, callback })
     }
-    console.log("zyxwww", readOnly);
+
     const TimeTableCell = React.useCallback(React.memo(({ onDoubleClick, endDate, startDate, ...restProps }) => (
         <WeekView.TimeTableCell {...restProps} onDoubleClick={(e) => {
             if (endDate < new Date())
@@ -391,7 +469,7 @@ const Boooking = () => {
                         namefield="id_campus"
                         descfield="description"
                     />
-                    <div className="col-2" style={{ textAlign: 'right' }}>
+                    <div className="col-4" style={{ textAlign: 'right' }}>
                         {(booking.status === 'BORRADOR' || booking.status === '') ?
                             <Button
                                 variant="contained"
@@ -465,7 +543,7 @@ const Boooking = () => {
                                 setValidateResources(e)
                                 setvisible(undefined)
                             }}
-                            commandLayoutComponent={({ onCancelButtonClick,  ...props }) => {
+                            commandLayoutComponent={({ onCancelButtonClick, ...props }) => {
                                 return <AppointmentForm.CommandLayout {...props} onCancelButtonClick={(e) => {
                                     setvisible(undefined)
                                     onCancelButtonClick(e)

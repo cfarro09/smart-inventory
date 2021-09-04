@@ -332,12 +332,12 @@ const Boooking = () => {
                 end_date: getDateZyx(range.endDate)
             })).then(res => {
                 if (data.length > 0) {
-                    const listIndexed = data.filter(x => x.id > 0).reduce((acc, curr) => {
-                        acc[curr.id] = curr;
+                    console.log("listIndexed", data);
+                    const listIndexed = data.filter(x => !!x.id_event_calendar).reduce((acc, curr) => {
+                        acc[curr.id_event_calendar] = curr;
                         return acc;
                     }, {});
-                    console.log("dasdsa", listIndexed);
-                    console.log("dasdsa", validateResArray(res, true))
+                    console.log("listIndexed", listIndexed);
                     const appauxs = validateResArray(res, true).filter(x => !listIndexed[x.id_event_calendar]).map(x => ({
                         ...x,
                         id: x.id_event_calendar,
@@ -543,6 +543,10 @@ const Boooking = () => {
         <WeekView.TimeTableCell {...restProps} onDoubleClick={(e) => {
             if (endDate < new Date())
                 return null;
+            if (!(booking.status === 'BORRADOR' || booking.status === '')) {
+                setOpenSnackBack(true, { success: false, message: "No puede registrar mas eventos." });
+                return null;
+            }
             if (fields.length === 0) {
                 setOpenSnackBack(true, { success: false, message: "No hay campos a mostrar" });
                 return null;
@@ -634,8 +638,9 @@ const Boooking = () => {
                         <EditingState
                             onEditingAppointmentChange={(e) => {
                                 if (e) {
-                                    const { startDate, endDate, id, id_field } = e
-                                    setReadOnly(id > 0)
+                                    const { startDate, endDate, id, id_field } = e;
+                                    
+                                    setReadOnly(id > 0 && !(booking.status === 'BORRADOR' || booking.status === ''))
 
                                     setfieldshowed(getFieldsFree(fields, startDate, endDate, [...(appointments || []), ...data], id));
                                 }

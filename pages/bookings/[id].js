@@ -407,7 +407,8 @@ const Boooking = () => {
             const res = await triggeraxios('post', process.env.endpoints.transaction, VALIDATE_BOOKING_BY_EVENT(datesFromRecurrence.map(x => ({
                 id_field: x.id_field,
                 start_time: getStringFromDate(x.start_time),
-                end_time: getStringFromDate(x.end_time)
+                end_time: getStringFromDate(x.end_time),
+                id_booking: booking.id_booking
             }))));
             setOpenBackdrop(false)
             if (!res.success) {

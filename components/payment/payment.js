@@ -25,7 +25,7 @@ const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
         })();
         return () => continuezyx = false;
     }, [])
-    
+
     useEffect(() => {
         if (openModal) {
             formik.resetForm();
@@ -76,65 +76,63 @@ const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
         }
     });
     return (
-        <>
-            <Dialog
-                open={openModal}
-                fullWidth={true}
-                maxWidth='sm'
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
+        <Dialog
+            open={openModal}
+            fullWidth={true}
+            maxWidth='sm'
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <form
+                noValidate
+                onSubmit={formik.handleSubmit}
             >
-                <form
-                    noValidate
-                    onSubmit={formik.handleSubmit}
-                >
-                    <DialogTitle id="alert-dialog-title">Pagar</DialogTitle>
-                    <DialogContent>
-                        <div className="row-zyx">
-                            <InputFormk
-                                name="reference"
-                                classname="col-6"
-                                label="Referencia"
-                                formik={formik}
-                            />
-                            <InputFormk
-                                name="amount"
-                                classname="col-6"
-                                label="Monto a pagar"
-                                type="number"
-                                formik={formik}
-                            />
-                        </div>
-                        <div className="row-zyx">
-                            <UseSelectDomain
-                                classname="col-6"
-                                title="Tipo pago"
-                                domainname={paymenttype}
-                                valueselected={formik.values.paymenttype}
-                                namefield="paymenttype"
-                                formik={formik}
-                            />
-                        </div>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button
-                            type="submit"
-                            color="primary"
-                        >
-                            GUARDAR
-                        </Button>
-                        <Button
-                            type="button"
-                            color="secondary"
-                            style={{ marginLeft: '1rem' }}
-                            onClick={() => setOpenModal(false)}
-                        >
-                            Cerrar
-                        </Button>
-                    </DialogActions>
-                </form>
-            </Dialog>
-        </>
+                <DialogTitle id="alert-dialog-title">Pagar reserva {booking.client_name && "de " + booking.client_name}</DialogTitle>
+                <DialogContent>
+                    <div className="row-zyx">
+                        <InputFormk
+                            name="reference"
+                            classname="col-6"
+                            label="Referencia"
+                            formik={formik}
+                        />
+                        <InputFormk
+                            name="amount"
+                            classname="col-6"
+                            label="Monto a pagar"
+                            type="number"
+                            formik={formik}
+                        />
+                    </div>
+                    <div className="row-zyx">
+                        <UseSelectDomain
+                            classname="col-6"
+                            title="Tipo pago"
+                            domainname={paymenttype}
+                            valueselected={formik.values.paymenttype}
+                            namefield="paymenttype"
+                            formik={formik}
+                        />
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        type="submit"
+                        color="primary"
+                    >
+                        GUARDAR
+                    </Button>
+                    <Button
+                        type="button"
+                        color="secondary"
+                        style={{ marginLeft: '1rem' }}
+                        onClick={() => setOpenModal(false)}
+                    >
+                        Cerrar
+                    </Button>
+                </DialogActions>
+            </form>
+        </Dialog>
     );
 }
 

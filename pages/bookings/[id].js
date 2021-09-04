@@ -161,7 +161,7 @@ const getDateZyx = (date) => new Date(new Date(date).setHours(10)).toISOString()
 
 const getStringFromDate = (date) => `${getDateZyx(date)} ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:00`;
 
-const getFieldsFree = (fields, startDate, endDate, appointments, id = null) => {
+const getFieldsFree = (setOpenSnackBack, fields, startDate, endDate, appointments, id = null) => {
 
     const aa = fields.map(field => {
         const appointmentsAux = id ? appointments.filter(x => x.id !== id) : appointments;
@@ -176,7 +176,10 @@ const getFieldsFree = (fields, startDate, endDate, appointments, id = null) => {
         const fieldtime = fieldstime.find(x => x.start_time <= startDate && endDate <= x.end_time);
         return fieldtime ? { ...field, price: fieldtime.price, text: field.field_name + " - S/ " + fieldtime.price } : null;
     })
-    return aa.filter(x => !!x)
+    const aab = aa.filter(x => !!x)
+    if (aab.length === 0) 
+        setOpenSnackBack(true, { success: false, message: "No existe campos para este horario" })
+    return aab;
 }
 
 const validateField = (fields, id_field, startDate, endDate) => {
@@ -558,7 +561,7 @@ const Boooking = () => {
                 return null;
             }
             console.log(appointments);
-            setfieldshowed(getFieldsFree(fields, startDate, endDate, [...appointments, ...data]));
+            setfieldshowed(getFieldsFree(setOpenSnackBack, fields, startDate, endDate, [...appointments, ...data]));
             setReadOnly(false)
             onDoubleClick(e)
         }}
@@ -648,7 +651,7 @@ const Boooking = () => {
                                     
                                     setReadOnly(id > 0 && !(booking.status === 'BORRADOR' || booking.status === ''))
 
-                                    setfieldshowed(getFieldsFree(fields, startDate, endDate, [...(appointments || []), ...data], id));
+                                    setfieldshowed(getFieldsFree(setOpenSnackBack, fields, startDate, endDate, [...(appointments || []), ...data], id));
                                 }
                             }}
                             onCommitChanges={commitChanges}

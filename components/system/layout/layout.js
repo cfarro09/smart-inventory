@@ -321,9 +321,6 @@ const Layout = ({ children, withPadding = true }) => {
                                                 {children}
                                             </div>
                                         </Box>
-                                        <Box component="footer" px={2} pt={1} bgcolor="white">
-                                            Todos los derechos reservados, Copyright © 2021
-                                        </Box>
                                     </div>
 
                                 </main>

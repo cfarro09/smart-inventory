@@ -53,6 +53,12 @@ const SEL_FIELDS_BY_CAMPUS = (id_campus) => ({
     data: { status: 'ACTIVO', id_campus }
 })
 
+const VALIDATE_BOOKING_BY_EVENT = (data) => ({
+    method: "fn_validate_booking_date",
+    header: { data: {} },
+    details: { data }
+})
+
 const SEL_EVENTS_BY_CAMPUS = ({ id_campus = null, id_field = null, start_date, end_date, id_booking = null }) => ({
     method: "fn_sel_calendar_event",
     data: { id_campus, id_field, start_date, end_date, id_booking }
@@ -104,10 +110,7 @@ const validateRule = (rule, startDate, endDate) => {
 
     if (freq === "DAILY") {
         if (count) {
-            return [...Array(count)].map((_, x) => ({
-                startDate: addDays(startDate, (x) * interval),
-                endDate: addDays(endDate, (x) * interval),
-            }))
+            return [...Array(count)].map((_, x) => addDays(startDate, (x) * interval))
         } else {
             const dates = [];
             let dateiterative = new Date(startDate);
@@ -122,7 +125,6 @@ const validateRule = (rule, startDate, endDate) => {
     } else if (freq === "WEEKLY") {
         const datecurrent = startDate.getDay();
         bydays = bydays || [datecurrent]
-        // if (count) {
         let countDid = count ? 0 : -1;
         const dates = [];
         let itt = 0;
@@ -153,9 +155,11 @@ const getDateZyx = (date) => new Date(new Date(date).setHours(10)).toISOString()
 
 const getStringFromDate = (date) => `${getDateZyx(date)} ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:00`;
 
-const getFieldsFree = (fields, startDate, endDate, appointments) => {
+const getFieldsFree = (fields, startDate, endDate, appointments, id = null) => {
+
     const aa = fields.map(field => {
-        const aux = appointments.some(x => x.id_field === field.id_field && x.startDate >= startDate && x.endDate <= endDate);
+        const appointmentsAux = id ? appointments.filter(x => x.id !== id) : appointments;
+        const aux = appointmentsAux.some(x => x.id_field === field.id_field && x.startDate >= startDate && x.endDate <= endDate);
         if (aux)
             return null; // valida q haya un msimo campo en la misma hora
         const fieldstime = field.time_prices.map(x => ({
@@ -310,45 +314,112 @@ const Boooking = () => {
         }
     }, [range, campusSelected])
 
-    const commitChanges = ({ added, changed, deleted }) => {
+    const commitChanges = async ({ added, changed, deleted }) => {
+        let datesFromRecurrence = null;
+        if (added && !added.id_field) {
+            setOpenSnackBack(true, { success: false, message: "Debe seleccionar el campo." });
+            setvisible(true)
+            return data;
+        }
+        let newchange = null
+        if (changed) {
+            const [idtmp, changes] = Object.entries(changed)[0];
+            if (changes.rRule) {
+                newchange = { ...data.find(x => x.id == idtmp), ...changes };
+            }
+        }
+
+        if ((added && added.rRule) || (newchange && newchange.rRule)) {
+            setOpenBackdrop(true)
+            const diffDates = added ? added.endDate - added.startDate : newchange.endDate - newchange.startDate;
+            const futureDates = added ? validateRule(added.rRule, added.startDate, added.endDate) : validateRule(newchange.rRule, newchange.startDate, newchange.endDate);
+            // console.log(futureDates);
+            datesFromRecurrence = futureDates.map(x => {
+                return {
+                    id_field: added ? added.id_field : newchange.id_field,
+                    start_time: x,
+                    end_time: new Date(x.getTime() + diffDates)
+                }
+            })
+            const res = await triggeraxios('post', process.env.endpoints.transaction, VALIDATE_BOOKING_BY_EVENT(datesFromRecurrence.map(x => ({
+                id_field: x.id_field,
+                start_time: getStringFromDate(x.start_time),
+                end_time: getStringFromDate(x.end_time)
+            }))));
+            setOpenBackdrop(false)
+            if (!res.success) {
+                setOpenSnackBack(true, { success: false, message: res.msg });
+                setvisible(true)
+                return;
+            }
+        }
         setData((data) => {
             if (added) {
-                const fd = validateRule(added.rRule, added.startDate, added.endDate);
-                if (!added.id_field) {
-                    setOpenSnackBack(true, { success: false, message: "Debe seleccionar el campo." });
-                    setvisible(true)
-                    return data;
-                }
                 setvisible(undefined);
                 const fieldselected = validateField(fields, added.id_field, added.startDate, added.endDate);
-
                 if (!fieldselected) {
                     setOpenSnackBack(true, { success: false, message: "El campo no está disponible en ese horario" });
                     return data;
                 }
                 const hours = Math.ceil(Math.abs(added.endDate - added.startDate) / 36e5);
                 const startingAddedId = (data.length + 1) * - 1;
-                data = [...data, { id: startingAddedId, ...added, id_campus: fieldselected.id_campus, title: `*${fieldselected.field_name}`, price: fieldselected.price, hours, total: fieldselected.price * hours }];
+                if (datesFromRecurrence) {
+                    const events = datesFromRecurrence.map((x, index) => ({
+                        id: startingAddedId - index,
+                        startDate: x.start_time,
+                        endDate: x.end_time,
+                        id_field: added.id_field,
+                        id_campus: fieldselected.id_campusm,
+                        title: `*${fieldselected.field_name}`,
+                        price: fieldselected.price,
+                        hours,
+                        total: fieldselected.price * hours
+
+                    }))
+                    data = [...data, ...events];
+                } else {
+                    data = [...data, { id: startingAddedId, ...added, id_campus: fieldselected.id_campus, title: `*${fieldselected.field_name}`, price: fieldselected.price, hours, total: fieldselected.price * hours }];
+                }
             }
             if (changed) {
                 try {
-                    data = data.map(appointment => {
-                        if (!changed[appointment.id])
-                            return appointment;
-
-                        const changes = { ...appointment, ...changed[appointment.id] };
-
+                    if (datesFromRecurrence) {
                         setvisible(undefined);
-                        const fieldselected = validateField(fields, changes.id_field, changes.startDate, changes.endDate);
-
-                        if (!fieldselected) {
-                            throw new Error("El campo no está disponible en ese horario");
-                        }
-                        const hours = Math.ceil(Math.abs(changes.endDate - changes.startDate) / 36e5);
-                        return { ...changes, id_campus: fieldselected.id_campus, title: fieldselected.field_name, price: fieldselected.price, hours, total: fieldselected.price * hours }
-
-                    });
+                        const fieldselected = validateField(fields, newchange.id_field, newchange.startDate, newchange.endDate);
+                        const hours = Math.ceil(Math.abs(newchange.endDate - newchange.startDate) / 36e5);
+                        const startingAddedId = (data.length + 1) * - 1;
+                        const events = datesFromRecurrence.map((x, index) => ({
+                            id: startingAddedId - index,
+                            startDate: x.start_time,
+                            endDate: x.end_time,
+                            id_field: newchange.id_field,
+                            id_campus: fieldselected.id_campusm,
+                            title: `*${fieldselected.field_name}`,
+                            price: fieldselected.price,
+                            hours,
+                            total: fieldselected.price * hours
+                        }))
+                        data = data.filter(x => x.id != newchange.id);
+                        data = [...data, ...events];
+                    } else {
+                        data = data.map(appointment => {
+                            if (!changed[appointment.id])
+                                return appointment;
+    
+                            const changes = { ...appointment, ...changed[appointment.id] };
+                            setvisible(undefined);
+                            const fieldselected = validateField(fields, changes.id_field, changes.startDate, changes.endDate);
+    
+                            if (!fieldselected) {
+                                throw new Error("El campo no está disponible en ese horario");
+                            }
+                            const hours = Math.ceil(Math.abs(changes.endDate - changes.startDate) / 36e5);
+                            return { ...changes, id_campus: fieldselected.id_campus, title: fieldselected.field_name, price: fieldselected.price, hours, total: fieldselected.price * hours }
+    
+                        });
+                    }
                 } catch (error) {
+                    console.log(error);
                     setOpenSnackBack(true, { success: false, message: "El campo no está disponible en ese horario" });
                     return data;
                 }
@@ -439,14 +510,15 @@ const Boooking = () => {
     return (
         <Layout withPadding={false}>
             <div style={{ padding: '16px', paddingBottom: '0' }}>
-                <div className="col-2">
-                    <Switch
-                        title="Ver eventos"
-                        valueselected={true}
-                        callback={onCheckedShowAllEvents}
-                    />
-                </div>
+
                 <div className="row-zyx">
+                    <div className="col-2">
+                        <Switch
+                            title="Ver eventos"
+                            valueselected={true}
+                            callback={onCheckedShowAllEvents}
+                        />
+                    </div>
                     <SelectFunction
                         title="Clientes"
                         datatosend={clients}
@@ -469,7 +541,7 @@ const Boooking = () => {
                         namefield="id_campus"
                         descfield="description"
                     />
-                    <div className="col-4" style={{ textAlign: 'right' }}>
+                    <div className="col-2" style={{ textAlign: 'right' }}>
                         {(booking.status === 'BORRADOR' || booking.status === '') ?
                             <Button
                                 variant="contained"
@@ -506,9 +578,9 @@ const Boooking = () => {
                         <EditingState
                             onEditingAppointmentChange={(e) => {
                                 if (e) {
-                                    const { startDate, endDate, id } = e
+                                    const { startDate, endDate, id, id_field } = e
                                     setReadOnly(id > 0)
-                                    setfieldshowed(getFieldsFree(fields, startDate, endDate, [...appointments, ...data]));
+                                    setfieldshowed(getFieldsFree(fields, startDate, endDate, [...appointments, ...data], id));
                                 }
                             }}
                             onCommitChanges={commitChanges}
@@ -602,18 +674,18 @@ const Boooking = () => {
                     </Scheduler>
                 </div>
                 {data.length > 0 &&
-                    <div style={{ width: '200px', minWidth: '200px', padding: '8px' }}>
+                    <div style={{ width: '200px', minWidth: '200px', padding: '8px', overflowY: 'auto', height: '600px' }}>
                         <div style={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', paddingBottom: '4px', marginBottom: '4px', borderBottom: '1px solid #e1e1e1' }}>
                             <span>Detalle</span>
                             <span>Importe</span>
                         </div>
-                        {data.map((appointment, index) => (
-                            <ItemEvent key={`index${index}`} appointment={appointment} />
-                        ))}
-                        <div style={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
+                        <div style={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', paddingBottom: '4px', marginBottom: '4px', borderBottom: '1px solid #e1e1e1' }}>
                             <span>Total</span>
                             <span>S/ {data.reduce((acc, i) => acc + i.total, 0).toFixed(2)}</span>
                         </div>
+                        {data.map((appointment, index) => (
+                            <ItemEvent key={`index${index}`} appointment={appointment} />
+                        ))}
                     </div>
                 }
             </div>

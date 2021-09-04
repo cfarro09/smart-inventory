@@ -465,8 +465,8 @@ const Boooking = () => {
                             hours,
                             total: fieldselected.price * hours
                         }))
+                        setEventsBookingDeleted(e => [...e, ...data.filter(x => !!x.id_event_calendar && x.id === newchange.id)]);
                         data = data.filter(x => x.id != newchange.id);
-                        setEventsBookingDeleted(e => [...e, data.filter(x => !!x.id_event_calendar)])
                         data = [...data, ...events];
                     } else {
                         data = data.map(appointment => {

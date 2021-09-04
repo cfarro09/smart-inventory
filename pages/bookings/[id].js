@@ -48,6 +48,11 @@ const SELCAMPUS = {
     data: { status: 'ACTIVO' }
 }
 
+const SEL_BOOKING_BY_ID = (id_booking) => ({
+    method: "fn_sel_booking",
+    data: { status: null, id_booking }
+})
+
 const SEL_FIELDS_BY_CAMPUS = (id_campus) => ({
     method: "fn_sel_field_by_campus ",
     data: { status: 'ACTIVO', id_campus }
@@ -239,20 +244,31 @@ const Boooking = () => {
             const id_booking = parseInt(router.query.id);
             setbooking({ id_booking: router.query.id, status: '' });
             if (id_booking) {
-                triggeraxios('post', process.env.endpoints.selsimple, SEL_EVENTS_BY_CAMPUS({ id_booking })).then(r => {
-                    const appauxs = validateResArray(r, true).map(x => ({
-                        ...x,
-                        id: x.id_event_calendar,
-                        title: x.field_name,
-                        startDate: new Date(x.start_date),
-                        endDate: new Date(x.end_date),
-                        allDay: false,
-                        total: parseFloat(x.amount),
-                        hours: x.duration || 1,
-                        price: parseFloat(x.amount) / (x.duration || 1)
-                    }));
-                    setData(appauxs);
-                })
+                (async () => {
+                    const r = await triggeraxios('post', process.env.endpoints.selsimple, SEL_BOOKING_BY_ID(id_booking))
+                    const resultbooking = validateResArray(r, true)
+                    if (resultbooking.length === 0)
+                        return router.push("/bookings")
+                    
+                    const bookingselected = resultbooking[0];
+                    console.log("dasdsa", bookingselected);
+                    setbooking(bookingselected);
+                    triggeraxios('post', process.env.endpoints.selsimple, SEL_EVENTS_BY_CAMPUS({ id_booking })).then(r => {
+                        const appauxs = validateResArray(r, true).map(x => ({
+                            ...x,
+                            id: bookingselected.status === "BORRADOR" ?  x.id_event_calendar * -1 : x.id_event_calendar,
+                            title: x.field_name,
+                            startDate: new Date(x.start_date),
+                            endDate: new Date(x.end_date),
+                            allDay: false,
+                            total: parseFloat(x.amount),
+                            hours: x.duration || 1,
+                            price: parseFloat(x.amount) / (x.duration || 1)
+                        }));
+                        setData(appauxs);
+                    })
+                })()
+                
             }
         }
 
@@ -315,18 +331,39 @@ const Boooking = () => {
                 start_date: getDateZyx(range.startDate),
                 end_date: getDateZyx(range.endDate)
             })).then(res => {
-                const appauxs = validateResArray(res, true).map(x => ({
-                    ...x,
-                    id: x.id_event_calendar,
-                    title: x.field_name,
-                    startDate: new Date(x.start_date),
-                    endDate: new Date(x.end_date),
-                    allDay: false,
-                    total: parseFloat(x.amount),
-                    hours: x.duration || 1,
-                    price: parseFloat(x.amount) / (x.duration || 1)
-                }));
-                setappointments(appauxs);
+                if (data.length > 0) {
+                    const listIndexed = data.filter(x => x.id > 0).reduce((acc, curr) => {
+                        acc[curr.id] = curr;
+                        return acc;
+                    }, {});
+                    console.log("dasdsa", listIndexed);
+                    console.log("dasdsa", validateResArray(res, true))
+                    const appauxs = validateResArray(res, true).filter(x => !listIndexed[x.id_event_calendar]).map(x => ({
+                        ...x,
+                        id: x.id_event_calendar,
+                        title: x.field_name,
+                        startDate: new Date(x.start_date),
+                        endDate: new Date(x.end_date),
+                        allDay: false,
+                        total: parseFloat(x.amount),
+                        hours: x.duration || 1,
+                        price: parseFloat(x.amount) / (x.duration || 1)
+                    }));
+                    setappointments(appauxs);
+                } else {
+                    const appauxs = validateResArray(res, true).map(x => ({
+                        ...x,
+                        id: x.id_event_calendar,
+                        title: x.field_name,
+                        startDate: new Date(x.start_date),
+                        endDate: new Date(x.end_date),
+                        allDay: false,
+                        total: parseFloat(x.amount),
+                        hours: x.duration || 1,
+                        price: parseFloat(x.amount) / (x.duration || 1)
+                    }));
+                    setappointments(appauxs);
+                }
             });
         }
     }, [range, campusSelected])
@@ -454,7 +491,8 @@ const Boooking = () => {
                 setAppointmentsShowed([...appointments, ...data])
             else
                 setAppointmentsShowed(data)
-        }
+        } else if (data.length > 0) 
+            setAppointmentsShowed(data)
     }, [data, appointments])
 
     const onSave = () => {
@@ -509,6 +547,7 @@ const Boooking = () => {
                 setOpenSnackBack(true, { success: false, message: "No hay campos a mostrar" });
                 return null;
             }
+            console.log(appointments);
             setfieldshowed(getFieldsFree(fields, startDate, endDate, [...appointments, ...data]));
             setReadOnly(false)
             onDoubleClick(e)
@@ -597,7 +636,8 @@ const Boooking = () => {
                                 if (e) {
                                     const { startDate, endDate, id, id_field } = e
                                     setReadOnly(id > 0)
-                                    setfieldshowed(getFieldsFree(fields, startDate, endDate, [...appointments, ...data], id));
+                                    
+                                    setfieldshowed(getFieldsFree(fields, startDate, endDate, [...(appointments || []), ...data], id));
                                 }
                             }}
                             onCommitChanges={commitChanges}

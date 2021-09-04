@@ -227,6 +227,7 @@ const Boooking = () => {
     const router = useRouter();
     const [booking, setbooking] = useState({ id_booking: 0, status: '' });
     const [clients, setclients] = useState([]);
+    const [eventsBookingDeleted, setEventsBookingDeleted] = useState([]);
     const [campus, setcampus] = useState([]);
     const [fields, setfields] = useState([]);
     const [fieldshowed, setfieldshowed] = useState([]);
@@ -337,7 +338,8 @@ const Boooking = () => {
             })).then(res => {
                 if (data.length > 0) {
                     console.log("listIndexed", data);
-                    const listIndexed = data.filter(x => !!x.id_event_calendar).reduce((acc, curr) => {
+                    console.log("listIndexed-eventdeleted", eventsBookingDeleted);
+                    const listIndexed = [...data, ...eventsBookingDeleted].filter(x => !!x.id_event_calendar).reduce((acc, curr) => {
                         acc[curr.id_event_calendar] = curr;
                         return acc;
                     }, {});
@@ -464,6 +466,7 @@ const Boooking = () => {
                             total: fieldselected.price * hours
                         }))
                         data = data.filter(x => x.id != newchange.id);
+                        setEventsBookingDeleted(e => [...e, data.filter(x => !!x.id_event_calendar)])
                         data = [...data, ...events];
                     } else {
                         data = data.map(appointment => {

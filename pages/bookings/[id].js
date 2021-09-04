@@ -248,15 +248,15 @@ const Boooking = () => {
                     const r = await triggeraxios('post', process.env.endpoints.selsimple, SEL_BOOKING_BY_ID(id_booking))
                     const resultbooking = validateResArray(r, true)
                     if (resultbooking.length === 0)
-                        return router.push("/bookings")
-                    
+                        return router.push("/bookings").then(() => setOpenSnackBack(true, { success: false, message: "No existe ninguna reserva con ese ID." }))
+
                     const bookingselected = resultbooking[0];
                     console.log("dasdsa", bookingselected);
                     setbooking(bookingselected);
                     triggeraxios('post', process.env.endpoints.selsimple, SEL_EVENTS_BY_CAMPUS({ id_booking })).then(r => {
                         const appauxs = validateResArray(r, true).map(x => ({
                             ...x,
-                            id: bookingselected.status === "BORRADOR" ?  x.id_event_calendar * -1 : x.id_event_calendar,
+                            id: bookingselected.status === "BORRADOR" ? x.id_event_calendar * -1 : x.id_event_calendar,
                             title: x.field_name,
                             startDate: new Date(x.start_date),
                             endDate: new Date(x.end_date),
@@ -268,7 +268,7 @@ const Boooking = () => {
                         setData(appauxs);
                     })
                 })()
-                
+
             }
         }
 
@@ -491,7 +491,7 @@ const Boooking = () => {
                 setAppointmentsShowed([...appointments, ...data])
             else
                 setAppointmentsShowed(data)
-        } else if (data.length > 0) 
+        } else if (data.length > 0)
             setAppointmentsShowed(data)
     }, [data, appointments])
 
@@ -636,7 +636,7 @@ const Boooking = () => {
                                 if (e) {
                                     const { startDate, endDate, id, id_field } = e
                                     setReadOnly(id > 0)
-                                    
+
                                     setfieldshowed(getFieldsFree(fields, startDate, endDate, [...(appointments || []), ...data], id));
                                 }
                             }}

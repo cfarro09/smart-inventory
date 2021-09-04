@@ -43,7 +43,7 @@ const Bookings = () => {
                                     className="button-floating"
                                     disabled={!appfound.update}
                                     onClick={() => {
-                                        selectrow(props.cell.row.original);
+                                        router.push(`/bookings/${props.cell.row.original.id_booking}`)
                                     }}
                                 >
                                     <EditIcon
@@ -114,7 +114,7 @@ const Bookings = () => {
     const selectrow = (row) => {
         if (!row) {
             console.log('/bookings/0');
-            router.replace('/bookings/0')
+            router.push('/bookings/0')
         }
     }
     const deleterow = (row) => {

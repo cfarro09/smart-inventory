@@ -32,7 +32,7 @@ const Payment = ({ openModal, setOpenModal, booking, fetchDataUser }) => {
             id_booking: booking.id_booking,
             paymenttype: '',
             reference: '',
-            amount: '',
+            amount: 0,
         },
         validationSchema: Yup.object({
             paymenttype: Yup.string().required('El tipo de pago es obligatorio'),
@@ -43,8 +43,16 @@ const Payment = ({ openModal, setOpenModal, booking, fetchDataUser }) => {
             const callback = async () => {
                 setModalQuestion({ visible: false });
                 const dattosend = {
-                    method: method_ins,
-                    data: values
+                    method: "fn_ins_payment",
+                    data: {
+                        id_payment: 0,
+                        id_booking: booking.id_booking,
+                        description: '',
+                        payment_type: values.paymenttype,
+                        reference: values.reference,
+                        amount: values.amount,
+                        status: 'status',
+                    }
                 }
 
                 setOpenBackdrop(true);

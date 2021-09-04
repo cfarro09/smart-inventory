@@ -59,7 +59,7 @@ const VALIDATE_BOOKING_BY_EVENT = (data) => ({
     details: { data }
 })
 
-const SEL_EVENTS_BY_CAMPUS = ({ id_campus = null, id_field = null, start_date, end_date, id_booking = null }) => ({
+const SEL_EVENTS_BY_CAMPUS = ({ id_campus = null, id_field = null, start_date = null, end_date = null, id_booking = null }) => ({
     method: "fn_sel_calendar_event",
     data: { id_campus, id_field, start_date, end_date, id_booking }
 })
@@ -236,7 +236,24 @@ const Boooking = () => {
     useEffect(() => {
         let continuezyx = true;
         if (router?.query?.id) {
+            const id_booking = parseInt(router.query.id);
             setbooking({ id_booking: router.query.id, status: '' });
+            if (id_booking) {
+                triggeraxios('post', process.env.endpoints.selsimple, SEL_EVENTS_BY_CAMPUS({ id_booking })).then(r => {
+                    const appauxs = validateResArray(r, true).map(x => ({
+                        ...x,
+                        id: x.id_event_calendar,
+                        title: x.field_name,
+                        startDate: new Date(x.start_date),
+                        endDate: new Date(x.end_date),
+                        allDay: false,
+                        total: parseFloat(x.amount),
+                        hours: x.duration || 1,
+                        price: parseFloat(x.amount) / (x.duration || 1)
+                    }));
+                    setData(appauxs);
+                })
+            }
         }
 
         return () => continuezyx = false;
@@ -369,7 +386,7 @@ const Boooking = () => {
                         startDate: x.start_time,
                         endDate: x.end_time,
                         id_field: added.id_field,
-                        id_campus: fieldselected.id_campusm,
+                        id_campus: fieldselected.id_campus,
                         title: `*${fieldselected.field_name}`,
                         price: fieldselected.price,
                         hours,
@@ -393,7 +410,7 @@ const Boooking = () => {
                             startDate: x.start_time,
                             endDate: x.end_time,
                             id_field: newchange.id_field,
-                            id_campus: fieldselected.id_campusm,
+                            id_campus: fieldselected.id_campus,
                             title: `*${fieldselected.field_name}`,
                             price: fieldselected.price,
                             hours,
@@ -405,17 +422,17 @@ const Boooking = () => {
                         data = data.map(appointment => {
                             if (!changed[appointment.id])
                                 return appointment;
-    
+
                             const changes = { ...appointment, ...changed[appointment.id] };
                             setvisible(undefined);
                             const fieldselected = validateField(fields, changes.id_field, changes.startDate, changes.endDate);
-    
+
                             if (!fieldselected) {
                                 throw new Error("El campo no está disponible en ese horario");
                             }
                             const hours = Math.ceil(Math.abs(changes.endDate - changes.startDate) / 36e5);
                             return { ...changes, id_campus: fieldselected.id_campus, title: fieldselected.field_name, price: fieldselected.price, hours, total: fieldselected.price * hours }
-    
+
                         });
                     }
                 } catch (error) {

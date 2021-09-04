@@ -31,6 +31,7 @@ import {
     TodayButton,
     ViewSwitcher
 } from '@devexpress/dx-react-scheduler-material-ui';
+import { add } from 'date-fns';
 
 const resources = (data) => [{
     fieldName: 'id_field',
@@ -372,6 +373,11 @@ const Boooking = () => {
         let datesFromRecurrence = null;
         if (added && !added.id_field) {
             setOpenSnackBack(true, { success: false, message: "Debe seleccionar el campo." });
+            setvisible(true)
+            return data;
+        }
+        if (added && added.startDate > added.endDate) {
+            setOpenSnackBack(true, { success: false, message: "La fecha de inicio debe ser mayor a la fecha de fin." });
             setvisible(true)
             return data;
         }

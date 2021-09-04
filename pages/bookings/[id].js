@@ -593,6 +593,8 @@ const Boooking = () => {
                         datatosend={clients}
                         classname="col-4"
                         optionvalue="id_client"
+                        disabled={!!booking.id_client}
+                        valueselected={booking.id_client || ""}
                         optiondesc="description"
                         callback={({ newValue }) => setclientselected(newValue)}
                         namefield="id_client"

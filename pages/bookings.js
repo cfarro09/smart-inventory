@@ -8,9 +8,11 @@ import { validateResArray, getDomain } from 'config/helper';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import authContext from 'context/auth/authContext';
+import Payment from 'components/payment/payment'
 import {
     Delete as DeleteIcon,
     Edit as EditIcon,
+    Payment as PaymentIcon
 } from '@material-ui/icons';
 import { useRouter } from 'next/router';
 
@@ -26,6 +28,8 @@ const Bookings = () => {
     const { setloadingglobal, setModalQuestion, setOpenBackdrop, setOpenSnackBack } = useContext(popupsContext);
     const { appselected: appfound } = useContext(authContext);
     const [datatable, setdatatable] = useState([]);
+    const [openModal, setOpenModal] = useState(false);
+    const [booking, setbooking] = useState({id_booking: 0, status: ''});
 
     const columns = React.useMemo(
         () => [
@@ -34,6 +38,7 @@ const Bookings = () => {
                 accessor: "id_booking",
                 activeOnHover: true,
                 Cell: props => {
+                    const { status, id_booking } = props.cell.row.original
                     return (
                         <div className="container-button-floating">
                             <Tooltip title="Editar">
@@ -43,7 +48,7 @@ const Bookings = () => {
                                     className="button-floating"
                                     disabled={!appfound.update}
                                     onClick={() => {
-                                        router.push(`/bookings/${props.cell.row.original.id_booking}`)
+                                        router.push(`/bookings/${id_booking}`)
                                     }}
                                 >
                                     <EditIcon
@@ -52,7 +57,7 @@ const Bookings = () => {
                                     />
                                 </IconButton>
                             </Tooltip>
-                            {props.cell.row.original.status === "BORRADOR" &&
+                            {status === "BORRADOR" &&
                                 (<Tooltip title="Eliminar">
                                     <IconButton
                                         className="button-floating"
@@ -62,6 +67,21 @@ const Bookings = () => {
                                         onClick={() => deleterow(props.cell.row.original)}
                                     >
                                         <DeleteIcon
+                                            fontSize="inherit"
+                                            size="small"
+                                        />
+                                    </IconButton>
+                                </Tooltip>)}
+                            {status === "CONFIRMADO" &&
+                                (<Tooltip title="Pagar">
+                                    <IconButton
+                                        className="button-floating"
+                                        aria-label="delete"
+                                        size="small"
+                                        disabled={!appfound.delete}
+                                        onClick={() => payBooking(props.cell.row.original)}
+                                    >
+                                        <PaymentIcon
                                             fontSize="inherit"
                                             size="small"
                                         />
@@ -111,9 +131,13 @@ const Bookings = () => {
         setloadingglobal(false)
     }, []);
 
+    const payBooking = (row) => {
+        setOpenModal(true)
+        setbooking(row)
+    }
+
     const selectrow = (row) => {
         if (!row) {
-            console.log('/bookings/0');
             router.push('/bookings/0')
         }
     }
@@ -151,6 +175,12 @@ const Bookings = () => {
                 fetchData={fetchData}
                 register={!!appfound.insert}
                 selectrow={selectrow}
+            />
+            <Payment
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                fetchData={fetchData}
+                booking={booking}
             />
         </Layout>
     );

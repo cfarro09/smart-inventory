@@ -531,7 +531,7 @@ const Boooking = () => {
                 setbooking({ id_booking: id, status: dattosend.header.data.status });
                 setOpenSnackBack(true, { success: true, message: 'Reserva guardada satisfactoriamente.' });
             } else {
-                setOpenSnackBack(true, { success: false, message: !res.msg ? 'Hubo un error, vuelva a intentarlo' : res.msg });
+                setOpenSnackBack(true, { success: false, message: res.msg || 'Hubo un error, vuelva a intentarlo' });
             }
             setOpenBackdrop(false);
         }

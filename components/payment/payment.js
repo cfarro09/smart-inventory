@@ -14,7 +14,7 @@ import UseSelectDomain from '../system/form/select-domain';
 
 import { validateResArray, getDomain } from '../../config/helper';
 
-const Payment = ({ openModal, setOpenModal, booking, fetchDataUser }) => {
+const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
     const { setOpenBackdrop, setModalQuestion, setOpenSnackBack } = useContext(popupsContext);
     const [paymenttype, setpaymenttype] = useState([])
 
@@ -25,6 +25,12 @@ const Payment = ({ openModal, setOpenModal, booking, fetchDataUser }) => {
         })();
         return () => continuezyx = false;
     }, [])
+    
+    useEffect(() => {
+        if (openModal) {
+            formik.resetForm();
+        }
+    }, [openModal]);
 
     const formik = useFormik({
         enableReinitialize: true,
@@ -58,15 +64,15 @@ const Payment = ({ openModal, setOpenModal, booking, fetchDataUser }) => {
                 setOpenBackdrop(true);
                 const res = await triggeraxios('post', process.env.endpoints.selsimple, dattosend);
                 if (res.success) {
-                    // fetchDataUser({});
+                    fetchData && fetchData();
                     setOpenModal(false);
                     setOpenSnackBack(true, { success: true, message: 'Se registró correctamente!.' });
                 } else
-                    setOpenSnackBack(true, { success: false, message: 'Hubo un error, vuelva a intentarlo' });
+                    setOpenSnackBack(true, { success: false, message: res.msg || 'Hubo un error, vuelva a intentarlo' });
 
                 setOpenBackdrop(false);
             }
-            setModalQuestion({ visible: true, question: `¿Está seguro de guardar el cliente?`, callback })
+            setModalQuestion({ visible: true, question: `¿Está seguro de registrar el pago?`, callback })
         }
     });
     return (

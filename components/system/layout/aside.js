@@ -130,6 +130,12 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                     )}
                 />
                 <LinkList
+                    application="scheduled-booking"
+                    IconLink={() => (
+                        <EventIcon style={{ color: theme.palette.primary.light }} />
+                    )}
+                />
+                <LinkList
                     application="user"
                     IconLink={() => (
                         <AccountCircle style={{ color: theme.palette.primary.light }} />

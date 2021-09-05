@@ -279,8 +279,8 @@ const TableZyx = React.memo(({
 
     const [dateRange, setdateRange] = useState([
         {
-            startDate: new Date(new Date().setDate(0)),
-            endDate: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+            startDate: new Date(new Date().setHours(10)),
+            endDate: new Date(new Date().setHours(10)),
             key: 'selection'
         }
     ]);
@@ -303,7 +303,7 @@ const TableZyx = React.memo(({
                 {filterrange && (
                     <div style={{ gridRow: "2", gridColumn: "1" }}>
                         <DateRange
-                            label="Filtrar Rango de Fecha"
+                            label="Filtrar rango de fecha"
                             dateRangeinit={dateRange}
                             setDateRangeExt={setdateRange}
                         />

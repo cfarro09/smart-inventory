@@ -28,8 +28,8 @@ const DateRange = ({ label, dateRangeinit, setDateRangeExt, fullWidthInput = fal
     const handleclose = () => {
         setOpenModal(false);
 
-        const stringstart = dateRangeinit[0].startDate ? dateRangeinit[0].startDate.toISOString().substring(0, 10) : "";
-        const stringend = dateRangeinit[0].endDate ? dateRangeinit[0].endDate.toISOString().substring(0, 10) : "";
+        const stringstart = dateRangeinit[0].startDate ? new Date(dateRangeinit[0].startDate.setHours(10)).toISOString().substring(0, 10) : "";
+        const stringend = dateRangeinit[0].endDate ? new Date(dateRangeinit[0].endDate.setHours(10)).toISOString().substring(0, 10) : "";
 
         if (dateRangeinit[0].startDate)
             setrangePickerString(`${stringstart} - ${stringend}`);
@@ -41,8 +41,8 @@ const DateRange = ({ label, dateRangeinit, setDateRangeExt, fullWidthInput = fal
     useEffect(() => {
         let mounted = true;
 
-        const stringstart = dateRange[0].startDate ? dateRange[0].startDate.toISOString().substring(0, 10) : "";
-        const stringend = dateRange[0].endDate ? dateRange[0].endDate.toISOString().substring(0, 10) : "";
+        const stringstart = dateRange[0].startDate ? new Date(dateRange[0].startDate.setHours(10)).toISOString().substring(0, 10) : "";
+        const stringend = dateRange[0].endDate ? new Date(dateRange[0].endDate.setHours(10)).toISOString().substring(0, 10) : "";
 
         if (dateRange[0].startDate)
             setrangePickerString(`${stringstart} - ${stringend}`);

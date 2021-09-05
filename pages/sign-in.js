@@ -27,7 +27,7 @@ function Copyright() {
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
             <Link href="/">
-                <a>Zyxme {new Date().getFullYear()}</a>
+                <a>La cancha 10 {new Date().getFullYear()}</a>
             </Link>
         </Typography>
     );
@@ -99,7 +99,7 @@ export default function SignIn() {
     return (
         <Layout>
             <div className={classes.paper}>
-                <img src={infosys.sys_company_img} alt="titledev" width="250" style={{marginBottom: '1rem'}}/>
+                <img src={infosys.sys_company_img} alt="titledev" width="250"/>
                 
                 {
                     resultrequest && (

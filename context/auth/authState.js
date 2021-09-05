@@ -19,7 +19,7 @@ import {
 
 const DEFAULTPROPERTIES = {
     sys_company_name: "LA CANCHA 10",
-    sys_company_img: "https://staticfileszyxme.s3.us-east.cloud-object-storage.appdomain.cloud/auxlogotipozyxmedark.png",
+    sys_company_img: "/logocancha.png",
     sys_company_color_primary: "#8EC3E0",
     sys_company_color_secondary: "rgb(75, 83, 93)",
 }

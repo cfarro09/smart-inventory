@@ -212,8 +212,8 @@ const ItemEvent = ({ appointment }) => {
 }
 
 const getRange = (date, view) => {
-    if (view === "Día") return { startDate: date, endDate: date };
-    if (view === "Semana") {
+    if (view === "Día" || view === "Day") return { startDate: date, endDate: date };
+    if (view === "Semana" || view === "Week") {
         return {
             startDate: addDays(date, -date.getDay()),
             endDate: addDays(date, 6 - date.getDay())
@@ -323,13 +323,11 @@ const Boooking = () => {
 
     const currentDateChange = currentDate => {
         let range = getRange(currentDate, currentView);
-        console.log(currentDate)
         setCurrentDate(currentDate);
         setrange(range);
     };
 
     const currentViewChange = currentView => {
-        console.log(currentView)
         let range = getRange(currentDate, currentView);
         setCurrentView(currentView);
         setrange(range);
@@ -586,7 +584,6 @@ const Boooking = () => {
             setAppointmentsShowed(data)
     }
 
-
     return (
         <Layout withPadding={false}>
             <div style={{ padding: '16px', paddingBottom: '0' }}>
@@ -667,7 +664,6 @@ const Boooking = () => {
                             onEditingAppointmentChange={(e) => {
                                 if (e) {
                                     const { startDate, endDate, id, id_field } = e;
-                                    console.log(id)
                                     setReadOnly(id > 0 || !(booking.status === 'BORRADOR' || booking.status === ''))
                                     setfieldshowed(getFieldsFree(setOpenSnackBack, fields, startDate, endDate, [...(appointments || []), ...data], id));
                                 }

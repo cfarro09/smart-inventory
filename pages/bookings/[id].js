@@ -163,10 +163,11 @@ const getDateZyx = (date) => new Date(new Date(date).setHours(10)).toISOString()
 const getStringFromDate = (date) => `${getDateZyx(date)} ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:00`;
 
 const getFieldsFree = (setOpenSnackBack, fields, startDate, endDate, appointments, id = null) => {
-
     const aa = fields.map(field => {
         const appointmentsAux = id ? appointments.filter(x => x.id !== id) : appointments;
-        const aux = appointmentsAux.some(x => x.id_field === field.id_field && x.startDate >= startDate && x.endDate <= endDate);
+        const aux = appointmentsAux.some(x => x.id_field === field.id_field && (endDate >= x.startDate && endDate <= x.endDate ||
+            startDate >= x.startDate && startDate <= x.endDate ||
+            x.startDate >= startDate && x.startDate <= endDate));
         if (aux)
             return null; // valida q haya un msimo campo en la misma hora
         const fieldstime = field.time_prices.map(x => ({
@@ -265,7 +266,7 @@ const Boooking = () => {
                         const appauxs = validateResArray(r, true).map(x => ({
                             ...x,
                             id: bookingselected.status === "BORRADOR" ? x.id_event_calendar * -1 : x.id_event_calendar,
-                            title: x.field_name,
+                            title: x.client_name || x.field_name,
                             startDate: new Date(x.start_date),
                             endDate: new Date(x.end_date),
                             allDay: false,
@@ -348,7 +349,7 @@ const Boooking = () => {
                     const appauxs = validateResArray(res, true).filter(x => !listIndexed[x.id_event_calendar]).map(x => ({
                         ...x,
                         id: x.id_event_calendar,
-                        title: x.field_name,
+                        title: x.client_name || x.field_name,
                         startDate: new Date(x.start_date),
                         endDate: new Date(x.end_date),
                         allDay: false,
@@ -361,7 +362,7 @@ const Boooking = () => {
                     const appauxs = validateResArray(res, true).map(x => ({
                         ...x,
                         id: x.id_event_calendar,
-                        title: x.field_name,
+                        title: x.client_name || x.field_name,
                         startDate: new Date(x.start_date),
                         endDate: new Date(x.end_date),
                         allDay: false,
@@ -638,10 +639,10 @@ const Boooking = () => {
                         }
                     </div>
                 </div>
-                <div style={{display: 'flex', gap: 8}}>
+                <div style={{ display: 'flex', gap: 8 }}>
                     {fields.map(x => (
-                        <div key={x.id} style={{display: 'flex', alignItems: 'center', gap: 4}}>
-                            <div style={{width: 15, height: 15, backgroundColor: x.color}}></div> {x.field_name}
+                        <div key={x.id} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <div style={{ width: 15, height: 15, backgroundColor: x.color }}></div> {x.field_name}
                         </div>
                     ))}
                 </div>

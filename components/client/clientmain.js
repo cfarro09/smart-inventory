@@ -24,6 +24,7 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientsele
             await Promise.all([
                 triggeraxios('post', process.env.endpoints.selsimple, getDomain("ESTADO")).then(r => setdomains(p => ({ ...p, status: validateResArray(r, continuezyx) }))),
                 triggeraxios('post', process.env.endpoints.selsimple, getDomain("TIPODOCUMENTO")).then(r => setdomains(p => ({ ...p, doc_type: validateResArray(r, continuezyx) }))),
+                triggeraxios('post', process.env.endpoints.selsimple, getDomain("TIPOFACTURACION")).then(r => setdomains(p => ({ ...p, bill_type: validateResArray(r, continuezyx) }))),
             ]);
 
         })();
@@ -55,7 +56,7 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientsele
             status: Yup.string().required('El estado es obligatorio')
         }),
         onSubmit: async values => {
-            
+
             const callback = async () => {
                 setModalQuestion({ visible: false });
                 const dattosend = {
@@ -145,11 +146,12 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientsele
                             />
                         </div>
                         <div className="row-zyx">
-                            <InputFormk
-                                name="bill_type"
+                            <UseSelectDomain
                                 classname="col-3"
-                                placeholder="Tipo de documento facturación"
-                                label="Tipo de doc facturación"
+                                title="Tipo de doc facturación"
+                                domainname={domains.bill_type}
+                                valueselected={formik.values.bill_type}
+                                namefield="bill_type"
                                 formik={formik}
                             />
                             <InputFormk

@@ -108,7 +108,7 @@ const validateRule = (rule, startDate, endDate) => {
         acc[key] = value;
         return acc;
     }, {});
-    console.log("resultarray3", rule, startDate, endDate);
+    
     const count = rules["COUNT"] ? parseInt(rules["COUNT"]) : 0;
     const until = rules["UNTIL"] ? convertDate(rules["UNTIL"]) : null;
     let bydays = rules["BYDAY"] ? rules["BYDAY"].split(",").map(x => daysX[x]) : null;
@@ -212,8 +212,8 @@ const ItemEvent = ({ appointment }) => {
 }
 
 const getRange = (date, view) => {
-    if (view === "Day") return { startDate: date, endDate: date };
-    if (view === "Week") {
+    if (view === "Día") return { startDate: date, endDate: date };
+    if (view === "Semana") {
         return {
             startDate: addDays(date, -date.getDay()),
             endDate: addDays(date, 6 - date.getDay())
@@ -258,9 +258,9 @@ const Boooking = () => {
                     const resultbooking = validateResArray(r, true)
                     if (resultbooking.length === 0)
                         return router.push("/bookings").then(() => setOpenSnackBack(true, { success: false, message: "No existe ninguna reserva con ese ID." }))
+                    
+                        const bookingselected = resultbooking[0];
 
-                    const bookingselected = resultbooking[0];
-                    console.log("dasdsa", bookingselected);
                     setbooking(bookingselected);
                     triggeraxios('post', process.env.endpoints.selsimple, SEL_EVENTS_BY_CAMPUS({ id_booking })).then(r => {
                         const appauxs = validateResArray(r, true).map(x => ({
@@ -323,11 +323,13 @@ const Boooking = () => {
 
     const currentDateChange = currentDate => {
         let range = getRange(currentDate, currentView);
+        console.log(currentDate)
         setCurrentDate(currentDate);
         setrange(range);
     };
 
     const currentViewChange = currentView => {
+        console.log(currentView)
         let range = getRange(currentDate, currentView);
         setCurrentView(currentView);
         setrange(range);
@@ -335,6 +337,8 @@ const Boooking = () => {
 
     useEffect(() => {
         if (campusSelected) {
+            if (!range)
+                return;
             triggeraxios('post', process.env.endpoints.selsimple, SEL_EVENTS_BY_CAMPUS({
                 id_campus: campusSelected.id_campus,
                 start_date: getDateZyx(range.startDate),
@@ -566,7 +570,7 @@ const Boooking = () => {
                 setOpenSnackBack(true, { success: false, message: "No hay campos a mostrar" });
                 return null;
             }
-            console.log(appointments);
+            
             setfieldshowed(getFieldsFree(setOpenSnackBack, fields, startDate, endDate, [...appointments, ...data]));
             setReadOnly(false)
             onDoubleClick(e)
@@ -582,7 +586,6 @@ const Boooking = () => {
             setAppointmentsShowed(data)
     }
 
-    console.log(fields)
 
     return (
         <Layout withPadding={false}>
@@ -613,7 +616,7 @@ const Boooking = () => {
                         title="Sedes"
                         datatosend={campus}
                         classname="col-4"
-                        valueselected={user.id_campus}
+                        valueselected={user?.id_campus}
                         optionvalue="id_campus"
                         optiondesc="description"
                         callback={onChangeCampus}
@@ -664,7 +667,8 @@ const Boooking = () => {
                             onEditingAppointmentChange={(e) => {
                                 if (e) {
                                     const { startDate, endDate, id, id_field } = e;
-                                    setReadOnly(id > 0 && !(booking.status === 'BORRADOR' || booking.status === ''))
+                                    console.log(id)
+                                    setReadOnly(id > 0 || !(booking.status === 'BORRADOR' || booking.status === ''))
                                     setfieldshowed(getFieldsFree(setOpenSnackBack, fields, startDate, endDate, [...(appointments || []), ...data], id));
                                 }
                             }}
@@ -764,12 +768,7 @@ const Boooking = () => {
                         <CurrentTimeIndicator
                             shadePreviousCells={true}
                         />
-                        <ViewSwitcher
-                            switcherComponent={(props) => {
-                                return <ViewSwitcher.Switcher {...props} />
-
-                            }}
-                        />
+                        <ViewSwitcher />
                         <TodayButton />
                     </Scheduler>
                 </div>

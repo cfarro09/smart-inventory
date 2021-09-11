@@ -637,7 +637,7 @@ const Boooking = () => {
                         namefield="id_campus"
                         descfield="description"
                     />
-                    <div className="col-2" style={{ textAlign: 'right' }}>
+                    <div className="col-4" style={{ textAlign: 'right' }}>
                         {(booking.status === 'BORRADOR' || booking.status === '') ?
                             <Button
                                 variant="contained"

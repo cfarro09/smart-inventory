@@ -108,7 +108,7 @@ const validateRule = (rule, startDate, endDate) => {
         acc[key] = value;
         return acc;
     }, {});
-    
+
     const count = rules["COUNT"] ? parseInt(rules["COUNT"]) : 0;
     const until = rules["UNTIL"] ? convertDate(rules["UNTIL"]) : null;
     let bydays = rules["BYDAY"] ? rules["BYDAY"].split(",").map(x => daysX[x]) : null;
@@ -258,8 +258,8 @@ const Boooking = () => {
                     const resultbooking = validateResArray(r, true)
                     if (resultbooking.length === 0)
                         return router.push("/bookings").then(() => setOpenSnackBack(true, { success: false, message: "No existe ninguna reserva con ese ID." }))
-                    
-                        const bookingselected = resultbooking[0];
+
+                    const bookingselected = resultbooking[0];
 
                     setbooking(bookingselected);
                     triggeraxios('post', process.env.endpoints.selsimple, SEL_EVENTS_BY_CAMPUS({ id_booking })).then(r => {
@@ -377,6 +377,23 @@ const Boooking = () => {
             });
         }
     }, [range, campusSelected])
+
+
+    const Appointment = ({ children, style, ...restProps }) => {
+        
+        return (
+            <Appointments.Appointment
+                {...restProps}
+                style={{
+                    ...style,
+                    opacity: restProps.data.id < 0 ? 1 : 0.6,
+                }}
+            >
+                {children}
+            </Appointments.Appointment>
+        )
+    };
+
 
     const commitChanges = async ({ added, changed, deleted }) => {
         let datesFromRecurrence = null;
@@ -568,7 +585,7 @@ const Boooking = () => {
                 setOpenSnackBack(true, { success: false, message: "No hay campos a mostrar" });
                 return null;
             }
-            
+
             setfieldshowed(getFieldsFree(setOpenSnackBack, fields, startDate, endDate, [...appointments, ...data]));
             setReadOnly(false)
             onDoubleClick(e)
@@ -694,7 +711,9 @@ const Boooking = () => {
                         />
                         <Toolbar />
                         <DateNavigator />
-                        <Appointments />
+                        <Appointments
+                            appointmentComponent={Appointment}
+                        />
                         <AppointmentTooltip
                             showOpenButton
                             showDeleteButton

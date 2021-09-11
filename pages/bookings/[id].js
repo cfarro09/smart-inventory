@@ -605,7 +605,7 @@ const Boooking = () => {
         <Layout withPadding={false}>
             <div style={{ padding: '16px', paddingBottom: '0' }}>
                 <div className="row-zyx">
-                    <div className="col-2">
+                    <div className="col-2" style={{display: 'none'}}>
                         <Switch
                             title="Ver eventos"
                             valueselected={true}

@@ -55,14 +55,14 @@ const AuthState = ({ children }) => {
     useEffect(() => {
         async function loadUserFromCookies() {
             if (token) {
-                console.log("validatetoken", router.pathname);
+                
                 try {
                     const result = await clientAxios.get(process.env.endpoints.validatetoken);
 
-                    const { first_name: firstname, last_name: lastname, rol_name: role_name, menu } = result.data.data;
+                    const { first_name: firstname, last_name: lastname, rol_name: role_name, menu, id_campus } = result.data.data;
                     dispatch({
                         type: AUTH_SUCCESS,
-                        payload: { firstname, lastname, role_name, menu }
+                        payload: { firstname, lastname, role_name, menu, id_campus }
                     });
                     const routeraux = router.pathname === "/bookings/[id]" ? "/bookings" : router.pathname;
                     const appfound = menu.find(x => x.path === routeraux);
@@ -91,7 +91,7 @@ const AuthState = ({ children }) => {
     }, [token])
 
     useEffect(() => {
-        console.log("router.pathname", router.pathname, state.user);
+        
         if (router.pathname !== "/" && state.user) {
             const routeraux = router.pathname === "/bookings/[id]" ? "/bookings" : router.pathname;
             const menu = state.user.menu;

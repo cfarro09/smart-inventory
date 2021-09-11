@@ -27,7 +27,7 @@ function Copyright() {
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
             <Link href="/">
-                <a>La cancha 10 {new Date().getFullYear()}</a>
+                <a>Cancha la 10 {new Date().getFullYear()}</a>
             </Link>
         </Typography>
     );

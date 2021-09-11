@@ -20,16 +20,18 @@ const REQUESTROLES = {
     data: { status: 'ACTIVO' }
 }
 
+const SELCAMPUS = {
+    method: "fn_sel_campus",
+    data: { status: 'ACTIVO' }
+}
 
 const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser }) => {
 
     const { setOpenBackdrop, setOpenSnackBack, setModalQuestion } = useContext(popupsContext);
-
     const [showtable, setshowtable] = useState(false);
     const [dataRoles, setDataRoles] = useState([]);
     const [domains, setdomains] = useState({ doc_type: [], status: [], type: [] });
-
-
+    const [campus, setcampus] = useState([]);
 
     useEffect(() => {
         let continuezyx = true;
@@ -37,7 +39,7 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
             await Promise.all([
                 triggeraxios('post', process.env.endpoints.selsimple, getDomain("TIPODOCUMENTO")).then(r => setdomains(p => ({ ...p, doc_type: validateResArray(r, continuezyx) }))),
                 triggeraxios('post', process.env.endpoints.selsimple, getDomain("ESTADO")).then(r => setdomains(p => ({ ...p, status: validateResArray(r, continuezyx) }))),
-                // triggeraxios('post', process.env.endpoints.selsimple, getDomain("TIPOUSUARIO")).then(r => setdomains(p => ({ ...p, type: validateResArray(r, continuezyx) }))),
+                triggeraxios('post', process.env.endpoints.selsimple, SELCAMPUS).then(r => setcampus(validateResArray(r, continuezyx))),
                 triggeraxios('post', process.env.endpoints.selsimple, REQUESTROLES).then(r => setDataRoles(validateResArray(r, continuezyx))),
             ]);
 
@@ -61,10 +63,12 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
             status: 'ACTIVO',
             password: '',
             id_role: 0,
+            id_campus: 0
         },
         validationSchema: Yup.object({
             first_name: Yup.string().required('El nombre es obligatorio'),
             id_role: Yup.number().min(1, 'El rol es obligatorio'),
+            id_campus: Yup.number().min(1, 'El campo es obligatorio'),
             last_name: Yup.string().required('El apellido es obligatorio'),
             username: Yup.string().required('El usuario es obligatorio'),
             email: Yup.string().email('El correo no es valido').required('El correo es obligatorio'),
@@ -99,7 +103,6 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                 } else {
                     setOpenSnackBack(true, { success: false, message: res.msg });
                 }
-
                 setOpenBackdrop(false);
             }
 
@@ -139,6 +142,18 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                                 label="Apellido"
                                 formik={formik}
                             />
+                            <SelectFunction
+                                title="Sedes"
+                                datatosend={campus}
+                                classname="col-6"
+                                formik={formik}
+                                valueselected={formik.values.id_campus}
+                                optionvalue="id_campus"
+                                optiondesc="description"
+                                namefield="id_campus"
+                            />
+                        </div>
+                        <div className="row-zyx">
                             <InputFormk
                                 name="username"
                                 classname="col-3"

@@ -76,10 +76,10 @@ const PopUps = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseQuestion} color="primary">
-                        Cancelar
+                        NO
                     </Button>
                     <Button onClick={handleExeQuestion} color="primary">
-                        Seguir
+                        SI
                     </Button>
                 </DialogActions>
             </Dialog>

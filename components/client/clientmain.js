@@ -14,7 +14,7 @@ import UseSelectDomain from '../system/form/select-domain';
 
 import { validateResArray, getDomain } from '../../config/helper';
 
-const ClientMain = ({ title, openModal, setOpenModal, rowselected, fetchDataUser, disabled = false, method_ins }) => {
+const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientselected, fetchDataUser, disabled = false, method_ins }) => {
     const { setOpenBackdrop, setModalQuestion, setOpenSnackBack } = useContext(popupsContext);
     const [domains, setdomains] = useState({ status: [] })
 
@@ -36,7 +36,7 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, fetchDataUser
             id_client: 0,
             first_name: '',
             last_name: '',
-            doc_type: '',
+            doc_type: 'DNI',
             doc_number: '',
             address: '',
             phone: '',
@@ -66,11 +66,14 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, fetchDataUser
                 setOpenBackdrop(true);
                 const res = await triggeraxios('post', process.env.endpoints.selsimple, dattosend);
                 if (res.success) {
+                    setclientselected(res.result.data[0]);
                     fetchDataUser({});
                     setOpenModal(false);
                     setOpenSnackBack(true, { success: true, message: 'Se registró correctamente!.' });
-                } else
-                    setOpenSnackBack(true, { success: false, message: 'Hubo un error, vuelva a intentarlo' });
+                } else {
+                    console.log(res);
+                    setOpenSnackBack(true, { success: false, message: res?.msg || 'Hubo un error, vuelva a intentarlo' });
+                }
 
                 setOpenBackdrop(false);
             }
@@ -145,13 +148,14 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, fetchDataUser
                             <InputFormk
                                 name="bill_type"
                                 classname="col-3"
-                                label="Tipo facturación"
+                                placeholder="Tipo de documento facturación"
+                                label="Tipo de doc facturación"
                                 formik={formik}
                             />
                             <InputFormk
                                 name="bill_number"
                                 classname="col-3"
-                                label="N° Facturación"
+                                label="N° documento facturación"
                                 formik={formik}
                             />
                             <UseSelectDomain

@@ -9,6 +9,7 @@ import { validateResArray, getDomain, validateres } from 'config/helper';
 import RadioGroup from 'components/system/form/RadioGroup';
 import Switch from 'components/system/form/switch';
 import popupsContext from 'context/pop-ups/pop-upsContext';
+import authContext from 'context/auth/authContext';
 import SelectFunction from 'components/system/form/select-function';
 import ClientMain from 'components/client/clientmain';
 
@@ -177,7 +178,7 @@ const getFieldsFree = (setOpenSnackBack, fields, startDate, endDate, appointment
         return fieldtime ? { ...field, price: fieldtime.price, text: field.field_name + " - S/ " + fieldtime.price } : null;
     })
     const aab = aa.filter(x => !!x)
-    if (aab.length === 0) 
+    if (aab.length === 0)
         setOpenSnackBack(true, { success: false, message: "No existe campos para este horario" })
     return aab;
 }
@@ -221,6 +222,8 @@ const getRange = (date, view) => {
 
 const Boooking = () => {
     const { setOpenDrawer, setModalQuestion, setOpenBackdrop, setOpenSnackBack } = useContext(popupsContext);
+    const { user } = useContext(authContext);
+
     const [data, setData] = useState([]);
     const [currentDate, setCurrentDate] = useState(new Date());
     const [range, setrange] = useState(getRange(new Date(), "Week"));
@@ -337,8 +340,6 @@ const Boooking = () => {
                 end_date: getDateZyx(range.endDate)
             })).then(res => {
                 if (data.length > 0) {
-                    console.log("listIndexed", data);
-                    console.log("listIndexed-eventdeleted", eventsBookingDeleted);
                     const listIndexed = [...data, ...eventsBookingDeleted].filter(x => !!x.id_event_calendar).reduce((acc, curr) => {
                         acc[curr.id_event_calendar] = curr;
                         return acc;
@@ -436,7 +437,7 @@ const Boooking = () => {
                         endDate: x.end_time,
                         id_field: added.id_field,
                         id_campus: fieldselected.id_campus,
-                        title: `*${fieldselected.field_name}`,
+                        title: `*${clientselected?.first_name || fieldselected.field_name}`,
                         price: fieldselected.price,
                         hours,
                         total: fieldselected.price * hours
@@ -444,7 +445,7 @@ const Boooking = () => {
                     }))
                     data = [...data, ...events];
                 } else {
-                    data = [...data, { id: startingAddedId, ...added, id_campus: fieldselected.id_campus, title: `*${fieldselected.field_name}`, price: fieldselected.price, hours, total: fieldselected.price * hours }];
+                    data = [...data, { id: startingAddedId, ...added, id_campus: fieldselected.id_campus, title: `*${clientselected?.first_name || fieldselected.field_name}`, price: fieldselected.price, hours, total: fieldselected.price * hours }];
                 }
             }
             if (changed) {
@@ -460,7 +461,7 @@ const Boooking = () => {
                             endDate: x.end_time,
                             id_field: newchange.id_field,
                             id_campus: fieldselected.id_campus,
-                            title: `*${fieldselected.field_name}`,
+                            title: `*${clientselected?.first_name || fieldselected.field_name}`,
                             price: fieldselected.price,
                             hours,
                             total: fieldselected.price * hours
@@ -481,7 +482,7 @@ const Boooking = () => {
                                 throw new Error("El campo no está disponible en ese horario");
                             }
                             const hours = Math.ceil(Math.abs(changes.endDate - changes.startDate) / 36e5);
-                            return { ...changes, id_campus: fieldselected.id_campus, title: fieldselected.field_name, price: fieldselected.price, hours, total: fieldselected.price * hours }
+                            return { ...changes, id_campus: fieldselected.id_campus, title: (clientselected?.first_name || fieldselected.field_name), price: fieldselected.price, hours, total: fieldselected.price * hours }
 
                         });
                     }
@@ -580,10 +581,11 @@ const Boooking = () => {
             setAppointmentsShowed(data)
     }
 
+    console.log(fields)
+
     return (
         <Layout withPadding={false}>
             <div style={{ padding: '16px', paddingBottom: '0' }}>
-
                 <div className="row-zyx">
                     <div className="col-2">
                         <Switch
@@ -597,8 +599,8 @@ const Boooking = () => {
                         datatosend={clients}
                         classname="col-4"
                         optionvalue="id_client"
-                        disabled={!!booking.id_client}
-                        valueselected={booking.id_client || ""}
+                        disabled={!!booking?.id_client}
+                        valueselected={booking?.id_client || (clientselected ? clientselected.id_client : '')}
                         optiondesc="description"
                         callback={({ newValue }) => setclientselected(newValue)}
                         namefield="id_client"
@@ -610,6 +612,7 @@ const Boooking = () => {
                         title="Sedes"
                         datatosend={campus}
                         classname="col-4"
+                        valueselected={user.id_campus}
                         optionvalue="id_campus"
                         optiondesc="description"
                         callback={onChangeCampus}
@@ -635,7 +638,13 @@ const Boooking = () => {
                         }
                     </div>
                 </div>
-
+                <div style={{display: 'flex', gap: 8}}>
+                    {fields.map(x => (
+                        <div key={x.id} style={{display: 'flex', alignItems: 'center', gap: 4}}>
+                            <div style={{width: 15, height: 15, backgroundColor: x.color}}></div> {x.field_name}
+                        </div>
+                    ))}
+                </div>
             </div>
             <div style={{ display: 'flex' }}>
                 <div style={{ zIndex: 2 }}>
@@ -654,23 +663,31 @@ const Boooking = () => {
                             onEditingAppointmentChange={(e) => {
                                 if (e) {
                                     const { startDate, endDate, id, id_field } = e;
-                                    
                                     setReadOnly(id > 0 && !(booking.status === 'BORRADOR' || booking.status === ''))
-
                                     setfieldshowed(getFieldsFree(setOpenSnackBack, fields, startDate, endDate, [...(appointments || []), ...data], id));
                                 }
                             }}
                             onCommitChanges={commitChanges}
                         />
                         <EditRecurrenceMenu />
-                        <ConfirmationDialog />
+                        <ConfirmationDialog
+                            messages={{
+                                discardButton: "Descartar",
+                                deleteButton: "Eliminar",
+                                cancelButton: "Cancelar",
+                                confirmDeleteMessage: "¿Está seguro de eliminar el evento?",
+                                confirmCancelMessage: "¿Está seguro de descartar los cambios?",
+                            }}
+                        />
                         <WeekView
                             cellDuration={60}
                             startDayHour={8}
                             endDayHour={23}
+                            name="Semana"
                             timeTableCellComponent={TimeTableCell}
                         />
                         <DayView
+                            name="Día"
                             startDayHour={8}
                             endDayHour={23}
                         />
@@ -746,7 +763,12 @@ const Boooking = () => {
                         <CurrentTimeIndicator
                             shadePreviousCells={true}
                         />
-                        <ViewSwitcher />
+                        <ViewSwitcher
+                            switcherComponent={(props) => {
+                                return <ViewSwitcher.Switcher {...props} />
+
+                            }}
+                        />
                         <TodayButton />
                     </Scheduler>
                 </div>
@@ -775,6 +797,7 @@ const Boooking = () => {
                 title="Cliente"
                 method_ins={METHOD_INS}
                 openModal={openModalClient}
+                setclientselected={setclientselected}
                 setOpenModal={setOpenModalClient}
                 fetchDataUser={getClients}
                 rowselected={null}

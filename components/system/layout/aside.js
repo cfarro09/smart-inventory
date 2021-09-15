@@ -136,9 +136,9 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                     )}
                 />
                 <LinkList
-                    application="user"
+                    application="cash-register"
                     IconLink={() => (
-                        <AccountCircle style={{ color: theme.palette.primary.light }} />
+                        <VpnKey style={{ color: theme.palette.primary.light }} />
                     )}
                 />
                 <Divider />
@@ -155,16 +155,16 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                     )}
                 />
 
-                {/* <LinkList
-                    application="property"
-                    IconLink={() => (
-                        <VpnKey style={{ color: theme.palette.primary.light }} />
-                    )}
-                /> */}
                 <LinkList
                     application="client"
                     IconLink={() => (
                         <PersonIcon style={{ color: theme.palette.primary.light }} />
+                    )}
+                />
+                <LinkList
+                    application="user"
+                    IconLink={() => (
+                        <AccountCircle style={{ color: theme.palette.primary.light }} />
                     )}
                 />
                 <LinkList

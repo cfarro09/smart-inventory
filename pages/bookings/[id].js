@@ -46,7 +46,7 @@ const SELCLIENTS = {
 }
 
 const SELCAMPUS = {
-    method: "fn_sel_campus",
+    method: "fn_sel_campus_by_user",
     data: { status: 'ACTIVO' }
 }
 

@@ -21,10 +21,10 @@ import ButtonExport from './buttonexport';
 import DateRange from './daterange';
 import clsx from 'clsx';
 
-import { 
-    FirstPage, 
-    LastPage, 
-    NavigateNext, 
+import {
+    FirstPage,
+    LastPage,
+    NavigateNext,
     NavigateBefore,
     Search as SearchIcon,
     GetApp as GetAppIcon,
@@ -203,6 +203,7 @@ const TableZyx = React.memo(({
     totalrow,
     fetchData,
     pageCount: controlledPageCount,
+    refresh = true,
     titlemodule,
     methodexport,
     exportPersonalized
@@ -286,7 +287,7 @@ const TableZyx = React.memo(({
     ]);
 
     useEffect(() => {
-        fetchData({
+        fetchData && fetchData({
             ...pagination, pageSize, daterange: {
                 startDate: dateRange[0].startDate.toISOString().substring(0, 10),
                 endDate: dateRange[0].endDate.toISOString().substring(0, 10)
@@ -296,46 +297,53 @@ const TableZyx = React.memo(({
 
     return (
         <>
-            <Box display="grid" gridGap="10px" mb={1}>
-                <Typography variant="h6" style={{ marginRight: '1rem', gridRow: "1", gridColumn: "1" }} id="tableTitle" component="div" color="inherit">
-                    {titlemodule}
-                </Typography>
-                {filterrange && (
-                    <div style={{ gridRow: "2", gridColumn: "1" }}>
-                        <DateRange
-                            label="Filtrar rango de fecha"
-                            dateRangeinit={dateRange}
-                            setDateRangeExt={setdateRange}
-                        />
-                    </div>
-                )}
-                <div style={{ gridRow: "1 / 3", gridColumn: "2", textAlign: "right" }}>
-                    <Fab
-                        size="small"
-                        aria-label="add"
-                        color="primary"
-                        onClick={() => handleRefresh()}
-                    >
-                        <RefreshIcon size="small" color="action" />
-                    </Fab>
-                    {exportPersonalized &&
-                        <Fab
-                            style={{marginLeft: '1rem'}}
-                            size="small"
-                            aria-label="add"
-                            color="primary"
-                            onClick={exportPersonalized}
-                        >
-                            <GetAppIcon size="small" color="action" />
-                        </Fab>
-                    }
-                    {methodexport && (
-                        <ButtonExport
-                            fileName={titlemodule}
-                            datatosend={{ method: methodexport, data: { ...pagination, origin: titlemodule.toLowerCase(), daterange: dateRange[0], offset: (new Date().getTimezoneOffset() / 60) * -1 } }}
-                        />
+            <Box>
+                {titlemodule &&
+                    <Typography variant="h6" style={{ marginRight: '1rem', gridRow: "1", gridColumn: "1" }} id="tableTitle" component="div" color="inherit">
+                        {titlemodule}
+                    </Typography>
+                }
+                <Box display="flex" mb={1} style={{ gap: 1 }} justifyContent="space-between">
+                    {filterrange && (
+                        <div>
+                            <DateRange
+                                label="Filtrar rango de fecha"
+                                dateRangeinit={dateRange}
+                                setDateRangeExt={setdateRange}
+                            />
+
+                        </div>
                     )}
-                </div>
+                    <div>
+                        {refresh &&
+                            <Fab
+                                size="small"
+                                aria-label="add"
+                                color="primary"
+                                onClick={() => handleRefresh()}
+                            >
+                                <RefreshIcon size="small" color="action" />
+                            </Fab>
+                        }
+                        {exportPersonalized &&
+                            <Fab
+                                style={{ marginLeft: '1rem' }}
+                                size="small"
+                                aria-label="add"
+                                color="primary"
+                                onClick={exportPersonalized}
+                            >
+                                <GetAppIcon size="small" color="action" />
+                            </Fab>
+                        }
+                        {methodexport && (
+                            <ButtonExport
+                                fileName={titlemodule}
+                                datatosend={{ method: methodexport, data: { ...pagination, origin: titlemodule.toLowerCase(), daterange: dateRange[0], offset: (new Date().getTimezoneOffset() / 60) * -1 } }}
+                            />
+                        )}
+                    </div>
+                </Box>
             </Box>
 
             <TableContainer style={{ position: "relative" }}>

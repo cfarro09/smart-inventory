@@ -63,6 +63,13 @@ const CampusMain = ({ title, openModal, setOpenModal, rowselected, fetchDataUser
             setModalQuestion({ visible: true, question: `¿Está seguro de guardar la sede?`, callback })
         }
     });
+
+    useEffect(() => {
+        if (openModal) {
+            formik.resetForm();
+        }
+    }, [openModal])
+    
     return (
         <>
             <Dialog

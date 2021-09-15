@@ -42,7 +42,7 @@ const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
         },
         validationSchema: Yup.object({
             paymenttype: Yup.string().required('El tipo de pago es obligatorio'),
-            amount: Yup.string().required('El monto es obligatorio')
+            amount: Yup.number().min(1, "El monto debe ser mayor que 1").required('El monto es obligatorio')
         }),
         onSubmit: async values => {
 
@@ -90,12 +90,15 @@ const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
                 <DialogTitle id="alert-dialog-title">Pagar reserva {booking.client_name && "de " + booking.client_name}</DialogTitle>
                 <DialogContent>
                     <div className="row-zyx">
-                        <InputFormk
-                            name="reference"
+                        <UseSelectDomain
                             classname="col-6"
-                            label="Referencia"
+                            title="Tipo pago"
+                            domainname={paymenttype}
+                            valueselected={formik.values.paymenttype}
+                            namefield="paymenttype"
                             formik={formik}
                         />
+
                         <InputFormk
                             name="amount"
                             classname="col-6"
@@ -105,12 +108,10 @@ const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
                         />
                     </div>
                     <div className="row-zyx">
-                        <UseSelectDomain
+                        <InputFormk
+                            name="reference"
                             classname="col-6"
-                            title="Tipo pago"
-                            domainname={paymenttype}
-                            valueselected={formik.values.paymenttype}
-                            namefield="paymenttype"
+                            label="Referencia"
                             formik={formik}
                         />
                     </div>

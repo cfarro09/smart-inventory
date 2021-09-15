@@ -14,6 +14,7 @@ import UserOrganization from './userorganization';
 import * as Yup from 'yup';
 import { getDomain, validateResArray } from '../../config/helper';
 import SelectFunction from '../system/form/select-function';
+import MultiSelectFunction from '../system/form/multiselect';
 
 const REQUESTROLES = {
     method: "fn_sel_role",
@@ -63,7 +64,8 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
             status: 'ACTIVO',
             password: '',
             id_role: 0,
-            id_campus: 0
+            id_campus: 0,
+            campus_assigned: ''
         },
         validationSchema: Yup.object({
             first_name: Yup.string().required('El nombre es obligatorio'),
@@ -74,6 +76,7 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
             email: Yup.string().email('El correo no es valido').required('El correo es obligatorio'),
             doc_number: Yup.string().required('El n° documento es obligatorio'),
             doc_type: Yup.string().required('El tipo de documento es obligatorio'),
+            campus_assigned: Yup.string().required('Debe registrar al menos una sede'),
             confirmpassword: Yup.string().oneOf([Yup.ref('password'), null], 'Las contraseñas deben ser iguales')
         }),
         onSubmit: async values => {
@@ -142,18 +145,6 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                                 label="Apellido"
                                 formik={formik}
                             />
-                            <SelectFunction
-                                title="Sedes"
-                                datatosend={campus}
-                                classname="col-6"
-                                formik={formik}
-                                valueselected={formik.values.id_campus}
-                                optionvalue="id_campus"
-                                optiondesc="description"
-                                namefield="id_campus"
-                            />
-                        </div>
-                        <div className="row-zyx">
                             <InputFormk
                                 name="username"
                                 classname="col-3"
@@ -165,6 +156,29 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                                 name="email"
                                 classname="col-3"
                                 label="Correo"
+                                formik={formik}
+                            />
+
+                        </div>
+                        <div className="row-zyx">
+                            <SelectFunction
+                                title="Sede por defecto"
+                                datatosend={campus}
+                                classname="col-6"
+                                formik={formik}
+                                valueselected={formik.values.id_campus}
+                                optionvalue="id_campus"
+                                optiondesc="description"
+                                namefield="id_campus"
+                            />
+                            <MultiSelectFunction
+                                title="Sedes asignadas"
+                                datatosend={campus}
+                                classname="col-6"
+                                optionvalue="id_campus"
+                                optiondesc="description"
+                                namefield="campus_assigned"
+                                valueselected={formik.values.campus_assigned}
                                 formik={formik}
                             />
                         </div>

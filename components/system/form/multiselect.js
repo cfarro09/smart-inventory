@@ -58,6 +58,7 @@ const SelectMulti = ({ title, datatosend, optionvalue, optiondesc, valueselected
                 if (formik && values) {
                     if (namefield) {
                         const event = { target: { name: namefield, value: values.map(o => o[optionvalue]).join(",") } };
+                        console.log(event, formik);
                         formik.handleChange(event);
                     }
 
@@ -95,6 +96,8 @@ const SelectMulti = ({ title, datatosend, optionvalue, optiondesc, valueselected
                 <TextField
                     {...params}
                     label={title}
+                    error={formik ? (formik?.errors[namefield] ? true : false) : false}
+                    helperText={formik ? (formik?.errors[namefield]) : false}
                     variant="outlined"
                     // placeholder="Distritos"
                     InputProps={{

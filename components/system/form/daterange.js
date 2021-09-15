@@ -8,6 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Button from '@material-ui/core/Button';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 const DateRange = ({ label, dateRangeinit, setDateRangeExt, fullWidthInput = false }) => {
     const [rangePickerString, setrangePickerString] = useState('');
@@ -56,7 +57,15 @@ const DateRange = ({ label, dateRangeinit, setDateRangeExt, fullWidthInput = fal
 
     return (
         <>
-            <TextField
+            <Button
+                fullWidth
+                style={{ border: '2px solid #EBEAED', borderRadius: 4, color: '#6f6f6f' }}
+                startIcon={<CalendarTodayIcon color="action" />}
+                onClick={() => setOpenModal(true)}
+            >
+                {rangePickerString}
+            </Button>
+            {/* <TextField
                 label={label}
                 variant="outlined"
                 fullWidth={fullWidthInput}
@@ -64,7 +73,7 @@ const DateRange = ({ label, dateRangeinit, setDateRangeExt, fullWidthInput = fal
                 size="small"
                 value={rangePickerString}
                 onClick={() => setOpenModal(true)}
-            />
+            /> */}
             <Dialog
                 open={openModal}
                 maxWidth="md"
@@ -96,7 +105,7 @@ const DateRange = ({ label, dateRangeinit, setDateRangeExt, fullWidthInput = fal
                         style={{ marginLeft: '1rem' }}
                         onClick={handleclose}
                     >Cerrar
-                </Button>
+                    </Button>
                 </DialogActions>
             </Dialog>
         </>

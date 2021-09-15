@@ -57,7 +57,7 @@ const Header = ({ classes, open, setOpen }) => {
                 </IconButton>
 
                 <div className={classes.title}>
-                    <h1 style={{ margin: 0, padding: 0 }}>{infosys.sys_company_name}</h1>
+                    <h1 style={{ margin: 0, padding: 0 }}>{user.company_name}</h1>
                 </div>
 
                 <div style={{ display: 'flex' }}>

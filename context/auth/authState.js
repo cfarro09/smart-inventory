@@ -59,10 +59,10 @@ const AuthState = ({ children }) => {
                 try {
                     const result = await clientAxios.get(process.env.endpoints.validatetoken);
 
-                    const { first_name: firstname, last_name: lastname, rol_name: role_name, menu, id_campus } = result.data.data;
+                    const { first_name: firstname, last_name: lastname, rol_name: role_name, menu, id_campus, company_name } = result.data.data;
                     dispatch({
                         type: AUTH_SUCCESS,
-                        payload: { firstname, lastname, role_name, menu, id_campus }
+                        payload: { firstname, lastname, role_name, menu, id_campus, company_name }
                     });
                     const routeraux = router.pathname === "/bookings/[id]" ? "/bookings" : router.pathname;
                     const appfound = menu.find(x => x.path === routeraux);

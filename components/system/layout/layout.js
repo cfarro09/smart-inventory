@@ -275,9 +275,7 @@ const Layout = ({ children, withPadding = true }) => {
                     }
                 `}
             />
-            <Head>
-                {infosys.sys_company_name && <title key={infosys.sys_company_name}>{infosys.sys_company_name}</title>}
-            </Head>
+            <Head><title key={infosys.sys_company_name}>Sistema de reservas</title></Head>
 
             <div className={classes.root}>
                 {['/sign-in', '/sign-up'].indexOf(router.pathname) !== -1 ?

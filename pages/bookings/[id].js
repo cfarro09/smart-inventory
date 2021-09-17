@@ -165,8 +165,10 @@ const getStringFromDate = (date) => `${getDateZyx(date)} ${date.getHours().toStr
 const getFieldsFree = (setOpenSnackBack, fields, startDate, endDate, appointments, id = null) => {
     const aa = fields.map(field => {
         const appointmentsAux = id ? appointments.filter(x => x.id !== id) : appointments;
-        const aux = appointmentsAux.some(x => x.id_field === field.id_field && (endDate >= x.startDate && endDate <= x.endDate ||
-            startDate >= x.startDate && startDate <= x.endDate ||
+        debugger
+        const aux = appointmentsAux.some(x => x.id_field === field.id_field && (
+            endDate >= x.startDate && endDate <= x.endDate ||
+            startDate >= x.startDate && startDate < x.endDate ||
             x.startDate >= startDate && x.startDate <= endDate));
         if (aux)
             return null; // valida q haya un msimo campo en la misma hora
@@ -198,10 +200,13 @@ const validateField = (fields, id_field, startDate, endDate) => {
 }
 
 const ItemEvent = ({ appointment }) => {
+    const datetmp = appointment.startDate.toLocaleString().split("/");
+    const hourtmp = appointment.startDate.toLocaleString().split(" ")[1].split(":");
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '4px', marginBottom: '4px', borderBottom: '1px solid #e1e1e1' }}>
             <div style={{ width: '50%' }}>
-                <div>{appointment.startDate.toLocaleString()}</div>
+                <div>{`${datetmp[0].padStart(2, "0")}/${datetmp[1].padStart(2, "0")}`}</div>
+                <div>{`${hourtmp[0].padStart(2, "0")}:${hourtmp[1].padStart(2, "0")} (${appointment.hours}H)`}</div>
                 <div>{appointment.title}({appointment.hours})</div>
             </div>
             <div style={{ width: '50%', textAlign: 'right' }}>
@@ -457,7 +462,7 @@ const Boooking = () => {
                         endDate: x.end_time,
                         id_field: added.id_field,
                         id_campus: fieldselected.id_campus,
-                        title: `*${clientselected?.first_name || fieldselected.field_name}`,
+                        title: `${clientselected?.first_name || fieldselected.field_name}`,
                         price: fieldselected.price,
                         hours,
                         total: fieldselected.price * hours
@@ -793,13 +798,13 @@ const Boooking = () => {
                             <span>Detalle</span>
                             <span>Importe</span>
                         </div>
-                        <div style={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', paddingBottom: '4px', marginBottom: '4px', borderBottom: '1px solid #e1e1e1' }}>
-                            <span>Total</span>
-                            <span>S/ {data.reduce((acc, i) => acc + i.total, 0).toFixed(2)}</span>
-                        </div>
                         {data.map((appointment, index) => (
                             <ItemEvent key={`index${index}`} appointment={appointment} />
                         ))}
+                        <div style={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', paddingBottom: '4px', marginBottom: '4px', borderBottom: '1px solid #e1e1e1' }}>
+                            <span>Total reserva</span>
+                            <span>S/ {data.reduce((acc, i) => acc + i.total, 0).toFixed(2)}</span>
+                        </div>
                     </div>
                 }
             </div>

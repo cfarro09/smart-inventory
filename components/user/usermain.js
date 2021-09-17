@@ -160,17 +160,7 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                             />
 
                         </div>
-                        <div className="row-zyx">
-                            <SelectFunction
-                                title="Sede por defecto"
-                                datatosend={campus}
-                                classname="col-6"
-                                formik={formik}
-                                valueselected={formik.values.id_campus}
-                                optionvalue="id_campus"
-                                optiondesc="description"
-                                namefield="id_campus"
-                            />
+                        <div className="row-zyx"> 
                             <MultiSelectFunction
                                 title="Sedes asignadas"
                                 datatosend={campus}
@@ -181,6 +171,17 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                                 valueselected={formik.values.campus_assigned}
                                 formik={formik}
                             />
+                            <SelectFunction
+                                title="Sede por defecto"
+                                datatosend={campus}
+                                classname="col-6"
+                                formik={formik}
+                                valueselected={formik.values.id_campus}
+                                optionvalue="id_campus"
+                                optiondesc="description"
+                                namefield="id_campus"
+                            />
+
                         </div>
                         <div className="row-zyx">
                             <UseSelectDomain

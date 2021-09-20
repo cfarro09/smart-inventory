@@ -9,11 +9,13 @@ import IconButton from '@material-ui/core/IconButton';
 import { validateResArray } from 'config/helper';
 import SelectFunction from '../components/system/form/select-function';
 import Box from '@material-ui/core/Box';
-
+import Tooltip from '@material-ui/core/Tooltip';
 import {
     Delete as DeleteIcon,
     Edit as EditIcon,
-    Payment as PaymentIcon
+    Payment as PaymentIcon,
+    ListAlt as ListAltIcon,
+    Receipt as ReceiptIcon,
 } from '@material-ui/icons';
 import { Button } from '@material-ui/core';
 
@@ -50,19 +52,21 @@ const ScheduledBooking = () => {
                 Cell: props => {
                     return (
                         <div className="container-button-floating">
-                            <IconButton
-                                aria-label="delete"
-                                size="small"
-                                className="button-floating"
-                                onClick={() => {
-                                    selectrow(props.cell.row.original);
-                                }}
-                            >
-                                <PaymentIcon
-                                    fontSize="inherit"
+                            <Tooltip title="Descargar recibo">
+                                <IconButton
+                                    aria-label="delete"
                                     size="small"
-                                />
-                            </IconButton>
+                                    className="button-floating"
+                                    onClick={() => {
+                                        selectrow(props.cell.row.original);
+                                    }}
+                                >
+                                    <ReceiptIcon
+                                        fontSize="inherit"
+                                        size="small"
+                                    />
+                                </IconButton>
+                            </Tooltip>
                         </div>
                     )
                 }
@@ -78,7 +82,7 @@ const ScheduledBooking = () => {
                 type: 'string',
             },
             {
-                Header: 'DOCUMNETO',
+                Header: 'DOCUMENTO',
                 accessor: 'doc_number',
                 type: 'string',
             },
@@ -88,41 +92,44 @@ const ScheduledBooking = () => {
                 type: 'string',
             },
             {
-                Header: 'CANTIDAD',
-                accessor: 'amount',
+                Header: 'FORMA PAGO',
+                accessor: 'payment_type',
                 type: 'string',
             },
-            // {
-            //     Header: 'bill_number',
-            //     accessor: 'bill_number',
-            //     type: 'string',
-            // },
-            // {
-            //     Header: 'bill_type',
-            //     accessor: 'bill_type',
-            //     type: 'string',
-            // },
+            {
+                Header: 'C/R',
+                accessor: 'type',
+                type: 'string',
+            },
             {
                 Header: 'FECHA RESERVA',
                 accessor: 'booking_date',
                 type: 'string',
             },
-            {
-                Header: 'TIPO PAGO',
-                accessor: 'payment_type',
-                type: 'string',
-            },
+
             {
                 Header: 'FECHA PAGO',
                 accessor: 'payment_date',
                 type: 'string',
             },
             {
-                Header: 'DETALLE',
+                Header: 'INFO',
                 accessor: 'info',
                 type: 'string',
             },
-
+            {
+                Header: 'TOTAL',
+                accessor: 'amount',
+                type: 'string',
+                Cell: (props) => {
+                    const { amount } = props.cell.row.original;
+                    return (
+                        <div style={{ textAlign: 'right' }}>
+                            {parseFloat(amount || "0").toFixed(2)}
+                        </div>
+                    )
+                }
+            },
         ],
         [appfound]
     );
@@ -184,6 +191,37 @@ const ScheduledBooking = () => {
         ])
     }, [campusSelected, dateRange]);
 
+    const exportData = React.useCallback(({ pageSize, pageIndex, filters, sorts }) => {
+        const daterange = {
+            startDate: dateRange[0].startDate.toISOString().substring(0, 10),
+            endDate: dateRange[0].endDate.toISOString().substring(0, 10)
+        }
+        setOpenBackdrop(true)
+        setdatafetch({ pageSize, pageIndex, filters, sorts, daterange });
+
+        const datatosend = {
+            methodcollection: "fn_sel_cash_register",
+            take: pageSize || 20,
+            skip: pageIndex || 0,
+            filters: {
+                ...filters,
+                id_campus: {
+                    operator: 'equals',
+                    value: campusSelected?.id_campus
+                }
+            },
+            sorts,
+            daterange,
+        }
+        triggeraxios('post', "api/export/cash_report", { ...datatosend, methodcollection: 'fn_sel_cash_register_resume' }).then(r => {
+            setOpenBackdrop(false)
+            if (r.success) {
+                window.open(r.result.data.url);
+            } else
+                setOpenSnackBack(true, { success: false, message: 'Hubo un error, intentelo mas tarde.' });
+        })
+    }, [campusSelected, dateRange]);
+
     return (
         <Layout>
             <div className="row-zyx">
@@ -203,7 +241,7 @@ const ScheduledBooking = () => {
                         setCampusSelected(newValue);
                     }}
                 />
-                <span className="col-3">
+                <span className="col-4">
                     <Button
                         variant="contained"
                         color="primary"
@@ -213,6 +251,16 @@ const ScheduledBooking = () => {
                             fetchData(datafetch);
                         }}
                     >Buscar
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        disabled={loading || !!!campusSelected}
+                        style={{marginLeft: 8}}
+                        onClick={() => {
+                            exportData(datafetch);
+                        }}
+                    >Exportar
                     </Button>
                 </span>
             </div>

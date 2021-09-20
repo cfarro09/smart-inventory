@@ -385,7 +385,6 @@ const Boooking = () => {
 
 
     const Appointment = ({ children, style, ...restProps }) => {
-        
         return (
             <Appointments.Appointment
                 {...restProps}
@@ -470,7 +469,7 @@ const Boooking = () => {
                     }))
                     data = [...data, ...events];
                 } else {
-                    data = [...data, { id: startingAddedId, ...added, id_campus: fieldselected.id_campus, title: `*${clientselected?.first_name || fieldselected.field_name}`, price: fieldselected.price, hours, total: fieldselected.price * hours }];
+                    data = [...data, { id: startingAddedId, ...added, id_campus: fieldselected.id_campus, title: `${clientselected?.first_name || fieldselected.field_name}`, price: fieldselected.price, hours, total: fieldselected.price * hours }];
                 }
             }
             if (changed) {
@@ -486,7 +485,7 @@ const Boooking = () => {
                             endDate: x.end_time,
                             id_field: newchange.id_field,
                             id_campus: fieldselected.id_campus,
-                            title: `*${clientselected?.first_name || fieldselected.field_name}`,
+                            title: `${clientselected?.first_name || fieldselected.field_name}`,
                             price: fieldselected.price,
                             hours,
                             total: fieldselected.price * hours
@@ -718,6 +717,9 @@ const Boooking = () => {
                         <DateNavigator />
                         <Appointments
                             appointmentComponent={Appointment}
+                            appointmentContentComponent={(props) => {
+                                return <Appointments.AppointmentContent {...props} formatDate={() => ""} />
+                            }}
                         />
                         <AppointmentTooltip
                             showOpenButton
@@ -734,6 +736,16 @@ const Boooking = () => {
                                 setValidateResources(e)
                                 setvisible(undefined)
                             }}
+                            textEditorComponent={props => {
+                                if (props.placeholder === "Título") 
+                                    return null
+                                return <AppointmentForm.TextEditor {...props} />
+                            }}
+                            // labelComponent={props => {
+                            //     if (props.text === "Título")
+                                    
+                            //     return <AppointmentForm.Label {...props} />
+                            // }}
                             commandLayoutComponent={({ onCancelButtonClick, ...props }) => {
                                 return <AppointmentForm.CommandLayout {...props} onCancelButtonClick={(e) => {
                                     setvisible(undefined)

@@ -101,15 +101,39 @@ const Bookings = () => {
             },
             {
                 Header: 'IMPORTE TOTAL',
-                accessor: 'booking_amount'
+                accessor: 'booking_amount',
+                Cell: (props) => {
+                    const { booking_amount } = props.cell.row.original;
+                    return (
+                        <div style={{textAlign: 'right'}}>
+                            {parseFloat(booking_amount || "0").toFixed(2)}
+                        </div>
+                    )
+                }
             },
             {
                 Header: 'IMPORTE PAGADO',
-                accessor: 'paid_amount'
+                accessor: 'paid_amount',
+                Cell: (props) => {
+                    const { paid_amount } = props.cell.row.original;
+                    return (
+                        <div style={{textAlign: 'right'}}>
+                            {parseFloat(paid_amount || "0").toFixed(2)}
+                        </div>
+                    )
+                }
             },
             {
                 Header: 'IMPORTE PENDIENTE',
-                accessor: 'pending_amount'
+                accessor: 'pending_amount',
+                Cell: (props) => {
+                    const { pending_amount } = props.cell.row.original;
+                    return (
+                        <div style={{textAlign: 'right'}}>
+                            {parseFloat(pending_amount || "0").toFixed(2)}
+                        </div>
+                    )
+                }
             },
             {
                 Header: 'ESTADO',

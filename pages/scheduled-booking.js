@@ -97,11 +97,27 @@ const ScheduledBooking = () => {
                 Header: 'Importe',
                 accessor: 'amount',
                 type: 'string',
+                Cell: (props) => {
+                    const { amout } = props.cell.row.original;
+                    return (
+                        <div style={{textAlign: 'right'}}>
+                            {parseFloat(amout || "0").toFixed(2)}
+                        </div>
+                    )
+                }
             },
             {
                 Header: 'Importe pendiente',
                 accessor: 'pending_amount',
                 type: 'string',
+                Cell: (props) => {
+                    const { pending_amount } = props.cell.row.original;
+                    return (
+                        <div style={{textAlign: 'right'}}>
+                            {parseFloat(pending_amount || "0").toFixed(2)}
+                        </div>
+                    )
+                }
             },
             {
                 Header: 'Estado',

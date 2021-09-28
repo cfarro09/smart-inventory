@@ -31,6 +31,12 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientsele
         return () => continuezyx = false;
     }, [])
 
+    useEffect(() => {
+        if (openModal) {
+            formik.resetForm();
+        }
+    }, [openModal])
+
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: rowselected || {
@@ -67,7 +73,7 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientsele
                 setOpenBackdrop(true);
                 const res = await triggeraxios('post', process.env.endpoints.selsimple, dattosend);
                 if (res.success) {
-                    setclientselected(res.result.data[0]);
+                    setclientselected && setclientselected(res.result.data[0]);
                     fetchDataUser({});
                     setOpenModal(false);
                     setOpenSnackBack(true, { success: true, message: 'Se registró correctamente!.' });

@@ -68,6 +68,7 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                         status: rowselected?.status || '',
                         type: rowselected?.type || 'CLIENTE',
                         password: values.password ? values.password : "",
+                        createdby: 'admin'
                     }
                 }
 

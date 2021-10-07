@@ -120,7 +120,7 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
             <Dialog
                 open={openModal}
                 fullWidth={true}
-                maxWidth='md'
+                maxWidth='sm'
                 onClose={handleClick}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
@@ -135,26 +135,26 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
 
                             <InputFormk
                                 name="first_name"
-                                classname="col-3"
+                                classname="col-6"
                                 label="Nombre"
                                 formik={formik}
                             />
                             <InputFormk
                                 name="last_name"
-                                classname="col-3"
+                                classname="col-6"
                                 label="Apellido"
                                 formik={formik}
                             />
                             <InputFormk
                                 name="username"
-                                classname="col-3"
+                                classname="col-6"
                                 label="Usuario"
                                 formik={formik}
                                 disabled={!!rowselected}
                             />
                             <InputFormk
                                 name="user_email"
-                                classname="col-3"
+                                classname="col-6"
                                 label="Correo"
                                 formik={formik}
                             />
@@ -162,13 +162,13 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                         <div className="row-zyx">
                             <InputFormk
                                 name="doc_number"
-                                classname="col-3"
+                                classname="col-6"
                                 label="N° Doc"
                                 formik={formik}
                             />
 
                             <UseSelectDomain
-                                classname="col-3"
+                                classname="col-6"
                                 title="Tipo Doc"
                                 domainname={domains.doc_type}
                                 valueselected={formik.values.doc_type}
@@ -176,7 +176,7 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                                 formik={formik}
                             />
                             <UseSelectDomain
-                                classname="col-3"
+                                classname="col-6"
                                 title="Estado"
                                 domainname={domains.status}
                                 valueselected={formik.values.status}
@@ -186,7 +186,7 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                             <SelectFunction
                                 title="Rol"
                                 datatosend={dataRoles}
-                                classname="col-3"
+                                classname="col-6"
                                 optionvalue="id_role"
                                 optiondesc="description"
                                 valueselected={formik.values.id_role}

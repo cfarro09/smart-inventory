@@ -4,6 +4,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import axios from "axios";
+import Box from '@material-ui/core/Box';
 
 const SelectFunction = React.memo(({ title, datatosend, optionvalue, optiondesc, valueselected = "", namefield = "", descfield = "", formik = false, callback, disabled = false, classname = null, style = null }) => {
 
@@ -51,53 +52,56 @@ const SelectFunction = React.memo(({ title, datatosend, optionvalue, optiondesc,
     }, [datatosend]);
 
     return (
-        <Autocomplete
-            filterSelectedOptions
-            className={classname}
-            style={style}
-            disabled={disabled}
-            size="small"
-            value={value}
-            inputValue={inputValue}
-            onChange={(_, newValue) => {
-                if (formik && newValue) {
-                    if (namefield) {
-                        const event = { target: { name: namefield, value: newValue[optionvalue] } };
+        <div className={classname}>
+            <Box fontWeight={500} lineHeight="18px" fontSize={14} mb={1} color="textPrimary">{title}</Box>
+            <Autocomplete
+                filterSelectedOptions
+                className={classname}
+                style={style}
+                disabled={disabled}
+                size="small"
+                fullWidth
+                value={value}
+                inputValue={inputValue}
+                onChange={(_, newValue) => {
+                    if (formik && newValue) {
+                        if (namefield) {
+                            const event = { target: { name: namefield, value: newValue[optionvalue] } };
+                            formik.handleChange(event);
+                        }
+                        if (descfield) {
+                            const event = { target: { name: descfield, value: newValue[optiondesc] } };
+                            formik.handleChange(event);
+                        }
+                    } else if (formik && !newValue) {
+                        const event = { target: { name: namefield, value: '' } };
                         formik.handleChange(event);
                     }
-                    if (descfield) {
-                        const event = { target: { name: descfield, value: newValue[optiondesc] } };
-                        formik.handleChange(event);
-                    }
-                } else if (formik && !newValue) {
-                    const event = { target: { name: namefield, value: '' } };
-                    formik.handleChange(event);
-                }
-                setValue(newValue);
-                if (callback)
-                    callback({ newValue });
-            }}
-            onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
-            getOptionLabel={option => option ? option[optiondesc] : ''}
-            options={options}
-            loading={loading}
-            renderInput={(params) => (
-                <TextField
-                    {...params}
-                    label={title}
-                    variant="outlined"
-                    InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                            <React.Fragment>
-                                {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                                {params.InputProps.endAdornment}
-                            </React.Fragment>
-                        ),
-                    }}
-                />
-            )}
-        />
+                    setValue(newValue);
+                    if (callback)
+                        callback({ newValue });
+                }}
+                onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
+                getOptionLabel={option => option ? option[optiondesc] : ''}
+                options={options}
+                loading={loading}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        InputProps={{
+                            ...params.InputProps,
+                            endAdornment: (
+                                <React.Fragment>
+                                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                    {params.InputProps.endAdornment}
+                                </React.Fragment>
+                            ),
+                        }}
+                    />
+                )}
+            />
+        </div>
+
     )
 })
 

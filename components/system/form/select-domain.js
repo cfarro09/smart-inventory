@@ -4,9 +4,10 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import axios from "axios";
+import Box from '@material-ui/core/Box';
 
-const UseSelectDomain = ({title, domainname, valueselected = "", namefield = "", formik = false, classname = null, disabled = false, callback}) => {
-    
+const UseSelectDomain = ({ title, domainname, valueselected = "", namefield = "", formik = false, classname = null, disabled = false, callback }) => {
+
     const [options, setOptions] = useState([]);
     const [loading, setloading] = useState(true);
     const [value, setValue] = useState(null);
@@ -22,7 +23,7 @@ const UseSelectDomain = ({title, domainname, valueselected = "", namefield = "",
                 setValue(optionfind);
 
                 if (callback)
-                    callback({newValue: optionfind})
+                    callback({ newValue: optionfind })
             }
         }
     }
@@ -32,7 +33,7 @@ const UseSelectDomain = ({title, domainname, valueselected = "", namefield = "",
 
         (async () => {
             if (typeof domainname === "string") {
-                const datatosend = { 
+                const datatosend = {
                     method: "SP_SEL_DOMAIN",
                     data: {
                         domain_name: domainname,
@@ -45,7 +46,7 @@ const UseSelectDomain = ({title, domainname, valueselected = "", namefield = "",
                     setHardValue(res.result.data, valueselected)
                 }
                 setloading(false);
-            } else if (domainname instanceof Array){
+            } else if (domainname instanceof Array) {
                 setloading(false);
                 setOptions(domainname);
                 setHardValue(domainname, valueselected)
@@ -58,45 +59,51 @@ const UseSelectDomain = ({title, domainname, valueselected = "", namefield = "",
     }, []);
 
     return (
-        <Autocomplete
-            className={classname}
-            size="small"
-            value={value}
-            inputValue={inputValue}
-            disabled={disabled}
-            onChange={(_, newValue) => {
-                if (formik) {
-                    const event = { target: { name: namefield, value: (newValue ? newValue.domain_value : '') } };
-                    formik.handleChange(event);
-                    
-                }
-                setValue(newValue);
-                if (callback)
-                    callback({newValue});
-            }}
-            onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
-            getOptionLabel={option => option ? option.domain_description : ''}
-            options={options}
-            loading={loading}
-            renderInput={(params) => (
-                <TextField
-                    {...params}
-                    label={title}
-                    variant="outlined"
-                    InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                            <React.Fragment>
-                                {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                                {params.InputProps.endAdornment}
-                            </React.Fragment>
-                        ),
-                    }}
-                />
-            )}
-        />
+        <div className={classname}>
+            <Box fontWeight={500} lineHeight="18px" fontSize={14} mb={1} color="textPrimary">{title}</Box>
+
+            <Autocomplete
+                fullWidth
+                className={classname}
+                size="small"
+                value={value}
+                inputValue={inputValue}
+                disabled={disabled}
+                onChange={(_, newValue) => {
+                    if (formik) {
+                        const event = { target: { name: namefield, value: (newValue ? newValue.domain_value : '') } };
+                        formik.handleChange(event);
+
+                    }
+                    setValue(newValue);
+                    if (callback)
+                        callback({ newValue });
+                }}
+                onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
+                getOptionLabel={option => option ? option.domain_description : ''}
+                options={options}
+                loading={loading}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        InputProps={{
+                            ...params.InputProps,
+                            endAdornment: (
+                                <React.Fragment>
+                                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                    {params.InputProps.endAdornment}
+                                </React.Fragment>
+                            ),
+                        }}
+                    />
+                )}
+            />
+        </div>
+
+
+
     )
-    
+
 }
 
 export default UseSelectDomain;

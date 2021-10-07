@@ -23,7 +23,7 @@ const REQUESTUSER = {
 const User = () => {
 
     const { setloadingglobal, setModalQuestion, setOpenBackdrop, setOpenSnackBack } = useContext(popupsContext);
-    const { appselected: appfound } = useContext(authContext);
+    // const { appselected: appfound } = useContext(authContext);
     const [openModal, setOpenModal] = useState(false);
     const [datatable, setdatatable] = useState([]);
     const [rowselected, setrowselected] = useState(null);
@@ -41,7 +41,7 @@ const User = () => {
                                 aria-label="delete"
                                 size="small"
                                 className="button-floating"
-                                disabled={!appfound.update}
+                                // disabled={!appfound.update}
                                 onClick={() => {
                                     selectrow(props.cell.row.original);
                                 }}
@@ -55,7 +55,7 @@ const User = () => {
                                 className="button-floating"
                                 aria-label="delete"
                                 size="small"
-                                disabled={!appfound.delete}
+                                // disabled={!appfound.delete}
                                 onClick={() => deleteuser(props.cell.row.original)}
                             >
                                 <DeleteIcon
@@ -124,13 +124,13 @@ const User = () => {
                 accessor: 'modified_by'
             },
         ],
-        [appfound]
+        []
     );
 
     const fetchData = React.useCallback(async () => {
         setloadingglobal(true);
         const res = await triggeraxios('post', process.env.endpoints.selsimple, REQUESTUSER);
-        setdatatable(validateResArray(res, true));
+        setdatatable([validateResArray(res, true)[0]]);
         setloadingglobal(false)
     }, []);
 
@@ -177,7 +177,7 @@ const User = () => {
                 titlemodule='Usuarios'
                 data={datatable}
                 fetchData={fetchData}
-                register={!!appfound.insert}
+                register={true}
                 selectrow={selectrow}
             />
             <UserModal

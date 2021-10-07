@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import List from '@material-ui/core/List';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
@@ -9,6 +10,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import authContext from '../../../context/auth/authContext';
+import popupsContext from '../../../context/pop-ups/pop-upsContext';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Collapse from '@material-ui/core/Collapse';
@@ -37,12 +39,40 @@ import {
 const listbuy = ['/purchase-order/load', '/purchase-order/list', '/purchase-order/[id]'];
 const listsend = ['/bill/load', '/bill/list', '/bill/[id]'];
 
+const whiteIconTheme = createMuiTheme({
+    overrides: {
+        MuiSvgIcon: {
+            root: {
+                color: "#FFF",
+                width: 24,
+                height: 24,
+                minWidth: 0
+            },
+        },
+    },
+});
+
+
 const Aside = React.memo(({ open, setOpen, classes, theme }) => {
     console.log('aside render');
     const router = useRouter();
     const { user, appselected } = useContext(authContext);
+    const { openDrawer, setOpenDrawer } = useContext(popupsContext);
+
 
     const handleDrawerClose = () => setOpen(false);
+
+    const ChevronIcon = () => {
+        if (!openDrawer) {
+            return (
+                <ThemeProvider theme={whiteIconTheme}>
+                    {theme.direction === 'rtl' ? <ChevronLeft /> : <ChevronRight />}
+                </ThemeProvider>
+            );
+        } else {
+            return theme.direction === 'rtl' ? <ChevronRight color="primary" /> : <ChevronLeft color="primary" />;
+        }
+    };
 
     const ListItemCollapse = React.useCallback(({ itemName, listRoutes, children, IconLink }) => {
 
@@ -56,14 +86,14 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
         }, [router]);
 
         const ff = user?.menu.find(x => ["bill-list", "purchase-order-list", "purchase-order-load", "bill-list"].includes(x.application) && !!x.view);
-        
-        if (ff) 
+
+        if (ff)
             return (
                 <>
-                    <ListItem style={{paddingBottom: '5px', paddingTop: '5px'}} button onClick={() => setIsCollapse(!isCollapse)}>
-                        <ListItemIcon style={{minWidth: '45px'}}><IconLink /></ListItemIcon>
-                        <ListItemText style={{ color: 'white' }} primary={itemName} />
-                        {isCollapse ? <ExpandLess style={{ color: 'white' }} /> : <ExpandMore style={{ color: 'white' }} />}
+                    <ListItem style={{ paddingBottom: '5px', paddingTop: '5px' }} button onClick={() => setIsCollapse(!isCollapse)}>
+                        <ListItemIcon style={{ minWidth: '45px' }}><IconLink /></ListItemIcon>
+                        <ListItemText primary={itemName} />
+                        {isCollapse ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
                     <Collapse in={isCollapse} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
@@ -72,7 +102,7 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                     </Collapse>
                 </>
             )
-        else 
+        else
             return null;
     }, [])
 
@@ -81,24 +111,23 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
         //     return null;
         if (user) {
             let routertmp = router.pathname;
-            
-            const appfound = user.menu.find(x => x.application === application);
-            
 
-            if (appfound && appfound.view)
-                return (
-                    <Link href={appfound.path}>
-                        <ListItem 
-                            button 
-                            key={appfound.path} 
-                            style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: theme.spacing(IconLink ? 2 : 9) }} 
-                            className={classes.listItem, (routertmp === appfound.path ? classes.activelink : undefined)}
-                        >
-                            {IconLink && <ListItemIcon style={{minWidth: '45px'}}><IconLink /></ListItemIcon>}
-                            <ListItemText style={{ color: 'white' }} primary={appfound.description} />
-                        </ListItem>
-                    </Link>
-                )
+            // const appfound = user.menu.find(x => x.application === application);
+
+            // if (appfound && appfound.view)
+            return (
+                <Link href={"/" + application}>
+                    <ListItem
+                        button
+                        key={"/" + application}
+                        style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: theme.spacing(IconLink ? 2 : 9) }}
+                        className={classes.listItem, (routertmp === "/" + application ? classes.activelink : undefined)}
+                    >
+                        {IconLink && <ListItemIcon style={{ minWidth: '45px' }}><IconLink /></ListItemIcon>}
+                        <ListItemText primary={application} />
+                    </ListItem>
+                </Link>
+            )
         }
         return null;
     }, [appselected])
@@ -114,56 +143,53 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
             }}
         >
             <div className={classes.toolbar}>
+                <img src={openDrawer ? "https://seeklogo.com/images/O/Oster_2006-logo-8F7C33D348-seeklogo.com.png" : "https://ostermxqa.vteximg.com.br/arquivos/O_App_logo.png?v=637233845265900000"} style={{ height: 37 }} alt="logo" />
+            </div>
+            {/* <div className={classes.toolbar}>
                 <IconButton onClick={handleDrawerClose}>
                     {theme.direction === 'rtl' ? <ChevronRight color="primary" /> : <ChevronLeft color="primary" />}
                 </IconButton>
-            </div>
+            </div> */}
             <Divider />
 
             <List>
-            <LinkList
-                    application="bulkload-list"
+                <LinkList
+                    application="StepUpChart"
                     IconLink={() => (
                         <ViewComfy style={{ color: theme.palette.primary.light }} />
                     )}
                 />
                 <LinkList
-                    application="bulkload"
+                    application="Warboard"
                     IconLink={() => (
                         <ViewComfy style={{ color: theme.palette.primary.light }} />
                     )}
                 />
                 <LinkList
-                    application="order"
+                    application="Detalle"
                     IconLink={() => (
                         <ViewComfy style={{ color: theme.palette.primary.light }} />
                     )}
                 />
                 <LinkList
-                    application="provider"
+                    application="Share por marca"
                     IconLink={() => (
                         <EmojiTransportation style={{ color: theme.palette.primary.light }} />
                     )}
                 />
-               
+
                 <LinkList
-                    application="driver"
+                    application="Activaciones"
                     IconLink={() => (
                         <LocalShipping style={{ color: theme.palette.primary.light }} />
                     )}
                 />
-                 {/* <LinkList
+                {/* <LinkList
                     application="tracking"
                     IconLink={() => (
                         <Timeline style={{ color: theme.palette.primary.light }} />
                     )}
                 /> */}
-                <LinkList
-                    application="client"
-                    IconLink={() => (
-                        <AccountCircle style={{ color: theme.palette.primary.light }} />
-                    )}
-                />
                 <Divider />
                 <LinkList
                     application="user"
@@ -197,6 +223,12 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                     )}
                 />
             </List>
+            <div style={{ flexGrow: 1 }}></div>
+            <div className={classes.toolbar2}>
+                <IconButton onClick={() => handleDrawerClose()}>
+                    <ChevronIcon />
+                </IconButton>
+            </div>
         </Drawer >
     );
 })

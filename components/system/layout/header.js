@@ -40,12 +40,12 @@ const Header = ({ classes, open, setOpen }) => {
     return (
         <AppBar
             position="fixed"
+            elevation={0}
             className={clsx(classes.appBar, {
                 [classes.appBarShift]: open,
             })}
         >
-            <Toolbar
-            >
+            <Toolbar style={{ borderBottom: '1px solid #EBEAED' }}>
                 <IconButton
                     color="inherit"
                     aria-label="open drawer"
@@ -56,9 +56,10 @@ const Header = ({ classes, open, setOpen }) => {
                     <MenuIcon color="secondary" />
                 </IconButton>
 
-                <div className={classes.title}>
+                {/* <div className={classes.title}>
                     <h1 style={{ margin: 0, padding: 0 }}>{infosys.sys_company_name}</h1>
-                </div>
+                </div> */}
+                <div className={classes.title}></div>
 
                 <div style={{ display: 'flex' }}>
                     <Button
@@ -67,7 +68,6 @@ const Header = ({ classes, open, setOpen }) => {
                         aria-haspopup="true"
                         onClick={handleMenu}
                         text="hola"
-                        color="inherit"
                         startIcon={<AccountCircle />}
 
                     >{user ? `${user.firstname} ${user.lastname}` : ''}

@@ -46,7 +46,7 @@ const ButtonExport = ({ csvData, fileName, datatosend, columnsexport  }) => {
         <Fab
             size="small"
             aria-label="add"
-            color="primary"
+            color="action"
             onClick={handleClick}
         >
             <GetAppIcon size="small" color="action" />

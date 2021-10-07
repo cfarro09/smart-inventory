@@ -18,9 +18,9 @@ import {
 } from '../../types';
 
 const DEFAULTPROPERTIES = {
-    sys_company_name: "QAYARIX",
-    sys_company_img: "https://app.qayarix.com/logotipo.png",
-    sys_company_color_primary: "#da042e",
+    sys_company_name: "Oster",
+    sys_company_img: "https://seeklogo.com/images/O/Oster_2006-logo-8F7C33D348-seeklogo.com.png",
+    sys_company_color_primary: "#0c4da2",
     sys_company_color_secondary: "#010025",
 }
 
@@ -77,7 +77,7 @@ const AuthState = ({ children }) => {
 
                     dispatch({
                         type: INFOSYS,
-                        payload: auxx
+                        payload: DEFAULTPROPERTIES
                     });
                 }
             } catch (error) {

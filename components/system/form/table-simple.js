@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     },
     trdynamic: {
         '&:hover': {
-            boxShadow: '0 11px 6px -9px rgb(84 84 84 / 78%)',
+            // boxShadow: '0 11px 6px -9px rgb(84 84 84 / 78%)',
             "& $containerfloat": {
                 visibility: 'visible'
             }
@@ -66,9 +66,9 @@ const useStyles = makeStyles((theme) => ({
     },
     containerfloat: {
         borderBottom: 'none',
-        padding: '4px 24px 4px 16px',
-        backgroundColor: 'white',
-        marginTop: '1px',
+        marginTop: 1,
+        padding: '0px 24px 0px 16px',
+        backgroundColor: '#f5f5f5',
         position: 'absolute',
         zIndex: 9999,
         left: 0,
@@ -120,12 +120,6 @@ const TableZyx = React.memo(({
         return (
             <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <Input
-                    startAdornment={React.useMemo(() => (
-                        <InputAdornment position="start">
-                            <SearchIcon color="action" fontSize="small" />
-                        </InputAdornment>
-                    ))
-                    }
                     type={type === "number" ? "number" : "text"}
                     style={{ fontSize: '15px', minWidth: '100px' }}
                     size="small"
@@ -149,7 +143,6 @@ const TableZyx = React.memo(({
                 <Menu
                     id="long-menu"
                     anchorEl={anchorEl}
-                    keepMounted
                     open={open}
                     onClose={handleCloseMenu}
                     PaperProps={{
@@ -319,7 +312,7 @@ const TableZyx = React.memo(({
                     <Table width="90%" {...getTableProps()} aria-label="enhanced table" size="small" aria-labelledby="tableTitle">
                         <TableHead>
                             {headerGroups.map((headerGroup, index) => (
-                                <TableRow key={index} {...headerGroup.getHeaderGroupProps()}>
+                                <TableRow hover key={index} {...headerGroup.getHeaderGroupProps()}>
                                     {headerGroup.headers.map((column, ii) => (
                                         column.activeOnHover ?
                                             <th width="0px" key="header-floating"></th> :
@@ -360,7 +353,7 @@ const TableZyx = React.memo(({
                             {page.map(row => {
                                 prepareRow(row);
                                 return (
-                                    <TableRow {...row.getRowProps()} className={classes.trdynamic}>
+                                    <TableRow hover {...row.getRowProps()} className={classes.trdynamic}>
                                         {row.cells.map((cell, i) =>
                                             <TableCell
                                                 {...cell.getCellProps()}

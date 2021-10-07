@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
+        background: '#FFF',
     },
     appBarShift: {
         marginLeft: drawerWidth,
@@ -60,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     },
     drawerPaper: {
         width: drawerWidth,
-        backgroundColor: theme.palette.secondary.light,
+        backgroundColor: '#FFF',
     },
     hide: {
         display: 'none',
@@ -85,13 +86,28 @@ const useStyles = makeStyles((theme) => ({
             width: theme.spacing(9) + 1,
         },
     },
+    // toolbar: {
+    //     display: 'flex',
+    //     alignItems: 'center',
+    //     justifyContent: 'flex-end',
+    //     padding: theme.spacing(0, 1),
+    //     // necessary for content to be below app bar
+    //     ...theme.mixins.toolbar,
+    // },
     toolbar: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
         padding: theme.spacing(0, 1),
         // necessary for content to be below app bar
         ...theme.mixins.toolbar,
+    },
+    toolbar2: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: theme.spacing(0, 1),
+        // necessary for content to be below app bar
     },
     content: {
         flexGrow: 1,
@@ -147,6 +163,48 @@ const Layout = ({ children }) => {
         <>
             <Global
                 styles={css`
+                    @font-face {
+                        font-family: 'dm-sans';
+                        src: url('./fonts/DMSans-Regular.ttf') format('truetype');
+                        font-weight: 400;
+                        font-style: normal;
+                    }
+                    
+                    @font-face {
+                        font-family: 'dm-sans';
+                        src: url('./fonts/DMSans-Italic.ttf') format('truetype');
+                        font-weight: 400;
+                        font-style: italic;
+                    }
+                    
+                    @font-face {
+                        font-family: 'dm-sans';
+                        src: url('./fonts/DMSans-Medium.ttf') format('truetype');
+                        font-weight: 500;
+                        font-style: normal;
+                    }
+                    
+                    @font-face {
+                        font-family: 'dm-sans';
+                        src: url('./fonts/DMSans-MediumItalic.ttf') format('truetype');
+                        font-weight: 500;
+                        font-style: italic;
+                    }
+                    
+                    @font-face {
+                        font-family: 'dm-sans';
+                        src: url('./fonts/DMSans-Bold.ttf') format('truetype');
+                        font-weight: 700;
+                        font-style: normal;
+                    }
+                    
+                    @font-face {
+                        font-family: 'dm-sans';
+                        src: url('./fonts/DMSans-BoldItalic.ttf') format('truetype');
+                        font-weight: 700;
+                        font-style: italic;
+                    }
+                
                     html, body {
                         margin:0;
                     }
@@ -314,9 +372,6 @@ const Layout = ({ children }) => {
                                                 [classes.containermainclose]: !openDrawer,
                                             })} >
                                             {children}
-                                        </Box>
-                                        <Box component="footer" px={2} pt={1} bgcolor="white">
-                                            Todos los derechos reservados, Copyright © 2021
                                         </Box>
                                     </div>
 

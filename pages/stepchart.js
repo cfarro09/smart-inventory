@@ -11,6 +11,8 @@ import { validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
 import { BarChart, Bar,LabelList, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DateRange from '../components/system/form/daterange';
+import { jsPDF } from "jspdf";
+import html2canvas from 'html2canvas';
 
 import {
     Delete as DeleteIcon,
@@ -123,6 +125,17 @@ const User = () => {
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         setDataGraph(listResult.result.data)
     }
+    function descargar(){
+        html2canvas(document.getElementById('divToPrint'))
+            .then((canvas) => {
+                const pdf = new jsPDF('l', 'mm', 'a4');
+                var width = pdf.internal.pageSize.getWidth();
+                var height = pdf.internal.pageSize.getHeight();
+                pdf.addImage(canvas.toDataURL('image/png'), 'JPEG', 0, 0, width, height);
+                pdf.save("download.pdf");
+            })
+    }
+
 
     return (
         <Layout>
@@ -143,7 +156,7 @@ const User = () => {
                         variant="outlined"
                         namefield="category"
                         descfield="category"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value.category })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.category||'' })}
                     />
                 </div>
                 <div className={classes.containerFilters}>
@@ -157,7 +170,7 @@ const User = () => {
                         variant="outlined"
                         namefield="format"
                         descfield="format"
-                        callback={({ newValue: value }) => setfilters({ ...filters, format: value.format })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, format: value?.format||'' })}
                     />
                     <SelectFunction
                         title="Canal"
@@ -168,7 +181,7 @@ const User = () => {
                         variant="outlined"
                         namefield="channel"
                         descfield="channel"
-                        callback={({ newValue: value }) => setfilters({ ...filters, channel: value.channel })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, channel: value?.channel||'' })}
                     />
                     <SelectFunction
                         title="Departamento"
@@ -179,7 +192,7 @@ const User = () => {
                         variant="outlined"
                         namefield="department"
                         descfield="department"
-                        callback={({ newValue: value }) => setfilters({ ...filters, department: value.department })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, department: value?.department||'' })}
                     />
                     <SelectFunction
                         title="PDV"
@@ -190,7 +203,7 @@ const User = () => {
                         variant="outlined"
                         namefield="store_name"
                         descfield="store_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, store_name: value.store_name })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name||'' })}
                     />
 
                     <SelectFunction
@@ -202,7 +215,7 @@ const User = () => {
                         variant="outlined"
                         namefield="id_role"
                         descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value.id })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id||'' })}
                     />
                     <SelectFunction
                         title="Banda"
@@ -213,7 +226,7 @@ const User = () => {
                         variant="outlined"
                         namefield="id_role"
                         descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value.id })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id||'' })}
                     />
                     <SelectFunction
                         title="Marca"
@@ -224,7 +237,7 @@ const User = () => {
                         variant="outlined"
                         namefield="id_role"
                         descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value.id })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id||'' })}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
                         defaultValue="prom_price"
@@ -235,8 +248,9 @@ const User = () => {
                         <FormControlLabel value="regular_price" control={<Radio />} label="Regular PVP" />
                     </RadioGroup>
                     <Button variant="outlined" onClick={()=>filtrar()} >Filtrar</Button>
+                    <Button variant="outlined" onClick={()=>descargar()} >Descargar</Button>
                 </div>
-                <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
                 <ResponsiveContainer width="100%" aspect={4.0 / 1.5}>
                     <BarChart data={dataGraph}>
                         <CartesianGrid strokeDasharray="3 3" />

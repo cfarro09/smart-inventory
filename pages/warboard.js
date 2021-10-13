@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect,Component, PropTypes } from 'react';
 import Layout from '../components/system/layout/layout'
 import triggeraxios from '../config/axiosv2';
 
@@ -19,6 +19,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { jsPDF } from "jspdf";
+import html2canvas from 'html2canvas';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -106,10 +108,12 @@ const useStyles = makeStyles(() => ({
     },
     labelcell: {
         border: "1px #e0e0e0 solid",
-        fontWeight: "bold"
+        fontWeight: "bold",
+        backgroundColor: "white",
     },
     datacell: {
-        border: "1px #e0e0e0 solid"
+        border: "1px #e0e0e0 solid",
+        backgroundColor: "white",
     }
 }));
 
@@ -194,6 +198,16 @@ const BulkLoad = () => {
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         setDataGraph(listResult.result.data)
     }
+    function descargar(){
+        html2canvas(document.getElementById('divToPrint'))
+            .then((canvas) => {
+                const pdf = new jsPDF('l', 'mm', 'a4');
+                var width = pdf.internal.pageSize.getWidth();
+                var height = pdf.internal.pageSize.getHeight();
+                pdf.addImage(canvas.toDataURL('image/png'), 'JPEG', 0, 0, width, height);
+                pdf.save("download.pdf");
+            })
+    }
 
     return (
         <Layout>
@@ -214,7 +228,7 @@ const BulkLoad = () => {
                         variant="outlined"
                         namefield="category"
                         descfield="category"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value.category })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.category||'' })}
                     />
                 </div>
                 <div className={classes.containerFilters}>
@@ -228,7 +242,7 @@ const BulkLoad = () => {
                         variant="outlined"
                         namefield="format"
                         descfield="format"
-                        callback={({ newValue: value }) => setfilters({ ...filters, format: value.format })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, format: value?.format||'' })}
                     />
                     <SelectFunction
                         title="Canal"
@@ -239,7 +253,7 @@ const BulkLoad = () => {
                         variant="outlined"
                         namefield="channel"
                         descfield="channel"
-                        callback={({ newValue: value }) => setfilters({ ...filters, channel: value.channel })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, channel: value?.channel||'' })}
                     />
                     <SelectFunction
                         title="Departamento"
@@ -250,7 +264,7 @@ const BulkLoad = () => {
                         variant="outlined"
                         namefield="department"
                         descfield="department"
-                        callback={({ newValue: value }) => setfilters({ ...filters, department: value.department })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, department: value?.department||'' })}
                     />
                     <SelectFunction
                         title="PDV"
@@ -261,7 +275,7 @@ const BulkLoad = () => {
                         variant="outlined"
                         namefield="store_name"
                         descfield="store_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, store_name: value.store_name })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name||'' })}
                     />
 
                     <SelectFunction
@@ -273,7 +287,7 @@ const BulkLoad = () => {
                         variant="outlined"
                         namefield="id_role"
                         descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value.id })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id||'' })}
                     />
                     <SelectFunction
                         title="Banda"
@@ -284,7 +298,7 @@ const BulkLoad = () => {
                         variant="outlined"
                         namefield="id_role"
                         descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value.id })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id||'' })}
                     />
                     <SelectFunction
                         title="Marca"
@@ -295,7 +309,7 @@ const BulkLoad = () => {
                         variant="outlined"
                         namefield="id_role"
                         descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value.id })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id||'' })}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
                         defaultValue="prom_price"
@@ -306,8 +320,9 @@ const BulkLoad = () => {
                         <FormControlLabel value="regular_price" control={<Radio />} label="Regular PVP" />
                     </RadioGroup>
                     <Button variant="outlined" onClick={()=>filtrar()} >Filtrar</Button>
+                    <Button variant="outlined" onClick={()=>descargar()} >Descargar</Button>
                 </div>
-                <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
                 <TableContainer component={Paper}>
                     <Table className={classes.table} aria-label="simple table">
                         <TableBody>

@@ -8,6 +8,11 @@ import { validateResArray, getDomain } from '../config/helper';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import authContext from '../context/auth/authContext';
+import db from '../config/firebase';
+
+import { getDatabase, ref, onValue, get } from "firebase/database";
+
+
 import {
     Delete as DeleteIcon,
     Edit as EditIcon,
@@ -139,7 +144,14 @@ const Vehicle = () => {
 
         const res = await triggeraxios('post', process.env.endpoints.selsimple, DATASEL)
         setdatatable(validateResArray(res, true));
-        setloadingglobal(false)
+        setloadingglobal(false);
+
+        const db = getDatabase();
+
+        onValue(ref(db, '/locations/'), (snapshot) => {
+            console.log(snapshot.val())
+        });
+        
     }, []);
 
     const selectrow = (row) => {

@@ -6,11 +6,15 @@ import triggeraxios from '../config/axiosv2';
 import popupsContext from '../context/pop-ups/pop-upsContext';
 import { makeStyles } from '@material-ui/core/styles';
 
+import Button from '@material-ui/core/Button';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { validateResArray } from '../config/helper';
 import IconButton from '@material-ui/core/IconButton';
 import authContext from '../context/auth/authContext';
 import SelectFunction from '../components/system/form/select-function';
-import { PieChart, Pie, Sector, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, Sector, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DateRange from '../components/system/form/daterange';
 
 import {
@@ -24,51 +28,11 @@ const GET_FILTER = (filter) => ({
         filter
     }
 })
+const FILTER = (filter) => ({
+    method: "SP_STEP_UP_CHAR",
+    data: filter
+})
 
-const dataLines = [
-    {
-        name: 'Page A',
-        uv: 4000,
-        pv: 2400,
-        amt: 2400,
-    },
-    {
-        name: 'Page B',
-        uv: 3000,
-        pv: 1398,
-        amt: 2210,
-    },
-    {
-        name: 'Page C',
-        uv: 2000,
-        pv: 9800,
-        amt: 2290,
-    },
-    {
-        name: 'Page D',
-        uv: 2780,
-        pv: 3908,
-        amt: 2000,
-    },
-    {
-        name: 'Page E',
-        uv: 1890,
-        pv: 4800,
-        amt: 2181,
-    },
-    {
-        name: 'Page F',
-        uv: 2390,
-        pv: 3800,
-        amt: 2500,
-    },
-    {
-        name: 'Page G',
-        uv: 3490,
-        pv: 4300,
-        amt: 2100,
-    },
-];
 
 
 const useStyles = makeStyles(() => ({
@@ -85,7 +49,9 @@ const useStyles = makeStyles(() => ({
 
 const User = () => {
     const classes = useStyles();
-
+    const [waitFilter, setWaitFilter] = useState(false)
+    const [dataGraph, setDataGraph] = useState([])
+    const [disablebutton, setdisablebutton] = useState(false)
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -99,11 +65,11 @@ const User = () => {
         channel: '',
         department: '',
         store_name: '',
-        categoria: '',
+        categoria: 1,
         SKU: '',
         banda: '',
         marca: '',
-        tipo_pvp: ''
+        tipo_pvp: 'prom_price',
     })
     
     const [datafilters, setdatafilters] = useState({
@@ -139,7 +105,29 @@ const User = () => {
         })();
         return () => continuezyx = false;
     }, [])
-
+    useEffect(() => {
+        if(waitFilter){
+            
+        }
+    }, [])
+    async function filtrar(){
+        //setWaitFilter(true)
+        const filter_to_send = {
+            format:filters.format,
+            channel:filters.channel,
+            department:filters.department,
+            store_name:filters.store_name,
+            category:filters.categoria,
+            sku_code:filters.SKU,
+            brand:filters.banda,
+            sub_category:filters.marca,
+            price:filters.tipo_pvp,
+            from_date:dateRange[0].startDate.toISOString().substring(0,10),
+            to_date:dateRange[0].endDate.toISOString().substring(0,10)
+        }
+        const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
+        setDataGraph(listResult.result.data)
+    }
 
     return (
         <Layout>
@@ -243,27 +231,28 @@ const User = () => {
                         descfield="role_name"
                         callback={({ newValue: value }) => setfilters({ ...filters, formato: value.id })}
                     />
+                    <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
+                        defaultValue="prom_price"
+                        onChange={(event) => {setfilters({ ...filters, tipo_pvp: event.target.value })}}
+                    >
+                        <FormControlLabel value="todopvp" control={<Radio />} label="Todo PVP" />
+                        <FormControlLabel value="prom_price" control={<Radio />} label="Promo PVP" />
+                        <FormControlLabel value="regular_price" control={<Radio />} label="Regular PVP" />
+                    </RadioGroup>
+                    <Button variant="outlined" onClick={()=>filtrar()} >Filtrar</Button>
                 </div>
                 <div style={{ display: 'flex', gap: 8 }}>
-                    <LineChart
-                        width={500}
-                        height={300}
-                        data={dataLines}
-                        margin={{
-                            top: 5,
-                            right: 30,
-                            left: 20,
-                            bottom: 5,
-                        }}
-                    >
+                <ResponsiveContainer width="100%" aspect={4.0 / 1.5}>
+                    <BarChart data={dataGraph}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
+                        <XAxis dataKey="sku_code" />
+                        <YAxis type="number" domain={[0, 1000]}/>
                         <Tooltip />
-                        <Legend />
-                        <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-                        <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-                    </LineChart>
+                        <Bar dataKey="price" fill="#8884d8">
+                            <LabelList dataKey="price" position="top" />
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
                 </div>
             </div>
 

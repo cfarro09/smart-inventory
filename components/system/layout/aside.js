@@ -107,27 +107,25 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
     }, [])
 
     const LinkList = React.useCallback(({ IconLink = null, application }) => {
-        // if (!appselected)
-        //     return null;
         if (user) {
             let routertmp = router.pathname;
 
-            // const appfound = user.menu.find(x => x.application === application);
+            const appfound = user.menu.find(x => x.application === application);
 
-            // if (appfound && appfound.view)
-            return (
-                <Link href={"/" + application}>
-                    <ListItem
-                        button
-                        key={"/" + application}
-                        style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: theme.spacing(IconLink ? 2 : 9) }}
-                        className={classes.listItem, (routertmp === "/" + application ? classes.activelink : undefined)}
-                    >
-                        {IconLink && <ListItemIcon style={{ minWidth: '45px' }}><IconLink /></ListItemIcon>}
-                        <ListItemText primary={application} />
-                    </ListItem>
-                </Link>
-            )
+            if (appfound && appfound.view)
+                return (
+                    <Link href={appfound.path}>
+                        <ListItem
+                            button
+                            key={appfound.path}
+                            style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: theme.spacing(IconLink ? 2 : 9) }}
+                            className={classes.listItem, (routertmp === appfound.path ? classes.activelink : undefined)}
+                        >
+                            {IconLink && <ListItemIcon style={{ minWidth: '45px' }}><IconLink /></ListItemIcon>}
+                            <ListItemText primary={appfound.description} />
+                        </ListItem>
+                    </Link>
+                )
         }
         return null;
     }, [appselected])
@@ -145,51 +143,18 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
             <div className={classes.toolbar}>
                 <img src={openDrawer ? "https://seeklogo.com/images/O/Oster_2006-logo-8F7C33D348-seeklogo.com.png" : "https://ostermxqa.vteximg.com.br/arquivos/O_App_logo.png?v=637233845265900000"} style={{ height: 37 }} alt="logo" />
             </div>
-            {/* <div className={classes.toolbar}>
-                <IconButton onClick={handleDrawerClose}>
-                    {theme.direction === 'rtl' ? <ChevronRight color="primary" /> : <ChevronLeft color="primary" />}
-                </IconButton>
-            </div> */}
-            <Divider />
 
-            <List>
-                <LinkList
-                    application="StepUpChart"
-                    IconLink={() => (
-                        <ViewComfy style={{ color: theme.palette.primary.light }} />
-                    )}
-                />
-                <LinkList
-                    application="Warboard"
-                    IconLink={() => (
-                        <ViewComfy style={{ color: theme.palette.primary.light }} />
-                    )}
-                />
-                <LinkList
-                    application="Detalle"
-                    IconLink={() => (
-                        <ViewComfy style={{ color: theme.palette.primary.light }} />
-                    )}
-                />
-                <LinkList
-                    application="Share por marca"
-                    IconLink={() => (
-                        <EmojiTransportation style={{ color: theme.palette.primary.light }} />
-                    )}
-                />
+            <List disablePadding>
 
                 <LinkList
-                    application="Activaciones"
-                    IconLink={() => (
-                        <LocalShipping style={{ color: theme.palette.primary.light }} />
-                    )}
+                    application="stepchart"
+                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />
-                {/* <LinkList
-                    application="tracking"
-                    IconLink={() => (
-                        <Timeline style={{ color: theme.palette.primary.light }} />
-                    )}
-                /> */}
+                <LinkList
+                    application="warboard"
+                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
+                />
+
                 <Divider />
                 <LinkList
                     application="user"
@@ -197,17 +162,10 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                         <AccountCircle style={{ color: theme.palette.primary.light }} />
                     )}
                 />
-                <LinkList
-                    application="property"
-                    IconLink={() => (
-                        <VpnKey style={{ color: theme.palette.primary.light }} />
-                    )}
-                />
+
                 <LinkList
                     application="domain"
-                    IconLink={() => (
-                        <ListIcon style={{ color: theme.palette.primary.light }} />
-                    )}
+                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />
                 <Divider />
                 <LinkList

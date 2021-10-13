@@ -6,7 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import axios from "axios";
 import Box from '@material-ui/core/Box';
 
-const SelectFunction = React.memo(({ title, datatosend, optionvalue, optiondesc, valueselected = "", namefield = "", descfield = "", formik = false, callback, disabled = false, classname = null, style = null }) => {
+const SelectFunction = React.memo(({ title, datatosend, variant = "standard", optionvalue, optiondesc, valueselected = "", namefield = "", descfield = "", formik = false, callback, disabled = false, classname = null, style = null }) => {
 
     const [options, setOptions] = useState([]);
     const [loading, setloading] = useState(true);
@@ -53,7 +53,9 @@ const SelectFunction = React.memo(({ title, datatosend, optionvalue, optiondesc,
 
     return (
         <div className={classname}>
-            <Box fontWeight={500} lineHeight="18px" fontSize={14} mb={1} color="textPrimary">{title}</Box>
+            {variant === "standard" &&
+                <Box fontWeight={500} lineHeight="18px" fontSize={14} mb={1} color="textPrimary">{title}</Box>
+            }
             <Autocomplete
                 filterSelectedOptions
                 className={classname}
@@ -88,6 +90,8 @@ const SelectFunction = React.memo(({ title, datatosend, optionvalue, optiondesc,
                 renderInput={(params) => (
                     <TextField
                         {...params}
+                        variant={variant}
+                        label={variant !== "standard" && title}
                         InputProps={{
                             ...params.InputProps,
                             endAdornment: (

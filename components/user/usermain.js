@@ -89,8 +89,8 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
                         ...values,
                         id: rowselected ? rowselected.id_user : 0,
                         user: values.username,
-                        type: 'USER',
                         phone: '999999999',
+                        type: 'NINGUNO',
                         password: values.password ? values.password : "",
                     }
                 }

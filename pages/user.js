@@ -130,7 +130,7 @@ const User = () => {
     const fetchData = React.useCallback(async () => {
         setloadingglobal(true);
         const res = await triggeraxios('post', process.env.endpoints.selsimple, REQUESTUSER);
-        setdatatable([validateResArray(res, true)[0]]);
+        setdatatable(validateResArray(res, true));
         setloadingglobal(false)
     }, []);
 

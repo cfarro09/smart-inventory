@@ -58,7 +58,7 @@ const Organization = ({ openModal, setOpenModal, setdatadomainvalues, rowselecte
         <Dialog
             open={openModal}
             fullWidth={true}
-            maxWidth='md'
+            maxWidth='xs'
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
@@ -72,22 +72,14 @@ const Organization = ({ openModal, setOpenModal, setdatadomainvalues, rowselecte
 
                         <InputFormk
                             name="domain_value"
-                            classname="col-3"
+                            classname="col-6"
                             label="Valor"
                             formik={formik}
                         />
                         <InputFormk
                             name="domain_description"
-                            classname="col-3"
+                            classname="col-6"
                             label="Descripcion"
-                            formik={formik}
-                        />
-                        <SelectDomain
-                            classname="col-3"
-                            title="Estado"
-                            domainname={domains.status}
-                            valueselected={formik.values.status}
-                            namefield="status"
                             formik={formik}
                         />
                     </div>

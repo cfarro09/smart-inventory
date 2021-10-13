@@ -8,8 +8,12 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Button from '@material-ui/core/Button';
+import CalendarIcon from '@material-ui/icons/CalendarToday';
 
-const DateRange = ({ label, dateRangeinit, setDateRangeExt, fullWidthInput = false }) => {
+const format = (date) => date.toISOString().split('T')[0];
+
+
+const DateRange = ({ label, dateRangeinit, setDateRangeExt, className, fullWidthInput = false }) => {
     const [rangePickerString, setrangePickerString] = useState('');
     const [openModal, setOpenModal] = useState(false);
 
@@ -56,7 +60,15 @@ const DateRange = ({ label, dateRangeinit, setDateRangeExt, fullWidthInput = fal
 
     return (
         <>
-            <TextField
+            <Button
+                className={className}
+                style={{ border: '1px solid #bfbfc0', borderRadius: 4, color: 'rgb(143, 146, 161)' }}
+                startIcon={<CalendarIcon />}
+                onClick={() => setOpenModal(true)}
+            >
+                {rangePickerString}
+            </Button>
+            {/* <TextField
                 label={label}
                 variant="outlined"
                 fullWidth={fullWidthInput}
@@ -64,7 +76,7 @@ const DateRange = ({ label, dateRangeinit, setDateRangeExt, fullWidthInput = fal
                 size="small"
                 value={rangePickerString}
                 onClick={() => setOpenModal(true)}
-            />
+            /> */}
             <Dialog
                 open={openModal}
                 maxWidth="md"
@@ -96,7 +108,7 @@ const DateRange = ({ label, dateRangeinit, setDateRangeExt, fullWidthInput = fal
                         style={{ marginLeft: '1rem' }}
                         onClick={handleclose}
                     >Cerrar
-                </Button>
+                    </Button>
                 </DialogActions>
             </Dialog>
         </>

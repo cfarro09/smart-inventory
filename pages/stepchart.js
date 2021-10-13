@@ -1,9 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import Layout from '../components/system/layout/layout'
-import TableZyx from '../components/system/form/table-simple';
-import UserModal from '../components/user/usermain';
 import triggeraxios from '../config/axiosv2';
-import popupsContext from '../context/pop-ups/pop-upsContext';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
@@ -11,10 +8,8 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { validateResArray } from '../config/helper';
-import IconButton from '@material-ui/core/IconButton';
-import authContext from '../context/auth/authContext';
 import SelectFunction from '../components/system/form/select-function';
-import { BarChart, Bar, Sector, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar,LabelList, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DateRange from '../components/system/form/daterange';
 
 import {
@@ -249,7 +244,6 @@ const User = () => {
                         <YAxis type="number" domain={[0, 1000]}/>
                         <Tooltip />
                         <Bar dataKey="price" fill="#8884d8">
-                            <LabelList dataKey="price" position="top" />
                         </Bar>
                     </BarChart>
                 </ResponsiveContainer>

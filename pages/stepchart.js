@@ -6,7 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
+import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormGroup from '@material-ui/core/FormGroup';
 import { validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
 import { BarChart, Bar,LabelList, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -23,6 +25,11 @@ const GET_FILTER = (filter) => ({
     method: "SP_SEL_FILTER",
     data: {
         filter
+    }
+})
+const GET_CATEGORY = (filter) => ({
+    method: "SP_SEL_CATEGORY",
+    data: {
     }
 })
 const FILTER = (filter) => ({
@@ -48,7 +55,9 @@ const User = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
-    const [disablebutton, setdisablebutton] = useState(false)
+    const [disablebutton, setdisablebutton] = useState(true)
+    const [searchdone, setsearchdone] = useState(false)    
+    const [enabletop, setenabletop] = useState(true)
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -90,6 +99,7 @@ const User = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),                
             ]);
             console.log(validateResArray(listResult[0], continuezyx))
             setdatafilters({
@@ -98,6 +108,7 @@ const User = () => {
                 format: validateResArray(listResult[0], continuezyx),
                 department: validateResArray(listResult[2], continuezyx),
                 store_name: validateResArray(listResult[3], continuezyx),
+                categoria:  validateResArray(listResult[4], continuezyx),
             })
         })();
         return () => continuezyx = false;
@@ -108,6 +119,7 @@ const User = () => {
         }
     }, [])
     async function filtrar(){
+        setsearchdone(true)
         //setWaitFilter(true)
         const filter_to_send = {
             format:filters.format,
@@ -151,12 +163,12 @@ const User = () => {
                         title="Categoria"
                         classname={classes.itemFilter}
                         datatosend={datafilters.categoria}
-                        optionvalue="category"
+                        optionvalue="id_form"
                         optiondesc="category"
                         variant="outlined"
                         namefield="category"
                         descfield="category"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.category||'' })}
+                        callback={({ newValue: value }) => {setfilters({ ...filters, categoria: value?.id_form||1 });setdisablebutton(!value)}}
                     />
                 </div>
                 <div className={classes.containerFilters}>
@@ -247,21 +259,36 @@ const User = () => {
                         <FormControlLabel value="prom_price" control={<Radio />} label="Promo PVP" />
                         <FormControlLabel value="regular_price" control={<Radio />} label="Regular PVP" />
                     </RadioGroup>
-                    <Button variant="outlined" onClick={()=>filtrar()} >Filtrar</Button>
-                    <Button variant="outlined" onClick={()=>descargar()} >Descargar</Button>
+                    <Button variant="outlined" onClick={()=>filtrar()} disabled={disablebutton}>Filtrar</Button>
+                    {searchdone?
+                        <Button variant="outlined" onClick={()=>descargar()}  >Descargar</Button>:""
+                    }
+                    {searchdone?
+                        <FormGroup>
+                            <FormControlLabel control={<Switch defaultChecked onChange={(e)=>{setenabletop(e.target.checked)}}/>} label={enabletop?"Mostrando Top 10":"Mostrando todo"} />
+                        </FormGroup>:""
+
+                    }
+                    
                 </div>
+                {searchdone?
                 <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
-                <ResponsiveContainer width="100%" aspect={4.0 / 1.5}>
-                    <BarChart data={dataGraph}>
+                <ResponsiveContainer  aspect={4.0 / 1.5}>
+                    <BarChart data={enabletop?dataGraph.slice(dataGraph.length<10?0:dataGraph.length-11,dataGraph.length):dataGraph}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="sku_code" />
                         <YAxis type="number" domain={[0, 1000]}/>
-                        <Tooltip />
+                        <Tooltip formatter={(value, name, props) => { return `S/.${parseFloat(value).toFixed(2)}` }} />
                         <Bar dataKey="price" fill="#8884d8">
+                            {enabletop?
+                                <LabelList dataKey="price" position="top" formatter={(value, name, props) => { return `S/.${parseFloat(value).toFixed(2)}` }}/>
+                                :""
+                            }
                         </Bar>
                     </BarChart>
                 </ResponsiveContainer>
-                </div>
+                </div>:""
+                }
             </div>
 
         </Layout>

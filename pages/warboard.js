@@ -54,6 +54,11 @@ const StyledTableCell2 = withStyles((theme) => ({
     },
   }))(TableRow);
   
+  const GET_CATEGORY = (filter) => ({
+        method: "SP_SEL_CATEGORY",
+        data: {
+        }
+    })
   function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
   }
@@ -163,6 +168,7 @@ const BulkLoad = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),   
             ]);
             console.log(validateResArray(listResult[0], continuezyx))
             setdatafilters({
@@ -171,6 +177,7 @@ const BulkLoad = () => {
                 format: validateResArray(listResult[0], continuezyx),
                 department: validateResArray(listResult[2], continuezyx),
                 store_name: validateResArray(listResult[3], continuezyx),
+                categoria:  validateResArray(listResult[4], continuezyx),
             })
         })();
         return () => continuezyx = false;

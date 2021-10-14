@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect,Component, PropTypes } from 'react';
+import React, { useState, useContext, useEffect, Component, PropTypes } from 'react';
 import Layout from '../components/system/layout/layout'
 import triggeraxios from '../config/axiosv2';
 
@@ -21,62 +21,82 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
+import InputFormk from '../components/system/form/inputformik';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+
+import {
+    Search as SearchIcon,
+    GetApp as GetAppIcon,
+} from '@material-ui/icons';
+
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
+        backgroundColor: theme.palette.common.black,
+        color: theme.palette.common.white,
     },
     body: {
-      fontSize: 14,
+        fontSize: 14,
     },
-  }))(TableCell);
+}))(TableCell);
 const StyledTableCell2 = withStyles((theme) => ({
     head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
+        backgroundColor: theme.palette.common.black,
+        color: theme.palette.common.white,
     },
     body: {
-      fontSize: 14,
+        fontSize: 14,
     },
     root: {
         '&:nth-of-type(odd)': {
             backgroundColor: theme.palette.action.hover,
         },
     },
-  }))(TableCell);
-  
-  const StyledTableRow = withStyles((theme) => ({
-    root: {
-      '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.action.hover,
-      },
-    },
-  }))(TableRow);
-  
-  const GET_CATEGORY = (filter) => ({
-        method: "SP_SEL_CATEGORY",
-        data: {
-        }
-    })
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
+}))(TableCell);
 
-  const rows = [
-    {marca:"OSTER",modelo: "6026",precio:139.00,subcategoria:"SOFRITO", capacidad:"1.2LT",watts:500, frecuenciahz:"50/60",acabado:"PINTADO AL HORNO",color: "SILVER",tazon:"ALUMINIO",medidastazon:"MAX",recubrimiento:"ANTIHADERENTE", 
-        funciones:"COOK/WARM/ADEREZO",tapa:"VIDRIO",cable:"SI",vaporera:"NO",accesorios:"TAZA MEDIDORA, CUCHARA",garantia:"1 AÑO",image:"https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"},
-    {marca:"PRACTIKA",modelo: "180MCS",precio:149.90,subcategoria:"TRADICIONAL", capacidad:"1.8LT",watts:750, frecuenciahz:"60",acabado:"METAL",color: "SILVER",tazon:"ALUMINIO",medidastazon:"SI",recubrimiento:"ANTIHADERENTE", 
-        funciones:"COOK/WARM",tapa:"VIDRIO",cable:"NO",vaporera:"SI/ALUMINIO",accesorios:"TAZA MEDIDORA, CUCHARA",garantia:"1 AÑO",image:"https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"},
-    {marca:"OSTER",modelo: "6026",precio:139.00,subcategoria:"SOFRITO", capacidad:"1.2LT",watts:500, frecuenciahz:"50/60",acabado:"PINTADO AL HORNO",color: "SILVER",tazon:"ALUMINIO",medidastazon:"MAX",recubrimiento:"ANTIHADERENTE", 
-        funciones:"COOK/WARM/ADEREZO",tapa:"VIDRIO",cable:"SI",vaporera:"NO",accesorios:"TAZA MEDIDORA, CUCHARA",garantia:"1 AÑO",image:"https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"},
-    {marca:"PRACTIKA",modelo: "180MCS",precio:149.90,subcategoria:"TRADICIONAL", capacidad:"1.8LT",watts:750, frecuenciahz:"60",acabado:"METAL",color: "SILVER",tazon:"ALUMINIO",medidastazon:"SI",recubrimiento:"ANTIHADERENTE", 
-        funciones:"COOK/WARM",tapa:"VIDRIO",cable:"NO",vaporera:"SI/ALUMINIO",accesorios:"TAZA MEDIDORA, CUCHARA",garantia:"1 AÑO",image:"https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"},
-    {marca:"OSTER",modelo: "6026",precio:139.00,subcategoria:"SOFRITO", capacidad:"1.2LT",watts:500, frecuenciahz:"50/60",acabado:"PINTADO AL HORNO",color: "SILVER",tazon:"ALUMINIO",medidastazon:"MAX",recubrimiento:"ANTIHADERENTE", 
-        funciones:"COOK/WARM/ADEREZO",tapa:"VIDRIO",cable:"SI",vaporera:"NO",accesorios:"TAZA MEDIDORA, CUCHARA",garantia:"1 AÑO",image:"https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"},
-    {marca:"PRACTIKA",modelo: "180MCS",precio:149.90,subcategoria:"TRADICIONAL", capacidad:"1.8LT",watts:750, frecuenciahz:"60",acabado:"METAL",color: "SILVER",tazon:"ALUMINIO",medidastazon:"SI",recubrimiento:"ANTIHADERENTE", 
-        funciones:"COOK/WARM",tapa:"VIDRIO",cable:"NO",vaporera:"SI/ALUMINIO",accesorios:"TAZA MEDIDORA, CUCHARA",garantia:"1 AÑO",image:"https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"},
-  ];
+const StyledTableRow = withStyles((theme) => ({
+    root: {
+        '&:nth-of-type(odd)': {
+            backgroundColor: theme.palette.action.hover,
+        },
+    },
+}))(TableRow);
+
+const GET_CATEGORY = (filter) => ({
+    method: "SP_SEL_CATEGORY",
+    data: {
+    }
+})
+function createData(name, calories, fat, carbs, protein) {
+    return { name, calories, fat, carbs, protein };
+}
+
+const rows = [
+    {
+        marca: "OSTER", modelo: "6026", precio: 139.00, subcategoria: "SOFRITO", capacidad: "1.2LT", watts: 500, frecuenciahz: "50/60", acabado: "PINTADO AL HORNO", color: "SILVER", tazon: "ALUMINIO", medidastazon: "MAX", recubrimiento: "ANTIHADERENTE",
+        funciones: "COOK/WARM/ADEREZO", tapa: "VIDRIO", cable: "SI", vaporera: "NO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
+    },
+    {
+        marca: "PRACTIKA", modelo: "180MCS", precio: 149.90, subcategoria: "TRADICIONAL", capacidad: "1.8LT", watts: 750, frecuenciahz: "60", acabado: "METAL", color: "SILVER", tazon: "ALUMINIO", medidastazon: "SI", recubrimiento: "ANTIHADERENTE",
+        funciones: "COOK/WARM", tapa: "VIDRIO", cable: "NO", vaporera: "SI/ALUMINIO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
+    },
+    {
+        marca: "OSTER", modelo: "6026", precio: 139.00, subcategoria: "SOFRITO", capacidad: "1.2LT", watts: 500, frecuenciahz: "50/60", acabado: "PINTADO AL HORNO", color: "SILVER", tazon: "ALUMINIO", medidastazon: "MAX", recubrimiento: "ANTIHADERENTE",
+        funciones: "COOK/WARM/ADEREZO", tapa: "VIDRIO", cable: "SI", vaporera: "NO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
+    },
+    {
+        marca: "PRACTIKA", modelo: "180MCS", precio: 149.90, subcategoria: "TRADICIONAL", capacidad: "1.8LT", watts: 750, frecuenciahz: "60", acabado: "METAL", color: "SILVER", tazon: "ALUMINIO", medidastazon: "SI", recubrimiento: "ANTIHADERENTE",
+        funciones: "COOK/WARM", tapa: "VIDRIO", cable: "NO", vaporera: "SI/ALUMINIO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
+    },
+    {
+        marca: "OSTER", modelo: "6026", precio: 139.00, subcategoria: "SOFRITO", capacidad: "1.2LT", watts: 500, frecuenciahz: "50/60", acabado: "PINTADO AL HORNO", color: "SILVER", tazon: "ALUMINIO", medidastazon: "MAX", recubrimiento: "ANTIHADERENTE",
+        funciones: "COOK/WARM/ADEREZO", tapa: "VIDRIO", cable: "SI", vaporera: "NO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
+    },
+    {
+        marca: "PRACTIKA", modelo: "180MCS", precio: 149.90, subcategoria: "TRADICIONAL", capacidad: "1.8LT", watts: 750, frecuenciahz: "60", acabado: "METAL", color: "SILVER", tazon: "ALUMINIO", medidastazon: "SI", recubrimiento: "ANTIHADERENTE",
+        funciones: "COOK/WARM", tapa: "VIDRIO", cable: "NO", vaporera: "SI/ALUMINIO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
+    },
+];
 
 
 const paramTemplate = {
@@ -107,7 +127,7 @@ const useStyles = makeStyles(() => ({
     itemFilter: {
         flex: '0 0 215px'
     },
-    
+
     table: {
         minWidth: 700,
     },
@@ -122,10 +142,20 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
+const RB_MARCA = {
+    "method": "SP_SEL_DATA_MASTER",
+    "data": {
+        "filter": "brand"
+    }
+}
+
 const BulkLoad = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [category, setcategory] = useState(null);
+
     const [disablebutton, setdisablebutton] = useState(false)
     const [dateRange, setdateRange] = useState([
         {
@@ -146,7 +176,7 @@ const BulkLoad = () => {
         marca: '',
         tipo_pvp: 'prom_price',
     })
-    
+
     const [datafilters, setdatafilters] = useState({
         format: [],
         channel: [],
@@ -168,7 +198,8 @@ const BulkLoad = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),   
+                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),
+                triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
             ]);
             console.log(validateResArray(listResult[0], continuezyx))
             setdatafilters({
@@ -177,35 +208,36 @@ const BulkLoad = () => {
                 format: validateResArray(listResult[0], continuezyx),
                 department: validateResArray(listResult[2], continuezyx),
                 store_name: validateResArray(listResult[3], continuezyx),
-                categoria:  validateResArray(listResult[4], continuezyx),
+                categoria: validateResArray(listResult[4], continuezyx),
+                marca: validateResArray(listResult[5], continuezyx),
             })
         })();
         return () => continuezyx = false;
     }, [])
     useEffect(() => {
-        if(waitFilter){
-            
+        if (waitFilter) {
+
         }
     }, [])
-    async function filtrar(){
+    async function filtrar() {
         //setWaitFilter(true)
         const filter_to_send = {
-            format:filters.format,
-            channel:filters.channel,
-            department:filters.department,
-            store_name:filters.store_name,
-            category:filters.categoria,
-            sku_code:filters.SKU,
-            brand:filters.banda,
-            sub_category:filters.marca,
-            price:filters.tipo_pvp,
-            from_date:dateRange[0].startDate.toISOString().substring(0,10),
-            to_date:dateRange[0].endDate.toISOString().substring(0,10)
+            format: filters.format,
+            channel: filters.channel,
+            department: filters.department,
+            store_name: filters.store_name,
+            category: filters.categoria,
+            sku_code: filters.SKU,
+            brand: filters.marca,
+            sub_category: filters.marca,
+            price: filters.tipo_pvp,
+            from_date: dateRange[0].startDate.toISOString().substring(0, 10),
+            to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         setDataGraph(listResult.result.data)
     }
-    function descargar(){
+    function descargar() {
         html2canvas(document.getElementById('divToPrint'))
             .then((canvas) => {
                 const pdf = new jsPDF('l', 'mm', 'a4');
@@ -218,7 +250,7 @@ const BulkLoad = () => {
 
     return (
         <Layout>
-            <div style={{display: 'flex', gap: 16, flexDirection: 'column'}}>
+            <div style={{ display: 'flex', gap: 16, flexDirection: 'column' }}>
                 <div className={classes.containerFilters}>
                     <DateRange
                         classname={classes.itemFilter}
@@ -235,224 +267,258 @@ const BulkLoad = () => {
                         variant="outlined"
                         namefield="category"
                         descfield="category"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.category||'' })}
-                    />
-                </div>
-                <div className={classes.containerFilters}>
-
-                    <SelectFunction
-                        title="Formato"
-                        classname={classes.itemFilter}
-                        datatosend={datafilters.format}
-                        optionvalue="format"
-                        optiondesc="format"
-                        variant="outlined"
-                        namefield="format"
-                        descfield="format"
-                        callback={({ newValue: value }) => setfilters({ ...filters, format: value?.format||'' })}
-                    />
-                    <SelectFunction
-                        title="Canal"
-                        classname={classes.itemFilter}
-                        datatosend={datafilters.channel}
-                        optionvalue="channel"
-                        optiondesc="channel"
-                        variant="outlined"
-                        namefield="channel"
-                        descfield="channel"
-                        callback={({ newValue: value }) => setfilters({ ...filters, channel: value?.channel||'' })}
-                    />
-                    <SelectFunction
-                        title="Departamento"
-                        classname={classes.itemFilter}
-                        datatosend={datafilters.department}
-                        optionvalue="department"
-                        optiondesc="department"
-                        variant="outlined"
-                        namefield="department"
-                        descfield="department"
-                        callback={({ newValue: value }) => setfilters({ ...filters, department: value?.department||'' })}
-                    />
-                    <SelectFunction
-                        title="PDV"
-                        classname={classes.itemFilter}
-                        datatosend={datafilters.store_name}
-                        optionvalue="store_name"
-                        optiondesc="store_name"
-                        variant="outlined"
-                        namefield="store_name"
-                        descfield="store_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name||'' })}
-                    />
-
-                    <SelectFunction
-                        title="SKU"
-                        classname={classes.itemFilter}
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
-                        variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id||'' })}
-                    />
-                    <SelectFunction
-                        title="Banda"
-                        classname={classes.itemFilter}
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
-                        variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id||'' })}
-                    />
-                    <SelectFunction
-                        title="Marca"
-                        classname={classes.itemFilter}
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
-                        variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id||'' })}
+                        callback={({ newValue: value }) => {
+                            setfilters({ ...filters, categoria: value?.id_form || 1 });
+                            setcategory(value)
+                        }}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
                         defaultValue="prom_price"
-                        onChange={(event) => {setfilters({ ...filters, tipo_pvp: event.target.value })}}
+                        onChange={(event) => { setfilters({ ...filters, tipo_pvp: event.target.value }) }}
                     >
                         <FormControlLabel value="todopvp" control={<Radio />} label="Todo PVP" />
                         <FormControlLabel value="prom_price" control={<Radio />} label="Promo PVP" />
                         <FormControlLabel value="regular_price" control={<Radio />} label="Regular PVP" />
                     </RadioGroup>
-                    <Button variant="outlined" onClick={()=>filtrar()} >Filtrar</Button>
-                    <Button variant="outlined" onClick={()=>descargar()} >Descargar</Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => filtrar()}
+                        disabled={disablebutton}
+                        startIcon={<SearchIcon style={{ color: '#FFF' }} />}
+                    >Buscar</Button>
+                    <Button
+                        style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                        onClick={() => descargar()}
+                        startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
+                    >Descargar</Button>
+                    <Button
+                        style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                        onClick={() => setDrawerOpen(true)}
+                    >Filtros Extras</Button>
+                    {category &&
+                        <InputFormk
+                            valuedefault={category?.last_consulted}
+                            variant="outlined"
+                            disabled={true}
+                            label="Última Actualización"
+                        />
+                    }
                 </div>
                 <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
-                <TableContainer component={Paper}>
-                    <Table className={classes.table} aria-label="simple table">
-                        <TableBody>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row"></TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row"><img style={{width: "100px", height: "100px"}} alt="image.jpg" src={row.image}></img></TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">MARCA</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.marca}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">MODELO</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.modelo}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">PRECIO</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">S/.{row.precio.toFixed(2)}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">SUBCATEGORIA</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.subcategoria}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">CAPACIDAD</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.capacidad}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">WATTS</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.watts}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">FRECUENCIA HZ</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.frecuenciahz}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">ACABADO</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.acabado}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">COLOR</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.color}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">TAZON</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.tazon}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">MEDIDAS DEL TAZON</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.medidastazon}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">RECUBRIMIENTO</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.recubrimiento}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">FUNCIONES</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.funciones}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">TAPA</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.tapa}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">CABLE DESMONTABLE</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.cable}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">VAPORERA/ALUMINIO/ACERO</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.vaporera}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">ACCESORIOS</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.accesorios}</TableCell>
-                                ))}
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className={classes.labelcell} align="right" component="th" scope="row">GARANTIA</TableCell>
-                                {rows.map((row)=>(
-                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.garantia}</TableCell>
-                                ))}
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                    <TableContainer component={Paper}>
+                        <Table className={classes.table} aria-label="simple table">
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row"></TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row"><img style={{ width: "100px", height: "100px" }} alt="image.jpg" src={row.image}></img></TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">MARCA</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.marca}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">MODELO</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.modelo}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">PRECIO</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">S/.{row.precio.toFixed(2)}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">SUBCATEGORIA</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.subcategoria}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">CAPACIDAD</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.capacidad}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">WATTS</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.watts}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">FRECUENCIA HZ</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.frecuenciahz}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">ACABADO</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.acabado}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">COLOR</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.color}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">TAZON</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.tazon}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">MEDIDAS DEL TAZON</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.medidastazon}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">RECUBRIMIENTO</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.recubrimiento}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">FUNCIONES</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.funciones}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">TAPA</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.tapa}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">CABLE DESMONTABLE</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.cable}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">VAPORERA/ALUMINIO/ACERO</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.vaporera}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">ACCESORIOS</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.accesorios}</TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">GARANTIA</TableCell>
+                                    {rows.map((row) => (
+                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.garantia}</TableCell>
+                                    ))}
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </div>
             </div>
 
+
+
+            <SwipeableDrawer
+                anchor='right'
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+                onOpen={() => setDrawerOpen(true)}
+            >
+                <div style={{ display: 'flex', width: 300, flexDirection: 'column', justifyContent: 'space-between', gap: 16, padding: 16 }}>
+                    <div style={{ fontSize: 16, fontWeight: 500 }}>
+                        Filtros personalizados
+                    </div>
+                    <SelectFunction
+                        title="Formato"
+                        datatosend={datafilters.format}
+                        optionvalue="format"
+                        optiondesc="format"
+                        variant="outlined"
+                        valueselected={filters.format}
+                        namefield="format"
+                        descfield="format"
+                        callback={({ newValue: value }) => setfilters({ ...filters, format: value?.format || '' })}
+                    />
+                    <SelectFunction
+                        title="Canal"
+                        datatosend={datafilters.channel}
+                        optionvalue="channel"
+                        optiondesc="channel"
+                        variant="outlined"
+                        namefield="channel"
+                        valueselected={filters.channel}
+                        descfield="channel"
+                        callback={({ newValue: value }) => setfilters({ ...filters, channel: value?.channel || '' })}
+                    />
+                    <SelectFunction
+                        title="Departamento"
+                        datatosend={datafilters.department}
+                        optionvalue="department"
+                        optiondesc="department"
+                        valueselected={filters.department}
+                        variant="outlined"
+                        namefield="department"
+                        descfield="department"
+                        callback={({ newValue: value }) => setfilters({ ...filters, department: value?.department || '' })}
+                    />
+                    <SelectFunction
+                        title="PDV"
+                        datatosend={datafilters.store_name}
+                        optionvalue="store_name"
+                        optiondesc="store_name"
+                        variant="outlined"
+                        valueselected={filters.store_name}
+                        namefield="store_name"
+                        descfield="store_name"
+                        callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
+                    />
+
+                    <SelectFunction
+                        title="SKU"
+                        datatosend={[]}
+                        optionvalue="id_role"
+                        optiondesc="description"
+                        variant="outlined"
+                        namefield="id_role"
+                        descfield="role_name"
+                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
+                    />
+                    {/* <SelectFunction
+                        title="Banda"
+                        datatosend={[]}
+                        optionvalue="id_role"
+                        optiondesc="description"
+                        variant="outlined"
+                        namefield="id_role"
+                        descfield="role_name"
+                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
+                    /> */}
+                    <SelectFunction
+                        title="Marca"
+                        datatosend={datafilters.marca}
+                        optionvalue="brand"
+                        optiondesc="brand"
+                        valueselected={filters.marca}
+                        variant="outlined"
+                        namefield="brand"
+                        descfield="brand"
+                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
+                    />
+                </div>
+            </SwipeableDrawer>
         </Layout>
     );
 }

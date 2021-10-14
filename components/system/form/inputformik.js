@@ -7,7 +7,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 
-const InputFormk = React.memo(({ name, label, formik, type = "text", classname = null, disabled = false, valuedefault = null, callback = null, style = {} }) => {
+const InputFormk = React.memo(({ name, variant = "standard", label, formik, type = "text", classname = null, disabled = false, valuedefault = null, callback = null, style = {} }) => {
     const [valuex, setValuex] = useState("");
     if (type === "password") {
         const [showPassword, setShowPassword] = React.useState(false);
@@ -21,9 +21,12 @@ const InputFormk = React.memo(({ name, label, formik, type = "text", classname =
         };
         return (
             <div className={classname}>
-                <Box fontWeight={500} lineHeight="18px" fontSize={14} mb={1} color="textPrimary">{label}</Box>
+                {variant === "standard" &&
+                    <Box fontWeight={500} lineHeight="18px" fontSize={14} mb={1} color="textPrimary">{label}</Box>
+                }
                 <TextField
-                    // variant="outlined"
+                    variant={variant}
+                    label={variant !== "standard" && label}
                     disabled={disabled}
                     name={name}
                     fullWidth
@@ -59,8 +62,12 @@ const InputFormk = React.memo(({ name, label, formik, type = "text", classname =
     } else {
         return (
             <div className={classname}>
-                <Box fontWeight={500} lineHeight="18px" fontSize={14} mb={1} color="textPrimary">{label}</Box>
+                {variant === "standard" &&
+                    <Box fontWeight={500} lineHeight="18px" fontSize={14} mb={1} color="textPrimary">{label}</Box>
+                }
                 <TextField
+                    variant={variant}
+                    label={variant !== "standard" && label}
                     name={name}
                     disabled={disabled}
                     autoComplete="off"

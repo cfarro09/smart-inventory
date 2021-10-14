@@ -68,7 +68,7 @@ const StoreMain = ({ openModal, setOpenModal, setData, rowselected }) => {
                 <DialogTitle id="alert-dialog-title">Tienda</DialogTitle>
                 <DialogContent>
                     <div className="row-zyx">
-                    <InputFormk
+                        <InputFormk
                             name="store_name"
                             classname="col-6"
                             label="Tienda"
@@ -80,7 +80,7 @@ const StoreMain = ({ openModal, setOpenModal, setData, rowselected }) => {
                             label="Descripción"
                             formik={formik}
                         />
-                        
+
                         <SelectDomain
                             classname="col-3"
                             title="Estado"
@@ -96,7 +96,7 @@ const StoreMain = ({ openModal, setOpenModal, setData, rowselected }) => {
                             formik={formik}
                         />
                     </div>
-                
+
                 </DialogContent>
                 <DialogActions>
                     <Button
@@ -104,7 +104,7 @@ const StoreMain = ({ openModal, setOpenModal, setData, rowselected }) => {
                         color="primary"
                     >
                         GUARDAR
-                        </Button>
+                    </Button>
                     <Button
                         type="button"
                         color="secondary"
@@ -112,7 +112,7 @@ const StoreMain = ({ openModal, setOpenModal, setData, rowselected }) => {
                         onClick={() => setOpenModal(false)}
                     >
                         Cerrar
-                        </Button>
+                    </Button>
                 </DialogActions>
             </form>
         </Dialog>

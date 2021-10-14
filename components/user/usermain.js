@@ -30,7 +30,6 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
     const [domains, setdomains] = useState({ doc_type: [], status: [], type: [] });
 
 
-
     useEffect(() => {
         let continuezyx = true;
         (async () => {

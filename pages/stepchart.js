@@ -1,17 +1,20 @@
 import React, { useState, useContext, useEffect } from 'react';
 import Layout from '../components/system/layout/layout'
-import TableZyx from '../components/system/form/table-simple';
-import UserModal from '../components/user/usermain';
 import triggeraxios from '../config/axiosv2';
-import popupsContext from '../context/pop-ups/pop-upsContext';
 import { makeStyles } from '@material-ui/core/styles';
 
+import Button from '@material-ui/core/Button';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormGroup from '@material-ui/core/FormGroup';
 import { validateResArray } from '../config/helper';
-import IconButton from '@material-ui/core/IconButton';
-import authContext from '../context/auth/authContext';
 import SelectFunction from '../components/system/form/select-function';
-import { PieChart, Pie, Sector, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar,LabelList, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DateRange from '../components/system/form/daterange';
+import { jsPDF } from "jspdf";
+import html2canvas from 'html2canvas';
 
 import {
     Delete as DeleteIcon,
@@ -24,51 +27,16 @@ const GET_FILTER = (filter) => ({
         filter
     }
 })
+const GET_CATEGORY = (filter) => ({
+    method: "SP_SEL_CATEGORY",
+    data: {
+    }
+})
+const FILTER = (filter) => ({
+    method: "SP_STEP_UP_CHAR",
+    data: filter
+})
 
-const dataLines = [
-    {
-        name: 'Page A',
-        uv: 4000,
-        pv: 2400,
-        amt: 2400,
-    },
-    {
-        name: 'Page B',
-        uv: 3000,
-        pv: 1398,
-        amt: 2210,
-    },
-    {
-        name: 'Page C',
-        uv: 2000,
-        pv: 9800,
-        amt: 2290,
-    },
-    {
-        name: 'Page D',
-        uv: 2780,
-        pv: 3908,
-        amt: 2000,
-    },
-    {
-        name: 'Page E',
-        uv: 1890,
-        pv: 4800,
-        amt: 2181,
-    },
-    {
-        name: 'Page F',
-        uv: 2390,
-        pv: 3800,
-        amt: 2500,
-    },
-    {
-        name: 'Page G',
-        uv: 3490,
-        pv: 4300,
-        amt: 2100,
-    },
-];
 
 
 const useStyles = makeStyles(() => ({
@@ -85,7 +53,11 @@ const useStyles = makeStyles(() => ({
 
 const User = () => {
     const classes = useStyles();
-
+    const [waitFilter, setWaitFilter] = useState(false)
+    const [dataGraph, setDataGraph] = useState([])
+    const [disablebutton, setdisablebutton] = useState(true)
+    const [searchdone, setsearchdone] = useState(false)    
+    const [enabletop, setenabletop] = useState(true)
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -99,11 +71,11 @@ const User = () => {
         channel: '',
         department: '',
         store_name: '',
-        categoria: '',
+        categoria: 1,
         SKU: '',
         banda: '',
         marca: '',
-        tipo_pvp: ''
+        tipo_pvp: 'prom_price',
     })
     
     const [datafilters, setdatafilters] = useState({
@@ -127,6 +99,7 @@ const User = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),                
             ]);
             console.log(validateResArray(listResult[0], continuezyx))
             setdatafilters({
@@ -135,10 +108,45 @@ const User = () => {
                 format: validateResArray(listResult[0], continuezyx),
                 department: validateResArray(listResult[2], continuezyx),
                 store_name: validateResArray(listResult[3], continuezyx),
+                categoria:  validateResArray(listResult[4], continuezyx),
             })
         })();
         return () => continuezyx = false;
     }, [])
+    useEffect(() => {
+        if(waitFilter){
+            
+        }
+    }, [])
+    async function filtrar(){
+        setsearchdone(true)
+        //setWaitFilter(true)
+        const filter_to_send = {
+            format:filters.format,
+            channel:filters.channel,
+            department:filters.department,
+            store_name:filters.store_name,
+            category:filters.categoria,
+            sku_code:filters.SKU,
+            brand:filters.banda,
+            sub_category:filters.marca,
+            price:filters.tipo_pvp,
+            from_date:dateRange[0].startDate.toISOString().substring(0,10),
+            to_date:dateRange[0].endDate.toISOString().substring(0,10)
+        }
+        const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
+        setDataGraph(listResult.result.data)
+    }
+    function descargar(){
+        html2canvas(document.getElementById('divToPrint'))
+            .then((canvas) => {
+                const pdf = new jsPDF('l', 'mm', 'a4');
+                var width = pdf.internal.pageSize.getWidth();
+                var height = pdf.internal.pageSize.getHeight();
+                pdf.addImage(canvas.toDataURL('image/png'), 'JPEG', 0, 0, width, height);
+                pdf.save("download.pdf");
+            })
+    }
 
 
     return (
@@ -155,12 +163,12 @@ const User = () => {
                         title="Categoria"
                         classname={classes.itemFilter}
                         datatosend={datafilters.categoria}
-                        optionvalue="category"
+                        optionvalue="id_form"
                         optiondesc="category"
                         variant="outlined"
                         namefield="category"
                         descfield="category"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value.category })}
+                        callback={({ newValue: value }) => {setfilters({ ...filters, categoria: value?.id_form||1 });setdisablebutton(!value)}}
                     />
                 </div>
                 <div className={classes.containerFilters}>
@@ -174,7 +182,7 @@ const User = () => {
                         variant="outlined"
                         namefield="format"
                         descfield="format"
-                        callback={({ newValue: value }) => setfilters({ ...filters, format: value.format })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, format: value?.format||'' })}
                     />
                     <SelectFunction
                         title="Canal"
@@ -185,7 +193,7 @@ const User = () => {
                         variant="outlined"
                         namefield="channel"
                         descfield="channel"
-                        callback={({ newValue: value }) => setfilters({ ...filters, channel: value.channel })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, channel: value?.channel||'' })}
                     />
                     <SelectFunction
                         title="Departamento"
@@ -196,7 +204,7 @@ const User = () => {
                         variant="outlined"
                         namefield="department"
                         descfield="department"
-                        callback={({ newValue: value }) => setfilters({ ...filters, department: value.department })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, department: value?.department||'' })}
                     />
                     <SelectFunction
                         title="PDV"
@@ -207,7 +215,7 @@ const User = () => {
                         variant="outlined"
                         namefield="store_name"
                         descfield="store_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, store_name: value.store_name })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name||'' })}
                     />
 
                     <SelectFunction
@@ -219,7 +227,7 @@ const User = () => {
                         variant="outlined"
                         namefield="id_role"
                         descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value.id })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id||'' })}
                     />
                     <SelectFunction
                         title="Banda"
@@ -230,7 +238,7 @@ const User = () => {
                         variant="outlined"
                         namefield="id_role"
                         descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value.id })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id||'' })}
                     />
                     <SelectFunction
                         title="Marca"
@@ -241,30 +249,46 @@ const User = () => {
                         variant="outlined"
                         namefield="id_role"
                         descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value.id })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id||'' })}
                     />
-                </div>
-                <div style={{ display: 'flex', gap: 8 }}>
-                    <LineChart
-                        width={500}
-                        height={300}
-                        data={dataLines}
-                        margin={{
-                            top: 5,
-                            right: 30,
-                            left: 20,
-                            bottom: 5,
-                        }}
+                    <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
+                        defaultValue="prom_price"
+                        onChange={(event) => {setfilters({ ...filters, tipo_pvp: event.target.value })}}
                     >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-                        <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-                    </LineChart>
+                        <FormControlLabel value="todopvp" control={<Radio />} label="Todo PVP" />
+                        <FormControlLabel value="prom_price" control={<Radio />} label="Promo PVP" />
+                        <FormControlLabel value="regular_price" control={<Radio />} label="Regular PVP" />
+                    </RadioGroup>
+                    <Button variant="outlined" onClick={()=>filtrar()} disabled={disablebutton}>Filtrar</Button>
+                    {searchdone?
+                        <Button variant="outlined" onClick={()=>descargar()}  >Descargar</Button>:""
+                    }
+                    {searchdone?
+                        <FormGroup>
+                            <FormControlLabel control={<Switch defaultChecked onChange={(e)=>{setenabletop(e.target.checked)}}/>} label={enabletop?"Mostrando Top 10":"Mostrando todo"} />
+                        </FormGroup>:""
+
+                    }
+                    
                 </div>
+                {searchdone?
+                <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
+                <ResponsiveContainer  aspect={4.0 / 1.5}>
+                    <BarChart data={enabletop?dataGraph.slice(dataGraph.length<10?0:dataGraph.length-11,dataGraph.length):dataGraph}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="sku_code" />
+                        <YAxis type="number" domain={[0, 1000]}/>
+                        <Tooltip formatter={(value, name, props) => { return `S/.${parseFloat(value).toFixed(2)}` }} />
+                        <Bar dataKey="price" fill="#8884d8">
+                            {enabletop?
+                                <LabelList dataKey="price" position="top" formatter={(value, name, props) => { return `S/.${parseFloat(value).toFixed(2)}` }}/>
+                                :""
+                            }
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
+                </div>:""
+                }
             </div>
 
         </Layout>

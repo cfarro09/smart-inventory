@@ -141,7 +141,7 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
             }}
         >
             <div className={classes.toolbar}>
-                <img src={openDrawer ? "https://seeklogo.com/images/O/Oster_2006-logo-8F7C33D348-seeklogo.com.png" : "https://ostermxqa.vteximg.com.br/arquivos/O_App_logo.png?v=637233845265900000"} style={{ height: 37 }} alt="logo" />
+                <img src={openDrawer ? "/capitalconnective.png" : "https://ostermxqa.vteximg.com.br/arquivos/O_App_logo.png?v=637233845265900000"} style={{ height: 37 }} alt="logo" />
             </div>
 
             <List disablePadding>

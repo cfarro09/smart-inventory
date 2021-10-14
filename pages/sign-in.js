@@ -34,17 +34,33 @@ function Copyright() {
 }
 
 const useStyles = makeStyles((theme) => ({
+    root: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        backgroundImage: 'url("/wallpaper.jpg")',
+        position: 'relative',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+    },
+    paperLogin: {
+        backgroundColor: '#FFF',
+        padding: 24,
+        borderRadius: 10
+    },
     paper: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+
     },
     avatar: {
         margin: theme.spacing(1),
         backgroundColor: theme.palette.secondary.main,
     },
     form: {
-        width: '100%', // Fix IE 11 issue.
+        width: '400px', // Fix IE 11 issue.
         marginTop: theme.spacing(1),
     },
     submit: {
@@ -97,84 +113,85 @@ export default function SignIn() {
     };
 
     return (
-        <Layout>
-            <div className={classes.paper}>
-                <img src={infosys.sys_company_img} alt="titledev" width="250" style={{marginBottom: '1rem'}}/>
-                
-                {
-                    resultrequest && (
-                        <Alert className={classes.alertheader} variant="filled" severity={resultrequest.success ? "success" : "error"}>
-                            {resultrequest.msg}
-                        </Alert>
-                    )
-                }
-                <form
-                    className={classes.form}
-                    onSubmit={formik.handleSubmit}
-                >
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        label="Usuario"
-                        name="usr"
-                        value={formik.values.usr}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={!!formik.errors.usr}
-                        helperText={formik.errors.usr}
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        label="Contraseña"
-                        name="password"
-                        type={showPassword ? 'text' : 'password'}
-                        autoComplete="current-password"
-                        value={formik.values.password}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.errors.password ? true : false}
-                        helperText={formik.errors.password}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={handleClickShowPassword}
-                                        onMouseDown={handleMouseDownPassword}
-                                        edge="end"
-                                    >
-                                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                    {
-                        !isloading ?
-                            (
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    className={classes.submit}
-                                >
-                                    Ingresar
-                                </Button>
-                            ) :
-                            (
-                                <CircularProgress className={classes.progress} />
-                            )
-                    }
-
-                </form>
+        <div className={classes.root}>
+            <div style={{ position: 'absolute', bottom: 10, right: 20 }}>
+                <img src="/capitalhuman.png" alt="titledev" width="250" />
             </div>
-            <Box mt={8}>
-                <Copyright />
-            </Box>
-        </Layout>
+            <div className={classes.paperLogin}>
+                <div className={classes.paper}>
+                    <img src="/capitalconnective.png" alt="titledev" width="250" />
+                    {
+                        resultrequest && (
+                            <Alert className={classes.alertheader} variant="filled" severity={resultrequest.success ? "success" : "error"}>
+                                {resultrequest.msg}
+                            </Alert>
+                        )
+                    }
+                    <form
+                        className={classes.form}
+                        onSubmit={formik.handleSubmit}
+                    >
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            label="Usuario"
+                            name="usr"
+                            value={formik.values.usr}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={!!formik.errors.usr}
+                            helperText={formik.errors.usr}
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            label="Contraseña"
+                            name="password"
+                            type={showPassword ? 'text' : 'password'}
+                            autoComplete="current-password"
+                            value={formik.values.password}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.errors.password ? true : false}
+                            helperText={formik.errors.password}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={handleMouseDownPassword}
+                                            edge="end"
+                                        >
+                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                        {
+                            !isloading ?
+                                (
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.submit}
+                                    >
+                                        Ingresar
+                                    </Button>
+                                ) :
+                                <CircularProgress className={classes.progress} />
+                        }
+                    </form>
+                </div>
+                <Box mt={1}>
+                    <Copyright />
+                </Box>
+            </div>
+        </div>
     );
 }

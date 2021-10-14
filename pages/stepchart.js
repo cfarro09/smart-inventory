@@ -237,7 +237,7 @@ const User = () => {
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="sku_code" />
                                 <YAxis type="number" domain={[0, (enabletop ? dataGraph.slice(dataGraph.length < 10 ? 0 : dataGraph.length - 11, dataGraph.length) : dataGraph).reduce((acc, item) => Math.max(acc, item), 0)]} />
-                                <Tooltip formatter={(value, name, props) => { return `S/.${parseFloat(value).toFixed(2)}` }} />
+                                <Tooltip formatter={(value) => { return `S/.${parseFloat(value).toFixed(2)}` }} />
                                 <Bar
                                     dataKey="price"
                                     fill="#0c4da2"

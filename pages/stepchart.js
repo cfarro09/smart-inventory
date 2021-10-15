@@ -58,6 +58,25 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
+const RenderCustomizedLabel = (props) => {
+    const { x, y, width, height, value, datatmp, index } = props;
+    const radius = 10;
+    console.log(datatmp[index].graphic)
+    return (
+        // <g>
+
+        // </g>
+        <g>
+            <foreignObject x={x} y={y - width - 15} width={width} height={width}>
+                <img style={{ width: '100%', height: '100%', borderRadius: width / 2, border: '1px solid #e1e1e1' }} src={datatmp[index].graphic} />
+            </foreignObject>
+            <text x={x + width / 2} y={y - 5} fill="#000" textAnchor="middle" dominantBaseline="middle">
+                S/ {value.toFixed(2)}
+            </text>
+        </g>
+    );
+};
+
 const User = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
@@ -160,7 +179,6 @@ const User = () => {
             })
     }
 
-
     return (
         <Layout>
             <div style={{ display: 'flex', gap: 16, flexDirection: 'column' }}>
@@ -224,18 +242,17 @@ const User = () => {
                         />
                     }
                 </div>
-
                 {searchdone ?
                     <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
                         <ResponsiveContainer aspect={4.0 / 1.5}>
                             <BarChart
                                 data={enabletop ? dataGraph.slice(dataGraph.length < 10 ? 0 : dataGraph.length - 11, dataGraph.length) : dataGraph}
                                 margin={{
-                                    top: 5
+                                    top: 150
                                 }}
                             >
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="sku_code" />
+                                <XAxis dataKey="model" />
                                 <YAxis type="number" domain={[0, (enabletop ? dataGraph.slice(dataGraph.length < 10 ? 0 : dataGraph.length - 11, dataGraph.length) : dataGraph).reduce((acc, item) => Math.max(acc, item), 0)]} />
                                 <Tooltip formatter={(value) => { return `S/.${parseFloat(value).toFixed(2)}` }} />
                                 <Bar
@@ -246,7 +263,8 @@ const User = () => {
                                         <LabelList
                                             dataKey="price"
                                             position="top"
-                                            formatter={(value) => `S/.${parseFloat(value).toFixed(2)}`}
+                                            content={<RenderCustomizedLabel datatmp={dataGraph} />}
+                                        // formatter={(value) => `S/.${parseFloat(value).toFixed(2)}`}
                                         />
                                     }
                                 </Bar>

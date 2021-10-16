@@ -76,6 +76,21 @@ const RenderCustomizedLabel = (props) => {
         </g>
     );
 };
+const RenderCustomizedLabelonly_Image = (props) => {
+    const { x, y, width, height, value, datatmp, index } = props;
+    const radius = 10;
+    console.log(datatmp[index].graphic)
+    return (
+        // <g>
+
+        // </g>
+        <g>
+            <foreignObject x={x} y={y - width} width={width} height={width}>
+                <img style={{ width: '100%', height: '100%', borderRadius: width / 2, border: '1px solid #e1e1e1' }} src={datatmp[index].graphic} />
+            </foreignObject>
+        </g>
+    );
+};
 
 const User = () => {
     const classes = useStyles();
@@ -119,6 +134,9 @@ const User = () => {
         tipo_pvp: [],
     })
 
+    useEffect(() => {
+        console.log( Math.ceil((dataGraph[dataGraph.length-1]?.price||0)/10)*10)
+    }, [dataGraph])
     useEffect(() => {
         let continuezyx = true;
         (async () => {
@@ -169,12 +187,12 @@ const User = () => {
         setDataGraph(listResult.result.data.map(x => ({ ...x, price: parseFloat(x.price) })))
     }
     function descargar() {
-        html2canvas(document.getElementById('divToPrint'))
+        html2canvas(document.getElementById('divToPrint'),{ dpi: 300, useCORS: true })
             .then((canvas) => {
                 const pdf = new jsPDF('l', 'mm', 'a4');
                 var width = pdf.internal.pageSize.getWidth();
                 var height = pdf.internal.pageSize.getHeight();
-                pdf.addImage(canvas.toDataURL('image/png'), 'JPEG', 0, 0, width, height);
+                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, width, height);
                 pdf.save("download.pdf");
             })
     }
@@ -244,7 +262,7 @@ const User = () => {
                 </div>
                 {searchdone ?
                     <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
-                        <ResponsiveContainer aspect={4.0 / 1.5}>
+                        <ResponsiveContainer aspect={4.0 / 2}>
                             <BarChart
                                 data={enabletop ? dataGraph.slice(dataGraph.length < 10 ? 0 : dataGraph.length - 11, dataGraph.length) : dataGraph}
                                 margin={{
@@ -252,18 +270,23 @@ const User = () => {
                                 }}
                             >
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="model" />
-                                <YAxis type="number" domain={[0, (enabletop ? dataGraph.slice(dataGraph.length < 10 ? 0 : dataGraph.length - 11, dataGraph.length) : dataGraph).reduce((acc, item) => Math.max(acc, item), 0)]} />
+                                <XAxis dataKey="model" angle={90} interval={0} textAnchor ="start" height={150} dy={5} dx={5}/>
+                                <YAxis type="number" domain={[0, Math.ceil((dataGraph[dataGraph.length-1]?.price||0)/10)*10]} />
                                 <Tooltip formatter={(value) => { return `S/.${parseFloat(value).toFixed(2)}` }} />
                                 <Bar
                                     dataKey="price"
                                     fill="#0c4da2"
                                 >
-                                    {enabletop &&
+                                    {enabletop?
                                         <LabelList
                                             dataKey="price"
                                             position="top"
                                             content={<RenderCustomizedLabel datatmp={dataGraph} />}
+                                        // formatter={(value) => `S/.${parseFloat(value).toFixed(2)}`}
+                                        />:
+                                        <LabelList
+                                            dataKey=""
+                                            content={<RenderCustomizedLabelonly_Image datatmp={dataGraph} />}
                                         // formatter={(value) => `S/.${parseFloat(value).toFixed(2)}`}
                                         />
                                     }

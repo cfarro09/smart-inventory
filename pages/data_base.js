@@ -107,7 +107,7 @@ const GET_FILTER = (filter) => ({
     }
 })
 const FILTER = (filter) => ({
-    method: "SP_STEP_UP_CHAR",
+    method: "SP_DATABASE",
     data: filter
 })
 
@@ -150,9 +150,10 @@ const Data_base = () => {
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
 
-    const [disablebutton, setdisablebutton] = useState(false)
+    const [disablebutton, setdisablebutton] = useState(true)
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -164,47 +165,63 @@ const Data_base = () => {
         () => [
             {
                 Header: 'ID',
-                accessor: 'id',
+                accessor: 'formid',
             },
             {
-                Header: 'Fecha',
-                accessor: 'fecha',
+                Header: 'Nombre',
+                accessor: 'name',
+            },
+            {
+                Header: 'Dispositivo',
+                accessor: 'device',
+            },
+            {
+                Header: 'Tienda',
+                accessor: 'poiname',
             },
             {
                 Header: 'Hora',
-                accessor: 'hora',
-            },
-            {
-                Header: 'Activo',
-                accessor: 'activo',
-            },
-            {
-                Header: 'Activos Grupos',
-                accessor: 'grupos',
-            },
-            {
-                Header: 'Cliente',
-                accessor: 'cliente',
-            },
-            {
-                Header: 'Formulario',
-                accessor: 'formulario',
+                accessor: 'form_timestamp',
             },
             {
                 Header: 'Posición',
-                accessor: 'posicion',
+                accessor: 'position',
             },
             {
                 Header: 'Dirección',
-                accessor: 'direccion'
-            },
-            {
-                Header: 'Lineal',
-                accessor: 'lineal'
+                accessor: 'address',
             },
             {
                 Header: 'Retail',
-                accessor: 'retail'
+                accessor: 'retail',
+            },
+            {
+                Header: 'Marca',
+                accessor: 'brand'
+            },
+            {
+                Header: 'Categoría',
+                accessor: 'category'
+            },
+            {
+                Header: 'Modelo',
+                accessor: 'model'
+            },
+            {
+                Header: 'Precio regular',
+                accessor: 'regular_price'
+            },
+            {
+                Header: 'Precio promocional',
+                accessor: 'prom_price'
+            },
+            {
+                Header: 'Mecanica de la promocion',
+                accessor: 'trading_option'
+            },
+            {
+                Header: 'Url de la foto',
+                accessor: 'photo_url'
             },
         ],
         []
@@ -265,7 +282,7 @@ const Data_base = () => {
         }
     }, [])
     async function filtrar() {
-        //setWaitFilter(true)
+        setsearchdone(true)
         const filter_to_send = {
             format: filters.format,
             channel: filters.channel,
@@ -315,6 +332,7 @@ const Data_base = () => {
                         callback={({ newValue: value }) => {
                             setfilters({ ...filters, categoria: value?.id_form || 1 });
                             setcategory(value)
+                            setdisablebutton(!value)
                         }}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
@@ -332,11 +350,13 @@ const Data_base = () => {
                         disabled={disablebutton}
                         startIcon={<SearchIcon style={{ color: '#FFF' }} />}
                     >Buscar</Button>
-                    <Button
-                        style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                        onClick={() => descargar()}
-                        startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                    >Descargar</Button>
+                    {searchdone &&
+                        <Button
+                            style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                            onClick={() => descargar()}
+                            startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
+                        >Descargar</Button>
+                    }
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
                         onClick={() => setDrawerOpen(true)}
@@ -350,14 +370,17 @@ const Data_base = () => {
                         />
                     }
                 </div>
+                {searchdone &&
+
                 <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
                     <TableZyx
                         columns={columns}
-                        data={rows}
-                        //fetchData={fetchData}
+                        data={dataGraph}
+                        fetchData={filtrar}
                         register={false}
                     />
                 </div>
+                }
             </div>
 
 

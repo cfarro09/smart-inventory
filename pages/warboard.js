@@ -290,7 +290,7 @@ const BulkLoad = () => {
             category: filters.categoria,
             sku_code: filters.SKU,
             brand: filters.marca,
-            sub_category: filters.marca,
+            sub_category: '',
             price: filters.tipo_pvp,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)

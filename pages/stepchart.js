@@ -262,15 +262,14 @@ const User = () => {
                 </div>
                 {searchdone ?
                     <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
-                        <ResponsiveContainer aspect={4.0 / 2}>
+                        <ResponsiveContainer aspect={4.0 / 2.3}>
                             <BarChart
                                 data={enabletop ? dataGraph.slice(dataGraph.length < 10 ? 0 : dataGraph.length - 11, dataGraph.length) : dataGraph}
-                                margin={{
-                                    top: 150
-                                }}
+                                margin={{top: enabletop?150:10 }}
                             >
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="model" angle={90} interval={0} textAnchor ="start" height={150} dy={5} dx={5}/>
+                                <XAxis dataKey="model" style={{fontSize: "0.8em"}} angle={90} interval={0} textAnchor ="start" height={160} dy={5} dx={5}/>
+                                <XAxis dataKey="model" style={{fontSize: "0.8em"}} angle={90} interval={0} textAnchor ="start" height={160} dy={5} dx={5}/>
                                 <YAxis type="number" domain={[0, Math.ceil((dataGraph[dataGraph.length-1]?.price||0)/10)*10]} />
                                 <Tooltip formatter={(value) => { return `S/.${parseFloat(value).toFixed(2)}` }} />
                                 <Bar

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component } from 'react';
+import React, { useState, useEffect, Component,Fragment } from 'react';
 import Layout from '../components/system/layout/layout'
 import triggeraxios from '../config/axiosv2';
 
@@ -92,7 +92,7 @@ const rows = [
 const HtmlTooltip = withStyles((theme) => ({
     tooltip: {
       backgroundColor: '#f5f5f9',
-      margin: "-30px 0",
+      margin: "-120px 0",
       color: 'rgba(0, 0, 0, 0.87)',
       maxWidth: 220,
       fontSize: theme.typography.pxToRem(12),
@@ -112,7 +112,7 @@ const GET_FILTER = (filter) => ({
     }
 })
 const FILTER = (filter) => ({
-    method: "SP_STEP_UP_CHAR",
+    method: "SP_PHOTO_PORTAL",
     data: filter
 })
 
@@ -157,7 +157,7 @@ const Photo_portal = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [category, setcategory] = useState(null);
 
-    const [disablebutton, setdisablebutton] = useState(false)
+    const [disablebutton, setdisablebutton] = useState(true)
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -267,7 +267,7 @@ const Photo_portal = () => {
             category: filters.categoria,
             sku_code: filters.SKU,
             brand: filters.marca,
-            sub_category: filters.marca,
+            sub_category: '',
             price: filters.tipo_pvp,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
@@ -308,6 +308,7 @@ const Photo_portal = () => {
                         callback={({ newValue: value }) => {
                             setfilters({ ...filters, categoria: value?.id_form || 1 });
                             setcategory(value)
+                            setdisablebutton(!value)
                         }}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
@@ -325,16 +326,20 @@ const Photo_portal = () => {
                         disabled={disablebutton}
                         startIcon={<SearchIcon style={{ color: '#FFF' }} />}
                     >Buscar</Button>
-                    <Button
-                        style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                        onClick={() => descargar()}
-                        startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                    >Descargar</Button>
-                    <Button
-                        style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                        onClick={() => generateZIP()}
-                        startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                    >Descargar ZIP</Button>
+                    {dataGraph.length?
+                        <Fragment>
+                        <Button
+                            style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                            onClick={() => descargar()}
+                            startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
+                        >Descargar</Button>
+                        <Button
+                            style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                            onClick={() => generateZIP()}
+                            startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
+                        >Descargar ZIP</Button>
+                        </Fragment>: ""
+                    }
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
                         onClick={() => setDrawerOpen(true)}
@@ -349,10 +354,18 @@ const Photo_portal = () => {
                     }
                 </div>
                 <div style={{ display: 'flex', gap: 8 , flexWrap: "wrap"}} id="divToPrint">
-                    {rows.map((row,i) => (
+                    {dataGraph.map((row,i) => (
                         <Box key={i} width="19%" height={"200px"}>
-                            <HtmlTooltip placement="bottom" title={ <Typography color="inherit">{`Tienda: ${row.title}`}</Typography>}>
-                                <img style={{ height: "200px", width:"100%"}} alt="image.jpg" src={row.image}></img>
+                            <HtmlTooltip placement="bottom" 
+                            title={ 
+                                <Fragment>
+                                    <Typography color="inherit">{`Tienda: ${row.poiname}`}</Typography>
+                                    <Typography color="inherit">{`Marca: ${row.brand}`}</Typography>
+                                    <Typography color="inherit">{`Modelo: ${row.model}`}</Typography>
+                                    <Typography color="inherit">{`Subcategoría: ${row.subcategory}`}</Typography>
+                                </Fragment>
+                            }>
+                                <img style={{ height: "200px", width:"100%"}} alt="image.jpg" src={row.photo_url}></img>
                             </HtmlTooltip>
                         </Box>
                     ))}

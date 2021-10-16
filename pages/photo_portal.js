@@ -174,7 +174,7 @@ const Photo_portal = () => {
         rows.map((row,i)=>{
             JSZipUtils.getBinaryContent(row.image, function (err, data) {
                 if (err) {
-                    throw err; // or handle the error
+                    //throw err; // or handle the error
                 }
                 zip.file(`${row.title}-${i}.jpg`, data, { binary: true });
                 count++;

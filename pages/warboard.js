@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, Component, PropTypes } from 'react';
+import React, { useState, useContext, useEffect, Component, PropTypes,Fragment} from 'react';
 import Layout from '../components/system/layout/layout'
 import triggeraxios from '../config/axiosv2';
 
@@ -71,6 +71,56 @@ function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
 }
 
+const fields=[
+    /*ARROCERA*/[
+        {name:"graphic", title:"grafica"},
+        {name:"brand", title:"marca"},
+        {name:"subcategory", title:"subcategoría"},
+        {name:"model", title:"modelo"},
+
+        {name:"capacity", title:"capacidad"},
+        {name:"watts", title:"watts"},
+        {name:"finish", title:"acabado"},
+        {name:"color", title:"color"},
+        {name:"bowl_material", title:"material del tazón"},
+        {name:"bowl_size", title:"medida del tazón"},
+        {name:"coating", title:"recubrimiento"},
+        {name:"functions", title:"funciones"},
+        {name:"lid_material", title:"material de la tapa"},
+        {name:"lid_type", title:"tipo de tapa"},
+        {name:"detachable_cable", title:"cable desmontable"},
+        {name:"steamer", title:"vaporera"},
+        {name:"steamer_position", title:"posición de la vaporera"},
+        {name:"steamer_material", title:"material de la vaporera"},
+        {name:"accessories", title:"accesorios"},
+        {name:"temperature_control", title:"control de temperatura"},
+    ],
+    /*LICUADORA*/[
+        {name:"graphic", title:"grafica"},
+        {name:"brand", title:"marca"},
+        {name:"subcategory", title:"subcategoría"},
+        {name:"model", title:"modelo"},
+
+        {name:"base_material", title:"material de la base"},
+        {name:"color", title:"color"},
+        {name:"speeds", title:"velocidades"},
+        {name:"push_button", title:"pulsador"},
+        {name:"power", title:"potencia"},
+        {name:"tumbler_capacity", title:"capacidad del vaso"},
+        {name:"cover_with_measure", title:"sobretapa con medida"},
+        {name:"cup_material", title:"material del vaso"},
+        {name:"coupling_material", title:"material de acople"},
+        {name:"coupling_position", title:"posición de acople"},
+        {name:"reversible_technology", title:"tecnología reversible"},
+        {name:"num_automatic_programs", title:"cantidad de programas automáticos"},
+        {name:"automatic_programs", title:"programas automáticos"},
+        {name:"shut_off_times", title:"tiempos de apagado"},
+        {name:"accessories", title:"accesorios"},
+        {name:"blade_material", title:"material de las cuchillas"},
+        {name:"number_of_blades", title:"numero de aspas"},
+    ],
+]
+
 const rows = [
     {
         marca: "OSTER", modelo: "6026", precio: 139.00, subcategoria: "SOFRITO", capacidad: "1.2LT", watts: 500, frecuenciahz: "50/60", acabado: "PINTADO AL HORNO", color: "SILVER", tazon: "ALUMINIO", medidastazon: "MAX", recubrimiento: "ANTIHADERENTE",
@@ -111,7 +161,7 @@ const GET_FILTER = (filter) => ({
     }
 })
 const FILTER = (filter) => ({
-    method: "SP_STEP_UP_CHAR",
+    method: "SP_WARBOARD",
     data: filter
 })
 
@@ -139,6 +189,12 @@ const useStyles = makeStyles(() => ({
     datacell: {
         border: "1px #e0e0e0 solid",
         backgroundColor: "white",
+    },
+    datacelltitle: {
+        border: "1px #e0e0e0 solid",
+        backgroundColor: "white",
+        textTransform: "uppercase",
+        fontWeight: "bold"
     }
 }));
 
@@ -151,12 +207,14 @@ const RB_MARCA = {
 
 const BulkLoad = () => {
     const classes = useStyles();
-    const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
+    const [searchdone, setsearchdone] = useState(false);
+    const [fieldstoshow, setfieldstoshow] = useState([]);
+
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [category, setcategory] = useState(null);
 
-    const [disablebutton, setdisablebutton] = useState(false)
+    const [disablebutton, setdisablebutton] = useState(true)
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -201,7 +259,6 @@ const BulkLoad = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
             ]);
-            console.log(validateResArray(listResult[0], continuezyx))
             setdatafilters({
                 ...datafilters,
                 channel: validateResArray(listResult[1], continuezyx),
@@ -214,13 +271,14 @@ const BulkLoad = () => {
         })();
         return () => continuezyx = false;
     }, [])
-    useEffect(() => {
-        if (waitFilter) {
 
-        }
-    }, [])
+    useEffect(() => {
+        console.log(fieldstoshow)
+    }, [fieldstoshow])
+    
     async function filtrar() {
-        //setWaitFilter(true)
+        setsearchdone(true)
+        setcategorysearchfield(category.category)
         const filter_to_send = {
             format: filters.format,
             channel: filters.channel,
@@ -235,6 +293,7 @@ const BulkLoad = () => {
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
+        console.log(listResult)
         setDataGraph(listResult.result.data)
     }
     function descargar() {
@@ -246,6 +305,14 @@ const BulkLoad = () => {
                 pdf.addImage(canvas.toDataURL('image/png'), 'JPEG', 0, 0, width, height);
                 pdf.save("download.pdf");
             })
+    }
+    function setcategorysearchfield(value) {
+        if(value.includes("ARROCERA")){
+            setfieldstoshow(fields[0])
+        }
+        else if(value.includes("LICUADORA")){
+            setfieldstoshow(fields[1])
+        }
     }
 
     return (
@@ -268,6 +335,7 @@ const BulkLoad = () => {
                         namefield="category"
                         descfield="category"
                         callback={({ newValue: value }) => {
+                            setdisablebutton(!value)
                             setfilters({ ...filters, categoria: value?.id_form || 1 });
                             setcategory(value)
                         }}
@@ -287,11 +355,13 @@ const BulkLoad = () => {
                         disabled={disablebutton}
                         startIcon={<SearchIcon style={{ color: '#FFF' }} />}
                     >Buscar</Button>
-                    <Button
-                        style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                        onClick={() => descargar()}
-                        startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                    >Descargar</Button>
+                    {searchdone &&
+                        <Button
+                            style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                            onClick={() => descargar()}
+                            startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
+                        >Descargar</Button>
+                    }
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
                         onClick={() => setDrawerOpen(true)}
@@ -305,128 +375,25 @@ const BulkLoad = () => {
                         />
                     }
                 </div>
+                {searchdone &&
                 <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
                     <TableContainer component={Paper}>
                         <Table className={classes.table} aria-label="simple table">
                             <TableBody>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row"></TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row"><img style={{ width: "100px", height: "100px" }} alt="image.jpg" src={row.image}></img></TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">MARCA</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.marca}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">MODELO</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.modelo}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">PRECIO</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">S/.{row.precio.toFixed(2)}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">SUBCATEGORIA</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.subcategoria}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">CAPACIDAD</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.capacidad}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">WATTS</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.watts}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">FRECUENCIA HZ</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.frecuenciahz}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">ACABADO</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.acabado}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">COLOR</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.color}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">TAZON</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.tazon}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">MEDIDAS DEL TAZON</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.medidastazon}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">RECUBRIMIENTO</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.recubrimiento}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">FUNCIONES</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.funciones}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">TAPA</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.tapa}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">CABLE DESMONTABLE</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.cable}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">VAPORERA/ALUMINIO/ACERO</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.vaporera}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">ACCESORIOS</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.accesorios}</TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell className={classes.labelcell} align="right" component="th" scope="row">GARANTIA</TableCell>
-                                    {rows.map((row) => (
-                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{row.garantia}</TableCell>
-                                    ))}
-                                </TableRow>
+                                {fieldstoshow.map((field,i)=>(
+                                    <TableRow key={`fieldstoshow${i}`}>
+                                        <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{field.title==="grafica"?"":field.title}</TableCell>
+                                        {dataGraph.map((row,j)=>(
+                                            <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" component="th" scope="row">{field.title==="grafica"?<img style={{ width: "100px", height: "100px" }} alt="image.jpg" src={row.graphic}></img>:row[field.name]}</TableCell>
+                                        ))}
+
+                                    </TableRow>
+                                ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
                 </div>
+                }
             </div>
 
 

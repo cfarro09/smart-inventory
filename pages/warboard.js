@@ -180,6 +180,7 @@ const useStyles = makeStyles(() => ({
 
     table: {
         minWidth: 700,
+        borderCollapse: "separate"
     },
     labelcell: {
         border: "1px #e0e0e0 solid",
@@ -192,7 +193,9 @@ const useStyles = makeStyles(() => ({
     },
     datacelltitle: {
         border: "1px #e0e0e0 solid",
-        backgroundColor: "white",
+        position: "sticky",
+        left: 0,
+        background: "white",
         textTransform: "uppercase",
         fontWeight: "bold"
     }

@@ -3,6 +3,7 @@ import Layout from '../components/system/layout/layout'
 import triggeraxios from '../config/axiosv2';
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
+import TableZyx from '../components/system/form/table-simple';
 
 import Button from '@material-ui/core/Button';
 import Radio from '@material-ui/core/Radio';
@@ -159,6 +160,55 @@ const Data_base = () => {
             key: 'selection'
         }
     ]);
+    const columns = React.useMemo(
+        () => [
+            {
+                Header: 'ID',
+                accessor: 'id',
+            },
+            {
+                Header: 'Fecha',
+                accessor: 'fecha',
+            },
+            {
+                Header: 'Hora',
+                accessor: 'hora',
+            },
+            {
+                Header: 'Activo',
+                accessor: 'activo',
+            },
+            {
+                Header: 'Activos Grupos',
+                accessor: 'grupos',
+            },
+            {
+                Header: 'Cliente',
+                accessor: 'cliente',
+            },
+            {
+                Header: 'Formulario',
+                accessor: 'formulario',
+            },
+            {
+                Header: 'Posición',
+                accessor: 'posicion',
+            },
+            {
+                Header: 'Dirección',
+                accessor: 'direccion'
+            },
+            {
+                Header: 'Lineal',
+                accessor: 'lineal'
+            },
+            {
+                Header: 'Retail',
+                accessor: 'retail'
+            },
+        ],
+        []
+    );
 
     const [filters, setfilters] = useState({
         format: '',
@@ -301,42 +351,12 @@ const Data_base = () => {
                     }
                 </div>
                 <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
-                <TableContainer component={Paper}>
-                    <Table className={classes.table} aria-label="simple table">
-                        <TableHead>
-                        <TableRow>
-                            <TableCell align="left">ID</TableCell>
-                            <TableCell align="left">Fecha</TableCell>
-                            <TableCell align="left">Hora</TableCell>
-                            <TableCell align="left">Activo</TableCell>
-                            <TableCell align="left">Activos Grupos</TableCell>
-                            <TableCell align="left">Cliente</TableCell>
-                            <TableCell align="left">Formulario</TableCell>
-                            <TableCell align="left">Posición</TableCell>
-                            <TableCell align="left">Dirección</TableCell>
-                            <TableCell align="left">Lineal</TableCell>
-                            <TableCell align="left">Retail</TableCell>
-                        </TableRow>
-                        </TableHead>
-                        <TableBody>
-                        {rows.map((row) => (
-                            <TableRow key={row.name}>
-                                <TableCell align="left">{row.id}</TableCell>
-                                <TableCell align="left">{row.fecha}</TableCell>
-                                <TableCell align="left">{row.hora}</TableCell>
-                                <TableCell align="left">{row.activo}</TableCell>
-                                <TableCell align="left">{row.grupos}</TableCell>
-                                <TableCell align="left">{row.cliente}</TableCell>
-                                <TableCell align="left">{row.formulario}</TableCell>
-                                <TableCell align="left">{row.posicion}</TableCell>
-                                <TableCell align="left">{row.direccion}</TableCell>
-                                <TableCell align="left">{row.lineal}</TableCell>
-                                <TableCell align="left">{row.retail}</TableCell>
-                            </TableRow>
-                        ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                    <TableZyx
+                        columns={columns}
+                        data={rows}
+                        //fetchData={fetchData}
+                        register={false}
+                    />
                 </div>
             </div>
 

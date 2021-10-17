@@ -54,7 +54,6 @@ const whiteIconTheme = createMuiTheme({
 
 
 const Aside = React.memo(({ open, setOpen, classes, theme }) => {
-    console.log('aside render');
     const router = useRouter();
     const { user, appselected } = useContext(authContext);
     const { openDrawer, setOpenDrawer } = useContext(popupsContext);
@@ -160,6 +159,14 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                 />
                 <LinkList
                     application="data_base"
+                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
+                />
+                <LinkList
+                    application="linear_detail"
+                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
+                />
+                <LinkList
+                    application="share_by_brand"
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />
 

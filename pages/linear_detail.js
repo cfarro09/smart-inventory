@@ -16,6 +16,7 @@ import DateRange from '../components/system/form/daterange';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
+import Avatar from '@material-ui/core/Avatar';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
@@ -145,7 +146,7 @@ const RB_MARCA = {
     }
 }
 
-const Data_base = () => {
+const Linear_detail = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
@@ -220,8 +221,15 @@ const Data_base = () => {
                 accessor: 'trading_option'
             },
             {
-                Header: 'Url de la foto',
-                accessor: 'photo_url'
+                Header: 'Foto',
+                accessor: 'photo_url',
+                Cell: props => {
+                    return (
+                        <div className="container-button-floating">
+                            <Avatar src={props.cell.row.original.photo_url} />
+                        </div>
+                    )
+                }
             },
         ],
         []
@@ -476,4 +484,4 @@ const Data_base = () => {
     );
 }
 
-export default Data_base;
+export default Linear_detail;

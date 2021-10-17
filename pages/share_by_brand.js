@@ -1,5 +1,6 @@
-import React, { useState, useContext, useEffect, Component, PropTypes } from 'react';
+import React, { useState, useContext, useEffect, Component } from 'react';
 import Layout from '../components/system/layout/layout'
+import { Box,Theme } from "@material-ui/core";
 import triggeraxios from '../config/axiosv2';
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
@@ -11,7 +12,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
-import { BarChart, Bar, Sector, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, BarChart , Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DateRange from '../components/system/form/daterange';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -30,6 +31,80 @@ import {
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
 
+const data = [
+    {
+      "name": "ENE",
+      "uv": 11,
+      "pv": 10,
+    },
+    {
+      "name": "FEB",
+      "uv": 14,
+      "pv": 19,
+    },
+    {
+      "name": "MAR",
+      "uv": 17,
+      "pv": 25,
+    },
+    {
+      "name": "ABR",
+      "uv": 39,
+      "pv": 55,
+    },
+    {
+      "name": "MAY",
+      "uv": 35,
+      "pv": 50,
+    },
+    {
+      "name": "JUN",
+      "uv": 37,
+      "pv": 45,
+    },
+    {
+      "name": "JUL",
+      "uv": 32,
+      "pv": 35,
+    },
+    {
+      "name": "AGO",
+      "uv": 20,
+      "pv": 37,
+    },
+    {
+      "name": "SEP",
+      "uv": 25,
+      "pv": 45,
+    },
+    {
+      "name": "OCT",
+      "uv": 15,
+      "pv": 35,
+    },
+    {
+      "name": "NOV",
+      "uv": 26,
+      "pv": 55,
+    },
+    {
+      "name": "DIC",
+      "uv": 30,
+      "pv": 40,
+    },
+  ]
+  
+  const data2 = [
+    { name: 'A', x: 12, y: 23, z: 122 },
+    { name: 'B', x: 22, y: 3, z: 73 },
+    { name: 'C', x: 13, y: 15, z: 32 },
+    { name: 'D', x: 44, y: 35, z: 23 },
+    { name: 'E', x: 35, y: 45, z: 20 },
+    { name: 'F', x: 62, y: 25, z: 29 },
+    { name: 'G', x: 37, y: 17, z: 61 },
+    { name: 'H', x: 28, y: 32, z: 45 },
+    { name: 'I', x: 19, y: 43, z: 93 },
+];
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -113,7 +188,7 @@ const FILTER = (filter) => ({
 
 
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
     containerFilters: {
         display: 'flex',
         gap: 8,
@@ -125,7 +200,7 @@ const useStyles = makeStyles(() => ({
     },
 
     table: {
-        minWidth: 700,
+        minWidth: 200,
     },
     labelcell: {
         border: "1px #e0e0e0 solid",
@@ -135,6 +210,29 @@ const useStyles = makeStyles(() => ({
     datacell: {
         border: "1px #e0e0e0 solid",
         backgroundColor: "white",
+    },
+    replacerowzyx: {
+        display: 'flex',
+        flex: 1,
+        gap: theme.spacing(2),
+        flexWrap: "wrap",
+    },
+    itemCard: {
+        backgroundColor: "#FFF",
+        display: 'flex',
+        height: '100%',
+        flex: 1,
+        gap: 8,
+        flexWrap: 'wrap',
+        padding: theme.spacing(2),
+        alignItems: 'center',
+        justifyContent: "center",
+        minWidth: 200,
+    },
+    titlecards:{
+        fontWeight: "bold",
+        fontSize: "1.5em",
+        color: "blue"
     }
 }));
 
@@ -145,7 +243,7 @@ const RB_MARCA = {
     }
 }
 
-const Data_base = () => {
+const Share_by_brand = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
@@ -371,13 +469,120 @@ const Data_base = () => {
                 </div>
                 {searchdone &&
 
-                <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
-                    <TableZyx
-                        columns={columns}
-                        data={dataGraph}
-                        fetchData={filtrar}
-                        register={false}
-                    />
+                <div style={{ display: 'flex', gap: 16, flexDirection: 'column' }} id="divToPrint">
+                    <div className={classes.replacerowzyx}>
+                        <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Cantidad de SKUS por Marca</div>
+                            <TableContainer component={Paper}>
+                                <Table className={classes.table} aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell></TableCell>
+                                            <TableCell align="center">N* SKU's</TableCell>
+                                            <TableCell align="center">Partic %</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell align="center">Oster</TableCell>
+                                            <TableCell align="center">14</TableCell>
+                                            <TableCell align="center">48%</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell align="center">Recco</TableCell>
+                                            <TableCell align="center">6</TableCell>
+                                            <TableCell align="center">21%</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell align="center">Wurdun</TableCell>
+                                            <TableCell align="center">2</TableCell>
+                                            <TableCell align="center">7%</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell align="center">Bosch</TableCell>
+                                            <TableCell align="center">2</TableCell>
+                                            <TableCell align="center">7%</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell align="center">Record</TableCell>
+                                            <TableCell align="center">1</TableCell>
+                                            <TableCell align="center">3%</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell align="center">KA</TableCell>
+                                            <TableCell align="center">1</TableCell>
+                                            <TableCell align="center">3%</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell align="center">Cuisinart</TableCell>
+                                            <TableCell align="center">1</TableCell>
+                                            <TableCell align="center">3%</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell align="center">Kenwood</TableCell>
+                                            <TableCell align="center">1</TableCell>
+                                            <TableCell align="center">3%</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell align="center">Thomas</TableCell>
+                                            <TableCell align="center">1</TableCell>
+                                            <TableCell align="center">3%</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell align="center"></TableCell>
+                                            <TableCell align="center">29</TableCell>
+                                            <TableCell align="center">100%</TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Box>
+                        <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Cantidad de SKUS por Marca por Semana</div>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
+                                <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                    <defs>
+                                        <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="red" stopOpacity={0.8}/>
+                                        <stop offset="95%" stopColor="red" stopOpacity={0}/>
+                                        </linearGradient>
+                                        <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="blue" stopOpacity={0.8}/>
+                                        <stop offset="95%" stopColor="blue" stopOpacity={0}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <Tooltip />
+                                    <Area type="monotone" dataKey="uv" stroke="red" fillOpacity={1} fill="url(#colorUv)" />
+                                    <Area type="monotone" dataKey="pv" stroke="blue" fillOpacity={1} fill="url(#colorPv)" />
+                                </AreaChart>
+                            </ResponsiveContainer >
+                            
+                        </Box>
+                        <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena</div>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
+                                <BarChart data={data2} >
+                                    <CartesianGrid />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Bar dataKey="x" stackId="a" fill="blue" />
+                                    <Bar dataKey="y" stackId="a" fill="red" />
+                                    <Bar dataKey="z" stackId="a" fill="yellow" />
+                                </BarChart>
+                            </ResponsiveContainer >
+                            
+                        </Box>
+                    </div>
                 </div>
                 }
             </div>
@@ -476,4 +681,4 @@ const Data_base = () => {
     );
 }
 
-export default Data_base;
+export default Share_by_brand;

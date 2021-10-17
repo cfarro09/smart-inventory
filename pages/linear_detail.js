@@ -383,7 +383,7 @@ const Linear_detail = () => {
                     <TableZyx
                         columns={columns}
                         data={dataGraph}
-                        fetchData={filtrar}
+                        // fetchData={filtrar}
                         register={false}
                     />
                 </div>

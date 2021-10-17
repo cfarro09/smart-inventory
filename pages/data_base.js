@@ -311,7 +311,7 @@ const Data_base = () => {
 
     return (
         <Layout>
-            <div style={{ display: 'flex', gap: 16, flexDirection: 'column' }}>
+            <div style={{ display: 'flex', gap: 16, flexDirection: 'row' }}>
                 <div className={classes.containerFilters}>
                     <DateRange
                         classname={classes.itemFilter}
@@ -369,18 +369,18 @@ const Data_base = () => {
                         />
                     }
                 </div>
-                {searchdone &&
-
-                <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
-                    <TableZyx
-                        columns={columns}
-                        data={dataGraph}
-                        fetchData={filtrar}
-                        register={false}
-                    />
-                </div>
-                }
             </div>
+            {searchdone &&
+
+            <div style={{ display: 'flex', gap: 8, width: "100%", overflow: "scroll", overflowY: "hidden" }} id="divToPrint">
+                <TableZyx
+                    columns={columns}
+                    data={dataGraph}
+                    fetchData={filtrar}
+                    register={false}
+                />
+            </div>
+            }
 
 
 

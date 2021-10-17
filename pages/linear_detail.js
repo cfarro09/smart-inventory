@@ -379,7 +379,7 @@ const Linear_detail = () => {
                 </div>
                 {searchdone &&
 
-                <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
+                <div style={{ display: 'flex', gap: 8, width: "100%", overflow: "scroll", overflowY: "hidden" }} id="divToPrint">
                     <TableZyx
                         columns={columns}
                         data={dataGraph}

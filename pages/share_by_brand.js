@@ -182,7 +182,7 @@ const GET_FILTER = (filter) => ({
     }
 })
 const FILTER = (filter) => ({
-    method: "SP_DATABASE",
+    method: "SP_SKU_BRAND",
     data: filter
 })
 
@@ -249,6 +249,7 @@ const Share_by_brand = () => {
     const [dataGraph, setDataGraph] = useState([])
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
+    const [totalSKUS, settotalSKUS] = useState(0)
     const [category, setcategory] = useState(null);
 
     const [disablebutton, setdisablebutton] = useState(true)
@@ -373,13 +374,9 @@ const Share_by_brand = () => {
         })();
         return () => continuezyx = false;
     }, [])
-    useEffect(() => {
-        if (waitFilter) {
-
-        }
-    }, [])
     async function filtrar() {
         setsearchdone(true)
+        //settotalSKUS(0)
         const filter_to_send = {
             format: filters.format,
             channel: filters.channel,
@@ -485,51 +482,17 @@ const Share_by_brand = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        <TableRow>
-                                            <TableCell align="center">Oster</TableCell>
-                                            <TableCell align="center">14</TableCell>
-                                            <TableCell align="center">48%</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell align="center">Recco</TableCell>
-                                            <TableCell align="center">6</TableCell>
-                                            <TableCell align="center">21%</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell align="center">Wurdun</TableCell>
-                                            <TableCell align="center">2</TableCell>
-                                            <TableCell align="center">7%</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell align="center">Bosch</TableCell>
-                                            <TableCell align="center">2</TableCell>
-                                            <TableCell align="center">7%</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell align="center">Record</TableCell>
-                                            <TableCell align="center">1</TableCell>
-                                            <TableCell align="center">3%</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell align="center">KA</TableCell>
-                                            <TableCell align="center">1</TableCell>
-                                            <TableCell align="center">3%</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell align="center">Cuisinart</TableCell>
-                                            <TableCell align="center">1</TableCell>
-                                            <TableCell align="center">3%</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell align="center">Kenwood</TableCell>
-                                            <TableCell align="center">1</TableCell>
-                                            <TableCell align="center">3%</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell align="center">Thomas</TableCell>
-                                            <TableCell align="center">1</TableCell>
-                                            <TableCell align="center">3%</TableCell>
-                                        </TableRow>
+                                        {
+                                            dataGraph.map((row,i) =>{
+                                                
+                                                settotalSKUS(totalSKUS + row.cont)
+                                                return <TableRow>
+                                                    <TableCell align="center">{row.brand}</TableCell>
+                                                    <TableCell align="center">{row.cont}</TableCell>
+                                                    <TableCell align="center">{row.percent}</TableCell>
+                                                </TableRow>
+                                            })
+                                        }
                                         <TableRow>
                                             <TableCell align="center"></TableCell>
                                             <TableCell align="center">29</TableCell>

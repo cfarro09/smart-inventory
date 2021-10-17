@@ -375,7 +375,7 @@ const Data_base = () => {
                     <TableZyx
                         columns={columns}
                         data={dataGraph}
-                        fetchData={filtrar}
+                        // fetchData={filtrar}
                         register={false}
                     />
                 </div>

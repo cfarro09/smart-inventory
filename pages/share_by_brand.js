@@ -185,6 +185,10 @@ const FILTER = (filter) => ({
     method: "SP_SKU_BRAND",
     data: filter
 })
+const FILTERDATE = (filter) => ({
+    method: "SP_SKU_DATE",
+    data: filter
+})
 
 
 
@@ -247,9 +251,10 @@ const Share_by_brand = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
+    const [dataGraphDate, setDataGraphDate] = useState([])
+    const [totalSKA, settotalSKA] = useState(0)
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
-    const [totalSKUS, settotalSKUS] = useState(0)
     const [category, setcategory] = useState(null);
 
     const [disablebutton, setdisablebutton] = useState(true)
@@ -376,7 +381,7 @@ const Share_by_brand = () => {
     }, [])
     async function filtrar() {
         setsearchdone(true)
-        //settotalSKUS(0)
+        let count=0;
         const filter_to_send = {
             format: filters.format,
             channel: filters.channel,
@@ -391,7 +396,14 @@ const Share_by_brand = () => {
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
+        listResult.result.data.map((row)=>{
+            count += row.cont
+        })
         setDataGraph(listResult.result.data)
+        const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTERDATE(filter_to_send))
+        console.log(listResultDate)
+        setDataGraphDate(listResultDate.result.data)
+        settotalSKA(count)
     }
     function descargar() {
         html2canvas(document.getElementById('divToPrint'))
@@ -466,7 +478,7 @@ const Share_by_brand = () => {
                 </div>
                 {searchdone &&
 
-                <div style={{ display: 'flex', gap: 16, flexDirection: 'column' }} id="divToPrint">
+                <div style={{ display: 'flex', gap: 8, flexDirection: 'column' }} id="divToPrint">
                     <div className={classes.replacerowzyx}>
                         <Box
                             className={classes.itemCard}
@@ -483,25 +495,42 @@ const Share_by_brand = () => {
                                     </TableHead>
                                     <TableBody>
                                         {
-                                            dataGraph.map((row,i) =>{
-                                                
-                                                settotalSKUS(totalSKUS + row.cont)
-                                                return <TableRow>
-                                                    <TableCell align="center">{row.brand}</TableCell>
-                                                    <TableCell align="center">{row.cont}</TableCell>
-                                                    <TableCell align="center">{row.percent}</TableCell>
-                                                </TableRow>
-                                            })
+                                            dataGraph.map((row,i) =>
+                                                (<TableRow key={`${row.brand}-${i}`} >
+                                                    <TableCell style={{padding:5}} align="center">{row.brand}</TableCell>
+                                                    <TableCell style={{padding:5}} align="center">{row.cont}</TableCell>
+                                                    <TableCell style={{padding:5}} align="center">{parseFloat(row.percent).toFixed(2)}%</TableCell>
+                                                </TableRow>))
                                         }
                                         <TableRow>
                                             <TableCell align="center"></TableCell>
-                                            <TableCell align="center">29</TableCell>
+                                            <TableCell align="center">{totalSKA}</TableCell>
                                             <TableCell align="center">100%</TableCell>
                                         </TableRow>
                                     </TableBody>
                                 </Table>
                             </TableContainer>
                         </Box>
+                        
+                        <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena</div>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
+                                <BarChart data={data2} >
+                                    <CartesianGrid />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Bar dataKey="x" stackId="a" fill="blue" />
+                                    <Bar dataKey="y" stackId="a" fill="red" />
+                                    <Bar dataKey="z" stackId="a" fill="yellow" />
+                                </BarChart>
+                            </ResponsiveContainer >
+                            
+                        </Box>
+                    </div>
+                    <div className={classes.replacerowzyx}>
                         <Box
                             className={classes.itemCard}
                         >
@@ -525,23 +554,6 @@ const Share_by_brand = () => {
                                     <Area type="monotone" dataKey="uv" stroke="red" fillOpacity={1} fill="url(#colorUv)" />
                                     <Area type="monotone" dataKey="pv" stroke="blue" fillOpacity={1} fill="url(#colorPv)" />
                                 </AreaChart>
-                            </ResponsiveContainer >
-                            
-                        </Box>
-                        <Box
-                            className={classes.itemCard}
-                        >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena</div>
-                            <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
-                                <BarChart data={data2} >
-                                    <CartesianGrid />
-                                    <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Bar dataKey="x" stackId="a" fill="blue" />
-                                    <Bar dataKey="y" stackId="a" fill="red" />
-                                    <Bar dataKey="z" stackId="a" fill="yellow" />
-                                </BarChart>
                             </ResponsiveContainer >
                             
                         </Box>

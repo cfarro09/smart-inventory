@@ -71,13 +71,14 @@ function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
 }
 
+const headerfields=[
+    {name:"graphic", title:"grafica"},
+    {name:"brand", title:"marca"},
+    {name:"model", title:"modelo"},
+]
 const fields=[
     /*ARROCERA*/[
-        {name:"graphic", title:"grafica"},
-        {name:"brand", title:"marca"},
         {name:"subcategory", title:"subcategoría"},
-        {name:"model", title:"modelo"},
-
         {name:"capacity", title:"capacidad"},
         {name:"watts", title:"watts"},
         {name:"finish", title:"acabado"},
@@ -96,11 +97,7 @@ const fields=[
         {name:"temperature_control", title:"control de temperatura"},
     ],
     /*LICUADORA*/[
-        {name:"graphic", title:"grafica"},
-        {name:"brand", title:"marca"},
         {name:"subcategory", title:"subcategoría"},
-        {name:"model", title:"modelo"},
-
         {name:"base_material", title:"material de la base"},
         {name:"color", title:"color"},
         {name:"speeds", title:"velocidades"},
@@ -379,9 +376,28 @@ const BulkLoad = () => {
                     }
                 </div>
                 {searchdone &&
-                <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
+                <div style={{ display: 'flex', gap: 8 , maxHeight: "90vh"}} id="divToPrint">
                     <TableContainer component={Paper}>
-                        <Table className={classes.table} aria-label="simple table">
+                        <Table stickyHeader className={classes.table} aria-label="simple table">
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell className={classes.datacelltitle} align="right" component="th" scope="row"></TableCell>
+                                    {dataGraph.map((row,j)=>(
+                                        <TableCell key={`graphic${j}`} className={classes.datacell} align="center" component="th" scope="row"><img style={{ width: "100px", height: "100px" }} alt="image.jpg" src={row.graphic}></img></TableCell>
+                                    ))}
+
+                                </TableRow>
+                            </TableBody>
+                            <TableHead style={{zIndex: 1000}}>
+                                
+                                <TableRow style={{position: "sticky",top: 0}}>
+                                    <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">marca/modelo</TableCell>
+                                    {dataGraph.map((row,j)=>(
+                                        <TableCell key={`graphic2${j}`} className={classes.datacell} align="center" component="th" scope="row">{row.brand}/{row.model}</TableCell>
+                                    ))}
+
+                                </TableRow>
+                            </TableHead>
                             <TableBody>
                                 {fieldstoshow.map((field,i)=>(
                                     <TableRow key={`fieldstoshow${i}`}>

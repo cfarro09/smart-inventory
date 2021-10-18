@@ -268,8 +268,8 @@ const User = () => {
                                 margin={{top: enabletop?150:10 }}
                             >
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="model" style={{fontSize: "0.8em"}} angle={90} interval={0} textAnchor ="start" height={160} dy={5} dx={5}/>
-                                <XAxis dataKey="model" style={{fontSize: "0.8em"}} angle={90} interval={0} textAnchor ="start" height={160} dy={5} dx={5}/>
+                                <XAxis dataKey="model" style={{fontSize: "0.8em"}} angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
+                                <XAxis dataKey="model" style={{fontSize: "0.8em"}} angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                 <YAxis type="number" domain={[0, Math.ceil((dataGraph[dataGraph.length-1]?.price||0)/10)*10]} />
                                 <Tooltip formatter={(value) => { return `S/.${parseFloat(value).toFixed(2)}` }} />
                                 <Bar

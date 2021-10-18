@@ -164,36 +164,16 @@ const Data_base = () => {
     const columns = React.useMemo(
         () => [
             {
-                Header: 'ID',
-                accessor: 'formid',
-            },
-            {
-                Header: 'Nombre',
-                accessor: 'name',
-            },
-            {
-                Header: 'Dispositivo',
-                accessor: 'device',
-            },
-            {
-                Header: 'Tienda',
-                accessor: 'poiname',
-            },
-            {
                 Header: 'Hora',
                 accessor: 'form_timestamp',
             },
             {
-                Header: 'Posición',
-                accessor: 'position',
-            },
-            {
-                Header: 'Dirección',
-                accessor: 'address',
-            },
-            {
                 Header: 'Retail',
                 accessor: 'retail',
+            },
+            {
+                Header: 'Tienda',
+                accessor: 'poiname',
             },
             {
                 Header: 'Marca',
@@ -222,6 +202,26 @@ const Data_base = () => {
             {
                 Header: 'Url de la foto',
                 accessor: 'photo_url'
+            },
+            {
+                Header: 'Nombre',
+                accessor: 'name',
+            },
+            {
+                Header: 'Dispositivo',
+                accessor: 'device',
+            },
+            {
+                Header: 'Posición',
+                accessor: 'position',
+            },
+            {
+                Header: 'Dirección',
+                accessor: 'address',
+            },
+            {
+                Header: 'ID',
+                accessor: 'formid',
             },
         ],
         []

@@ -173,6 +173,10 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                 <Divider />
                 
                 <LinkList
+                    application="exhibits_share_brand"
+                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
+                />
+                <LinkList
                     application="exhibits_detail"
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />

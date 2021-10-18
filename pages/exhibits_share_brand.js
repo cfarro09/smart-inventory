@@ -12,7 +12,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
-import { AreaChart, Area, BarChart , Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart ,  BarChart , Bar, Treemap, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DateRange from '../components/system/form/daterange';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -31,6 +31,358 @@ import {
     Search as SearchIcon,
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
+function createData(name, calories, fat, carbs, protein) {
+    return { name, calories, fat, carbs, protein };
+  }
+const dataTable = [
+    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+    createData('Eclair', 262, 16.0, 24, 6.0),
+    createData('Cupcake', 305, 3.7, 67, 4.3),
+    createData('Gingerbread', 356, 16.0, 49, 3.9),
+  ];
+const dataTreeMap = [
+    {
+      "name": "axis",
+      "children": [
+        {
+          "name": "Axis",
+          "size": 24593
+        },
+        {
+          "name": "Axes",
+          "size": 1302
+        },
+        {
+          "name": "AxisGridLine",
+          "size": 652
+        },
+        {
+          "name": "AxisLabel",
+          "size": 636
+        },
+        {
+          "name": "CartesianAxes",
+          "size": 6703
+        }
+      ]
+    },
+    {
+      "name": "controls",
+      "children": [
+        {
+          "name": "TooltipControl",
+          "size": 8435
+        },
+        {
+          "name": "SelectionControl",
+          "size": 7862
+        },
+        {
+          "name": "PanZoomControl",
+          "size": 5222
+        },
+        {
+          "name": "HoverControl",
+          "size": 4896
+        },
+        {
+          "name": "ControlList",
+          "size": 4665
+        },
+        {
+          "name": "ClickControl",
+          "size": 3824
+        },
+        {
+          "name": "ExpandControl",
+          "size": 2832
+        },
+        {
+          "name": "DragControl",
+          "size": 2649
+        },
+        {
+          "name": "AnchorControl",
+          "size": 2138
+        },
+        {
+          "name": "Control",
+          "size": 1353
+        },
+        {
+          "name": "IControl",
+          "size": 763
+        }
+      ]
+    },
+    {
+      "name": "data",
+      "children": [
+        {
+          "name": "Data",
+          "size": 20544
+        },
+        {
+          "name": "NodeSprite",
+          "size": 19382
+        },
+        {
+          "name": "DataList",
+          "size": 19788
+        },
+        {
+          "name": "DataSprite",
+          "size": 10349
+        },
+        {
+          "name": "EdgeSprite",
+          "size": 3301
+        },
+        {
+          "name": "render",
+          "children": [
+            {
+              "name": "EdgeRenderer",
+              "size": 5569
+            },
+            {
+              "name": "ShapeRenderer",
+              "size": 2247
+            },
+            {
+              "name": "ArrowType",
+              "size": 698
+            },
+            {
+              "name": "IRenderer",
+              "size": 353
+            }
+          ]
+        },
+        {
+          "name": "ScaleBinding",
+          "size": 11275
+        },
+        {
+          "name": "TreeBuilder",
+          "size": 9930
+        },
+        {
+          "name": "Tree",
+          "size": 7147
+        }
+      ]
+    },
+    {
+      "name": "events",
+      "children": [
+        {
+          "name": "DataEvent",
+          "size": 7313
+        },
+        {
+          "name": "SelectionEvent",
+          "size": 6880
+        },
+        {
+          "name": "TooltipEvent",
+          "size": 3701
+        },
+        {
+          "name": "VisualizationEvent",
+          "size": 2117
+        }
+      ]
+    },
+    {
+      "name": "legend",
+      "children": [
+        {
+          "name": "Legend",
+          "size": 20859
+        },
+        {
+          "name": "LegendRange",
+          "size": 10530
+        },
+        {
+          "name": "LegendItem",
+          "size": 4614
+        }
+      ]
+    },
+    {
+      "name": "operator",
+      "children": [
+        {
+          "name": "distortion",
+          "children": [
+            {
+              "name": "Distortion",
+              "size": 6314
+            },
+            {
+              "name": "BifocalDistortion",
+              "size": 4461
+            },
+            {
+              "name": "FisheyeDistortion",
+              "size": 3444
+            }
+          ]
+        },
+        {
+          "name": "encoder",
+          "children": [
+            {
+              "name": "PropertyEncoder",
+              "size": 4138
+            },
+            {
+              "name": "Encoder",
+              "size": 4060
+            },
+            {
+              "name": "ColorEncoder",
+              "size": 3179
+            },
+            {
+              "name": "SizeEncoder",
+              "size": 1830
+            },
+            {
+              "name": "ShapeEncoder",
+              "size": 1690
+            }
+          ]
+        },
+        {
+          "name": "filter",
+          "children": [
+            {
+              "name": "FisheyeTreeFilter",
+              "size": 5219
+            },
+            {
+              "name": "VisibilityFilter",
+              "size": 3509
+            },
+            {
+              "name": "GraphDistanceFilter",
+              "size": 3165
+            }
+          ]
+        },
+        {
+          "name": "IOperator",
+          "size": 1286
+        },
+        {
+          "name": "label",
+          "children": [
+            {
+              "name": "Labeler",
+              "size": 9956
+            },
+            {
+              "name": "RadialLabeler",
+              "size": 3899
+            },
+            {
+              "name": "StackedAreaLabeler",
+              "size": 3202
+            }
+          ]
+        },
+        {
+          "name": "layout",
+          "children": [
+            {
+              "name": "RadialTreeLayout",
+              "size": 12348
+            },
+            {
+              "name": "NodeLinkTreeLayout",
+              "size": 12870
+            },
+            {
+              "name": "CirclePackingLayout",
+              "size": 12003
+            },
+            {
+              "name": "CircleLayout",
+              "size": 9317
+            },
+            {
+              "name": "TreeMapLayout",
+              "size": 9191
+            },
+            {
+              "name": "StackedAreaLayout",
+              "size": 9121
+            },
+            {
+              "name": "Layout",
+              "size": 7881
+            },
+            {
+              "name": "AxisLayout",
+              "size": 6725
+            },
+            {
+              "name": "IcicleTreeLayout",
+              "size": 4864
+            },
+            {
+              "name": "DendrogramLayout",
+              "size": 4853
+            },
+            {
+              "name": "ForceDirectedLayout",
+              "size": 8411
+            },
+            {
+              "name": "BundledEdgeRouter",
+              "size": 3727
+            },
+            {
+              "name": "IndentedTreeLayout",
+              "size": 3174
+            },
+            {
+              "name": "PieLayout",
+              "size": 2728
+            },
+            {
+              "name": "RandomLayout",
+              "size": 870
+            }
+          ]
+        },
+        {
+          "name": "OperatorList",
+          "size": 5248
+        },
+        {
+          "name": "OperatorSequence",
+          "size": 4190
+        },
+        {
+          "name": "OperatorSwitch",
+          "size": 2581
+        },
+        {
+          "name": "Operator",
+          "size": 2490
+        },
+        {
+          "name": "SortOperator",
+          "size": 2023
+        }
+      ]
+    }
+  ]
 
 const brands = ["B&D","BLACKLINE","BORD","BOSCH","BOSSKO","CONTINENTAL","CUISINART","ELECTRICLIFE","ELECTROLUX","FINEZZA","FOSTERIER","HOLSTEIN","IMACO","INDURAMA","INSTAN POT","JATARIY","KENWOOD","KITCHEN AID","KORKMAZ","LOVEN","MAGEFESA","MIRAY","NEX","OSTER","PHILIPS","PRACTIKA","PRIMA","PROFESIONAL SERIES","RECCO","RECORD","TAURUS","THOMAS","VALESKA","WURDEN","ZYKLON"]
 const colors = ["#bababa","#575757","#868686","#4f4f4f","#909090","#c4c4c4","#9d9d9d","#494949","#b9b9b9","#545454","#5e5e5e","#535353","yellow","#b8b8b8","#818181","#a2a2a2","#808080","#838383","#8a8a8a","#929292","#b5b5b5","#d9d9d9","#888888","blue","#c5c5c5","#1e1e1e","#7c7c7c","#787878","#565656","#444444","#d3d3d3","red","#a9a9a9","#878787","#797979"]
@@ -246,7 +598,7 @@ const RB_MARCA = {
     }
 }
 
-const Share_by_brand = () => {
+const Exhibits_share_brand = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
@@ -560,61 +912,37 @@ const Share_by_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca</div>
-                            <TableContainer component={Paper}>
-                                <Table className={classes.table} aria-label="simple table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell></TableCell>
-                                            <TableCell align="center">N* SKU's</TableCell>
-                                            <TableCell align="center">Partic %</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {
-                                            dataGraph.map((row,i) =>
-                                                (<TableRow key={`${row.brand}-${i}`} >
-                                                    <TableCell style={{padding:5}} align="center">{row.brand}</TableCell>
-                                                    <TableCell style={{padding:5}} align="center">{row.cont}</TableCell>
-                                                    <TableCell style={{padding:5}} align="center">{parseFloat(row.percent).toFixed(2)}%</TableCell>
-                                                </TableRow>))
-                                        }
-                                        <TableRow>
-                                            <TableCell align="center"></TableCell>
-                                            <TableCell align="center">{totalSKA}</TableCell>
-                                            <TableCell align="center">100%</TableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                            <div className={classes.titlecards}>Exhibiciones totales por Marca Q y %</div>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/3}>
+                            <Treemap
+                                width={730}
+                                height={250}
+                                data={dataTreeMap}
+                                dataKey="size"
+                                ratio={4 / 3}
+                                stroke="#fff"
+                                fill="#8884d8"
+                                />
+                            </ResponsiveContainer >
+                            
                         </Box>
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca por Semana</div>
+                            <div className={classes.titlecards}>Evolución de Exhibiciones por semana y Marca</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3}>
-                                <AreaChart data={dataGraphDate} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                <LineChart  data={dataGraphDate} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                                     <XAxis dataKey="week"/>
                                     <YAxis  />
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <defs>
-                                    {
-                                        colors.map((row,i)=>(
-                                            <linearGradient key={`color${brands[i]}`} id={`color${brands[i]}`} x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor={row} stopOpacity={0.8}/>
-                                                <stop offset="95%" stopColor={row} stopOpacity={0}/>
-                                            </linearGradient>
-                                        ))
-                                    }
-                                    </defs>
                                     <Tooltip labelFormatter={(value)=>["Semana " + value]} />
                                     {
                                         brands.map((brand,i)=>(
-                                            <Area key={brand} type="monotone" dataKey={brand} stroke={colors[i]} fillOpacity={1} fill={`url(#color${brand})`} />
+                                            <Line key={brand} type="monotone" dataKey={brand} stroke={colors[i]} fillOpacity={1} fill={`url(#color${brand})`} />
                                         ))
                                     }
                                     <Legend/>
-                                </AreaChart>
+                                </LineChart >
                             </ResponsiveContainer >
                             
                         </Box>
@@ -625,7 +953,7 @@ const Share_by_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría</div>
+                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Categoría</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={categorybrandSKU} >
                                     <XAxis dataKey="week" />
@@ -644,7 +972,7 @@ const Share_by_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría</div>
+                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Categoría %</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={categorybrandSKUperc} >
                                     <XAxis dataKey="week" />
@@ -665,7 +993,7 @@ const Share_by_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena</div>
+                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Cadena</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={data2} >
                                     <CartesianGrid />
@@ -682,7 +1010,7 @@ const Share_by_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena</div>
+                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Cadena %</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={data3} >
                                     <CartesianGrid />
@@ -693,6 +1021,110 @@ const Share_by_brand = () => {
                                     <Bar dataKey="y" stackId="a" fill="red" />
                                     <Bar dataKey="z" stackId="a" fill="yellow" />
                                 </BarChart>
+                            </ResponsiveContainer >
+                            
+                        </Box>
+                    </div>
+                    <div className={classes.replacerowzyx}>
+                    <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Tipo de Exhibición</div>
+                            <TableContainer component={Paper}>
+                            <Table className={classes.table} aria-label="simple table">
+                                <TableHead>
+                                <TableRow>
+                                    <TableCell>Dessert (100g serving)</TableCell>
+                                    <TableCell align="right">Calories</TableCell>
+                                    <TableCell align="right">Fat&nbsp;(g)</TableCell>
+                                    <TableCell align="right">Carbs&nbsp;(g)</TableCell>
+                                    <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                                </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                {dataTable.map((row) => (
+                                    <TableRow key={row.name}>
+                                    <TableCell component="th" scope="row">
+                                        {row.name}
+                                    </TableCell>
+                                    <TableCell align="right">{row.calories}</TableCell>
+                                    <TableCell align="right">{row.fat}</TableCell>
+                                    <TableCell align="right">{row.carbs}</TableCell>
+                                    <TableCell align="right">{row.protein}</TableCell>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                            </TableContainer>
+                        </Box>
+                    </div>
+                    <div className={classes.replacerowzyx}>
+                        <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Tipo de Exhibición</div>
+                            <TableContainer component={Paper}>
+                            <Table className={classes.table} aria-label="simple table">
+                                <TableHead>
+                                <TableRow>
+                                    <TableCell>Dessert (100g serving)</TableCell>
+                                    <TableCell align="right">Calories</TableCell>
+                                    <TableCell align="right">Fat&nbsp;(g)</TableCell>
+                                    <TableCell align="right">Carbs&nbsp;(g)</TableCell>
+                                    <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                                </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                {dataTable.map((row) => (
+                                    <TableRow key={row.name}>
+                                    <TableCell component="th" scope="row">
+                                        {row.name}
+                                    </TableCell>
+                                    <TableCell align="right">{row.calories}</TableCell>
+                                    <TableCell align="right">{row.fat}</TableCell>
+                                    <TableCell align="right">{row.carbs}</TableCell>
+                                    <TableCell align="right">{row.protein}</TableCell>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                            </TableContainer>
+                        </Box>
+                    </div>
+                    <div className={classes.replacerowzyx}>
+                        <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Q Exhibiciones por Localización</div>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/1}>
+                            <Treemap
+                                width={730}
+                                height={250}
+                                data={dataTreeMap}
+                                dataKey="size"
+                                ratio={4 / 3}
+                                stroke="#fff"
+                                fill="#8884d8"
+                                />
+                            </ResponsiveContainer >
+                            
+                        </Box>
+                    </div>
+                    <div className={classes.replacerowzyx}>
+                        <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Q Exhibiciones por Localización</div>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/1}>
+                            <Treemap
+                                width={730}
+                                height={250}
+                                data={dataTreeMap}
+                                dataKey="size"
+                                ratio={4 / 3}
+                                stroke="#fff"
+                                fill="#8884d8"
+                                />
                             </ResponsiveContainer >
                             
                         </Box>
@@ -773,4 +1205,4 @@ const Share_by_brand = () => {
     );
 }
 
-export default Share_by_brand;
+export default Exhibits_share_brand;

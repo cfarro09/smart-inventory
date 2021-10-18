@@ -227,6 +227,39 @@ const User = () => {
                                 setcategory(value)
                             }}
                         />
+
+                        <SelectFunction
+                            title="Marca"
+                            datatosend={datafilters.marca}
+                            optionvalue="brand"
+                            optiondesc="brand"
+                            valueselected={filters.marca}
+                            variant="outlined"
+                            namefield="brand"
+                            descfield="brand"
+                            callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
+                        />
+                        <SelectFunction
+                            title="SKU"
+                            datatosend={[]}
+                            optionvalue="id_role"
+                            optiondesc="description"
+                            variant="outlined"
+                            namefield="id_role"
+                            descfield="role_name"
+                            callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
+                        />
+                        <SelectFunction
+                            title="Retail"
+                            variant="outlined"
+                            /*datatosend={datafilters.marca}
+                            optionvalue="brand"
+                            optiondesc="brand"
+                            valueselected={filters.marca}
+                            namefield="brand"
+                            descfield="brand"
+                            callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}*/
+                        />
                         <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
                             defaultValue="prom_price"
                             onChange={(event) => { setfilters({ ...filters, tipo_pvp: event.target.value }) }}
@@ -358,17 +391,6 @@ const User = () => {
                         descfield="store_name"
                         callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
                     />
-
-                    <SelectFunction
-                        title="SKU"
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
-                        variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
-                    />
                     {/* <SelectFunction
                         title="Banda"
                         datatosend={[]}
@@ -379,17 +401,6 @@ const User = () => {
                         descfield="role_name"
                         callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
                     /> */}
-                    <SelectFunction
-                        title="Marca"
-                        datatosend={datafilters.marca}
-                        optionvalue="brand"
-                        optiondesc="brand"
-                        valueselected={filters.marca}
-                        variant="outlined"
-                        namefield="brand"
-                        descfield="brand"
-                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
-                    />
                 </div>
             </SwipeableDrawer>
         </Layout>

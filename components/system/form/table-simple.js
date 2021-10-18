@@ -309,7 +309,7 @@ const TableZyx = React.memo(({
             {HeadComponent && <HeadComponent />}
             <TableContainer style={{ position: "relative" }}>
                 <Box overflow="auto" >
-                    <Table width="90%" {...getTableProps()} aria-label="enhanced table" size="small" aria-labelledby="tableTitle">
+                    <Table {...getTableProps()} aria-label="enhanced table" size="small" aria-labelledby="tableTitle">
                         <TableHead>
                             {headerGroups.map((headerGroup, index) => (
                                 <TableRow hover key={index} {...headerGroup.getHeaderGroupProps()}>

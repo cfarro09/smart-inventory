@@ -154,19 +154,19 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />
                 <LinkList
-                    application="photo_portal"
-                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
-                />
-                <LinkList
-                    application="data_base"
-                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
-                />
-                <LinkList
                     application="linear_detail"
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />
                 <LinkList
                     application="share_by_brand"
+                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
+                />
+                <LinkList
+                    application="photo_portal"
+                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
+                />
+                <LinkList
+                    application="data_base"
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />
                 <LinkList

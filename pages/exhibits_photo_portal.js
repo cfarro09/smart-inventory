@@ -23,6 +23,7 @@ import Typography from '@material-ui/core/Typography';
 import JSZip from "jszip";
 import JSZipUtils from "jszip-utils";
 import {saveAs} from 'file-saver';
+import popupsContext from '../context/pop-ups/pop-upsContext';
 
 import {
     Search as SearchIcon,
@@ -158,6 +159,7 @@ const Exhibits_photo_portal = () => {
     const [category, setcategory] = useState(null);
 
     const [disablebutton, setdisablebutton] = useState(true)
+    const { setLightBox, setOpenBackdrop } = useContext(popupsContext);
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -272,7 +274,9 @@ const Exhibits_photo_portal = () => {
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
+        setOpenBackdrop(true)
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
+        setOpenBackdrop(false)
         setDataGraph(listResult.result.data)
     }
     function descargar() {

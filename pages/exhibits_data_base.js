@@ -24,6 +24,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
 import InputFormk from '../components/system/form/inputformik';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import popupsContext from '../context/pop-ups/pop-upsContext';
 
 import {
     Search as SearchIcon,
@@ -107,7 +108,7 @@ const GET_FILTER = (filter) => ({
     }
 })
 const FILTER = (filter) => ({
-    method: "SP_DATABASE",
+    method: "SP_EXHIBIT_DB",
     data: filter
 })
 
@@ -154,6 +155,7 @@ const Exhibits_data_base = () => {
     const [category, setcategory] = useState(null);
 
     const [disablebutton, setdisablebutton] = useState(true)
+    const { setLightBox, setOpenBackdrop } = useContext(popupsContext);
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -233,10 +235,12 @@ const Exhibits_data_base = () => {
         department: '',
         store_name: '',
         categoria: 1,
+        management: '',
         SKU: '',
-        banda: '',
-        marca: '',
-        tipo_pvp: '',
+        marca: "",
+        subcategoria: "",
+        type_exhibit: '',
+        area: '',
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -247,7 +251,8 @@ const Exhibits_data_base = () => {
         categoria: [],
         SKU: [],
         banda: [],
-        marca: [],
+        marca: '',
+        management: [],
         tipo_pvp: [],
     })
 
@@ -262,6 +267,7 @@ const Exhibits_data_base = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
             ]);
             setdatafilters({
                 ...datafilters,
@@ -271,7 +277,9 @@ const Exhibits_data_base = () => {
                 store_name: validateResArray(listResult[3], continuezyx),
                 categoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
+                management: validateResArray(listResult[6], continuezyx),
             })
+            console.log(listResult)
         })();
         return () => continuezyx = false;
     }, [])
@@ -282,6 +290,7 @@ const Exhibits_data_base = () => {
     }, [])
     async function filtrar() {
         setsearchdone(true)
+        console.log(filters.marca)
         const filter_to_send = {
             format: filters.format,
             channel: filters.channel,
@@ -290,12 +299,16 @@ const Exhibits_data_base = () => {
             category: filters.categoria,
             sku_code: filters.SKU,
             brand: filters.marca,
-            sub_category: '',
-            price: filters.tipo_pvp,
+            management: filters.management,
+            sub_category: filters.subcategoria,
+            type_exhibit: filters.type_exhibit,
+            area: filters.area,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
+        setOpenBackdrop(true)
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
+        setOpenBackdrop(false)
         setDataGraph(listResult.result.data)
     }
     function descargar() {
@@ -430,7 +443,6 @@ const Exhibits_data_base = () => {
                         descfield="store_name"
                         callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
                     />
-
                     <SelectFunction
                         title="SKU"
                         datatosend={[]}
@@ -441,16 +453,6 @@ const Exhibits_data_base = () => {
                         descfield="role_name"
                         callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
                     />
-                    {/* <SelectFunction
-                        title="Banda"
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
-                        variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
-                    /> */}
                     <SelectFunction
                         title="Marca"
                         datatosend={datafilters.marca}
@@ -461,6 +463,48 @@ const Exhibits_data_base = () => {
                         namefield="brand"
                         descfield="brand"
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
+                    />
+
+                    <SelectFunction
+                        title="Subcategoría"
+                        datatosend={[]}
+                        optionvalue="sub_category"
+                        optiondesc="sub_category"
+                        variant="outlined"
+                        namefield="sub_category"
+                        descfield="sub_category"
+                        callback={({ newValue: value }) => setfilters({ ...filters, sub_category: value?.id || '' })}
+                    />
+                    <SelectFunction
+                        title="Management"
+                        datatosend={datafilters.management}
+                        optionvalue="management"
+                        optiondesc="management"
+                        variant="outlined"
+                        valueselected={filters.management}
+                        namefield="management"
+                        descfield="management"
+                        callback={({ newValue: value }) => setfilters({ ...filters, management: value })}
+                    />
+                    <SelectFunction
+                        title="Tipo Exhibición"
+                        datatosend={[]}
+                        optionvalue="type_exhibit"
+                        optiondesc="description"
+                        variant="outlined"
+                        namefield="type_exhibit"
+                        descfield="role_name"
+                        callback={({ newValue: value }) => setfilters({ ...filters, type_exhibit: value?.id || '' })}
+                    />
+                    <SelectFunction
+                        title="Área"
+                        datatosend={[]}
+                        optionvalue="area"
+                        optiondesc="description"
+                        variant="outlined"
+                        namefield="area"
+                        descfield="role_name"
+                        callback={({ newValue: value }) => setfilters({ ...filters, area: value?.id || '' })}
                     />
                 </div>
             </SwipeableDrawer>

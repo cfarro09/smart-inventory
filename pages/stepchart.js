@@ -17,6 +17,7 @@ import DateRange from '../components/system/form/daterange';
 import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import popupsContext from '../context/pop-ups/pop-upsContext';
 
 import {
     Search as SearchIcon,
@@ -101,6 +102,7 @@ const User = () => {
     const [enabletop, setenabletop] = useState(true)
     const [category, setcategory] = useState(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
 
     const [dateRange, setdateRange] = useState([
         {
@@ -183,7 +185,9 @@ const User = () => {
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
+        setOpenBackdrop(true)
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
+        setOpenBackdrop(false)
         setDataGraph(listResult.result.data.map(x => ({ ...x, price: parseFloat(x.price) })))
     }
     function descargar() {
@@ -262,7 +266,7 @@ const User = () => {
                 </div>
                 {searchdone ?
                     <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
-                        <ResponsiveContainer aspect={4.0 / 2.3}>
+                        <ResponsiveContainer aspect={4.0 / 2}>
                             <BarChart
                                 data={enabletop ? dataGraph.slice(dataGraph.length < 10 ? 0 : dataGraph.length - 11, dataGraph.length) : dataGraph}
                                 margin={{top: enabletop?150:10 }}

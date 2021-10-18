@@ -25,6 +25,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
 import InputFormk from '../components/system/form/inputformik';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import popupsContext from '../context/pop-ups/pop-upsContext';
 
 import {
     Search as SearchIcon,
@@ -251,6 +252,7 @@ const Share_by_brand = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
+    const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
 
     const [disablebutton, setdisablebutton] = useState(true)
     const [dateRange, setdateRange] = useState([
@@ -390,6 +392,7 @@ const Share_by_brand = () => {
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
+        setOpenBackdrop(true)
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         listResult.result.data.map((row)=>{
             count += row.cont
@@ -406,7 +409,6 @@ const Share_by_brand = () => {
             listbrand.push(elementBrand(row))
         })
         
-        console.log(listbrand)
         listResultDate.result.data.map(row=>{
             listbrand.forEach(list=>{
                 if(list.week===row.Week){
@@ -416,6 +418,7 @@ const Share_by_brand = () => {
         })
         setDataGraphDate(listbrand)
         settotalSKA(count)
+        setOpenBackdrop(false)
     }
     function descargar() {
         html2canvas(document.getElementById('divToPrint'))

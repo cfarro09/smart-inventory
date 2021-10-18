@@ -24,6 +24,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
 import InputFormk from '../components/system/form/inputformik';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import popupsContext from '../context/pop-ups/pop-upsContext';
 
 import {
     Search as SearchIcon,
@@ -152,7 +153,7 @@ const Data_base = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
-
+    const { setLightBox, setOpenBackdrop } = useContext(popupsContext);
     const [disablebutton, setdisablebutton] = useState(true)
     const [dateRange, setdateRange] = useState([
         {
@@ -290,7 +291,9 @@ const Data_base = () => {
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
+        setOpenBackdrop(true)
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
+        setOpenBackdrop(false)
         setDataGraph(listResult.result.data)
     }
     function descargar() {

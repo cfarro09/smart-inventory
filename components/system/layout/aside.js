@@ -169,6 +169,9 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                     application="data_base"
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />
+
+                <Divider />
+                
                 <LinkList
                     application="exhibits_detail"
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
@@ -181,7 +184,6 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                     application="exhibits_data_base"
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />
-
                 <Divider />
                 <LinkList
                     application="user"

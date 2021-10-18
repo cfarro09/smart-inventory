@@ -16,6 +16,7 @@ import DateRange from '../components/system/form/daterange';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
+import Avatar from '@material-ui/core/Avatar';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
@@ -145,7 +146,7 @@ const RB_MARCA = {
     }
 }
 
-const Data_base = () => {
+const Exhibits_detail = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
@@ -163,17 +164,14 @@ const Data_base = () => {
     ]);
     const columns = React.useMemo(
         () => [
+            
             {
-                Header: 'Hora',
-                accessor: 'form_timestamp',
+                Header: 'Tienda',
+                accessor: 'poiname',
             },
             {
                 Header: 'Retail',
                 accessor: 'retail',
-            },
-            {
-                Header: 'Tienda',
-                accessor: 'poiname',
             },
             {
                 Header: 'Marca',
@@ -184,44 +182,19 @@ const Data_base = () => {
                 accessor: 'category'
             },
             {
-                Header: 'Modelo',
+                Header: 'Tipo Exhibición',
                 accessor: 'model'
             },
             {
-                Header: 'Precio regular',
-                accessor: 'regular_price'
-            },
-            {
-                Header: 'Precio promocional',
-                accessor: 'prom_price'
-            },
-            {
-                Header: 'Mecanica de la promocion',
-                accessor: 'trading_option'
-            },
-            {
-                Header: 'Url de la foto',
-                accessor: 'photo_url'
-            },
-            {
-                Header: 'Nombre',
-                accessor: 'name',
-            },
-            {
-                Header: 'Dispositivo',
-                accessor: 'device',
-            },
-            {
-                Header: 'Posición',
-                accessor: 'position',
-            },
-            {
-                Header: 'Dirección',
-                accessor: 'address',
-            },
-            {
-                Header: 'ID',
-                accessor: 'formid',
+                Header: 'Foto',
+                accessor: 'photo_url',
+                Cell: props => {
+                    return (
+                        <div className="container-button-floating">
+                            <Avatar src={props.cell.row.original.photo_url} />
+                        </div>
+                    )
+                }
             },
         ],
         []
@@ -236,7 +209,7 @@ const Data_base = () => {
         SKU: '',
         banda: '',
         marca: '',
-        tipo_pvp: 'prom_price',
+        tipo_pvp: '',
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -275,6 +248,11 @@ const Data_base = () => {
         })();
         return () => continuezyx = false;
     }, [])
+    useEffect(() => {
+        if (waitFilter) {
+
+        }
+    }, [])
     async function filtrar() {
         setsearchdone(true)
         const filter_to_send = {
@@ -306,7 +284,7 @@ const Data_base = () => {
 
     return (
         <Layout>
-            <div style={{ display: 'flex', gap: 16, flexDirection: 'row' }}>
+            <div style={{ display: 'flex', gap: 16, flexDirection: 'column' }}>
                 <div className={classes.containerFilters}>
                     <DateRange
                         classname={classes.itemFilter}
@@ -329,14 +307,6 @@ const Data_base = () => {
                             setdisablebutton(!value)
                         }}
                     />
-                    <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
-                        defaultValue="prom_price"
-                        onChange={(event) => { setfilters({ ...filters, tipo_pvp: event.target.value }) }}
-                    >
-                        <FormControlLabel value="todopvp" control={<Radio />} label="Todo PVP" />
-                        <FormControlLabel value="prom_price" control={<Radio />} label="Promo PVP" />
-                        <FormControlLabel value="regular_price" control={<Radio />} label="Regular PVP" />
-                    </RadioGroup>
                     <Button
                         variant="contained"
                         color="primary"
@@ -364,18 +334,18 @@ const Data_base = () => {
                         />
                     }
                 </div>
-            </div>
-            {searchdone &&
+                {searchdone &&
 
-            <div id="divToPrint">
-                <TableZyx
-                    columns={columns}
-                    data={dataGraph}
-                    // fetchData={filtrar}
-                    register={false}
-                />
+                <div id="divToPrint">
+                    <TableZyx
+                        columns={columns}
+                        data={dataGraph}
+                        // fetchData={filtrar}
+                        register={false}
+                    />
+                </div>
+                }
             </div>
-            }
 
 
 
@@ -471,4 +441,4 @@ const Data_base = () => {
     );
 }
 
-export default Data_base;
+export default Exhibits_detail;

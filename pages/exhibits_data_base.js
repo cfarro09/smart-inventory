@@ -145,7 +145,7 @@ const RB_MARCA = {
     }
 }
 
-const Data_base = () => {
+const Exhibits_data_base = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
@@ -236,7 +236,7 @@ const Data_base = () => {
         SKU: '',
         banda: '',
         marca: '',
-        tipo_pvp: 'prom_price',
+        tipo_pvp: '',
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -274,6 +274,11 @@ const Data_base = () => {
             })
         })();
         return () => continuezyx = false;
+    }, [])
+    useEffect(() => {
+        if (waitFilter) {
+
+        }
     }, [])
     async function filtrar() {
         setsearchdone(true)
@@ -329,14 +334,6 @@ const Data_base = () => {
                             setdisablebutton(!value)
                         }}
                     />
-                    <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
-                        defaultValue="prom_price"
-                        onChange={(event) => { setfilters({ ...filters, tipo_pvp: event.target.value }) }}
-                    >
-                        <FormControlLabel value="todopvp" control={<Radio />} label="Todo PVP" />
-                        <FormControlLabel value="prom_price" control={<Radio />} label="Promo PVP" />
-                        <FormControlLabel value="regular_price" control={<Radio />} label="Regular PVP" />
-                    </RadioGroup>
                     <Button
                         variant="contained"
                         color="primary"
@@ -471,4 +468,4 @@ const Data_base = () => {
     );
 }
 
-export default Data_base;
+export default Exhibits_data_base;

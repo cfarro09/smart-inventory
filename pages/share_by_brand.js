@@ -31,6 +31,46 @@ import {
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
 
+const brands = ["B&D","BLACKLINE","BORD","BOSCH","BOSSKO","CONTINENTAL","CUISINART","ELECTRICLIFE","ELECTROLUX","FINEZZA","FOSTERIER","HOLSTEIN","IMACO","INDURAMA","INSTAN POT","JATARIY","KENWOOD","KITCHEN AID","KORKMAZ","LOVEN","MAGEFESA","MIRAY","NEX","OSTER","PHILIPS","PRACTIKA","PRIMA","PROFESIONAL SERIES","RECCO","RECORD","TAURUS","THOMAS","VALESKA","WURDEN","ZYKLON"]
+const colors = ["grey","grey","grey","grey","grey","grey","grey","grey","grey","grey","grey","grey","yellow","grey","grey","grey","grey","grey","grey","grey","grey","grey","grey","blue","grey","grey","grey","grey","grey","grey","grey","red","grey","grey","grey"]
+const elementBrand= (week)=>({
+    week: week,
+    "B&D": 0,
+    "BLACKLINE": 0,
+    "BORD": 0,
+    "BOSCH": 0,
+    "BOSSKO": 0,
+    "CONTINENTAL": 0,
+    "CUISINART": 0,
+    "ELECTRICLIFE": 0,
+    "ELECTROLUX": 0,
+    "FINEZZA": 0,
+    "FOSTERIER": 0,
+    "HOLSTEIN": 0,
+    "IMACO": 0,
+    "INDURAMA": 0,
+    "INSTAN POT": 0,
+    "JATARIY": 0,
+    "KENWOOD": 0,
+    "KITCHEN AID": 0,
+    "KORKMAZ": 0,
+    "LOVEN": 0,
+    "MAGEFESA": 0,
+    "MIRAY": 0,
+    "NEX": 0,
+    "OSTER": 0,
+    "PHILIPS": 0,
+    "PRACTIKA": 0,
+    "PRIMA": 0,
+    "PROFESIONAL SERIES": 0,
+    "RECCO": 0,
+    "RECORD": 0,
+    "TAURUS": 0,
+    "THOMAS": 0,
+    "VALESKA": 0,
+    "WURDEN": 0,
+    "ZYKLON": 0,
+})
 const data = [
     {
       "name": "ENE",
@@ -117,68 +157,11 @@ const data = [
     { name: 'I', x: 22, y: 77, z: 1 },
 ];
 
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell);
-const StyledTableCell2 = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableRow);
-
 const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
     data: {
     }
 })
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-    { id: "667", fecha: "29/09/2021",hora: "19:23",activo: "ORE",grupos: "FFVV",cliente: "generic",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "668", fecha: "29/09/2021",hora: "19:24",activo: "KANA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "669", fecha: "29/09/2021",hora: "19:25",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "670", fecha: "29/09/2021",hora: "19:26",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "671", fecha: "29/09/2021",hora: "19:27",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "672", fecha: "29/09/2021",hora: "19:30",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "673", fecha: "29/09/2021",hora: "19:27",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "674", fecha: "29/09/2021",hora: "19:22",activo: "KANA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "675", fecha: "29/09/2021",hora: "19:21",activo: "KANA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "676", fecha: "29/09/2021",hora: "19:24",activo: "KANA",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "677", fecha: "29/09/2021",hora: "19:21",activo: "ORE",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "678", fecha: "29/09/2021",hora: "19:24",activo: "ORE",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "679", fecha: "29/09/2021",hora: "19:23",activo: "ORE",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "680", fecha: "29/09/2021",hora: "19:21",activo: "KANA",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "681", fecha: "29/09/2021",hora: "19:21",activo: "KANA",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "682", fecha: "29/09/2021",hora: "19:24",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "683", fecha: "29/09/2021",hora: "19:21",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "684", fecha: "29/09/2021",hora: "20:22",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "685", fecha: "29/09/2021",hora: "21:20",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-];
 
 
 const paramTemplate = {
@@ -263,6 +246,7 @@ const Share_by_brand = () => {
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
     const [dataGraphDate, setDataGraphDate] = useState([])
+    const [brandList, setbrandList] = useState([])
     const [totalSKA, settotalSKA] = useState(0)
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
@@ -412,8 +396,25 @@ const Share_by_brand = () => {
         })
         setDataGraph(listResult.result.data)
         const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTERDATE(filter_to_send))
-        console.log(listResultDate)
-        setDataGraphDate(listResultDate.result.data)
+        let listbrand=[];
+        let weeks=[];
+        let i;
+        listResultDate.result.data.map(row=>{
+            if(!weeks.includes(row.Week)) weeks.push(row.Week)
+        })
+        weeks.map(row=>{
+            listbrand.push(elementBrand(row))
+        })
+        
+        console.log(listbrand)
+        listResultDate.result.data.map(row=>{
+            listbrand.forEach(list=>{
+                if(list.week===row.Week){
+                    list[row.brand]=parseInt(row.cnt)
+                }
+            })
+        })
+        setDataGraphDate(listbrand)
         settotalSKA(count)
     }
     function descargar() {
@@ -526,24 +527,28 @@ const Share_by_brand = () => {
                             className={classes.itemCard}
                         >
                             <div className={classes.titlecards}>Cantidad de SKUS por Marca por Semana</div>
-                            <ResponsiveContainer width={"100%"} aspect={4.0/1.5}>
-                                <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                                    <defs>
-                                        <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="red" stopOpacity={0.8}/>
-                                        <stop offset="95%" stopColor="red" stopOpacity={0}/>
-                                        </linearGradient>
-                                        <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="blue" stopOpacity={0.8}/>
-                                        <stop offset="95%" stopColor="blue" stopOpacity={0}/>
-                                        </linearGradient>
-                                    </defs>
-                                    <XAxis dataKey="name" />
+                            <ResponsiveContainer width={"100%"} aspect={4.0/3}>
+                                <AreaChart data={dataGraphDate} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                    <XAxis dataKey="week"/>
                                     <YAxis />
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <Tooltip />
-                                    <Area type="monotone" dataKey="uv" stroke="red" fillOpacity={1} fill="url(#colorUv)" />
-                                    <Area type="monotone" dataKey="pv" stroke="blue" fillOpacity={1} fill="url(#colorPv)" />
+                                    <defs>
+                                    {
+                                        colors.map((row,i)=>(
+                                            <linearGradient key={`color${brands[i]}`} id={`color${brands[i]}`} x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor={row} stopOpacity={0.8}/>
+                                                <stop offset="95%" stopColor={row} stopOpacity={0}/>
+                                            </linearGradient>
+                                        ))
+                                    }
+                                    </defs>
+                                    <Tooltip labelFormatter={(value)=>["Semana " + value]} />
+                                    <Legend />
+                                    {
+                                        brands.map((brand,i)=>(
+                                            <Area key={brand} type="monotone" dataKey={brand} stroke={colors[i]} fillOpacity={1} fill={`url(#color${brand})`} />
+                                        ))
+                                    }
                                 </AreaChart>
                             </ResponsiveContainer >
                             

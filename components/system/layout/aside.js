@@ -169,6 +169,18 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                     application="share_by_brand"
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />
+                <LinkList
+                    application="exhibits_detail"
+                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
+                />
+                <LinkList
+                    application="exhibits_photo_portal"
+                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
+                />
+                <LinkList
+                    application="exhibits_data_base"
+                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
+                />
 
                 <Divider />
                 <LinkList

@@ -182,11 +182,12 @@ const useStyles = makeStyles(() => ({
     labelcell: {
         border: "1px #e0e0e0 solid",
         fontWeight: "bold",
-        backgroundColor: "white",
+        backgroundColor: "white"
     },
     datacell: {
         border: "1px #e0e0e0 solid",
         backgroundColor: "white",
+        padding: 5
     },
     datacelltitle: {
         border: "1px #e0e0e0 solid",
@@ -194,7 +195,8 @@ const useStyles = makeStyles(() => ({
         left: 0,
         background: "white",
         textTransform: "uppercase",
-        fontWeight: "bold"
+        fontWeight: "bold",
+        padding: 5
     }
 }));
 
@@ -376,7 +378,7 @@ const BulkLoad = () => {
                     }
                 </div>
                 {searchdone &&
-                <div style={{ display: 'flex', gap: 8 , maxHeight: "90vh"}} id="divToPrint">
+                <div style={{ display: 'flex', gap: 8 , maxHeight: "84vh"}} id="divToPrint">
                     <TableContainer component={Paper}>
                         <Table stickyHeader className={classes.table} aria-label="simple table">
                             <TableBody>
@@ -390,7 +392,7 @@ const BulkLoad = () => {
                             </TableBody>
                             <TableHead style={{zIndex: 1000}}>
                                 
-                                <TableRow style={{position: "sticky",top: 0}}>
+                                <TableRow style={{position: "sticky",top: 0,zIndex: 1000}} >
                                     <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">marca/modelo</TableCell>
                                     {dataGraph.map((row,j)=>(
                                         <TableCell key={`graphic2${j}`} className={classes.datacell} align="center" component="th" scope="row">{row.brand}/{row.model}</TableCell>

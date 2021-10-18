@@ -105,6 +105,17 @@ const data = [
     { name: 'H', x: 28, y: 32, z: 45 },
     { name: 'I', x: 19, y: 43, z: 93 },
 ];
+  const data3 = [
+    { name: 'A', x: 6, y: 77, z: 17 },
+    { name: 'B', x: 54, y: 15, z: 31 },
+    { name: 'C', x: 9, y: 90, z: 1 },
+    { name: 'D', x: 50, y: 39, z: 11 },
+    { name: 'E', x: 88, y: 4, z: 8 },
+    { name: 'F', x: 94, y: 2, z: 4 },
+    { name: 'G', x: 7, y: 12, z: 81 },
+    { name: 'H', x: 41, y: 50, z: 9 },
+    { name: 'I', x: 22, y: 77, z: 1 },
+];
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -511,31 +522,11 @@ const Share_by_brand = () => {
                                 </Table>
                             </TableContainer>
                         </Box>
-                        
-                        <Box
-                            className={classes.itemCard}
-                        >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena</div>
-                            <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
-                                <BarChart data={data2} >
-                                    <CartesianGrid />
-                                    <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Bar dataKey="x" stackId="a" fill="blue" />
-                                    <Bar dataKey="y" stackId="a" fill="red" />
-                                    <Bar dataKey="z" stackId="a" fill="yellow" />
-                                </BarChart>
-                            </ResponsiveContainer >
-                            
-                        </Box>
-                    </div>
-                    <div className={classes.replacerowzyx}>
                         <Box
                             className={classes.itemCard}
                         >
                             <div className={classes.titlecards}>Cantidad de SKUS por Marca por Semana</div>
-                            <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/1.5}>
                                 <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                                     <defs>
                                         <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -554,6 +545,80 @@ const Share_by_brand = () => {
                                     <Area type="monotone" dataKey="uv" stroke="red" fillOpacity={1} fill="url(#colorUv)" />
                                     <Area type="monotone" dataKey="pv" stroke="blue" fillOpacity={1} fill="url(#colorPv)" />
                                 </AreaChart>
+                            </ResponsiveContainer >
+                            
+                        </Box>
+                        
+                        
+                    </div>
+                    <div className={classes.replacerowzyx}>
+                        <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría</div>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
+                                <BarChart data={data2} >
+                                    <CartesianGrid />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Bar dataKey="x" stackId="a" fill="blue" />
+                                    <Bar dataKey="y" stackId="a" fill="red" />
+                                    <Bar dataKey="z" stackId="a" fill="yellow" />
+                                </BarChart>
+                            </ResponsiveContainer >
+                            
+                        </Box>
+                        <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría</div>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
+                                <BarChart data={data3} >
+                                    <CartesianGrid />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Bar dataKey="x" stackId="a" fill="blue" />
+                                    <Bar dataKey="y" stackId="a" fill="red" />
+                                    <Bar dataKey="z" stackId="a" fill="yellow" />
+                                </BarChart>
+                            </ResponsiveContainer >
+                            
+                        </Box>
+                    </div>
+                    <div className={classes.replacerowzyx}>
+                        <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena</div>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
+                                <BarChart data={data2} >
+                                    <CartesianGrid />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Bar dataKey="x" stackId="a" fill="blue" />
+                                    <Bar dataKey="y" stackId="a" fill="red" />
+                                    <Bar dataKey="z" stackId="a" fill="yellow" />
+                                </BarChart>
+                            </ResponsiveContainer >
+                            
+                        </Box>
+                        <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena</div>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
+                                <BarChart data={data3} >
+                                    <CartesianGrid />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Bar dataKey="x" stackId="a" fill="blue" />
+                                    <Bar dataKey="y" stackId="a" fill="red" />
+                                    <Bar dataKey="z" stackId="a" fill="yellow" />
+                                </BarChart>
                             </ResponsiveContainer >
                             
                         </Box>

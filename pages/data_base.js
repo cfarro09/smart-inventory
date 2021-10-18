@@ -349,13 +349,6 @@ const Data_base = () => {
                         disabled={disablebutton}
                         startIcon={<SearchIcon style={{ color: '#FFF' }} />}
                     >Buscar</Button>
-                    {searchdone &&
-                        <Button
-                            style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                            onClick={() => descargar()}
-                            startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                        >Descargar</Button>
-                    }
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
                         onClick={() => setDrawerOpen(true)}

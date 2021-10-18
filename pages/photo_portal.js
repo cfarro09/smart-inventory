@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component,Fragment } from 'react';
+import React, { useState, useEffect, Component, Fragment } from 'react';
 import Layout from '../components/system/layout/layout'
 import triggeraxios from '../config/axiosv2';
 
@@ -22,8 +22,8 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Typography from '@material-ui/core/Typography';
 import JSZip from "jszip";
 import JSZipUtils from "jszip-utils";
-import {saveAs} from 'file-saver';
-
+import { saveAs } from 'file-saver';
+import popupsContext from '../context/pop-ups/pop-upsContext';
 import {
     Search as SearchIcon,
     GetApp as GetAppIcon,
@@ -72,33 +72,16 @@ function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
 }
 
-const rows = [
-    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
-    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
-    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
-    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
-    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
-    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
-    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
-    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
-    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
-    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
-    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
-    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
-    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
-    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
-];
-
 const HtmlTooltip = withStyles((theme) => ({
     tooltip: {
-      backgroundColor: '#f5f5f9',
-      margin: "-120px 0",
-      color: 'rgba(0, 0, 0, 0.87)',
-      maxWidth: 220,
-      fontSize: theme.typography.pxToRem(12),
-      border: '1px solid #dadde9',
+        backgroundColor: '#f5f5f9',
+        margin: "-120px 0",
+        color: 'rgba(0, 0, 0, 0.87)',
+        maxWidth: 220,
+        fontSize: theme.typography.pxToRem(12),
+        border: '1px solid #dadde9',
     },
-  }))(Tooltip);
+}))(Tooltip);
 
 const paramTemplate = {
     method: "SP_SEL_TEMPLATE",
@@ -156,6 +139,7 @@ const Photo_portal = () => {
     const [dataGraph, setDataGraph] = useState([])
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [category, setcategory] = useState(null);
+    const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
 
     const [disablebutton, setdisablebutton] = useState(true)
     const [dateRange, setdateRange] = useState([
@@ -170,37 +154,21 @@ const Photo_portal = () => {
         var zip = new JSZip();
         var count = 0;
         var zipFilename = "Pictures.zip";
-        
-        rows.map((row,i)=>{
-            JSZipUtils.getBinaryContent(row.image, function (err, data) {
+
+        dataGraph.map((row,i)=>{
+            JSZipUtils.getBinaryContent(row.photo_url, function (err, data) {
                 if (err) {
                     //throw err; // or handle the error
                 }
                 zip.file(`${row.title}-${i}.jpg`, data, { binary: true });
                 count++;
-                if (count == rows.length) {
-                    debugger    
+                if (count == dataGraph.length) {
                     zip.generateAsync({ type: 'blob' }).then(function (content) {
                         saveAs(content, zipFilename);
                     });
                 }
         });
         })
-        /*links.forEach(function (url, i) {
-          // loading a file and add it in a zip file
-          JSZipUtils.getBinaryContent(url, function (err, data) {
-            if (err) {
-              throw err; // or handle the error
-            }
-            zip.file(filename, data, { binary: true });
-            count++;
-            if (count == links.length) {
-              zip.generateAsync({ type: 'blob' }).then(function (content) {
-                saveAs(content, zipFilename);
-              });
-            }
-          });
-        });*/
     }
 
     const [filters, setfilters] = useState({
@@ -239,7 +207,7 @@ const Photo_portal = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
             ]);
-            console.log(validateResArray(listResult[0], continuezyx))
+            
             setdatafilters({
                 ...datafilters,
                 channel: validateResArray(listResult[1], continuezyx),
@@ -272,7 +240,9 @@ const Photo_portal = () => {
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
+        setOpenBackdrop(true)
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
+        setOpenBackdrop(false)
         setDataGraph(listResult.result.data)
     }
     function descargar() {
@@ -326,19 +296,19 @@ const Photo_portal = () => {
                         disabled={disablebutton}
                         startIcon={<SearchIcon style={{ color: '#FFF' }} />}
                     >Buscar</Button>
-                    {dataGraph.length?
+                    {dataGraph.length ?
                         <Fragment>
-                        <Button
-                            style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                            onClick={() => descargar()}
-                            startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                        >Descargar</Button>
-                        <Button
-                            style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                            onClick={() => generateZIP()}
-                            startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                        >Descargar ZIP</Button>
-                        </Fragment>: ""
+                            <Button
+                                style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                                onClick={() => descargar()}
+                                startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
+                            >Descargar</Button>
+                            <Button
+                                style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                                onClick={() => generateZIP()}
+                                startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
+                            >Descargar ZIP</Button>
+                        </Fragment> : ""
                     }
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
@@ -353,19 +323,25 @@ const Photo_portal = () => {
                         />
                     }
                 </div>
-                <div style={{ display: 'flex', gap: 8 , flexWrap: "wrap"}} id="divToPrint">
-                    {dataGraph.map((row,i) => (
+                <div style={{ display: 'flex', gap: 8, flexWrap: "wrap" }} id="divToPrint">
+                    {dataGraph.map((row, i) => (
                         <Box key={i} width="19%" height={"200px"}>
-                            <HtmlTooltip placement="bottom" 
-                            title={ 
-                                <Fragment>
-                                    <Typography color="inherit">{`Tienda: ${row.poiname}`}</Typography>
-                                    <Typography color="inherit">{`Marca: ${row.brand}`}</Typography>
-                                    <Typography color="inherit">{`Modelo: ${row.model}`}</Typography>
-                                    <Typography color="inherit">{`Subcategoría: ${row.subcategory}`}</Typography>
-                                </Fragment>
-                            }>
-                                <img style={{ height: "200px", width:"100%"}} alt="image.jpg" src={row.photo_url}></img>
+                            <HtmlTooltip
+                                placement="bottom"
+                                title={
+                                    <Fragment>
+                                        <Typography color="inherit">{`Tienda: ${row.poiname}`}</Typography>
+                                        <Typography color="inherit">{`Marca: ${row.brand}`}</Typography>
+                                        <Typography color="inherit">{`Modelo: ${row.model}`}</Typography>
+                                        <Typography color="inherit">{`Subcategoría: ${row.subcategory}`}</Typography>
+                                    </Fragment>
+                                }>
+                                <img
+                                    style={{ height: "200px", width: "100%" }}
+                                    alt="image.jpg"
+                                    src={row.photo_url}
+                                    onClick={() => setLightBox({ open: true, index: i, images: dataGraph.map(x => x.photo_url) })}
+                                />
                             </HtmlTooltip>
                         </Box>
                     ))}

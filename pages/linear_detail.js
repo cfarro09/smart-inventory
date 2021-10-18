@@ -25,6 +25,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
 import InputFormk from '../components/system/form/inputformik';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import popupsContext from '../context/pop-ups/pop-upsContext';
 
 import {
     Search as SearchIcon,
@@ -32,68 +33,11 @@ import {
 } from '@material-ui/icons';
 
 
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell);
-const StyledTableCell2 = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableRow);
-
 const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
     data: {
     }
 })
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-    { id: "667", fecha: "29/09/2021",hora: "19:23",activo: "ORE",grupos: "FFVV",cliente: "generic",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "668", fecha: "29/09/2021",hora: "19:24",activo: "KANA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "669", fecha: "29/09/2021",hora: "19:25",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "670", fecha: "29/09/2021",hora: "19:26",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "671", fecha: "29/09/2021",hora: "19:27",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "672", fecha: "29/09/2021",hora: "19:30",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "673", fecha: "29/09/2021",hora: "19:27",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "674", fecha: "29/09/2021",hora: "19:22",activo: "KANA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "675", fecha: "29/09/2021",hora: "19:21",activo: "KANA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "676", fecha: "29/09/2021",hora: "19:24",activo: "KANA",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "677", fecha: "29/09/2021",hora: "19:21",activo: "ORE",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "678", fecha: "29/09/2021",hora: "19:24",activo: "ORE",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "679", fecha: "29/09/2021",hora: "19:23",activo: "ORE",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "680", fecha: "29/09/2021",hora: "19:21",activo: "KANA",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "681", fecha: "29/09/2021",hora: "19:21",activo: "KANA",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "682", fecha: "29/09/2021",hora: "19:24",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "683", fecha: "29/09/2021",hora: "19:21",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "684", fecha: "29/09/2021",hora: "20:22",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "685", fecha: "29/09/2021",hora: "21:20",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-];
 
 
 const paramTemplate = {
@@ -153,7 +97,7 @@ const Linear_detail = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
-
+    const { setLightBox, setOpenBackdrop } = useContext(popupsContext);
     const [disablebutton, setdisablebutton] = useState(true)
     const [dateRange, setdateRange] = useState([
         {
@@ -162,9 +106,10 @@ const Linear_detail = () => {
             key: 'selection'
         }
     ]);
+
     const columns = React.useMemo(
         () => [
-            
+
             {
                 Header: 'Hora',
                 accessor: 'form_timestamp',
@@ -191,27 +136,87 @@ const Linear_detail = () => {
             },
             {
                 Header: 'Precio regular',
-                accessor: 'regular_price'
+                accessor: 'regular_price',
+                Cell: props => {
+                    const price = props.cell.row.original.regular_price.toFixed(2);
+                    return (
+                        <div style={{ textAlign: 'right' }}>
+                            {price}
+                        </div>
+                    )
+                }
             },
             {
                 Header: 'Precio promocional',
-                accessor: 'prom_price'
+                accessor: 'prom_price',
+                Cell: props => {
+                    const price = props.cell.row.original.prom_price.toFixed(2);
+                    return (
+                        <div style={{ textAlign: 'right' }}>
+                            {price}
+                        </div>
+                    )
+                }
+            },
+            {
+                Header: 'Variación precio',
+                accessor: 'variation_price',
+                Cell: props => {
+                    const price = props.cell.row.original.variation_price.toFixed(2);
+                    return (
+                        <div style={{ textAlign: 'right' }}>
+                            {price}
+                        </div>
+                    )
+                }
+            },
+            {
+                Header: 'Variación % precio',
+                accessor: 'variation_percent_price',
+                Cell: props => {
+                    const price = props.cell.row.original.variation_percent_price.toFixed(2);
+                    return (
+                        <div style={{ textAlign: 'right' }}>
+                            {price}%
+                        </div>
+                    )
+                }
             },
             {
                 Header: 'Mecanica de la promocion',
                 accessor: 'trading_option'
             },
             {
-                Header: 'Foto',
+                Header: 'Foto promoción',
                 accessor: 'photo_url',
                 Cell: props => {
                     return (
                         <div className="container-button-floating">
-                            <Avatar src={props.cell.row.original.photo_url} />
+                            <Avatar
+                                style={{cursor: 'pointer'}}
+                                src={props.cell.row.original.photo_url}
+                                onClick={() => setLightBox({ open: true, index: 0, images: [props.cell.row.original.photo_url] })}
+                            />
                         </div>
                     )
                 }
             },
+            {
+                Header: 'Foto precargada',
+                accessor: 'graphic',
+                Cell: props => {
+                    return (
+                        <div className="container-button-floating">
+                            <Avatar
+                                style={{cursor: 'pointer'}}
+                                src={props.cell.row.original.graphic}
+                                onClick={() => setLightBox({ open: true, index: 0, images: [props.cell.row.original.graphic] })}
+                            />
+                        </div>
+                    )
+                }
+            },
+
             {
                 Header: 'Nombre',
                 accessor: 'name',
@@ -304,8 +309,20 @@ const Linear_detail = () => {
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
+        setOpenBackdrop(true)
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
-        setDataGraph(listResult.result.data)
+        setOpenBackdrop(false)
+        setDataGraph(listResult.result.data.map(x => {
+            const regular_price = parseFloat(x.regular_price || "0");
+            const prom_price = parseFloat(x.prom_price || "0");
+            return {
+                ...x,
+                regular_price,
+                prom_price,
+                variation_price: prom_price == 0 ? 0 : prom_price - regular_price,
+                variation_percent_price: prom_price == 0 ? 0 : ((prom_price / regular_price) * 100) - 100,
+            }
+        }))
     }
     function descargar() {
         html2canvas(document.getElementById('divToPrint'))
@@ -358,13 +375,7 @@ const Linear_detail = () => {
                         disabled={disablebutton}
                         startIcon={<SearchIcon style={{ color: '#FFF' }} />}
                     >Buscar</Button>
-                    {searchdone &&
-                        <Button
-                            style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                            onClick={() => descargar()}
-                            startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                        >Descargar</Button>
-                    }
+
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
                         onClick={() => setDrawerOpen(true)}
@@ -380,14 +391,14 @@ const Linear_detail = () => {
                 </div>
                 {searchdone &&
 
-                <div id="divToPrint">
-                    <TableZyx
-                        columns={columns}
-                        data={dataGraph}
-                        // fetchData={filtrar}
-                        register={false}
-                    />
-                </div>
+                    <div id="divToPrint">
+                        <TableZyx
+                            columns={columns}
+                            data={dataGraph}
+                            // fetchData={filtrar}
+                            register={false}
+                        />
+                    </div>
                 }
             </div>
 

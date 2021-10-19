@@ -18,7 +18,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import popupsContext from '../context/pop-ups/pop-upsContext';
-
+ 
 import {
     Search as SearchIcon,
     GetApp as GetAppIcon,

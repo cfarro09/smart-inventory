@@ -161,6 +161,10 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />
                 <LinkList
+                    application="new_products"
+                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
+                />
+                <LinkList
                     application="photo_portal"
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />

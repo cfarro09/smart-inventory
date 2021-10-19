@@ -160,6 +160,7 @@ const Photo_portal = () => {
             JSZipUtils.getBinaryContent(row.photo_url, function (err, data) {
                 if (err) {
                     //throw err; // or handle the error
+                    console.log(err);
                 }
                 zip.file(`${row.title}-${i}.jpg`, data, { binary: true });
                 count++;
@@ -359,7 +360,7 @@ const Photo_portal = () => {
                 </div>
                 <div style={{ display: 'flex', gap: 8, flexWrap: "wrap" }} id="divToPrint">
                     {dataGraph.map((row, i) => (
-                        <Box key={i} width="19%" height={"200px"}>
+                        <Box key={i}>
                             <HtmlTooltip
                                 placement="bottom"
                                 title={
@@ -371,10 +372,10 @@ const Photo_portal = () => {
                                     </Fragment>
                                 }>
                                 <img
-                                    style={{ height: "200px", width: "200px", objectFit: 'cover' }}
+                                    style={{ height: "150px", width: "150px", objectFit: 'cover' }}
                                     alt="image.jpg"
                                     src={row.photo_url}
-                                    crossOrigin="*"
+                                    crossorigin="*"
                                     onClick={() => setLightBox({ open: true, index: i, images: dataGraph.map(x => x.photo_url) })}
                                 />
                             </HtmlTooltip>

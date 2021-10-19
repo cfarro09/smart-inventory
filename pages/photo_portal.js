@@ -371,9 +371,10 @@ const Photo_portal = () => {
                                     </Fragment>
                                 }>
                                 <img
-                                    style={{ height: "200px", width: "100%" }}
+                                    style={{ height: "200px", width: "200px", objectFit: 'cover' }}
                                     alt="image.jpg"
                                     src={row.photo_url}
+                                    crossOrigin="*"
                                     onClick={() => setLightBox({ open: true, index: i, images: dataGraph.map(x => x.photo_url) })}
                                 />
                             </HtmlTooltip>

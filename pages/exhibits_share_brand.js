@@ -262,6 +262,7 @@ const Exhibits_share_brand = () => {
         tipo_pvp: [],
         retail:[],
     })
+    
 
     useEffect(() => {
         let continuezyx = true;

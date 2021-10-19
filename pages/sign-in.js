@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         justifyContent: 'center',
         height: '100vh',
-        backgroundImage: 'url("/wallpaper.jpg")',
+        backgroundImage: 'url("/wallpaper.png")',
         position: 'relative',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',

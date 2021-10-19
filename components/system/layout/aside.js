@@ -144,7 +144,10 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
             </div>
 
             <List disablePadding>
-
+                <LinkList
+                    application="share_by_brand"
+                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
+                />
                 <LinkList
                     application="stepchart"
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
@@ -158,10 +161,6 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />
                 <LinkList
-                    application="share_by_brand"
-                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
-                />
-                <LinkList
                     application="photo_portal"
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />
@@ -171,7 +170,7 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                 />
 
                 <Divider />
-                
+
                 <LinkList
                     application="exhibits_data_base"
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
@@ -209,6 +208,23 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                         <LockOpen style={{ color: theme.palette.primary.light }} />
                     )}
                 />
+                <Divider />
+
+
+                <Link href="https://geogestion.telefonica.com/">
+                    <ListItem
+                        button
+                        style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: theme.spacing(2) }}
+                        className={classes.listItem, (routertmp === appfound.path ? classes.activelink : undefined)}
+                    >
+                        {IconLink &&
+                            <ListItemIcon style={{ minWidth: '45px' }}>
+                                <ListIcon style={{ color: theme.palette.primary.light }} />
+                            </ListItemIcon>}
+                        <ListItemText primary="Portal GeoGestión" />
+                    </ListItem>
+                </Link>
+
             </List>
             <div style={{ flexGrow: 1 }}></div>
             <div className={classes.toolbar2}>

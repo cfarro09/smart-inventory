@@ -393,7 +393,7 @@ const Exhibits_photo_portal = () => {
                                     <Typography color="inherit">{`Management: ${row.management}`}</Typography>
                                 </Fragment>
                             }>
-                                <img style={{ height: "200px", width:"100%"}} alt="image.jpg" src={row.exhibit_photo}></img>
+                                <img style={{ height: "200px", width:"200px", objectFit: 'cover' }} alt="image.jpg" src={row.exhibit_photo}></img>
                             </HtmlTooltip>
                         </Box>
                     ))}

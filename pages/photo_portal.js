@@ -384,7 +384,7 @@ const Photo_portal = () => {
                                     style={{ height: "150px", width: "150px", objectFit: 'cover' }}
                                     alt="image.jpg"
                                     src={row.photo_url}
-                                    // crossOrigin="*"
+                                    crossOrigin="*"
                                     onClick={() => setLightBox({ open: true, index: i, images: dataGraph.map(x => x.photo_url) })}
                                 />
                             </HtmlTooltip>

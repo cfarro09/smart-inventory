@@ -31,6 +31,7 @@ import {
     Search as SearchIcon,
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
+import { set } from 'date-fns';
 function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
   }
@@ -384,8 +385,63 @@ const dataTreeMap = [
     }
   ]
 
-const brands = ["B&D","BLACKLINE","BORD","BOSCH","BOSSKO","CONTINENTAL","CUISINART","ELECTRICLIFE","ELECTROLUX","FINEZZA","FOSTERIER","HOLSTEIN","IMACO","INDURAMA","INSTAN POT","JATARIY","KENWOOD","KITCHEN AID","KORKMAZ","LOVEN","MAGEFESA","MIRAY","NEX","OSTER","PHILIPS","PRACTIKA","PRIMA","PROFESIONAL SERIES","RECCO","RECORD","TAURUS","THOMAS","VALESKA","WURDEN","ZYKLON"]
-const colors = ["#bababa","#575757","#868686","#4f4f4f","#909090","#c4c4c4","#9d9d9d","#494949","#b9b9b9","#545454","#5e5e5e","#535353","yellow","#b8b8b8","#818181","#a2a2a2","#808080","#838383","#8a8a8a","#929292","#b5b5b5","#d9d9d9","#888888","blue","#c5c5c5","#1e1e1e","#7c7c7c","#787878","#565656","#444444","#d3d3d3","red","#a9a9a9","#878787","#797979"]
+  const CustomizedContent = (props) => {
+    const { depth, x, y, width, height, index, name } = props;
+
+    return (
+        <g>
+            <rect
+                x={x}
+                y={y}
+                width={width}
+                height={height}
+                style={{
+                    fill:
+                        depth < 2
+                            ? DEFAULT_COLORS[index % DEFAULT_COLORS.length]
+                            : 'none',
+                    stroke: '#fff',
+                    strokeWidth: 2 / (depth + 1e-10),
+                    strokeOpacity: 1 / (depth + 1e-10),
+                }}
+            />
+            {depth === 1 ? (
+                <text
+                    x={x + width / 2}
+                    y={y + height / 2 + 7}
+                    textAnchor="middle"
+                    fill="#fff"
+                    fontSize={14}
+                >
+                    {name}
+                </text>
+            ) : null}
+            {depth === 1 ? (
+                <text
+                    x={x + 4}
+                    y={y + 18}
+                    fill="#fff"
+                    fontSize={16}
+                    fillOpacity={0.9}
+                >
+                    {index + 1}
+                </text>
+            ) : null}
+        </g>
+    );
+};
+
+  const DEFAULT_COLORS = [
+    '#7A871E',
+    '#DAD870',
+    '#FFCD58',
+    '#FF9636',
+    '#FF5C4D',
+    '#9F2B00',
+];
+
+const brands = ["B&D","BLACKLINE","BORD","BOSCH","BOSSKO","CONTINENTAL","CUISINART","ELECTRICLIFE","ELECTROLUX","FINEZZA","FOSTERIER","HOLSTEIN","IMACO","INDURAMA","INSTAN POT","JATARIY","KENWOOD","KITCHEN AID","KORKMAZ","LOVEN","MAGEFESA","MIRAY","NEX","OSTER","PHILIPS","PRACTIKA","PRIMA","PROFESIONAL SERIES","RECCO","RECORD","TAURUS","THOMAS","VALESKA","WURDEN","ZYKLON","OTROS","DOLCE GUSTO"]
+const colors = ["#bababa","#575757","#868686","#4f4f4f","#909090","#c4c4c4","#9d9d9d","#494949","#b9b9b9","#545454","#5e5e5e","#535353","yellow","#b8b8b8","#818181","#a2a2a2","#808080","#838383","#8a8a8a","#929292","#b5b5b5","#d9d9d9","#888888","blue","#c5c5c5","#1e1e1e","#7c7c7c","#787878","#565656","#444444","#d3d3d3","red","#a9a9a9","#878787","#797979","#797979","#797979"]
 const elementBrand= (week)=>({
     week: week,
     "B&D": 0,
@@ -423,70 +479,8 @@ const elementBrand= (week)=>({
     "VALESKA": 0,
     "WURDEN": 0,
     "ZYKLON": 0,
+    "OTROS": 0
 })
-const data = [
-    {
-      "name": "ENE",
-      "uv": 11,
-      "pv": 10,
-    },
-    {
-      "name": "FEB",
-      "uv": 14,
-      "pv": 19,
-    },
-    {
-      "name": "MAR",
-      "uv": 17,
-      "pv": 25,
-    },
-    {
-      "name": "ABR",
-      "uv": 39,
-      "pv": 55,
-    },
-    {
-      "name": "MAY",
-      "uv": 35,
-      "pv": 50,
-    },
-    {
-      "name": "JUN",
-      "uv": 37,
-      "pv": 45,
-    },
-    {
-      "name": "JUL",
-      "uv": 32,
-      "pv": 35,
-    },
-    {
-      "name": "AGO",
-      "uv": 20,
-      "pv": 37,
-    },
-    {
-      "name": "SEP",
-      "uv": 25,
-      "pv": 45,
-    },
-    {
-      "name": "OCT",
-      "uv": 15,
-      "pv": 35,
-    },
-    {
-      "name": "NOV",
-      "uv": 26,
-      "pv": 55,
-    },
-    {
-      "name": "DIC",
-      "uv": 30,
-      "pv": 40,
-    },
-  ]
-  
   const data2 = [
     { name: 'A', x: 12, y: 23, z: 122 },
     { name: 'B', x: 22, y: 3, z: 73 },
@@ -530,7 +524,11 @@ const GET_FILTER = (filter) => ({
     }
 })
 const FILTER = (filter) => ({
-    method: "SP_SKU_BRAND",
+    method: "SP_SKU_DATE_EXHIBIT",
+    data: filter
+})
+const FILTERBRAND = (filter) => ({
+    method: "SP_SKU_BRAND_EXHIBIT",
     data: filter
 })
 const FILTERDATE = (filter) => ({
@@ -538,7 +536,7 @@ const FILTERDATE = (filter) => ({
     data: filter
 })
 const FILTERGraph1 = (filter) => ({
-    method: "SP_SKU_CATEGORY",
+    method: "SP_SKU_CATEGORY_EXHIBIT ",
     data: filter
 })
 
@@ -606,7 +604,7 @@ const Exhibits_share_brand = () => {
     const [dataGraphDate, setDataGraphDate] = useState([])
     const [categorybrandSKU, setcategorybrandSKU] = useState([])
     const [categorybrandSKUperc, setcategorybrandSKUperc] = useState([])
-    const [totalSKA, settotalSKA] = useState(0)
+    const [resultBrand, setResultBrand] = useState(0)
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
@@ -687,15 +685,18 @@ const Exhibits_share_brand = () => {
     );
 
     const [filters, setfilters] = useState({
+        
         format: '',
         channel: '',
         department: '',
         store_name: '',
         categoria: 1,
+        management: '',
         SKU: '',
-        banda: '',
-        marca: '',
-        tipo_pvp: 'prom_price',
+        marca: "",
+        subcategoria: "",
+        type_exhibit: '',
+        area: '',
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -706,7 +707,8 @@ const Exhibits_share_brand = () => {
         categoria: [],
         SKU: [],
         banda: [],
-        marca: [],
+        marca: '',
+        management: [],
         tipo_pvp: [],
     })
 
@@ -721,6 +723,7 @@ const Exhibits_share_brand = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("EXHIBICIONES")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
             ]);
             setdatafilters({
                 ...datafilters,
@@ -730,6 +733,7 @@ const Exhibits_share_brand = () => {
                 store_name: validateResArray(listResult[3], continuezyx),
                 categoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
+                management: validateResArray(listResult[6], continuezyx),
             })
         })();
         return () => continuezyx = false;
@@ -745,42 +749,55 @@ const Exhibits_share_brand = () => {
             category: filters.categoria,
             sku_code: filters.SKU,
             brand: filters.marca,
-            sub_category: '',
-            price: filters.tipo_pvp,
+            management: filters.management,
+            sub_category: filters.subcategoria,
+            type_exhibit: filters.type_exhibit,
+            area: filters.area,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
-        setOpenBackdrop(true)
-        const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
-        listResult.result.data.map((row)=>{
-            count += row.cont
+        setOpenBackdrop(true)     
+        const listResultBrand = await triggeraxios('post', process.env.endpoints.selsimple, FILTERBRAND(filter_to_send))
+        let resultbrandlistchildren = []
+        listResultBrand.result.data.map((row)=>{
+          resultbrandlistchildren.push({name: (row.brand),children: [{name: (row.brand), cont:(row.cont)}]})
         })
-        setDataGraph(listResult.result.data)
-        const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTERDATE(filter_to_send))
+
+        setResultBrand(resultbrandlistchildren)
+        const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         let listbrand=[];
         let weeks=[];
+        let totalweek=[];
         listResultDate.result.data.map(row=>{
-            if(!weeks.includes(row.Week)) weeks.push(row.Week)
+          if(!weeks.includes(row.Week)) {weeks.push(row.Week);totalweek.push(0)}
+        })
+        listResultDate.result.data.map(row=>{
+            totalweek[weeks.indexOf(row.Week)] += parseInt(row.cont)
         })
         weeks.map(row=>{
             listbrand.push(elementBrand(row))
         })
-        
         listResultDate.result.data.map(row=>{
             listbrand.forEach(list=>{
                 if(list.week===row.Week){
-                    list[row.brand]=parseInt(row.cnt)
+                    list[row.brand]= (parseInt(row.cont)/totalweek[weeks.indexOf(row.Week)])*100
                 }
             })
         })
         setDataGraphDate(listbrand)
-        settotalSKA(count)
         const listResultSKU = await triggeraxios('post', process.env.endpoints.selsimple, FILTERGraph1(filter_to_send))
         let categories= []
         let skucategory=[];
+        let uniqueBrands = [];
         let skucategoryperc=[];
+        let skucategorytotal=[];
         listResultSKU.result.data.map(row=>{
-            if(!categories.includes(row.subcategory)) categories.push(row.subcategory)
+            if(!categories.includes(row.category)) {categories.push(row.category);skucategorytotal.push(0)}
+            if(!uniqueBrands.includes(row.brand)) {uniqueBrands.push(row.brand)}
+        })
+        console.log(uniqueBrands)
+        listResultSKU.result.data.map(row=>{
+            skucategorytotal[categories.indexOf(row.category)] += parseInt(row.cont)
         })
         categories.map(row=>{
             skucategory.push(elementBrand(row))
@@ -788,13 +805,13 @@ const Exhibits_share_brand = () => {
         })
         listResultSKU.result.data.map(row=>{
             skucategory.forEach(list=>{
-                if(list.week===row.subcategory){
+                if(list.week===row.category){
                     list[row.brand]=parseInt(row.cont)
                 }
             })
             skucategoryperc.forEach(list=>{
-                if(list.week===row.subcategory){
-                    list[row.brand]=parseFloat(row.percent)
+                if(list.week===row.category){
+                    list[row.brand]=(parseInt(row.cont)/skucategorytotal[categories.indexOf(row.category)])*100
                 }
             })
         })
@@ -899,12 +916,14 @@ const Exhibits_share_brand = () => {
                             <Treemap
                                 width={730}
                                 height={250}
-                                data={dataTreeMap}
-                                dataKey="size"
+                                data={resultBrand}
+                                dataKey="cont"
                                 ratio={4 / 3}
                                 stroke="#fff"
                                 fill="#8884d8"
-                                />
+                                  >
+                                  <Tooltip />
+                              </Treemap>
                             </ResponsiveContainer >
                             
                         </Box>
@@ -913,17 +932,17 @@ const Exhibits_share_brand = () => {
                         >
                             <div className={classes.titlecards}>Evolución de Exhibiciones por semana y Marca</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3}>
-                                <LineChart  data={dataGraphDate} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                <BarChart  data={dataGraphDate}>
                                     <XAxis dataKey="week"/>
-                                    <YAxis  />
+                                    <YAxis  domain={[0, 100]} />
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <Tooltip labelFormatter={(value)=>["Semana " + value]} />
+                                    <Tooltip labelFormatter={(value)=>[<b>Semana {value}</b>]}  formatter={(value,name)=>[value.toFixed(2) + " %",name]} />
                                     {
                                         brands.map((brand,i)=>(
-                                            <Line key={brand} type="monotone" dataKey={brand} stroke={colors[i]} fillOpacity={1} fill={`url(#color${brand})`} />
+                                            <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
                                         ))
                                     }
-                                </LineChart >
+                                </BarChart >
                             </ResponsiveContainer >
                             
                         </Box>
@@ -957,8 +976,8 @@ const Exhibits_share_brand = () => {
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={categorybrandSKUperc} >
                                     <XAxis dataKey="week" />
-                                    <YAxis />
-                                    <Tooltip formatter={(value,name)=>(value>0?[value,name]:[])}/>
+                                    <YAxis  domain={[0, 100]} />
+                                    <Tooltip formatter={(value,name)=>[value.toFixed(2) + " %",name]}/>
                                     <CartesianGrid />
                                     {
                                         brands.map((brand,i)=>(

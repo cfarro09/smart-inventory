@@ -114,7 +114,7 @@ const GET_FILTER = (filter) => ({
     }
 })
 const FILTER = (filter) => ({
-    method: "SP_PHOTO_PORTAL",
+    method: "SP_PHOTO_PORTAL_EXHIBIT",
     data: filter
 })
 
@@ -207,15 +207,18 @@ const Exhibits_photo_portal = () => {
     }
 
     const [filters, setfilters] = useState({
+        
         format: '',
         channel: '',
         department: '',
         store_name: '',
         categoria: 1,
+        management: '',
         SKU: '',
-        banda: '',
-        marca: '',
-        tipo_pvp: '',
+        marca: "",
+        subcategoria: "",
+        type_exhibit: '',
+        area: '',
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -226,7 +229,8 @@ const Exhibits_photo_portal = () => {
         categoria: [],
         SKU: [],
         banda: [],
-        marca: [],
+        marca: '',
+        management: [],
         tipo_pvp: [],
     })
 
@@ -241,6 +245,7 @@ const Exhibits_photo_portal = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("EXHIBICIONES")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
             ]);
             console.log(validateResArray(listResult[0], continuezyx))
             setdatafilters({
@@ -251,6 +256,7 @@ const Exhibits_photo_portal = () => {
                 store_name: validateResArray(listResult[3], continuezyx),
                 categoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
+                management: validateResArray(listResult[6], continuezyx),
             })
         })();
         return () => continuezyx = false;
@@ -270,14 +276,17 @@ const Exhibits_photo_portal = () => {
             category: filters.categoria,
             sku_code: filters.SKU,
             brand: filters.marca,
-            sub_category: '',
-            price: filters.tipo_pvp,
+            management: filters.management,
+            sub_category: filters.subcategoria,
+            type_exhibit: filters.type_exhibit,
+            area: filters.area,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
         setOpenBackdrop(true)
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         setOpenBackdrop(false)
+        console.log(listResult.result.data)
         setDataGraph(listResult.result.data)
     }
     function descargar() {
@@ -380,11 +389,11 @@ const Exhibits_photo_portal = () => {
                                 <Fragment>
                                     <Typography color="inherit">{`Tienda: ${row.poiname}`}</Typography>
                                     <Typography color="inherit">{`Marca: ${row.brand}`}</Typography>
-                                    <Typography color="inherit">{`Modelo: ${row.model}`}</Typography>
-                                    <Typography color="inherit">{`Subcategoría: ${row.subcategory}`}</Typography>
+                                    <Typography color="inherit">{`Categoría: ${row.category}`}</Typography>
+                                    <Typography color="inherit">{`Management: ${row.management}`}</Typography>
                                 </Fragment>
                             }>
-                                <img style={{ height: "200px", width:"100%"}} alt="image.jpg" src={row.photo_url}></img>
+                                <img style={{ height: "200px", width:"100%"}} alt="image.jpg" src={row.exhibit_photo}></img>
                             </HtmlTooltip>
                         </Box>
                     ))}

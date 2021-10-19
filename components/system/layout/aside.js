@@ -219,7 +219,7 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                     <ListItem
                         button
                         style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: theme.spacing(2) }}
-                        className={classes.listItem, (routertmp === appfound.path ? classes.activelink : undefined)}
+                        // className={classes.listItem, (routertmp === appfound.path ? classes.activelink : undefined)}
                     >
                         {IconLink &&
                             <ListItemIcon style={{ minWidth: '45px' }}>

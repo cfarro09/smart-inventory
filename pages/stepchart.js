@@ -33,6 +33,7 @@ const GET_FILTER = (filter) => ({
 const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
     data: {
+        type: filter
     }
 })
 const FILTER = (filter) => ({
@@ -148,7 +149,7 @@ const User = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
             ]);
             console.log(validateResArray(listResult[0], continuezyx))

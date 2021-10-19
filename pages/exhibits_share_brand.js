@@ -513,6 +513,7 @@ const data = [
 const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
     data: {
+        type:filter
     }
 })
 
@@ -718,7 +719,7 @@ const Exhibits_share_brand = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("EXHIBICIONES")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
             ]);
             setdatafilters({
@@ -848,17 +849,6 @@ const Exhibits_share_brand = () => {
                         descfield="brand"
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
                     />
-
-                    <SelectFunction
-                        title="SKU"
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
-                        variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
-                    />
                     <SelectFunction
                         title="Retail"
                         variant="outlined"
@@ -870,14 +860,6 @@ const Exhibits_share_brand = () => {
                         descfield="brand"
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}*/
                     />
-                    <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
-                        defaultValue="prom_price"
-                        onChange={(event) => { setfilters({ ...filters, tipo_pvp: event.target.value }) }}
-                    >
-                        <FormControlLabel value="todopvp" control={<Radio />} label="Todo PVP" />
-                        <FormControlLabel value="prom_price" control={<Radio />} label="Promo PVP" />
-                        <FormControlLabel value="regular_price" control={<Radio />} label="Regular PVP" />
-                    </RadioGroup>
                     <Button
                         variant="contained"
                         color="primary"
@@ -941,7 +923,6 @@ const Exhibits_share_brand = () => {
                                             <Line key={brand} type="monotone" dataKey={brand} stroke={colors[i]} fillOpacity={1} fill={`url(#color${brand})`} />
                                         ))
                                     }
-                                    <Legend/>
                                 </LineChart >
                             </ResponsiveContainer >
                             

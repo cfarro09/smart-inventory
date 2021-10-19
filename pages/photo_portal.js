@@ -66,6 +66,7 @@ const StyledTableRow = withStyles((theme) => ({
 const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
     data: {
+        type: filter
     }
 })
 function createData(name, calories, fat, carbs, protein) {
@@ -204,7 +205,7 @@ const Photo_portal = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
             ]);
             

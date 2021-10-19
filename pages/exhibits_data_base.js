@@ -67,6 +67,7 @@ const StyledTableRow = withStyles((theme) => ({
 const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
     data: {
+        type: filter
     }
 })
 function createData(name, calories, fat, carbs, protein) {
@@ -265,7 +266,7 @@ const Exhibits_data_base = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("EXHIBICIONES")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
             ]);
@@ -357,16 +358,6 @@ const Exhibits_data_base = () => {
                         namefield="brand"
                         descfield="brand"
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
-                    />
-                    <SelectFunction
-                        title="SKU"
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
-                        variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
                     />
                     <SelectFunction
                         title="Retail"

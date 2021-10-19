@@ -161,6 +161,7 @@ const data = [
 const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
     data: {
+        type: filter
     }
 })
 
@@ -366,7 +367,7 @@ const Share_by_brand = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
             ]);
             setdatafilters({
@@ -592,29 +593,18 @@ const Share_by_brand = () => {
                             className={classes.itemCard}
                         >
                             <div className={classes.titlecards}>Cantidad de SKUS por Marca por Semana</div>
-                            <ResponsiveContainer width={"100%"} aspect={4.0/3}>
-                                <AreaChart data={dataGraphDate} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/3.5}>
+                                <BarChart data={dataGraphDate}>
                                     <XAxis dataKey="week"/>
                                     <YAxis  />
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <defs>
-                                    {
-                                        colors.map((row,i)=>(
-                                            <linearGradient key={`color${brands[i]}`} id={`color${brands[i]}`} x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor={row} stopOpacity={0.8}/>
-                                                <stop offset="95%" stopColor={row} stopOpacity={0}/>
-                                            </linearGradient>
-                                        ))
-                                    }
-                                    </defs>
                                     <Tooltip labelFormatter={(value)=>["Semana " + value]} />
                                     {
                                         brands.map((brand,i)=>(
-                                            <Area key={brand} type="monotone" dataKey={brand} stroke={colors[i]} fillOpacity={1} fill={`url(#color${brand})`} />
+                                            <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
                                         ))
                                     }
-                                    <Legend/>
-                                </AreaChart>
+                                </BarChart>
                             </ResponsiveContainer >
                             
                         </Box>

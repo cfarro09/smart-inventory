@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component,Fragment } from 'react';
+import React, { useState, useEffect, useContext,Fragment } from 'react';
 import Layout from '../components/system/layout/layout'
 import triggeraxios from '../config/axiosv2';
 
@@ -67,6 +67,7 @@ const StyledTableRow = withStyles((theme) => ({
 const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
     data: {
+        type: filter
     }
 })
 function createData(name, calories, fat, carbs, protein) {
@@ -238,7 +239,7 @@ const Exhibits_photo_portal = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("EXHIBICIONES")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
             ]);
             console.log(validateResArray(listResult[0], continuezyx))
@@ -325,17 +326,6 @@ const Exhibits_photo_portal = () => {
                         namefield="brand"
                         descfield="brand"
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
-                    />
-
-                    <SelectFunction
-                        title="SKU"
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
-                        variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
                     />
                     <SelectFunction
                         title="Retail"

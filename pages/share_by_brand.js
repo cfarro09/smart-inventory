@@ -167,11 +167,6 @@ const GET_CATEGORY = (filter) => ({
 })
 
 
-const paramTemplate = {
-    method: "SP_SEL_TEMPLATE",
-    data: { id_corporation: null, id_organization: null, status: 'ACTIVO' }
-}
-
 const GET_FILTER = (filter) => ({
     method: "SP_SEL_FILTER",
     data: {
@@ -180,6 +175,10 @@ const GET_FILTER = (filter) => ({
 })
 const FILTER = (filter) => ({
     method: "SP_SKU_BRAND",
+    data: filter
+})
+const FILTERPOI = (filter) => ({
+    method: "SP_SKU_POINAME",
     data: filter
 })
 const FILTERDATE = (filter) => ({
@@ -249,7 +248,6 @@ const RB_MARCA = {
 }
 
 const CustomTooltip = ({ active, payload, label }) => {
-    console.log(payload[0])
     if (active && payload && payload.length) {
         return (
             <div className="custom-tooltip">
@@ -269,6 +267,8 @@ const Share_by_brand = () => {
     const [dataGraphDate, setDataGraphDate] = useState([])
     const [categorybrandSKU, setcategorybrandSKU] = useState([])
     const [categorybrandSKUperc, setcategorybrandSKUperc] = useState([])
+    const [poicategory, setpoicategory] = useState([])
+    const [poicategoryperc, setpoicategoryperc] = useState([])
     const [totalSKA, settotalSKA] = useState(0)
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
@@ -447,8 +447,6 @@ const Share_by_brand = () => {
                 }
             })
         })
-        console.log(listResultDate)
-        console.log(listbrand)
         setDataGraphDate(listbrand)
         settotalSKA(count)
 
@@ -475,12 +473,43 @@ const Share_by_brand = () => {
             })
             skucategoryperc.forEach(list => {
                 if (list.week === row.subcategory) {
-                    list[row.brand] = (parseInt(row.cont) / skucategorytotal[categories.indexOf(row.subcategory)]) * 100
+                    list[row.brand] = Math.floor((parseInt(row.cont) / skucategorytotal[categories.indexOf(row.subcategory)]) * 100)
                 }
             })
         })
         setcategorybrandSKU(skucategory)
         setcategorybrandSKUperc(skucategoryperc)
+
+        const listpoiresult = await triggeraxios('post', process.env.endpoints.selsimple, FILTERPOI(filter_to_send))
+        let categoriespoi = []
+        let poicategories = [];
+        let poicategoriesperc = [];
+        let poicategoriestotal = [];
+        listpoiresult.result.data.map(row => {
+            if (!categoriespoi.includes(row.retail)) { categoriespoi.push(row.retail); poicategoriestotal.push(0) }
+        })
+        console.log(listpoiresult.result.data)
+        listpoiresult.result.data.map(row => {
+            poicategoriestotal[categoriespoi.indexOf(row.retail)] += parseInt(row.cont)
+        })
+        categoriespoi.map(row => {
+            poicategories.push(elementBrand(row))
+            poicategoriesperc.push(elementBrand(row))
+        })
+        listpoiresult.result.data.map(row => {
+            poicategories.forEach(list => {
+                if (list.week === row.retail) {
+                    list[row.brand] = parseInt(row.cont)
+                }
+            })
+            poicategoriesperc.forEach(list => {
+                if (list.week === row.retail) {
+                    list[row.brand] = Math.floor((parseInt(row.cont) / poicategoriestotal[categoriespoi.indexOf(row.retail)]) * 100)
+                }
+            })
+        })
+        setpoicategory(poicategories)
+        setpoicategoryperc(poicategoriesperc)
         setOpenBackdrop(false)
     }
     function descargar() {
@@ -639,7 +668,6 @@ const Share_by_brand = () => {
                                         />
                                         {
                                             brands.map((brand, i) => {
-                                                console.log(brand)
                                                 return <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
                                             })
                                         }
@@ -696,14 +724,16 @@ const Share_by_brand = () => {
                             >
                                 <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
-                                    <BarChart data={data2} >
-                                        <CartesianGrid />
-                                        <XAxis dataKey="name" />
+                                    <BarChart data={poicategory} >
+                                        <XAxis dataKey="week" />
                                         <YAxis />
-                                        <Tooltip />
-                                        <Bar dataKey="x" stackId="a" fill="blue" />
-                                        <Bar dataKey="y" stackId="a" fill="red" />
-                                        <Bar dataKey="z" stackId="a" fill="yellow" />
+                                        <Tooltip formatter={(value, name) => (value > 0 ? [value, name] : [])} />
+                                        <CartesianGrid />
+                                        {
+                                            brands.map((brand, i) => (
+                                                <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
+                                            ))
+                                        }
                                     </BarChart>
                                 </ResponsiveContainer >
 
@@ -713,14 +743,16 @@ const Share_by_brand = () => {
                             >
                                 <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena %</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
-                                    <BarChart data={data3} >
+                                    <BarChart data={poicategoryperc} >
+                                        <XAxis dataKey="week" />
+                                        <YAxis domain={[0, 100]} />
+                                        <Tooltip formatter={(value, name) => [value.toFixed(2) + " %", name]} />
                                         <CartesianGrid />
-                                        <XAxis dataKey="name" />
-                                        <YAxis />
-                                        <Tooltip />
-                                        <Bar dataKey="x" stackId="a" fill="blue" />
-                                        <Bar dataKey="y" stackId="a" fill="red" />
-                                        <Bar dataKey="z" stackId="a" fill="yellow" />
+                                        {
+                                            brands.map((brand, i) => (
+                                                <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
+                                            ))
+                                        }
                                     </BarChart>
                                 </ResponsiveContainer >
 

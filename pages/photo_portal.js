@@ -162,7 +162,7 @@ const Photo_portal = () => {
                     //throw err; // or handle the error
                     console.log(err);
                 }
-                zip.file(`${row.title}-${i}.jpg`, data, { binary: true });
+                zip.file(`image-${i}.jpg`, data, { binary: true });
                 count++;
                 if (count == dataGraph.length) {
                     zip.generateAsync({ type: 'blob' }).then(function (content) {
@@ -384,7 +384,7 @@ const Photo_portal = () => {
                                     style={{ height: "150px", width: "150px", objectFit: 'cover' }}
                                     alt="image.jpg"
                                     src={row.photo_url}
-                                    // crossOrigin="*"
+                                    crossOrigin="*"
                                     onClick={() => setLightBox({ open: true, index: i, images: dataGraph.map(x => x.photo_url) })}
                                 />
                             </HtmlTooltip>

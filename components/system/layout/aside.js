@@ -215,19 +215,17 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                 <Divider />
 
 
-                <Link href="https://geogestion.telefonica.com/">
+                <a href="https://geogestion.telefonica.com" target="_BLANK">
                     <ListItem
                         button
                         style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: theme.spacing(2) }}
-                        // className={classes.listItem, (routertmp === appfound.path ? classes.activelink : undefined)}
                     >
-                        {IconLink &&
-                            <ListItemIcon style={{ minWidth: '45px' }}>
-                                <ListIcon style={{ color: theme.palette.primary.light }} />
-                            </ListItemIcon>}
+                        <ListItemIcon style={{ minWidth: '45px' }}>
+                            <ListIcon style={{ color: theme.palette.primary.light }} />
+                        </ListItemIcon>
                         <ListItemText primary="Portal GeoGestión" />
                     </ListItem>
-                </Link>
+                </a>
 
             </List>
             <div style={{ flexGrow: 1 }}></div>

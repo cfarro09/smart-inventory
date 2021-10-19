@@ -102,7 +102,7 @@ const paramTemplate = {
     data: { id_corporation: null, id_organization: null, status: 'ACTIVO' }
 }
 
-const GET_FILTER = (filter) => ({
+const GET_FILTER = (type) => ({
     method: "SP_SEL_FILTER",
     data: {
         filter

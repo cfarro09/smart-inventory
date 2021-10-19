@@ -119,8 +119,6 @@ const fields=[
     ],
     /*BATIDORA*/[
         {name:"subcategory", title:"subcategoría"},
-        {name:"regular_price", title:"precio regular"},
-        {name:"prom_price", title:"precio promoción"},
         {name:"power", title:"potencia"},
         {name:"speeds", title:"velocidades"},
         {name:"turbo", title:"turbo"},
@@ -134,39 +132,6 @@ const fields=[
         {name:"accessories", title:"accesorios"},
     ],
 ]
-
-const rows = [
-    {
-        marca: "OSTER", modelo: "6026", precio: 139.00, subcategoria: "SOFRITO", capacidad: "1.2LT", watts: 500, frecuenciahz: "50/60", acabado: "PINTADO AL HORNO", color: "SILVER", tazon: "ALUMINIO", medidastazon: "MAX", recubrimiento: "ANTIHADERENTE",
-        funciones: "COOK/WARM/ADEREZO", tapa: "VIDRIO", cable: "SI", vaporera: "NO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
-    },
-    {
-        marca: "PRACTIKA", modelo: "180MCS", precio: 149.90, subcategoria: "TRADICIONAL", capacidad: "1.8LT", watts: 750, frecuenciahz: "60", acabado: "METAL", color: "SILVER", tazon: "ALUMINIO", medidastazon: "SI", recubrimiento: "ANTIHADERENTE",
-        funciones: "COOK/WARM", tapa: "VIDRIO", cable: "NO", vaporera: "SI/ALUMINIO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
-    },
-    {
-        marca: "OSTER", modelo: "6026", precio: 139.00, subcategoria: "SOFRITO", capacidad: "1.2LT", watts: 500, frecuenciahz: "50/60", acabado: "PINTADO AL HORNO", color: "SILVER", tazon: "ALUMINIO", medidastazon: "MAX", recubrimiento: "ANTIHADERENTE",
-        funciones: "COOK/WARM/ADEREZO", tapa: "VIDRIO", cable: "SI", vaporera: "NO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
-    },
-    {
-        marca: "PRACTIKA", modelo: "180MCS", precio: 149.90, subcategoria: "TRADICIONAL", capacidad: "1.8LT", watts: 750, frecuenciahz: "60", acabado: "METAL", color: "SILVER", tazon: "ALUMINIO", medidastazon: "SI", recubrimiento: "ANTIHADERENTE",
-        funciones: "COOK/WARM", tapa: "VIDRIO", cable: "NO", vaporera: "SI/ALUMINIO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
-    },
-    {
-        marca: "OSTER", modelo: "6026", precio: 139.00, subcategoria: "SOFRITO", capacidad: "1.2LT", watts: 500, frecuenciahz: "50/60", acabado: "PINTADO AL HORNO", color: "SILVER", tazon: "ALUMINIO", medidastazon: "MAX", recubrimiento: "ANTIHADERENTE",
-        funciones: "COOK/WARM/ADEREZO", tapa: "VIDRIO", cable: "SI", vaporera: "NO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
-    },
-    {
-        marca: "PRACTIKA", modelo: "180MCS", precio: 149.90, subcategoria: "TRADICIONAL", capacidad: "1.8LT", watts: 750, frecuenciahz: "60", acabado: "METAL", color: "SILVER", tazon: "ALUMINIO", medidastazon: "SI", recubrimiento: "ANTIHADERENTE",
-        funciones: "COOK/WARM", tapa: "VIDRIO", cable: "NO", vaporera: "SI/ALUMINIO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
-    },
-];
-
-
-const paramTemplate = {
-    method: "SP_SEL_TEMPLATE",
-    data: { id_corporation: null, id_organization: null, status: 'ACTIVO' }
-}
 
 const GET_FILTER = (filter) => ({
     method: "SP_SEL_FILTER",

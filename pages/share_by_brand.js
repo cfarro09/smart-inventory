@@ -662,13 +662,21 @@ const Share_by_brand = () => {
                                         <YAxis domain={[0, 100]} />
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <Tooltip
-                                            content={<CustomTooltip />}
-                                            // labelFormatter={(value) => [<b>Semana {value}</b>]}
-                                            // formatter={(value, name) => [value.toFixed(2) + " %", name]}
+                                            labelFormatter={(value) => [<b>Semana {value}</b>]}
+                                            formatter={(value, name) => [value.toFixed(2) + " %", name]}
                                         />
                                         {
                                             brands.map((brand, i) => {
-                                                return <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
+                                                return (
+                                                    <Bar
+                                                        key={brand}
+                                                        type="monotone"
+                                                        dataKey={brand}
+                                                        stackId="a"
+                                                        fill={colors[i]}
+                                                        label={{content: () => brand}}
+                                                    />
+                                                )
                                             })
                                         }
                                     </BarChart>

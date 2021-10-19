@@ -262,6 +262,7 @@ const Exhibits_share_brand = () => {
         tipo_pvp: [],
         retail:[],
     })
+    
 
     useEffect(() => {
         let continuezyx = true;
@@ -627,8 +628,8 @@ const Exhibits_share_brand = () => {
                             <Table className={classes.table} aria-label="simple table">
                                 <TableHead>
                                 <TableRow>
-                                    <TableCell align="center">Tipo de exhibición</TableCell>
                                     <TableCell align="center">Marca</TableCell>
+                                    <TableCell align="center">Tipo de exhibición</TableCell>
                                     <TableCell align="center">Cantidad</TableCell>
                                     <TableCell align="center">Porcentaje</TableCell>
                                 </TableRow>
@@ -636,8 +637,8 @@ const Exhibits_share_brand = () => {
                                 <TableBody>
                                 {typeexhibit.map((row,i) => (
                                     <TableRow key={`exhmarcamod${row.brand}${i}`}>
-                                        <TableCell align="center">{row.type_exhibit}</TableCell>
                                         <TableCell align="center">{row.brand}</TableCell>
+                                        <TableCell align="center">{row.type_exhibit}</TableCell>
                                         <TableCell align="center">{row.cont}</TableCell>
                                         <TableCell align="center">{parseFloat(row.percent).toFixed(2)}%</TableCell>
                                     </TableRow>

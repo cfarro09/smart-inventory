@@ -12,7 +12,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
-import { LineChart ,  BarChart , Bar, Treemap, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart ,  BarChart , Bar, Treemap, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,PieChart,Pie,Cell, ResponsiveContainer } from 'recharts';
 import DateRange from '../components/system/form/daterange';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -597,6 +597,20 @@ const RB_MARCA = {
     }
 }
 
+
+const RADIAN = Math.PI / 180;
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
+
 const Exhibits_share_brand = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
@@ -604,7 +618,8 @@ const Exhibits_share_brand = () => {
     const [dataGraphDate, setDataGraphDate] = useState([])
     const [categorybrandSKU, setcategorybrandSKU] = useState([])
     const [categorybrandSKUperc, setcategorybrandSKUperc] = useState([])
-    const [resultBrand, setResultBrand] = useState(0)
+    const [resultBrand, setResultBrand] = useState([])
+    const [totalbrand, settotalbrand] = useState(0)
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
@@ -697,6 +712,7 @@ const Exhibits_share_brand = () => {
         subcategoria: "",
         type_exhibit: '',
         area: '',
+        retail: ''
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -710,6 +726,7 @@ const Exhibits_share_brand = () => {
         marca: '',
         management: [],
         tipo_pvp: [],
+        retail:[],
     })
 
     useEffect(() => {
@@ -724,6 +741,7 @@ const Exhibits_share_brand = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("EXHIBICIONES")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
             ]);
             setdatafilters({
                 ...datafilters,
@@ -734,6 +752,7 @@ const Exhibits_share_brand = () => {
                 categoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
                 management: validateResArray(listResult[6], continuezyx),
+                retail: validateResArray(listResult[7], continuezyx),
             })
         })();
         return () => continuezyx = false;
@@ -753,17 +772,21 @@ const Exhibits_share_brand = () => {
             sub_category: filters.subcategoria,
             type_exhibit: filters.type_exhibit,
             area: filters.area,
+            retail: filters.retail,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
         setOpenBackdrop(true)     
         const listResultBrand = await triggeraxios('post', process.env.endpoints.selsimple, FILTERBRAND(filter_to_send))
         let resultbrandlistchildren = []
+        let counter=0
         listResultBrand.result.data.map((row)=>{
-          resultbrandlistchildren.push({name: (row.brand),children: [{name: (row.brand), cont:(row.cont)}]})
+            resultbrandlistchildren.push({name: (row.brand), cont:(row.cont)})
+            counter+=row.cont
         })
-
+        settotalbrand(counter)
         setResultBrand(resultbrandlistchildren)
+
         const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         let listbrand=[];
         let weeks=[];
@@ -829,6 +852,7 @@ const Exhibits_share_brand = () => {
                 pdf.save("download.pdf");
             })
     }
+    
 
     return (
         <Layout>
@@ -869,13 +893,13 @@ const Exhibits_share_brand = () => {
                     <SelectFunction
                         title="Retail"
                         variant="outlined"
-                        /*datatosend={datafilters.marca}
-                        optionvalue="brand"
-                        optiondesc="brand"
-                        valueselected={filters.marca}
-                        namefield="brand"
-                        descfield="brand"
-                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}*/
+                        datatosend={datafilters.retail}
+                        optionvalue="retail"
+                        optiondesc="retail"
+                        valueselected={filters.retail}
+                        namefield="retail"
+                        descfield="retail"
+                        callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <Button
                         variant="contained"
@@ -913,17 +937,16 @@ const Exhibits_share_brand = () => {
                         >
                             <div className={classes.titlecards}>Exhibiciones totales por Marca Q y %</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3}>
-                            <Treemap
-                                width={730}
-                                height={250}
-                                data={resultBrand}
-                                dataKey="cont"
-                                ratio={4 / 3}
-                                stroke="#fff"
-                                fill="#8884d8"
-                                  >
-                                  <Tooltip />
-                              </Treemap>
+                                <PieChart >
+                                    <Pie data={resultBrand} dataKey="cont" nameKey="name"  fill="#8884d8" 
+                                        cx="50%"
+                                        cy="50%">
+                                        {resultBrand.map((entry, index) => (
+                                          <Cell key={`cell-${name}`} fill={colors[index % colors.length]} />
+                                          ))}
+                                      </Pie>
+                                    <Tooltip formatter={(value,name)=>[value + "/" +(value*100/totalbrand).toFixed(2) +" %",name]}/>
+                                </PieChart  >
                             </ResponsiveContainer >
                             
                         </Box>

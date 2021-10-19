@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, Component } from 'react';
 import Layout from '../components/system/layout/layout'
-import { Box,Theme } from "@material-ui/core";
+import { Box, Theme } from "@material-ui/core";
 import triggeraxios from '../config/axiosv2';
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
@@ -12,7 +12,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
-import { AreaChart, Area, BarChart , Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DateRange from '../components/system/form/daterange';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -32,9 +32,9 @@ import {
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
 
-const brands = ["B&D","BLACKLINE","BORD","BOSCH","BOSSKO","CONTINENTAL","CUISINART","ELECTRICLIFE","ELECTROLUX","FINEZZA","FOSTERIER","HOLSTEIN","IMACO","INDURAMA","INSTAN POT","JATARIY","KENWOOD","KITCHEN AID","KORKMAZ","LOVEN","MAGEFESA","MIRAY","NEX","OSTER","PHILIPS","PRACTIKA","PRIMA","PROFESIONAL SERIES","RECCO","RECORD","TAURUS","THOMAS","VALESKA","WURDEN","ZYKLON","OTROS","DOLCE GUSTO"]
-const colors = ["#bababa","#575757","#868686","#4f4f4f","#909090","#c4c4c4","#9d9d9d","#494949","#b9b9b9","#545454","#5e5e5e","#535353","yellow","#b8b8b8","#818181","#a2a2a2","#808080","#838383","#8a8a8a","#929292","#b5b5b5","#d9d9d9","#888888","blue","#c5c5c5","#1e1e1e","#7c7c7c","#787878","#565656","#444444","#d3d3d3","red","#a9a9a9","#878787","#797979","#797979","#797979"]
-const elementBrand= (week)=>({
+const brands = ["B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "IMACO", "INDURAMA", "INSTAN POT", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO"]
+const colors = ["#bababa", "#575757", "#868686", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#535353", "yellow", "#b8b8b8", "#818181", "#a2a2a2", "#808080", "#838383", "#8a8a8a", "#929292", "#b5b5b5", "#d9d9d9", "#888888", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#565656", "#444444", "#d3d3d3", "rgb(251, 95, 95)", "#a9a9a9", "#878787", "#797979", "#797979", "#797979"]
+const elementBrand = (week) => ({
     week: week,
     "B&D": 0,
     "BLACKLINE": 0,
@@ -75,68 +75,68 @@ const elementBrand= (week)=>({
 })
 const data = [
     {
-      "name": "ENE",
-      "uv": 11,
-      "pv": 10,
+        "name": "ENE",
+        "uv": 11,
+        "pv": 10,
     },
     {
-      "name": "FEB",
-      "uv": 14,
-      "pv": 19,
+        "name": "FEB",
+        "uv": 14,
+        "pv": 19,
     },
     {
-      "name": "MAR",
-      "uv": 17,
-      "pv": 25,
+        "name": "MAR",
+        "uv": 17,
+        "pv": 25,
     },
     {
-      "name": "ABR",
-      "uv": 39,
-      "pv": 55,
+        "name": "ABR",
+        "uv": 39,
+        "pv": 55,
     },
     {
-      "name": "MAY",
-      "uv": 35,
-      "pv": 50,
+        "name": "MAY",
+        "uv": 35,
+        "pv": 50,
     },
     {
-      "name": "JUN",
-      "uv": 37,
-      "pv": 45,
+        "name": "JUN",
+        "uv": 37,
+        "pv": 45,
     },
     {
-      "name": "JUL",
-      "uv": 32,
-      "pv": 35,
+        "name": "JUL",
+        "uv": 32,
+        "pv": 35,
     },
     {
-      "name": "AGO",
-      "uv": 20,
-      "pv": 37,
+        "name": "AGO",
+        "uv": 20,
+        "pv": 37,
     },
     {
-      "name": "SEP",
-      "uv": 25,
-      "pv": 45,
+        "name": "SEP",
+        "uv": 25,
+        "pv": 45,
     },
     {
-      "name": "OCT",
-      "uv": 15,
-      "pv": 35,
+        "name": "OCT",
+        "uv": 15,
+        "pv": 35,
     },
     {
-      "name": "NOV",
-      "uv": 26,
-      "pv": 55,
+        "name": "NOV",
+        "uv": 26,
+        "pv": 55,
     },
     {
-      "name": "DIC",
-      "uv": 30,
-      "pv": 40,
+        "name": "DIC",
+        "uv": 30,
+        "pv": 40,
     },
-  ]
-  
-  const data2 = [
+]
+
+const data2 = [
     { name: 'A', x: 12, y: 23, z: 122 },
     { name: 'B', x: 22, y: 3, z: 73 },
     { name: 'C', x: 13, y: 15, z: 32 },
@@ -147,7 +147,7 @@ const data = [
     { name: 'H', x: 28, y: 32, z: 45 },
     { name: 'I', x: 19, y: 43, z: 93 },
 ];
-  const data3 = [
+const data3 = [
     { name: 'A', x: 6, y: 77, z: 17 },
     { name: 'B', x: 54, y: 15, z: 31 },
     { name: 'C', x: 9, y: 90, z: 1 },
@@ -234,7 +234,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "center",
         minWidth: 200,
     },
-    titlecards:{
+    titlecards: {
         fontWeight: "bold",
         fontSize: "1.5em",
         color: "blue"
@@ -247,6 +247,20 @@ const RB_MARCA = {
         "filter": "brand"
     }
 }
+
+const CustomTooltip = ({ active, payload, label }) => {
+    console.log(payload[0])
+    if (active && payload && payload.length) {
+        return (
+            <div className="custom-tooltip">
+                <p className="label">{`${label} : ${payload[0].value}`}</p>
+
+            </div>
+        );
+    }
+
+    return null;
+};
 
 const Share_by_brand = () => {
     const classes = useStyles();
@@ -358,7 +372,7 @@ const Share_by_brand = () => {
         banda: [],
         marca: [],
         tipo_pvp: [],
-        retail:[],
+        retail: [],
     })
 
     useEffect(() => {
@@ -391,7 +405,7 @@ const Share_by_brand = () => {
     }, [])
     async function filtrar() {
         setsearchdone(true)
-        let count=0;
+        let count = 0;
         const filter_to_send = {
             format: filters.format,
             channel: filters.channel,
@@ -408,58 +422,60 @@ const Share_by_brand = () => {
         }
         setOpenBackdrop(true)
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
-        listResult.result.data.map((row)=>{
+        listResult.result.data.map((row) => {
             count += row.cont
         })
         setDataGraph(listResult.result.data)
         const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTERDATE(filter_to_send))
-        let listbrand=[];
-        let weeks=[];
-        let totalweek=[];
+        let listbrand = [];
+        let weeks = [];
+        let totalweek = [];
 
-        listResultDate.result.data.map(row=>{
-            if(!weeks.includes(row.Week)) {weeks.push(row.Week);totalweek.push(0)}
+        listResultDate.result.data.map(row => {
+            if (!weeks.includes(row.Week)) { weeks.push(row.Week); totalweek.push(0) }
         })
-        listResultDate.result.data.map(row=>{
+        listResultDate.result.data.map(row => {
             totalweek[weeks.indexOf(row.Week)] += parseInt(row.cnt)
         })
-        weeks.map(row=>{
+        weeks.map(row => {
             listbrand.push(elementBrand(row))
         })
-        listResultDate.result.data.map(row=>{
-            listbrand.forEach(list=>{
-                if(list.week===row.Week){
-                    list[row.brand]= (parseInt(row.cnt)/totalweek[weeks.indexOf(row.Week)])*100
+        listResultDate.result.data.map(row => {
+            listbrand.forEach(list => {
+                if (list.week === row.Week) {
+                    list[row.brand] = Math.floor((parseInt(row.cnt) / totalweek[weeks.indexOf(row.Week)]) * 100)
                 }
             })
         })
+        console.log(listResultDate)
+        console.log(listbrand)
         setDataGraphDate(listbrand)
         settotalSKA(count)
 
         const listResultSKU = await triggeraxios('post', process.env.endpoints.selsimple, FILTERGraph1(filter_to_send))
-        let categories= []
-        let skucategory=[];
-        let skucategoryperc=[];
-        let skucategorytotal=[];
-        listResultSKU.result.data.map(row=>{
-            if(!categories.includes(row.subcategory)) {categories.push(row.subcategory);skucategorytotal.push(0)}
+        let categories = []
+        let skucategory = [];
+        let skucategoryperc = [];
+        let skucategorytotal = [];
+        listResultSKU.result.data.map(row => {
+            if (!categories.includes(row.subcategory)) { categories.push(row.subcategory); skucategorytotal.push(0) }
         })
-        listResultSKU.result.data.map(row=>{
+        listResultSKU.result.data.map(row => {
             skucategorytotal[categories.indexOf(row.subcategory)] += parseInt(row.cont)
         })
-        categories.map(row=>{
+        categories.map(row => {
             skucategory.push(elementBrand(row))
             skucategoryperc.push(elementBrand(row))
         })
-        listResultSKU.result.data.map(row=>{
-            skucategory.forEach(list=>{
-                if(list.week===row.subcategory){
-                    list[row.brand]=parseInt(row.cont)
+        listResultSKU.result.data.map(row => {
+            skucategory.forEach(list => {
+                if (list.week === row.subcategory) {
+                    list[row.brand] = parseInt(row.cont)
                 }
             })
-            skucategoryperc.forEach(list=>{
-                if(list.week===row.subcategory){
-                    list[row.brand]=(parseInt(row.cont)/skucategorytotal[categories.indexOf(row.subcategory)])*100
+            skucategoryperc.forEach(list => {
+                if (list.week === row.subcategory) {
+                    list[row.brand] = (parseInt(row.cont) / skucategorytotal[categories.indexOf(row.subcategory)]) * 100
                 }
             })
         })
@@ -574,138 +590,143 @@ const Share_by_brand = () => {
                 </div>
                 {searchdone &&
 
-                <div style={{ display: 'flex', gap: 8, flexDirection: 'column' }} id="divToPrint">
-                    <div className={classes.replacerowzyx}>
-                        <Box
-                            className={classes.itemCard}
-                        >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca</div>
-                            <TableContainer component={Paper}>
-                                <Table className={classes.table} aria-label="simple table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell></TableCell>
-                                            <TableCell align="center">N* SKU's</TableCell>
-                                            <TableCell align="center">Partic %</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {
-                                            dataGraph.map((row,i) =>
+                    <div style={{ display: 'flex', gap: 8, flexDirection: 'column' }} id="divToPrint">
+                        <div className={classes.replacerowzyx}>
+                            <Box
+                                className={classes.itemCard}
+                            >
+                                <div className={classes.titlecards}>Cantidad de SKUS por Marca</div>
+                                <TableContainer component={Paper}>
+                                    <Table className={classes.table} aria-label="simple table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell></TableCell>
+                                                <TableCell align="center">N* SKU's</TableCell>
+                                                <TableCell align="center">Partic %</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {
+                                                dataGraph.map((row, i) =>
                                                 (<TableRow key={`${row.brand}-${i}`} >
-                                                    <TableCell style={{padding:5}} align="center">{row.brand}</TableCell>
-                                                    <TableCell style={{padding:5}} align="center">{row.cont}</TableCell>
-                                                    <TableCell style={{padding:5}} align="center">{parseFloat(row.percent).toFixed(2)}%</TableCell>
+                                                    <TableCell style={{ padding: 5 }} align="center">{row.brand}</TableCell>
+                                                    <TableCell style={{ padding: 5 }} align="center">{row.cont}</TableCell>
+                                                    <TableCell style={{ padding: 5 }} align="center">{parseFloat(row.percent).toFixed(2)}%</TableCell>
                                                 </TableRow>))
+                                            }
+                                            <TableRow>
+                                                <TableCell align="center"></TableCell>
+                                                <TableCell align="center">{totalSKA}</TableCell>
+                                                <TableCell align="center">100%</TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Box>
+                            <Box
+                                className={classes.itemCard}
+                            >
+                                <div className={classes.titlecards}>Cantidad de SKUS por Marca por Semana</div>
+                                <ResponsiveContainer width={"100%"} aspect={4.0 / 3.5}>
+                                    <BarChart data={dataGraphDate}>
+                                        <XAxis dataKey="week" />
+                                        <YAxis domain={[0, 100]} />
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <Tooltip
+                                            content={<CustomTooltip />}
+                                            // labelFormatter={(value) => [<b>Semana {value}</b>]}
+                                            // formatter={(value, name) => [value.toFixed(2) + " %", name]}
+                                        />
+                                        {
+                                            brands.map((brand, i) => {
+                                                console.log(brand)
+                                                return <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
+                                            })
                                         }
-                                        <TableRow>
-                                            <TableCell align="center"></TableCell>
-                                            <TableCell align="center">{totalSKA}</TableCell>
-                                            <TableCell align="center">100%</TableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </Box>
-                        <Box
-                            className={classes.itemCard}
-                        >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca por Semana</div>
-                            <ResponsiveContainer width={"100%"} aspect={4.0/3.5}>
-                                <BarChart data={dataGraphDate}>
-                                    <XAxis dataKey="week"/>
-                                    <YAxis  domain={[0, 100]} />
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <Tooltip labelFormatter={(value)=>[<b>Semana {value}</b>]}  formatter={(value,name)=>[value.toFixed(2) + " %",name]} />
-                                    {
-                                        brands.map((brand,i)=>(
-                                            <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
-                                        ))
-                                    }
-                                </BarChart>
-                            </ResponsiveContainer >
-                            
-                        </Box>
-                        
-                        
+                                    </BarChart>
+                                </ResponsiveContainer >
+
+                            </Box>
+
+
+                        </div>
+                        <div className={classes.replacerowzyx}>
+                            <Box
+                                className={classes.itemCard}
+                            >
+                                <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría</div>
+                                <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
+                                    <BarChart data={categorybrandSKU} >
+                                        <XAxis dataKey="week" />
+                                        <YAxis />
+                                        <Tooltip formatter={(value, name) => (value > 0 ? [value, name] : [])} />
+                                        <CartesianGrid />
+                                        {
+                                            brands.map((brand, i) => (
+                                                <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
+                                            ))
+                                        }
+                                    </BarChart>
+                                </ResponsiveContainer >
+
+                            </Box>
+                            <Box
+                                className={classes.itemCard}
+                            >
+                                <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría %</div>
+                                <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
+                                    <BarChart data={categorybrandSKUperc} >
+                                        <XAxis dataKey="week" />
+                                        <YAxis domain={[0, 100]} />
+                                        <Tooltip formatter={(value, name) => [value.toFixed(2) + " %", name]} />
+                                        <CartesianGrid />
+                                        {
+                                            brands.map((brand, i) => (
+                                                <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
+                                            ))
+                                        }
+                                    </BarChart>
+                                </ResponsiveContainer >
+
+                            </Box>
+                        </div>
+                        <div className={classes.replacerowzyx}>
+                            <Box
+                                className={classes.itemCard}
+                            >
+                                <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena</div>
+                                <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
+                                    <BarChart data={data2} >
+                                        <CartesianGrid />
+                                        <XAxis dataKey="name" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Bar dataKey="x" stackId="a" fill="blue" />
+                                        <Bar dataKey="y" stackId="a" fill="red" />
+                                        <Bar dataKey="z" stackId="a" fill="yellow" />
+                                    </BarChart>
+                                </ResponsiveContainer >
+
+                            </Box>
+                            <Box
+                                className={classes.itemCard}
+                            >
+                                <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena %</div>
+                                <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
+                                    <BarChart data={data3} >
+                                        <CartesianGrid />
+                                        <XAxis dataKey="name" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Bar dataKey="x" stackId="a" fill="blue" />
+                                        <Bar dataKey="y" stackId="a" fill="red" />
+                                        <Bar dataKey="z" stackId="a" fill="yellow" />
+                                    </BarChart>
+                                </ResponsiveContainer >
+
+                            </Box>
+                        </div>
                     </div>
-                    <div className={classes.replacerowzyx}>
-                        <Box
-                            className={classes.itemCard}
-                        >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría</div>
-                            <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
-                                <BarChart data={categorybrandSKU} >
-                                    <XAxis dataKey="week" />
-                                    <YAxis />
-                                    <Tooltip formatter={(value,name)=>(value>0?[value,name]:[])}/>
-                                    <CartesianGrid />
-                                    {
-                                        brands.map((brand,i)=>(
-                                            <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]}/>
-                                        ))
-                                    }
-                                </BarChart>
-                            </ResponsiveContainer >
-                            
-                        </Box>
-                        <Box
-                            className={classes.itemCard}
-                        >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría %</div>
-                            <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
-                                <BarChart data={categorybrandSKUperc} >
-                                    <XAxis dataKey="week" />
-                                    <YAxis  domain={[0, 100]} />
-                                    <Tooltip formatter={(value,name)=>[value.toFixed(2) + " %",name]}/>
-                                    <CartesianGrid />
-                                    {
-                                        brands.map((brand,i)=>(
-                                            <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]}/>
-                                        ))
-                                    }
-                                </BarChart>
-                            </ResponsiveContainer >
-                            
-                        </Box>
-                    </div>
-                    <div className={classes.replacerowzyx}>
-                        <Box
-                            className={classes.itemCard}
-                        >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena</div>
-                            <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
-                                <BarChart data={data2} >
-                                    <CartesianGrid />
-                                    <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Bar dataKey="x" stackId="a" fill="blue" />
-                                    <Bar dataKey="y" stackId="a" fill="red" />
-                                    <Bar dataKey="z" stackId="a" fill="yellow" />
-                                </BarChart>
-                            </ResponsiveContainer >
-                            
-                        </Box>
-                        <Box
-                            className={classes.itemCard}
-                        >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena %</div>
-                            <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
-                                <BarChart data={data3} >
-                                    <CartesianGrid />
-                                    <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Bar dataKey="x" stackId="a" fill="blue" />
-                                    <Bar dataKey="y" stackId="a" fill="red" />
-                                    <Bar dataKey="z" stackId="a" fill="yellow" />
-                                </BarChart>
-                            </ResponsiveContainer >
-                            
-                        </Box>
-                    </div>
-                </div>
                 }
             </div>
 

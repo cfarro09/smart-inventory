@@ -155,7 +155,7 @@ const Photo_portal = () => {
         var zip = new JSZip();
         var count = 0;
         var zipFilename = "Pictures.zip";
-
+        setOpenBackdrop(true)
         dataGraph.map((row,i)=>{
             JSZipUtils.getBinaryContent(row.photo_url, function (err, data) {
                 if (err) {
@@ -167,6 +167,7 @@ const Photo_portal = () => {
                 if (count == dataGraph.length) {
                     zip.generateAsync({ type: 'blob' }).then(function (content) {
                         saveAs(content, zipFilename);
+                        setOpenBackdrop(false)
                     });
                 }
         });
@@ -383,7 +384,7 @@ const Photo_portal = () => {
                                     style={{ height: "150px", width: "150px", objectFit: 'cover' }}
                                     alt="image.jpg"
                                     src={row.photo_url}
-                                    crossOrigin="*"
+                                    // crossOrigin="*"
                                     onClick={() => setLightBox({ open: true, index: i, images: dataGraph.map(x => x.photo_url) })}
                                 />
                             </HtmlTooltip>

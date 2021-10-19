@@ -18,7 +18,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import popupsContext from '../context/pop-ups/pop-upsContext';
- 
+
 import {
     Search as SearchIcon,
     GetApp as GetAppIcon,
@@ -151,7 +151,6 @@ const User = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("model")),
             ]);
             console.log(validateResArray(listResult[0], continuezyx))
             setdatafilters({
@@ -162,7 +161,6 @@ const User = () => {
                 store_name: validateResArray(listResult[3], continuezyx),
                 categoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
-                SKU: validateResArray(listResult[6], continuezyx),
             })
         })();
         return () => continuezyx = false;

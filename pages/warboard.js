@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, Component, PropTypes,Fragment} from 'react';
+import React, { useState, useContext, useEffect, Component, PropTypes, Fragment } from 'react';
 import Layout from '../components/system/layout/layout'
 import triggeraxios from '../config/axiosv2';
 
@@ -19,7 +19,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { jsPDF } from "jspdf";
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
 import html2canvas from 'html2canvas';
 import InputFormk from '../components/system/form/inputformik';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
@@ -73,63 +74,63 @@ function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
 }
 
-const headerfields=[
-    {name:"brand", title:"marca"},
-    {name:"subcategory", title:"subcategoría"},
-    {name:"regular_price", title:"precio regular"},
-    {name:"prom_price", title:"precio promoción"},
+const headerfields = [
+    { name: "brand", title: "marca" },
+    { name: "subcategory", title: "subcategoría" },
+    { name: "regular_price", title: "precio regular" },
+    { name: "prom_price", title: "precio promoción" },
 ]
-const fields=[
+const fields = [
     /*ARROCERA*/[
-        {name:"capacity", title:"capacidad"},
-        {name:"watts", title:"watts"},
-        {name:"finish", title:"acabado"},
-        {name:"color", title:"color"},
-        {name:"bowl_material", title:"material del tazón"},
-        {name:"bowl_size", title:"medida del tazón"},
-        {name:"coating", title:"recubrimiento"},
-        {name:"functions", title:"funciones"},
-        {name:"lid_material", title:"material de la tapa"},
-        {name:"lid_type", title:"tipo de tapa"},
-        {name:"detachable_cable", title:"cable desmontable"},
-        {name:"steamer", title:"vaporera"},
-        {name:"steamer_position", title:"posición de la vaporera"},
-        {name:"steamer_material", title:"material de la vaporera"},
-        {name:"accessories", title:"accesorios"},
-        {name:"temperature_control", title:"control de temperatura"},
+        { name: "capacity", title: "capacidad" },
+        { name: "watts", title: "watts" },
+        { name: "finish", title: "acabado" },
+        { name: "color", title: "color" },
+        { name: "bowl_material", title: "material del tazón" },
+        { name: "bowl_size", title: "medida del tazón" },
+        { name: "coating", title: "recubrimiento" },
+        { name: "functions", title: "funciones" },
+        { name: "lid_material", title: "material de la tapa" },
+        { name: "lid_type", title: "tipo de tapa" },
+        { name: "detachable_cable", title: "cable desmontable" },
+        { name: "steamer", title: "vaporera" },
+        { name: "steamer_position", title: "posición de la vaporera" },
+        { name: "steamer_material", title: "material de la vaporera" },
+        { name: "accessories", title: "accesorios" },
+        { name: "temperature_control", title: "control de temperatura" },
     ],
     /*LICUADORA*/[
-        {name:"base_material", title:"material de la base"},
-        {name:"color", title:"color"},
-        {name:"speeds", title:"velocidades"},
-        {name:"push_button", title:"pulsador"},
-        {name:"power", title:"potencia"},
-        {name:"tumbler_capacity", title:"capacidad del vaso"},
-        {name:"cover_with_measure", title:"sobretapa con medida"},
-        {name:"cup_material", title:"material del vaso"},
-        {name:"coupling_material", title:"material de acople"},
-        {name:"coupling_position", title:"posición de acople"},
-        {name:"reversible_technology", title:"tecnología reversible"},
-        {name:"num_automatic_programs", title:"cantidad de programas automáticos"},
-        {name:"automatic_programs", title:"programas automáticos"},
-        {name:"shut_off_times", title:"tiempos de apagado"},
-        {name:"accessories", title:"accesorios"},
-        {name:"blade_material", title:"material de las cuchillas"},
-        {name:"number_of_blades", title:"numero de aspas"},
+        { name: "base_material", title: "material de la base" },
+        { name: "color", title: "color" },
+        { name: "speeds", title: "velocidades" },
+        { name: "push_button", title: "pulsador" },
+        { name: "power", title: "potencia" },
+        { name: "tumbler_capacity", title: "capacidad del vaso" },
+        { name: "cover_with_measure", title: "sobretapa con medida" },
+        { name: "cup_material", title: "material del vaso" },
+        { name: "coupling_material", title: "material de acople" },
+        { name: "coupling_position", title: "posición de acople" },
+        { name: "reversible_technology", title: "tecnología reversible" },
+        { name: "num_automatic_programs", title: "cantidad de programas automáticos" },
+        { name: "automatic_programs", title: "programas automáticos" },
+        { name: "shut_off_times", title: "tiempos de apagado" },
+        { name: "accessories", title: "accesorios" },
+        { name: "blade_material", title: "material de las cuchillas" },
+        { name: "number_of_blades", title: "numero de aspas" },
     ],
     /*BATIDORA*/[
-        {name:"subcategory", title:"subcategoría"},
-        {name:"power", title:"potencia"},
-        {name:"speeds", title:"velocidades"},
-        {name:"turbo", title:"turbo"},
-        {name:"base_material", title:"material de la base"},
-        {name:"color", title:"color"},
-        {name:"kneading_hook", title:"gancho amasador"},
-        {name:"frothing_hook", title:"gancho espumador"},
-        {name:"double_motor", title:"doble motor"},
-        {name:"bowl_material", title:"material del tazón"},
-        {name:"capacity", title:"capacidad"},
-        {name:"accessories", title:"accesorios"},
+        { name: "subcategory", title: "subcategoría" },
+        { name: "power", title: "potencia" },
+        { name: "speeds", title: "velocidades" },
+        { name: "turbo", title: "turbo" },
+        { name: "base_material", title: "material de la base" },
+        { name: "color", title: "color" },
+        { name: "kneading_hook", title: "gancho amasador" },
+        { name: "frothing_hook", title: "gancho espumador" },
+        { name: "double_motor", title: "doble motor" },
+        { name: "bowl_material", title: "material del tazón" },
+        { name: "capacity", title: "capacidad" },
+        { name: "accessories", title: "accesorios" },
     ],
 ]
 
@@ -233,7 +234,7 @@ const BulkLoad = () => {
         banda: [],
         marca: [],
         tipo_pvp: [],
-        retail:[],
+        retail: [],
     })
 
     useEffect(() => {
@@ -268,16 +269,16 @@ const BulkLoad = () => {
     useEffect(() => {
         console.log(fieldstoshow)
     }, [fieldstoshow])
-    
+
     async function filtrar() {
         setsearchdone(true)
         setpvpprom(true)
         setpvpreg(true)
         setcategorysearchfield(category.category)
 
-        if(filters.tipo_pvp==="prom_price") setpvpreg(false)
-        if(filters.tipo_pvp==="regular_price") setpvpprom(false)
-        
+        if (filters.tipo_pvp === "prom_price") setpvpreg(false)
+        if (filters.tipo_pvp === "regular_price") setpvpprom(false)
+
         const filter_to_send = {
             format: filters.format,
             channel: filters.channel,
@@ -298,23 +299,49 @@ const BulkLoad = () => {
         setDataGraph(listResult.result.data)
     }
     function descargar() {
-        html2canvas(document.getElementById('divToPrint'))
-            .then((canvas) => {
-                const pdf = new jsPDF('l', 'in', [100,100]);
-                var width = pdf.internal.pageSize.getWidth();
-                var height = pdf.internal.pageSize.getHeight();
-                pdf.addImage(canvas.toDataURL('image/png'), 'JPEG', 0, 0, width, height);
-                pdf.save("download.pdf");
-            })
+
+        var doc = new jsPDF({
+            orientation: "landscape",
+            unit: "in",
+        });
+        doc.autoTable({
+            html: '#maintable',
+            theme: 'plain',
+            columnWidth: 'wrap',
+
+            styles: { lineWidth: 0.01, lineColor: '#FFF', cellWidth: 'wrap', overflow: 'linebreak'
+        },
+            headStyles: { fillColor: '#afabaa', textColor: '#FFF', valign: 'middle', halign: 'center' },
+            columnStyles: {
+                0: { fillColor: '#bfbfbf', halign: 'left', valign: 'middle' }, 2: {
+                    cellWidth: 'auto',
+                    columnWidth: 'auto'
+
+                }
+            },
+            bodyStyles: { halign: 'center', fillColor: '#bfbfbf', valign: 'middle' },
+            footStyles: { halign: 'right', fillColor: '#bfbfbf' },
+            margin: { top: 0.1, left: 0.1, right: 0.1, bottom: 0.1 }
+        })
+        doc.save('table.pdf');
+
+        // html2canvas(document.getElementById('divToPrint'))
+        //     .then((canvas) => {
+        //         const pdf = new jsPDF('l', 'in', [100,100]);
+        //         var width = pdf.internal.pageSize.getWidth();
+        //         var height = pdf.internal.pageSize.getHeight();
+        //         pdf.addImage(canvas.toDataURL('image/png'), 'JPEG', 0, 0, width, height);
+        //         pdf.save("download.pdf");
+        //     })
     }
     function setcategorysearchfield(value) {
-        if(value.includes("ARROCERA")){
+        if (value.includes("ARROCERA")) {
             setfieldstoshow(fields[0])
         }
-        else if(value.includes("LICUADORA")){
+        else if (value.includes("LICUADORA")) {
             setfieldstoshow(fields[1])
         }
-        else if(value.includes("BATIDORA")){
+        else if (value.includes("BATIDORA")) {
             setfieldstoshow(fields[2])
         }
     }
@@ -344,7 +371,7 @@ const BulkLoad = () => {
                             setcategory(value)
                         }}
                     />
-                    
+
                     <SelectFunction
                         title="Marca"
                         datatosend={datafilters.marca}
@@ -381,7 +408,7 @@ const BulkLoad = () => {
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
                         defaultValue="prom_price"
-                        onChange={(event) => { setfilters({ ...filters, tipo_pvp: event.target.value })}}
+                        onChange={(event) => { setfilters({ ...filters, tipo_pvp: event.target.value }) }}
                     >
                         <FormControlLabel value="todopvp" control={<Radio />} label="Todo PVP" />
                         <FormControlLabel value="prom_price" control={<Radio />} label="Promo PVP" />
@@ -415,80 +442,80 @@ const BulkLoad = () => {
                     }
                 </div>
                 {searchdone &&
-                <div style={{ display: 'flex', gap: 8 , maxHeight: "84vh",}} id="divToPrint">
-                    <TableContainer component={Paper}>
-                        <Table stickyHeader className={classes.table} aria-label="simple table">
-                            <TableHead style={{zIndex: 1000}}>
-                                
-                                <TableRow style={{position: "sticky",top: 0,zIndex: 1000}} >
-                                    <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">modelo</TableCell>
-                                    {dataGraph.map((row,j)=>(
-                                        <TableCell key={`graphic2${j}`} className={classes.datacell} align="center" component="th" scope="row">{row.model}</TableCell>
-                                    ))}
+                    <div id="divToPrint">
+                        <TableContainer component={Paper}>
+                            <Table stickyHeader id="maintable" className={classes.table} aria-label="simple table" >
+                                <TableHead style={{ zIndex: 1000 }}>
 
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell className={classes.datacelltitle} align="right" component="th" scope="row"></TableCell>
-                                    {dataGraph.map((row,j)=>(
-                                        <TableCell key={`graphic${j}`} className={classes.datacell} align="center" component="th" scope="row"><img style={{ width: "100px", height: "100px" }} alt="image.jpg" src={row.graphic}></img></TableCell>
-                                    ))}
-
-                                </TableRow>
-                            </TableBody>
-                            <TableBody>
-                                {headerfields.map((field,i)=>{
-                                    if(field.name === "regular_price"){
-                                        if(pvppreg){
-                                            return(
-                                            <TableRow key={`fieldstoshow${i}`}>
-                                                <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{field.title}</TableCell>
-                                                {dataGraph.map((row,j)=>(
-                                                
-                                                    <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" component="th" scope="row">S/.{parseFloat(row[field.name]).toFixed(2)}</TableCell>
-                                                ))}
-
-                                            </TableRow>)
-                                        }else return(null)
-                                    }
-                                    else if (field.name === "prom_price"){
-                                        if(pvpprom){
-                                            return(
-                                            <TableRow key={`fieldstoshow${i}`}>
-                                                <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{field.title}</TableCell>
-                                                {dataGraph.map((row,j)=>(
-                                                
-                                                    <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" component="th" scope="row">S/.{parseFloat(row[field.name]).toFixed(2)}</TableCell>
-                                                ))}
-
-                                            </TableRow>)
-                                        }else return(null)
-                                    }
-                                    else
-                                    {
-                                    return (<TableRow key={`fieldstoshow${i}`}>
-                                        <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{field.title}</TableCell>
-                                        {dataGraph.map((row,j)=>(
-                                        
-                                            <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" component="th" scope="row">{row[field.name]}</TableCell>
-                                        ))}
-
-                                    </TableRow>)}
-                                })}
-                                {fieldstoshow.map((field,i)=>(
-                                    <TableRow key={`fieldstoshow${i}`}>
-                                        <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{field.title}</TableCell>
-                                        {dataGraph.map((row,j)=>(
-                                            <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" component="th" scope="row">{row[field.name]}</TableCell>
+                                    <TableRow style={{ position: "sticky", top: 0, zIndex: 1000 }} >
+                                        <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">modelo</TableCell>
+                                        {dataGraph.map((row, j) => (
+                                            <TableCell key={`graphic2${j}`} className={classes.datacell} align="center" component="th" scope="row">{row.model}</TableCell>
                                         ))}
 
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </div>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell className={classes.datacelltitle} align="right" component="th" scope="row"></TableCell>
+                                        {dataGraph.map((row, j) => (
+                                            <TableCell key={`graphic${j}`} className={classes.datacell} align="center" component="th" scope="row"><img style={{ width: "100px", height: "100px" }} alt="image.jpg" src={row.graphic}></img></TableCell>
+                                        ))}
+
+                                    </TableRow>
+                                </TableBody>
+                                <TableBody>
+                                    {headerfields.map((field, i) => {
+                                        if (field.name === "regular_price") {
+                                            if (pvppreg) {
+                                                return (
+                                                    <TableRow key={`fieldstoshow${i}`}>
+                                                        <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{field.title}</TableCell>
+                                                        {dataGraph.map((row, j) => (
+
+                                                            <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" component="th" scope="row">S/.{parseFloat(row[field.name]).toFixed(2)}</TableCell>
+                                                        ))}
+
+                                                    </TableRow>)
+                                            } else return (null)
+                                        }
+                                        else if (field.name === "prom_price") {
+                                            if (pvpprom) {
+                                                return (
+                                                    <TableRow key={`fieldstoshow${i}`}>
+                                                        <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{field.title}</TableCell>
+                                                        {dataGraph.map((row, j) => (
+
+                                                            <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" component="th" scope="row">S/.{parseFloat(row[field.name]).toFixed(2)}</TableCell>
+                                                        ))}
+
+                                                    </TableRow>)
+                                            } else return (null)
+                                        }
+                                        else {
+                                            return (<TableRow key={`fieldstoshow${i}`}>
+                                                <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{field.title}</TableCell>
+                                                {dataGraph.map((row, j) => (
+
+                                                    <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" component="th" scope="row">{row[field.name]}</TableCell>
+                                                ))}
+
+                                            </TableRow>)
+                                        }
+                                    })}
+                                    {fieldstoshow.map((field, i) => (
+                                        <TableRow key={`fieldstoshow${i}`}>
+                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{field.title}</TableCell>
+                                            {dataGraph.map((row, j) => (
+                                                <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" component="th" scope="row">{row[field.name]}</TableCell>
+                                            ))}
+
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>
                 }
             </div>
 

@@ -1,8 +1,9 @@
-import React, { useState, useEffect, Component, Fragment } from 'react';
+import React, { useState, useContext, useEffect, Component, PropTypes } from 'react';
 import Layout from '../components/system/layout/layout'
 import triggeraxios from '../config/axiosv2';
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
+import TableZyx from '../components/system/form/table-simple';
 
 import Button from '@material-ui/core/Button';
 import Radio from '@material-ui/core/Radio';
@@ -10,25 +11,25 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
+import { BarChart, Bar, Sector, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DateRange from '../components/system/form/daterange';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import Box from '@material-ui/core/Box';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
-import Tooltip from '@material-ui/core/Tooltip';
 import InputFormk from '../components/system/form/inputformik';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import Typography from '@material-ui/core/Typography';
-import JSZip from "jszip";
-import JSZipUtils from "jszip-utils";
-import { saveAs } from 'file-saver';
 import popupsContext from '../context/pop-ups/pop-upsContext';
+
 import {
     Search as SearchIcon,
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
-
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -73,16 +74,28 @@ function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
 }
 
-const HtmlTooltip = withStyles((theme) => ({
-    tooltip: {
-        backgroundColor: '#f5f5f9',
-        margin: "-120px 0",
-        color: 'rgba(0, 0, 0, 0.87)',
-        maxWidth: 220,
-        fontSize: theme.typography.pxToRem(12),
-        border: '1px solid #dadde9',
-    },
-}))(Tooltip);
+const rows = [
+    { id: "667", fecha: "29/09/2021",hora: "19:23",activo: "ORE",grupos: "FFVV",cliente: "generic",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "668", fecha: "29/09/2021",hora: "19:24",activo: "KANA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "669", fecha: "29/09/2021",hora: "19:25",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "670", fecha: "29/09/2021",hora: "19:26",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "671", fecha: "29/09/2021",hora: "19:27",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "672", fecha: "29/09/2021",hora: "19:30",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "673", fecha: "29/09/2021",hora: "19:27",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "674", fecha: "29/09/2021",hora: "19:22",activo: "KANA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "675", fecha: "29/09/2021",hora: "19:21",activo: "KANA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "676", fecha: "29/09/2021",hora: "19:24",activo: "KANA",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "677", fecha: "29/09/2021",hora: "19:21",activo: "ORE",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "678", fecha: "29/09/2021",hora: "19:24",activo: "ORE",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "679", fecha: "29/09/2021",hora: "19:23",activo: "ORE",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "680", fecha: "29/09/2021",hora: "19:21",activo: "KANA",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "681", fecha: "29/09/2021",hora: "19:21",activo: "KANA",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "682", fecha: "29/09/2021",hora: "19:24",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "683", fecha: "29/09/2021",hora: "19:21",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "684", fecha: "29/09/2021",hora: "20:22",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "685", fecha: "29/09/2021",hora: "21:20",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+];
+
 
 const paramTemplate = {
     method: "SP_SEL_TEMPLATE",
@@ -96,7 +109,7 @@ const GET_FILTER = (filter) => ({
     }
 })
 const FILTER = (filter) => ({
-    method: "SP_PHOTO_PORTAL",
+    method: "SP_EXHIBIT_DB",
     data: filter
 })
 
@@ -134,15 +147,16 @@ const RB_MARCA = {
     }
 }
 
-const Photo_portal = () => {
+const Exhibits_data_base = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
-    const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
 
     const [disablebutton, setdisablebutton] = useState(true)
+    const { setLightBox, setOpenBackdrop } = useContext(popupsContext);
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -150,27 +164,71 @@ const Photo_portal = () => {
             key: 'selection'
         }
     ]);
-    function generateZIP() {
-        console.log('TEST');
-        var zip = new JSZip();
-        var count = 0;
-        var zipFilename = "Pictures.zip";
-
-        dataGraph.map((row,i)=>{
-            JSZipUtils.getBinaryContent(row.photo_url, function (err, data) {
-                if (err) {
-                    //throw err; // or handle the error
-                }
-                zip.file(`${row.title}-${i}.jpg`, data, { binary: true });
-                count++;
-                if (count == dataGraph.length) {
-                    zip.generateAsync({ type: 'blob' }).then(function (content) {
-                        saveAs(content, zipFilename);
-                    });
-                }
-        });
-        })
-    }
+    const columns = React.useMemo(
+        () => [
+            {
+                Header: 'Hora',
+                accessor: 'form_timestamp',
+            },
+            {
+                Header: 'Retail',
+                accessor: 'retail',
+            },
+            {
+                Header: 'Tienda',
+                accessor: 'poiname',
+            },
+            {
+                Header: 'Marca',
+                accessor: 'brand'
+            },
+            {
+                Header: 'Categoría',
+                accessor: 'category'
+            },
+            {
+                Header: 'Modelo',
+                accessor: 'model'
+            },
+            {
+                Header: 'Precio regular',
+                accessor: 'regular_price'
+            },
+            {
+                Header: 'Precio promocional',
+                accessor: 'prom_price'
+            },
+            {
+                Header: 'Mecanica de la promocion',
+                accessor: 'trading_option'
+            },
+            {
+                Header: 'Url de la foto',
+                accessor: 'photo_url'
+            },
+            {
+                Header: 'Nombre',
+                accessor: 'name',
+            },
+            {
+                Header: 'Dispositivo',
+                accessor: 'device',
+            },
+            {
+                Header: 'Posición',
+                accessor: 'position',
+            },
+            {
+                Header: 'Dirección',
+                accessor: 'address',
+            },
+            {
+                Header: 'ID',
+                accessor: 'formid',
+            },
+        ],
+        []
+    );
 
     const [filters, setfilters] = useState({
         format: '',
@@ -178,10 +236,12 @@ const Photo_portal = () => {
         department: '',
         store_name: '',
         categoria: 1,
+        management: '',
         SKU: '',
-        banda: '',
-        marca: '',
-        tipo_pvp: 'prom_price',
+        marca: "",
+        subcategoria: "",
+        type_exhibit: '',
+        area: '',
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -192,7 +252,8 @@ const Photo_portal = () => {
         categoria: [],
         SKU: [],
         banda: [],
-        marca: [],
+        marca: '',
+        management: [],
         tipo_pvp: [],
     })
 
@@ -205,10 +266,10 @@ const Photo_portal = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("EXHIBICIONES")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
             ]);
-            
             setdatafilters({
                 ...datafilters,
                 channel: validateResArray(listResult[1], continuezyx),
@@ -217,7 +278,9 @@ const Photo_portal = () => {
                 store_name: validateResArray(listResult[3], continuezyx),
                 categoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
+                management: validateResArray(listResult[6], continuezyx),
             })
+            console.log(listResult)
         })();
         return () => continuezyx = false;
     }, [])
@@ -227,7 +290,8 @@ const Photo_portal = () => {
         }
     }, [])
     async function filtrar() {
-        //setWaitFilter(true)
+        setsearchdone(true)
+        console.log(filters.marca)
         const filter_to_send = {
             format: filters.format,
             channel: filters.channel,
@@ -236,8 +300,10 @@ const Photo_portal = () => {
             category: filters.categoria,
             sku_code: filters.SKU,
             brand: filters.marca,
-            sub_category: '',
-            price: filters.tipo_pvp,
+            management: filters.management,
+            sub_category: filters.subcategoria,
+            type_exhibit: filters.type_exhibit,
+            area: filters.area,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
@@ -259,7 +325,7 @@ const Photo_portal = () => {
 
     return (
         <Layout>
-            <div style={{ display: 'flex', gap: 16, flexDirection: 'column' }}>
+            <div style={{ display: 'flex', gap: 16, flexDirection: 'row' }}>
                 <div className={classes.containerFilters}>
                     <DateRange
                         classname={classes.itemFilter}
@@ -293,17 +359,6 @@ const Photo_portal = () => {
                         descfield="brand"
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
                     />
-
-                    <SelectFunction
-                        title="SKU"
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
-                        variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
-                    />
                     <SelectFunction
                         title="Retail"
                         variant="outlined"
@@ -315,14 +370,6 @@ const Photo_portal = () => {
                         descfield="brand"
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}*/
                     />
-                    <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
-                        defaultValue="prom_price"
-                        onChange={(event) => { setfilters({ ...filters, tipo_pvp: event.target.value }) }}
-                    >
-                        <FormControlLabel value="todopvp" control={<Radio />} label="Todo PVP" />
-                        <FormControlLabel value="prom_price" control={<Radio />} label="Promo PVP" />
-                        <FormControlLabel value="regular_price" control={<Radio />} label="Regular PVP" />
-                    </RadioGroup>
                     <Button
                         variant="contained"
                         color="primary"
@@ -330,19 +377,12 @@ const Photo_portal = () => {
                         disabled={disablebutton}
                         startIcon={<SearchIcon style={{ color: '#FFF' }} />}
                     >Buscar</Button>
-                    {dataGraph.length ?
-                        <Fragment>
-                            <Button
-                                style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                                onClick={() => descargar()}
-                                startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                            >Descargar</Button>
-                            <Button
-                                style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                                onClick={() => generateZIP()}
-                                startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                            >Descargar ZIP</Button>
-                        </Fragment> : ""
+                    {searchdone &&
+                        <Button
+                            style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                            onClick={() => descargar()}
+                            startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
+                        >Descargar</Button>
                     }
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
@@ -357,30 +397,18 @@ const Photo_portal = () => {
                         />
                     }
                 </div>
-                <div style={{ display: 'flex', gap: 8, flexWrap: "wrap" }} id="divToPrint">
-                    {dataGraph.map((row, i) => (
-                        <Box key={i} width="19%" height={"200px"}>
-                            <HtmlTooltip
-                                placement="bottom"
-                                title={
-                                    <Fragment>
-                                        <Typography color="inherit">{`Tienda: ${row.poiname}`}</Typography>
-                                        <Typography color="inherit">{`Marca: ${row.brand}`}</Typography>
-                                        <Typography color="inherit">{`Modelo: ${row.model}`}</Typography>
-                                        <Typography color="inherit">{`Subcategoría: ${row.subcategory}`}</Typography>
-                                    </Fragment>
-                                }>
-                                <img
-                                    style={{ height: "200px", width: "100%" }}
-                                    alt="image.jpg"
-                                    src={row.photo_url}
-                                    onClick={() => setLightBox({ open: true, index: i, images: dataGraph.map(x => x.photo_url) })}
-                                />
-                            </HtmlTooltip>
-                        </Box>
-                    ))}
-                </div>
             </div>
+            {searchdone &&
+
+            <div id="divToPrint">
+                <TableZyx
+                    columns={columns}
+                    data={dataGraph}
+                    // fetchData={filtrar}
+                    register={false}
+                />
+            </div>
+            }
 
 
 
@@ -438,20 +466,52 @@ const Photo_portal = () => {
                         descfield="store_name"
                         callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
                     />
-                    {/* <SelectFunction
-                        title="Banda"
+
+                    <SelectFunction
+                        title="Subcategoría"
                         datatosend={[]}
-                        optionvalue="id_role"
+                        optionvalue="sub_category"
+                        optiondesc="sub_category"
+                        variant="outlined"
+                        namefield="sub_category"
+                        descfield="sub_category"
+                        callback={({ newValue: value }) => setfilters({ ...filters, sub_category: value?.id || '' })}
+                    />
+                    <SelectFunction
+                        title="Management"
+                        datatosend={datafilters.management}
+                        optionvalue="management"
+                        optiondesc="management"
+                        variant="outlined"
+                        valueselected={filters.management}
+                        namefield="management"
+                        descfield="management"
+                        callback={({ newValue: value }) => setfilters({ ...filters, management: value })}
+                    />
+                    <SelectFunction
+                        title="Tipo Exhibición"
+                        datatosend={[]}
+                        optionvalue="type_exhibit"
                         optiondesc="description"
                         variant="outlined"
-                        namefield="id_role"
+                        namefield="type_exhibit"
                         descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
-                    /> */}
+                        callback={({ newValue: value }) => setfilters({ ...filters, type_exhibit: value?.id || '' })}
+                    />
+                    <SelectFunction
+                        title="Área"
+                        datatosend={[]}
+                        optionvalue="area"
+                        optiondesc="description"
+                        variant="outlined"
+                        namefield="area"
+                        descfield="role_name"
+                        callback={({ newValue: value }) => setfilters({ ...filters, area: value?.id || '' })}
+                    />
                 </div>
             </SwipeableDrawer>
         </Layout>
     );
 }
 
-export default Photo_portal;
+export default Exhibits_data_base;

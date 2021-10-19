@@ -12,7 +12,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
-import { AreaChart, Area, BarChart , Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart ,  BarChart , Bar, Treemap, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DateRange from '../components/system/form/daterange';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -31,6 +31,414 @@ import {
     Search as SearchIcon,
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
+import { set } from 'date-fns';
+function createData(name, calories, fat, carbs, protein) {
+    return { name, calories, fat, carbs, protein };
+  }
+const dataTable = [
+    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+    createData('Eclair', 262, 16.0, 24, 6.0),
+    createData('Cupcake', 305, 3.7, 67, 4.3),
+    createData('Gingerbread', 356, 16.0, 49, 3.9),
+  ];
+const dataTreeMap = [
+    {
+      "name": "axis",
+      "children": [
+        {
+          "name": "Axis",
+          "size": 24593
+        },
+        {
+          "name": "Axes",
+          "size": 1302
+        },
+        {
+          "name": "AxisGridLine",
+          "size": 652
+        },
+        {
+          "name": "AxisLabel",
+          "size": 636
+        },
+        {
+          "name": "CartesianAxes",
+          "size": 6703
+        }
+      ]
+    },
+    {
+      "name": "controls",
+      "children": [
+        {
+          "name": "TooltipControl",
+          "size": 8435
+        },
+        {
+          "name": "SelectionControl",
+          "size": 7862
+        },
+        {
+          "name": "PanZoomControl",
+          "size": 5222
+        },
+        {
+          "name": "HoverControl",
+          "size": 4896
+        },
+        {
+          "name": "ControlList",
+          "size": 4665
+        },
+        {
+          "name": "ClickControl",
+          "size": 3824
+        },
+        {
+          "name": "ExpandControl",
+          "size": 2832
+        },
+        {
+          "name": "DragControl",
+          "size": 2649
+        },
+        {
+          "name": "AnchorControl",
+          "size": 2138
+        },
+        {
+          "name": "Control",
+          "size": 1353
+        },
+        {
+          "name": "IControl",
+          "size": 763
+        }
+      ]
+    },
+    {
+      "name": "data",
+      "children": [
+        {
+          "name": "Data",
+          "size": 20544
+        },
+        {
+          "name": "NodeSprite",
+          "size": 19382
+        },
+        {
+          "name": "DataList",
+          "size": 19788
+        },
+        {
+          "name": "DataSprite",
+          "size": 10349
+        },
+        {
+          "name": "EdgeSprite",
+          "size": 3301
+        },
+        {
+          "name": "render",
+          "children": [
+            {
+              "name": "EdgeRenderer",
+              "size": 5569
+            },
+            {
+              "name": "ShapeRenderer",
+              "size": 2247
+            },
+            {
+              "name": "ArrowType",
+              "size": 698
+            },
+            {
+              "name": "IRenderer",
+              "size": 353
+            }
+          ]
+        },
+        {
+          "name": "ScaleBinding",
+          "size": 11275
+        },
+        {
+          "name": "TreeBuilder",
+          "size": 9930
+        },
+        {
+          "name": "Tree",
+          "size": 7147
+        }
+      ]
+    },
+    {
+      "name": "events",
+      "children": [
+        {
+          "name": "DataEvent",
+          "size": 7313
+        },
+        {
+          "name": "SelectionEvent",
+          "size": 6880
+        },
+        {
+          "name": "TooltipEvent",
+          "size": 3701
+        },
+        {
+          "name": "VisualizationEvent",
+          "size": 2117
+        }
+      ]
+    },
+    {
+      "name": "legend",
+      "children": [
+        {
+          "name": "Legend",
+          "size": 20859
+        },
+        {
+          "name": "LegendRange",
+          "size": 10530
+        },
+        {
+          "name": "LegendItem",
+          "size": 4614
+        }
+      ]
+    },
+    {
+      "name": "operator",
+      "children": [
+        {
+          "name": "distortion",
+          "children": [
+            {
+              "name": "Distortion",
+              "size": 6314
+            },
+            {
+              "name": "BifocalDistortion",
+              "size": 4461
+            },
+            {
+              "name": "FisheyeDistortion",
+              "size": 3444
+            }
+          ]
+        },
+        {
+          "name": "encoder",
+          "children": [
+            {
+              "name": "PropertyEncoder",
+              "size": 4138
+            },
+            {
+              "name": "Encoder",
+              "size": 4060
+            },
+            {
+              "name": "ColorEncoder",
+              "size": 3179
+            },
+            {
+              "name": "SizeEncoder",
+              "size": 1830
+            },
+            {
+              "name": "ShapeEncoder",
+              "size": 1690
+            }
+          ]
+        },
+        {
+          "name": "filter",
+          "children": [
+            {
+              "name": "FisheyeTreeFilter",
+              "size": 5219
+            },
+            {
+              "name": "VisibilityFilter",
+              "size": 3509
+            },
+            {
+              "name": "GraphDistanceFilter",
+              "size": 3165
+            }
+          ]
+        },
+        {
+          "name": "IOperator",
+          "size": 1286
+        },
+        {
+          "name": "label",
+          "children": [
+            {
+              "name": "Labeler",
+              "size": 9956
+            },
+            {
+              "name": "RadialLabeler",
+              "size": 3899
+            },
+            {
+              "name": "StackedAreaLabeler",
+              "size": 3202
+            }
+          ]
+        },
+        {
+          "name": "layout",
+          "children": [
+            {
+              "name": "RadialTreeLayout",
+              "size": 12348
+            },
+            {
+              "name": "NodeLinkTreeLayout",
+              "size": 12870
+            },
+            {
+              "name": "CirclePackingLayout",
+              "size": 12003
+            },
+            {
+              "name": "CircleLayout",
+              "size": 9317
+            },
+            {
+              "name": "TreeMapLayout",
+              "size": 9191
+            },
+            {
+              "name": "StackedAreaLayout",
+              "size": 9121
+            },
+            {
+              "name": "Layout",
+              "size": 7881
+            },
+            {
+              "name": "AxisLayout",
+              "size": 6725
+            },
+            {
+              "name": "IcicleTreeLayout",
+              "size": 4864
+            },
+            {
+              "name": "DendrogramLayout",
+              "size": 4853
+            },
+            {
+              "name": "ForceDirectedLayout",
+              "size": 8411
+            },
+            {
+              "name": "BundledEdgeRouter",
+              "size": 3727
+            },
+            {
+              "name": "IndentedTreeLayout",
+              "size": 3174
+            },
+            {
+              "name": "PieLayout",
+              "size": 2728
+            },
+            {
+              "name": "RandomLayout",
+              "size": 870
+            }
+          ]
+        },
+        {
+          "name": "OperatorList",
+          "size": 5248
+        },
+        {
+          "name": "OperatorSequence",
+          "size": 4190
+        },
+        {
+          "name": "OperatorSwitch",
+          "size": 2581
+        },
+        {
+          "name": "Operator",
+          "size": 2490
+        },
+        {
+          "name": "SortOperator",
+          "size": 2023
+        }
+      ]
+    }
+  ]
+
+  const CustomizedContent = (props) => {
+    const { depth, x, y, width, height, index, name } = props;
+
+    return (
+        <g>
+            <rect
+                x={x}
+                y={y}
+                width={width}
+                height={height}
+                style={{
+                    fill:
+                        depth < 2
+                            ? DEFAULT_COLORS[index % DEFAULT_COLORS.length]
+                            : 'none',
+                    stroke: '#fff',
+                    strokeWidth: 2 / (depth + 1e-10),
+                    strokeOpacity: 1 / (depth + 1e-10),
+                }}
+            />
+            {depth === 1 ? (
+                <text
+                    x={x + width / 2}
+                    y={y + height / 2 + 7}
+                    textAnchor="middle"
+                    fill="#fff"
+                    fontSize={14}
+                >
+                    {name}
+                </text>
+            ) : null}
+            {depth === 1 ? (
+                <text
+                    x={x + 4}
+                    y={y + 18}
+                    fill="#fff"
+                    fontSize={16}
+                    fillOpacity={0.9}
+                >
+                    {index + 1}
+                </text>
+            ) : null}
+        </g>
+    );
+};
+
+  const DEFAULT_COLORS = [
+    '#7A871E',
+    '#DAD870',
+    '#FFCD58',
+    '#FF9636',
+    '#FF5C4D',
+    '#9F2B00',
+];
 
 const brands = ["B&D","BLACKLINE","BORD","BOSCH","BOSSKO","CONTINENTAL","CUISINART","ELECTRICLIFE","ELECTROLUX","FINEZZA","FOSTERIER","HOLSTEIN","IMACO","INDURAMA","INSTAN POT","JATARIY","KENWOOD","KITCHEN AID","KORKMAZ","LOVEN","MAGEFESA","MIRAY","NEX","OSTER","PHILIPS","PRACTIKA","PRIMA","PROFESIONAL SERIES","RECCO","RECORD","TAURUS","THOMAS","VALESKA","WURDEN","ZYKLON","OTROS","DOLCE GUSTO"]
 const colors = ["#bababa","#575757","#868686","#4f4f4f","#909090","#c4c4c4","#9d9d9d","#494949","#b9b9b9","#545454","#5e5e5e","#535353","yellow","#b8b8b8","#818181","#a2a2a2","#808080","#838383","#8a8a8a","#929292","#b5b5b5","#d9d9d9","#888888","blue","#c5c5c5","#1e1e1e","#7c7c7c","#787878","#565656","#444444","#d3d3d3","red","#a9a9a9","#878787","#797979","#797979","#797979"]
@@ -73,69 +481,6 @@ const elementBrand= (week)=>({
     "ZYKLON": 0,
     "OTROS": 0
 })
-const data = [
-    {
-      "name": "ENE",
-      "uv": 11,
-      "pv": 10,
-    },
-    {
-      "name": "FEB",
-      "uv": 14,
-      "pv": 19,
-    },
-    {
-      "name": "MAR",
-      "uv": 17,
-      "pv": 25,
-    },
-    {
-      "name": "ABR",
-      "uv": 39,
-      "pv": 55,
-    },
-    {
-      "name": "MAY",
-      "uv": 35,
-      "pv": 50,
-    },
-    {
-      "name": "JUN",
-      "uv": 37,
-      "pv": 45,
-    },
-    {
-      "name": "JUL",
-      "uv": 32,
-      "pv": 35,
-    },
-    {
-      "name": "AGO",
-      "uv": 20,
-      "pv": 37,
-    },
-    {
-      "name": "SEP",
-      "uv": 25,
-      "pv": 45,
-    },
-    {
-      "name": "OCT",
-      "uv": 15,
-      "pv": 35,
-    },
-    {
-      "name": "NOV",
-      "uv": 26,
-      "pv": 55,
-    },
-    {
-      "name": "DIC",
-      "uv": 30,
-      "pv": 40,
-    },
-  ]
-  
   const data2 = [
     { name: 'A', x: 12, y: 23, z: 122 },
     { name: 'B', x: 22, y: 3, z: 73 },
@@ -162,7 +507,7 @@ const data = [
 const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
     data: {
-        type: filter
+        type:filter
     }
 })
 
@@ -179,7 +524,11 @@ const GET_FILTER = (filter) => ({
     }
 })
 const FILTER = (filter) => ({
-    method: "SP_SKU_BRAND",
+    method: "SP_SKU_DATE_EXHIBIT",
+    data: filter
+})
+const FILTERBRAND = (filter) => ({
+    method: "SP_SKU_BRAND_EXHIBIT",
     data: filter
 })
 const FILTERDATE = (filter) => ({
@@ -187,7 +536,7 @@ const FILTERDATE = (filter) => ({
     data: filter
 })
 const FILTERGraph1 = (filter) => ({
-    method: "SP_SKU_CATEGORY",
+    method: "SP_SKU_CATEGORY_EXHIBIT ",
     data: filter
 })
 
@@ -248,14 +597,14 @@ const RB_MARCA = {
     }
 }
 
-const Share_by_brand = () => {
+const Exhibits_share_brand = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
     const [dataGraphDate, setDataGraphDate] = useState([])
     const [categorybrandSKU, setcategorybrandSKU] = useState([])
     const [categorybrandSKUperc, setcategorybrandSKUperc] = useState([])
-    const [totalSKA, settotalSKA] = useState(0)
+    const [resultBrand, setResultBrand] = useState(0)
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
@@ -336,15 +685,18 @@ const Share_by_brand = () => {
     );
 
     const [filters, setfilters] = useState({
+        
         format: '',
         channel: '',
         department: '',
         store_name: '',
         categoria: 1,
+        management: '',
         SKU: '',
-        banda: '',
-        marca: '',
-        tipo_pvp: 'prom_price',
+        marca: "",
+        subcategoria: "",
+        type_exhibit: '',
+        area: '',
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -355,7 +707,8 @@ const Share_by_brand = () => {
         categoria: [],
         SKU: [],
         banda: [],
-        marca: [],
+        marca: '',
+        management: [],
         tipo_pvp: [],
     })
 
@@ -368,8 +721,9 @@ const Share_by_brand = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("EXHIBICIONES")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
             ]);
             setdatafilters({
                 ...datafilters,
@@ -379,6 +733,7 @@ const Share_by_brand = () => {
                 store_name: validateResArray(listResult[3], continuezyx),
                 categoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
+                management: validateResArray(listResult[6], continuezyx),
             })
         })();
         return () => continuezyx = false;
@@ -394,27 +749,30 @@ const Share_by_brand = () => {
             category: filters.categoria,
             sku_code: filters.SKU,
             brand: filters.marca,
-            sub_category: '',
-            price: filters.tipo_pvp,
+            management: filters.management,
+            sub_category: filters.subcategoria,
+            type_exhibit: filters.type_exhibit,
+            area: filters.area,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
-        setOpenBackdrop(true)
-        const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
-        listResult.result.data.map((row)=>{
-            count += row.cont
+        setOpenBackdrop(true)     
+        const listResultBrand = await triggeraxios('post', process.env.endpoints.selsimple, FILTERBRAND(filter_to_send))
+        let resultbrandlistchildren = []
+        listResultBrand.result.data.map((row)=>{
+          resultbrandlistchildren.push({name: (row.brand),children: [{name: (row.brand), cont:(row.cont)}]})
         })
-        setDataGraph(listResult.result.data)
-        const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTERDATE(filter_to_send))
+
+        setResultBrand(resultbrandlistchildren)
+        const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         let listbrand=[];
         let weeks=[];
         let totalweek=[];
-
         listResultDate.result.data.map(row=>{
-            if(!weeks.includes(row.Week)) {weeks.push(row.Week);totalweek.push(0)}
+          if(!weeks.includes(row.Week)) {weeks.push(row.Week);totalweek.push(0)}
         })
         listResultDate.result.data.map(row=>{
-            totalweek[weeks.indexOf(row.Week)] += parseInt(row.cnt)
+            totalweek[weeks.indexOf(row.Week)] += parseInt(row.cont)
         })
         weeks.map(row=>{
             listbrand.push(elementBrand(row))
@@ -422,23 +780,24 @@ const Share_by_brand = () => {
         listResultDate.result.data.map(row=>{
             listbrand.forEach(list=>{
                 if(list.week===row.Week){
-                    list[row.brand]= (parseInt(row.cnt)/totalweek[weeks.indexOf(row.Week)])*100
+                    list[row.brand]= (parseInt(row.cont)/totalweek[weeks.indexOf(row.Week)])*100
                 }
             })
         })
         setDataGraphDate(listbrand)
-        settotalSKA(count)
-
         const listResultSKU = await triggeraxios('post', process.env.endpoints.selsimple, FILTERGraph1(filter_to_send))
         let categories= []
         let skucategory=[];
+        let uniqueBrands = [];
         let skucategoryperc=[];
         let skucategorytotal=[];
         listResultSKU.result.data.map(row=>{
-            if(!categories.includes(row.subcategory)) {categories.push(row.subcategory);skucategorytotal.push(0)}
+            if(!categories.includes(row.category)) {categories.push(row.category);skucategorytotal.push(0)}
+            if(!uniqueBrands.includes(row.brand)) {uniqueBrands.push(row.brand)}
         })
+        console.log(uniqueBrands)
         listResultSKU.result.data.map(row=>{
-            skucategorytotal[categories.indexOf(row.subcategory)] += parseInt(row.cont)
+            skucategorytotal[categories.indexOf(row.category)] += parseInt(row.cont)
         })
         categories.map(row=>{
             skucategory.push(elementBrand(row))
@@ -446,13 +805,13 @@ const Share_by_brand = () => {
         })
         listResultSKU.result.data.map(row=>{
             skucategory.forEach(list=>{
-                if(list.week===row.subcategory){
+                if(list.week===row.category){
                     list[row.brand]=parseInt(row.cont)
                 }
             })
             skucategoryperc.forEach(list=>{
-                if(list.week===row.subcategory){
-                    list[row.brand]=(parseInt(row.cont)/skucategorytotal[categories.indexOf(row.subcategory)])*100
+                if(list.week===row.category){
+                    list[row.brand]=(parseInt(row.cont)/skucategorytotal[categories.indexOf(row.category)])*100
                 }
             })
         })
@@ -507,17 +866,6 @@ const Share_by_brand = () => {
                         descfield="brand"
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
                     />
-
-                    <SelectFunction
-                        title="SKU"
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
-                        variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
-                    />
                     <SelectFunction
                         title="Retail"
                         variant="outlined"
@@ -529,14 +877,6 @@ const Share_by_brand = () => {
                         descfield="brand"
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}*/
                     />
-                    <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
-                        defaultValue="prom_price"
-                        onChange={(event) => { setfilters({ ...filters, tipo_pvp: event.target.value }) }}
-                    >
-                        <FormControlLabel value="todopvp" control={<Radio />} label="Todo PVP" />
-                        <FormControlLabel value="prom_price" control={<Radio />} label="Promo PVP" />
-                        <FormControlLabel value="regular_price" control={<Radio />} label="Regular PVP" />
-                    </RadioGroup>
                     <Button
                         variant="contained"
                         color="primary"
@@ -571,40 +911,28 @@ const Share_by_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca</div>
-                            <TableContainer component={Paper}>
-                                <Table className={classes.table} aria-label="simple table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell></TableCell>
-                                            <TableCell align="center">N* SKU's</TableCell>
-                                            <TableCell align="center">Partic %</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {
-                                            dataGraph.map((row,i) =>
-                                                (<TableRow key={`${row.brand}-${i}`} >
-                                                    <TableCell style={{padding:5}} align="center">{row.brand}</TableCell>
-                                                    <TableCell style={{padding:5}} align="center">{row.cont}</TableCell>
-                                                    <TableCell style={{padding:5}} align="center">{parseFloat(row.percent).toFixed(2)}%</TableCell>
-                                                </TableRow>))
-                                        }
-                                        <TableRow>
-                                            <TableCell align="center"></TableCell>
-                                            <TableCell align="center">{totalSKA}</TableCell>
-                                            <TableCell align="center">100%</TableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                            <div className={classes.titlecards}>Exhibiciones totales por Marca Q y %</div>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/3}>
+                            <Treemap
+                                width={730}
+                                height={250}
+                                data={resultBrand}
+                                dataKey="cont"
+                                ratio={4 / 3}
+                                stroke="#fff"
+                                fill="#8884d8"
+                                  >
+                                  <Tooltip />
+                              </Treemap>
+                            </ResponsiveContainer >
+                            
                         </Box>
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca por Semana</div>
-                            <ResponsiveContainer width={"100%"} aspect={4.0/3.5}>
-                                <BarChart data={dataGraphDate}>
+                            <div className={classes.titlecards}>Evolución de Exhibiciones por semana y Marca</div>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/3}>
+                                <BarChart  data={dataGraphDate}>
                                     <XAxis dataKey="week"/>
                                     <YAxis  domain={[0, 100]} />
                                     <CartesianGrid strokeDasharray="3 3" />
@@ -614,7 +942,7 @@ const Share_by_brand = () => {
                                             <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
                                         ))
                                     }
-                                </BarChart>
+                                </BarChart >
                             </ResponsiveContainer >
                             
                         </Box>
@@ -625,7 +953,7 @@ const Share_by_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría</div>
+                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Categoría</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={categorybrandSKU} >
                                     <XAxis dataKey="week" />
@@ -644,7 +972,7 @@ const Share_by_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría %</div>
+                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Categoría %</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={categorybrandSKUperc} >
                                     <XAxis dataKey="week" />
@@ -665,7 +993,7 @@ const Share_by_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena</div>
+                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Cadena</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={data2} >
                                     <CartesianGrid />
@@ -682,7 +1010,7 @@ const Share_by_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena %</div>
+                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Cadena %</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={data3} >
                                     <CartesianGrid />
@@ -693,6 +1021,110 @@ const Share_by_brand = () => {
                                     <Bar dataKey="y" stackId="a" fill="red" />
                                     <Bar dataKey="z" stackId="a" fill="yellow" />
                                 </BarChart>
+                            </ResponsiveContainer >
+                            
+                        </Box>
+                    </div>
+                    <div className={classes.replacerowzyx}>
+                    <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Tipo de Exhibición</div>
+                            <TableContainer component={Paper}>
+                            <Table className={classes.table} aria-label="simple table">
+                                <TableHead>
+                                <TableRow>
+                                    <TableCell>Dessert (100g serving)</TableCell>
+                                    <TableCell align="right">Calories</TableCell>
+                                    <TableCell align="right">Fat&nbsp;(g)</TableCell>
+                                    <TableCell align="right">Carbs&nbsp;(g)</TableCell>
+                                    <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                                </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                {dataTable.map((row) => (
+                                    <TableRow key={row.name}>
+                                    <TableCell component="th" scope="row">
+                                        {row.name}
+                                    </TableCell>
+                                    <TableCell align="right">{row.calories}</TableCell>
+                                    <TableCell align="right">{row.fat}</TableCell>
+                                    <TableCell align="right">{row.carbs}</TableCell>
+                                    <TableCell align="right">{row.protein}</TableCell>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                            </TableContainer>
+                        </Box>
+                    </div>
+                    <div className={classes.replacerowzyx}>
+                        <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Tipo de Exhibición</div>
+                            <TableContainer component={Paper}>
+                            <Table className={classes.table} aria-label="simple table">
+                                <TableHead>
+                                <TableRow>
+                                    <TableCell>Dessert (100g serving)</TableCell>
+                                    <TableCell align="right">Calories</TableCell>
+                                    <TableCell align="right">Fat&nbsp;(g)</TableCell>
+                                    <TableCell align="right">Carbs&nbsp;(g)</TableCell>
+                                    <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                                </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                {dataTable.map((row) => (
+                                    <TableRow key={row.name}>
+                                    <TableCell component="th" scope="row">
+                                        {row.name}
+                                    </TableCell>
+                                    <TableCell align="right">{row.calories}</TableCell>
+                                    <TableCell align="right">{row.fat}</TableCell>
+                                    <TableCell align="right">{row.carbs}</TableCell>
+                                    <TableCell align="right">{row.protein}</TableCell>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                            </TableContainer>
+                        </Box>
+                    </div>
+                    <div className={classes.replacerowzyx}>
+                        <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Q Exhibiciones por Localización</div>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/1}>
+                            <Treemap
+                                width={730}
+                                height={250}
+                                data={dataTreeMap}
+                                dataKey="size"
+                                ratio={4 / 3}
+                                stroke="#fff"
+                                fill="#8884d8"
+                                />
+                            </ResponsiveContainer >
+                            
+                        </Box>
+                    </div>
+                    <div className={classes.replacerowzyx}>
+                        <Box
+                            className={classes.itemCard}
+                        >
+                            <div className={classes.titlecards}>Q Exhibiciones por Localización</div>
+                            <ResponsiveContainer width={"100%"} aspect={4.0/1}>
+                            <Treemap
+                                width={730}
+                                height={250}
+                                data={dataTreeMap}
+                                dataKey="size"
+                                ratio={4 / 3}
+                                stroke="#fff"
+                                fill="#8884d8"
+                                />
                             </ResponsiveContainer >
                             
                         </Box>
@@ -773,4 +1205,4 @@ const Share_by_brand = () => {
     );
 }
 
-export default Share_by_brand;
+export default Exhibits_share_brand;

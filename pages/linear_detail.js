@@ -36,6 +36,7 @@ import {
 const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
     data: {
+        type:filter
     }
 })
 
@@ -274,7 +275,7 @@ const Linear_detail = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
             ]);
             setdatafilters({
@@ -324,16 +325,6 @@ const Linear_detail = () => {
             }
         }))
     }
-    function descargar() {
-        html2canvas(document.getElementById('divToPrint'))
-            .then((canvas) => {
-                const pdf = new jsPDF('l', 'mm', 'a4');
-                var width = pdf.internal.pageSize.getWidth();
-                var height = pdf.internal.pageSize.getHeight();
-                pdf.addImage(canvas.toDataURL('image/png'), 'JPEG', 0, 0, width, height);
-                pdf.save("download.pdf");
-            })
-    }
 
     return (
         <Layout>
@@ -359,6 +350,39 @@ const Linear_detail = () => {
                             setcategory(value)
                             setdisablebutton(!value)
                         }}
+                    />
+                    <SelectFunction
+                        title="Marca"
+                        datatosend={datafilters.marca}
+                        optionvalue="brand"
+                        optiondesc="brand"
+                        valueselected={filters.marca}
+                        variant="outlined"
+                        namefield="brand"
+                        descfield="brand"
+                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
+                    />
+
+                    <SelectFunction
+                        title="SKU"
+                        datatosend={[]}
+                        optionvalue="id_role"
+                        optiondesc="description"
+                        variant="outlined"
+                        namefield="id_role"
+                        descfield="role_name"
+                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
+                    />
+                    <SelectFunction
+                        title="Retail"
+                        variant="outlined"
+                        /*datatosend={datafilters.marca}
+                        optionvalue="brand"
+                        optiondesc="brand"
+                        valueselected={filters.marca}
+                        namefield="brand"
+                        descfield="brand"
+                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}*/
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
                         defaultValue="prom_price"
@@ -458,17 +482,6 @@ const Linear_detail = () => {
                         descfield="store_name"
                         callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
                     />
-
-                    <SelectFunction
-                        title="SKU"
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
-                        variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
-                    />
                     {/* <SelectFunction
                         title="Banda"
                         datatosend={[]}
@@ -479,17 +492,6 @@ const Linear_detail = () => {
                         descfield="role_name"
                         callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
                     /> */}
-                    <SelectFunction
-                        title="Marca"
-                        datatosend={datafilters.marca}
-                        optionvalue="brand"
-                        optiondesc="brand"
-                        valueselected={filters.marca}
-                        variant="outlined"
-                        namefield="brand"
-                        descfield="brand"
-                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
-                    />
                 </div>
             </SwipeableDrawer>
         </Layout>

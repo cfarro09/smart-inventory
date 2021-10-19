@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component, Fragment } from 'react';
+import React, { useState, useEffect, useContext,Fragment } from 'react';
 import Layout from '../components/system/layout/layout'
 import triggeraxios from '../config/axiosv2';
 
@@ -22,8 +22,9 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Typography from '@material-ui/core/Typography';
 import JSZip from "jszip";
 import JSZipUtils from "jszip-utils";
-import { saveAs } from 'file-saver';
+import {saveAs} from 'file-saver';
 import popupsContext from '../context/pop-ups/pop-upsContext';
+
 import {
     Search as SearchIcon,
     GetApp as GetAppIcon,
@@ -73,16 +74,33 @@ function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
 }
 
+const rows = [
+    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
+    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
+    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
+    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
+    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
+    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
+    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
+    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
+    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
+    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
+    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
+    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
+    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
+    {image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png" , description: "This is a photo", title: "Nombre de la tienda"},
+];
+
 const HtmlTooltip = withStyles((theme) => ({
     tooltip: {
-        backgroundColor: '#f5f5f9',
-        margin: "-120px 0",
-        color: 'rgba(0, 0, 0, 0.87)',
-        maxWidth: 220,
-        fontSize: theme.typography.pxToRem(12),
-        border: '1px solid #dadde9',
+      backgroundColor: '#f5f5f9',
+      margin: "-120px 0",
+      color: 'rgba(0, 0, 0, 0.87)',
+      maxWidth: 220,
+      fontSize: theme.typography.pxToRem(12),
+      border: '1px solid #dadde9',
     },
-}))(Tooltip);
+  }))(Tooltip);
 
 const paramTemplate = {
     method: "SP_SEL_TEMPLATE",
@@ -96,7 +114,7 @@ const GET_FILTER = (filter) => ({
     }
 })
 const FILTER = (filter) => ({
-    method: "SP_PHOTO_PORTAL",
+    method: "SP_PHOTO_PORTAL_EXHIBIT",
     data: filter
 })
 
@@ -134,15 +152,15 @@ const RB_MARCA = {
     }
 }
 
-const Photo_portal = () => {
+const Exhibits_photo_portal = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [category, setcategory] = useState(null);
-    const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
 
     const [disablebutton, setdisablebutton] = useState(true)
+    const { setLightBox, setOpenBackdrop } = useContext(popupsContext);
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -155,33 +173,52 @@ const Photo_portal = () => {
         var zip = new JSZip();
         var count = 0;
         var zipFilename = "Pictures.zip";
-
-        dataGraph.map((row,i)=>{
-            JSZipUtils.getBinaryContent(row.photo_url, function (err, data) {
+        
+        rows.map((row,i)=>{
+            JSZipUtils.getBinaryContent(row.image, function (err, data) {
                 if (err) {
                     //throw err; // or handle the error
                 }
                 zip.file(`${row.title}-${i}.jpg`, data, { binary: true });
                 count++;
-                if (count == dataGraph.length) {
+                if (count == rows.length) {
+                    debugger    
                     zip.generateAsync({ type: 'blob' }).then(function (content) {
                         saveAs(content, zipFilename);
                     });
                 }
         });
         })
+        /*links.forEach(function (url, i) {
+          // loading a file and add it in a zip file
+          JSZipUtils.getBinaryContent(url, function (err, data) {
+            if (err) {
+              throw err; // or handle the error
+            }
+            zip.file(filename, data, { binary: true });
+            count++;
+            if (count == links.length) {
+              zip.generateAsync({ type: 'blob' }).then(function (content) {
+                saveAs(content, zipFilename);
+              });
+            }
+          });
+        });*/
     }
 
     const [filters, setfilters] = useState({
+        
         format: '',
         channel: '',
         department: '',
         store_name: '',
         categoria: 1,
+        management: '',
         SKU: '',
-        banda: '',
-        marca: '',
-        tipo_pvp: 'prom_price',
+        marca: "",
+        subcategoria: "",
+        type_exhibit: '',
+        area: '',
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -192,7 +229,8 @@ const Photo_portal = () => {
         categoria: [],
         SKU: [],
         banda: [],
-        marca: [],
+        marca: '',
+        management: [],
         tipo_pvp: [],
     })
 
@@ -205,10 +243,11 @@ const Photo_portal = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("EXHIBICIONES")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
             ]);
-            
+            console.log(validateResArray(listResult[0], continuezyx))
             setdatafilters({
                 ...datafilters,
                 channel: validateResArray(listResult[1], continuezyx),
@@ -217,6 +256,7 @@ const Photo_portal = () => {
                 store_name: validateResArray(listResult[3], continuezyx),
                 categoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
+                management: validateResArray(listResult[6], continuezyx),
             })
         })();
         return () => continuezyx = false;
@@ -236,14 +276,17 @@ const Photo_portal = () => {
             category: filters.categoria,
             sku_code: filters.SKU,
             brand: filters.marca,
-            sub_category: '',
-            price: filters.tipo_pvp,
+            management: filters.management,
+            sub_category: filters.subcategoria,
+            type_exhibit: filters.type_exhibit,
+            area: filters.area,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
         setOpenBackdrop(true)
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         setOpenBackdrop(false)
+        console.log(listResult.result.data)
         setDataGraph(listResult.result.data)
     }
     function descargar() {
@@ -293,17 +336,6 @@ const Photo_portal = () => {
                         descfield="brand"
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
                     />
-
-                    <SelectFunction
-                        title="SKU"
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
-                        variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
-                    />
                     <SelectFunction
                         title="Retail"
                         variant="outlined"
@@ -315,14 +347,6 @@ const Photo_portal = () => {
                         descfield="brand"
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}*/
                     />
-                    <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
-                        defaultValue="prom_price"
-                        onChange={(event) => { setfilters({ ...filters, tipo_pvp: event.target.value }) }}
-                    >
-                        <FormControlLabel value="todopvp" control={<Radio />} label="Todo PVP" />
-                        <FormControlLabel value="prom_price" control={<Radio />} label="Promo PVP" />
-                        <FormControlLabel value="regular_price" control={<Radio />} label="Regular PVP" />
-                    </RadioGroup>
                     <Button
                         variant="contained"
                         color="primary"
@@ -330,19 +354,19 @@ const Photo_portal = () => {
                         disabled={disablebutton}
                         startIcon={<SearchIcon style={{ color: '#FFF' }} />}
                     >Buscar</Button>
-                    {dataGraph.length ?
+                    {dataGraph.length?
                         <Fragment>
-                            <Button
-                                style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                                onClick={() => descargar()}
-                                startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                            >Descargar</Button>
-                            <Button
-                                style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                                onClick={() => generateZIP()}
-                                startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                            >Descargar ZIP</Button>
-                        </Fragment> : ""
+                        <Button
+                            style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                            onClick={() => descargar()}
+                            startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
+                        >Descargar</Button>
+                        <Button
+                            style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                            onClick={() => generateZIP()}
+                            startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
+                        >Descargar ZIP</Button>
+                        </Fragment>: ""
                     }
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
@@ -357,25 +381,19 @@ const Photo_portal = () => {
                         />
                     }
                 </div>
-                <div style={{ display: 'flex', gap: 8, flexWrap: "wrap" }} id="divToPrint">
-                    {dataGraph.map((row, i) => (
+                <div style={{ display: 'flex', gap: 8 , flexWrap: "wrap"}} id="divToPrint">
+                    {dataGraph.map((row,i) => (
                         <Box key={i} width="19%" height={"200px"}>
-                            <HtmlTooltip
-                                placement="bottom"
-                                title={
-                                    <Fragment>
-                                        <Typography color="inherit">{`Tienda: ${row.poiname}`}</Typography>
-                                        <Typography color="inherit">{`Marca: ${row.brand}`}</Typography>
-                                        <Typography color="inherit">{`Modelo: ${row.model}`}</Typography>
-                                        <Typography color="inherit">{`Subcategoría: ${row.subcategory}`}</Typography>
-                                    </Fragment>
-                                }>
-                                <img
-                                    style={{ height: "200px", width: "100%" }}
-                                    alt="image.jpg"
-                                    src={row.photo_url}
-                                    onClick={() => setLightBox({ open: true, index: i, images: dataGraph.map(x => x.photo_url) })}
-                                />
+                            <HtmlTooltip placement="bottom" 
+                            title={ 
+                                <Fragment>
+                                    <Typography color="inherit">{`Tienda: ${row.poiname}`}</Typography>
+                                    <Typography color="inherit">{`Marca: ${row.brand}`}</Typography>
+                                    <Typography color="inherit">{`Categoría: ${row.category}`}</Typography>
+                                    <Typography color="inherit">{`Management: ${row.management}`}</Typography>
+                                </Fragment>
+                            }>
+                                <img style={{ height: "200px", width:"100%"}} alt="image.jpg" src={row.exhibit_photo}></img>
                             </HtmlTooltip>
                         </Box>
                     ))}
@@ -454,4 +472,4 @@ const Photo_portal = () => {
     );
 }
 
-export default Photo_portal;
+export default Exhibits_photo_portal;

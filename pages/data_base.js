@@ -24,6 +24,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
 import InputFormk from '../components/system/form/inputformik';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import popupsContext from '../context/pop-ups/pop-upsContext';
 
 import {
     Search as SearchIcon,
@@ -66,6 +67,7 @@ const StyledTableRow = withStyles((theme) => ({
 const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
     data: {
+        type: filter
     }
 })
 function createData(name, calories, fat, carbs, protein) {
@@ -152,7 +154,7 @@ const Data_base = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
-
+    const { setLightBox, setOpenBackdrop } = useContext(popupsContext);
     const [disablebutton, setdisablebutton] = useState(true)
     const [dateRange, setdateRange] = useState([
         {
@@ -260,7 +262,7 @@ const Data_base = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY()),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
             ]);
             setdatafilters({
@@ -274,11 +276,6 @@ const Data_base = () => {
             })
         })();
         return () => continuezyx = false;
-    }, [])
-    useEffect(() => {
-        if (waitFilter) {
-
-        }
     }, [])
     async function filtrar() {
         setsearchdone(true)
@@ -295,7 +292,9 @@ const Data_base = () => {
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
+        setOpenBackdrop(true)
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
+        setOpenBackdrop(false)
         setDataGraph(listResult.result.data)
     }
     function descargar() {
@@ -333,6 +332,39 @@ const Data_base = () => {
                             setcategory(value)
                             setdisablebutton(!value)
                         }}
+                    />
+                    <SelectFunction
+                        title="Marca"
+                        datatosend={datafilters.marca}
+                        optionvalue="brand"
+                        optiondesc="brand"
+                        valueselected={filters.marca}
+                        variant="outlined"
+                        namefield="brand"
+                        descfield="brand"
+                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
+                    />
+
+                    <SelectFunction
+                        title="SKU"
+                        datatosend={[]}
+                        optionvalue="id_role"
+                        optiondesc="description"
+                        variant="outlined"
+                        namefield="id_role"
+                        descfield="role_name"
+                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
+                    />
+                    <SelectFunction
+                        title="Retail"
+                        variant="outlined"
+                        /*datatosend={datafilters.marca}
+                        optionvalue="brand"
+                        optiondesc="brand"
+                        valueselected={filters.marca}
+                        namefield="brand"
+                        descfield="brand"
+                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}*/
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
                         defaultValue="prom_price"
@@ -431,17 +463,6 @@ const Data_base = () => {
                         descfield="store_name"
                         callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
                     />
-
-                    <SelectFunction
-                        title="SKU"
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
-                        variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
-                    />
                     {/* <SelectFunction
                         title="Banda"
                         datatosend={[]}
@@ -452,17 +473,6 @@ const Data_base = () => {
                         descfield="role_name"
                         callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
                     /> */}
-                    <SelectFunction
-                        title="Marca"
-                        datatosend={datafilters.marca}
-                        optionvalue="brand"
-                        optiondesc="brand"
-                        valueselected={filters.marca}
-                        variant="outlined"
-                        namefield="brand"
-                        descfield="brand"
-                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
-                    />
                 </div>
             </SwipeableDrawer>
         </Layout>

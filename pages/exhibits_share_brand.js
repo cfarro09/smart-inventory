@@ -12,7 +12,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
-import { LineChart ,  BarChart , Bar, Treemap, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart ,  BarChart , Bar, Treemap, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,PieChart,Pie,Cell, ResponsiveContainer } from 'recharts';
 import DateRange from '../components/system/form/daterange';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -31,7 +31,6 @@ import {
     Search as SearchIcon,
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
-import { set } from 'date-fns';
 function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
   }
@@ -42,394 +41,6 @@ const dataTable = [
     createData('Cupcake', 305, 3.7, 67, 4.3),
     createData('Gingerbread', 356, 16.0, 49, 3.9),
   ];
-const dataTreeMap = [
-    {
-      "name": "axis",
-      "children": [
-        {
-          "name": "Axis",
-          "size": 24593
-        },
-        {
-          "name": "Axes",
-          "size": 1302
-        },
-        {
-          "name": "AxisGridLine",
-          "size": 652
-        },
-        {
-          "name": "AxisLabel",
-          "size": 636
-        },
-        {
-          "name": "CartesianAxes",
-          "size": 6703
-        }
-      ]
-    },
-    {
-      "name": "controls",
-      "children": [
-        {
-          "name": "TooltipControl",
-          "size": 8435
-        },
-        {
-          "name": "SelectionControl",
-          "size": 7862
-        },
-        {
-          "name": "PanZoomControl",
-          "size": 5222
-        },
-        {
-          "name": "HoverControl",
-          "size": 4896
-        },
-        {
-          "name": "ControlList",
-          "size": 4665
-        },
-        {
-          "name": "ClickControl",
-          "size": 3824
-        },
-        {
-          "name": "ExpandControl",
-          "size": 2832
-        },
-        {
-          "name": "DragControl",
-          "size": 2649
-        },
-        {
-          "name": "AnchorControl",
-          "size": 2138
-        },
-        {
-          "name": "Control",
-          "size": 1353
-        },
-        {
-          "name": "IControl",
-          "size": 763
-        }
-      ]
-    },
-    {
-      "name": "data",
-      "children": [
-        {
-          "name": "Data",
-          "size": 20544
-        },
-        {
-          "name": "NodeSprite",
-          "size": 19382
-        },
-        {
-          "name": "DataList",
-          "size": 19788
-        },
-        {
-          "name": "DataSprite",
-          "size": 10349
-        },
-        {
-          "name": "EdgeSprite",
-          "size": 3301
-        },
-        {
-          "name": "render",
-          "children": [
-            {
-              "name": "EdgeRenderer",
-              "size": 5569
-            },
-            {
-              "name": "ShapeRenderer",
-              "size": 2247
-            },
-            {
-              "name": "ArrowType",
-              "size": 698
-            },
-            {
-              "name": "IRenderer",
-              "size": 353
-            }
-          ]
-        },
-        {
-          "name": "ScaleBinding",
-          "size": 11275
-        },
-        {
-          "name": "TreeBuilder",
-          "size": 9930
-        },
-        {
-          "name": "Tree",
-          "size": 7147
-        }
-      ]
-    },
-    {
-      "name": "events",
-      "children": [
-        {
-          "name": "DataEvent",
-          "size": 7313
-        },
-        {
-          "name": "SelectionEvent",
-          "size": 6880
-        },
-        {
-          "name": "TooltipEvent",
-          "size": 3701
-        },
-        {
-          "name": "VisualizationEvent",
-          "size": 2117
-        }
-      ]
-    },
-    {
-      "name": "legend",
-      "children": [
-        {
-          "name": "Legend",
-          "size": 20859
-        },
-        {
-          "name": "LegendRange",
-          "size": 10530
-        },
-        {
-          "name": "LegendItem",
-          "size": 4614
-        }
-      ]
-    },
-    {
-      "name": "operator",
-      "children": [
-        {
-          "name": "distortion",
-          "children": [
-            {
-              "name": "Distortion",
-              "size": 6314
-            },
-            {
-              "name": "BifocalDistortion",
-              "size": 4461
-            },
-            {
-              "name": "FisheyeDistortion",
-              "size": 3444
-            }
-          ]
-        },
-        {
-          "name": "encoder",
-          "children": [
-            {
-              "name": "PropertyEncoder",
-              "size": 4138
-            },
-            {
-              "name": "Encoder",
-              "size": 4060
-            },
-            {
-              "name": "ColorEncoder",
-              "size": 3179
-            },
-            {
-              "name": "SizeEncoder",
-              "size": 1830
-            },
-            {
-              "name": "ShapeEncoder",
-              "size": 1690
-            }
-          ]
-        },
-        {
-          "name": "filter",
-          "children": [
-            {
-              "name": "FisheyeTreeFilter",
-              "size": 5219
-            },
-            {
-              "name": "VisibilityFilter",
-              "size": 3509
-            },
-            {
-              "name": "GraphDistanceFilter",
-              "size": 3165
-            }
-          ]
-        },
-        {
-          "name": "IOperator",
-          "size": 1286
-        },
-        {
-          "name": "label",
-          "children": [
-            {
-              "name": "Labeler",
-              "size": 9956
-            },
-            {
-              "name": "RadialLabeler",
-              "size": 3899
-            },
-            {
-              "name": "StackedAreaLabeler",
-              "size": 3202
-            }
-          ]
-        },
-        {
-          "name": "layout",
-          "children": [
-            {
-              "name": "RadialTreeLayout",
-              "size": 12348
-            },
-            {
-              "name": "NodeLinkTreeLayout",
-              "size": 12870
-            },
-            {
-              "name": "CirclePackingLayout",
-              "size": 12003
-            },
-            {
-              "name": "CircleLayout",
-              "size": 9317
-            },
-            {
-              "name": "TreeMapLayout",
-              "size": 9191
-            },
-            {
-              "name": "StackedAreaLayout",
-              "size": 9121
-            },
-            {
-              "name": "Layout",
-              "size": 7881
-            },
-            {
-              "name": "AxisLayout",
-              "size": 6725
-            },
-            {
-              "name": "IcicleTreeLayout",
-              "size": 4864
-            },
-            {
-              "name": "DendrogramLayout",
-              "size": 4853
-            },
-            {
-              "name": "ForceDirectedLayout",
-              "size": 8411
-            },
-            {
-              "name": "BundledEdgeRouter",
-              "size": 3727
-            },
-            {
-              "name": "IndentedTreeLayout",
-              "size": 3174
-            },
-            {
-              "name": "PieLayout",
-              "size": 2728
-            },
-            {
-              "name": "RandomLayout",
-              "size": 870
-            }
-          ]
-        },
-        {
-          "name": "OperatorList",
-          "size": 5248
-        },
-        {
-          "name": "OperatorSequence",
-          "size": 4190
-        },
-        {
-          "name": "OperatorSwitch",
-          "size": 2581
-        },
-        {
-          "name": "Operator",
-          "size": 2490
-        },
-        {
-          "name": "SortOperator",
-          "size": 2023
-        }
-      ]
-    }
-  ]
-
-  const CustomizedContent = (props) => {
-    const { depth, x, y, width, height, index, name } = props;
-
-    return (
-        <g>
-            <rect
-                x={x}
-                y={y}
-                width={width}
-                height={height}
-                style={{
-                    fill:
-                        depth < 2
-                            ? DEFAULT_COLORS[index % DEFAULT_COLORS.length]
-                            : 'none',
-                    stroke: '#fff',
-                    strokeWidth: 2 / (depth + 1e-10),
-                    strokeOpacity: 1 / (depth + 1e-10),
-                }}
-            />
-            {depth === 1 ? (
-                <text
-                    x={x + width / 2}
-                    y={y + height / 2 + 7}
-                    textAnchor="middle"
-                    fill="#fff"
-                    fontSize={14}
-                >
-                    {name}
-                </text>
-            ) : null}
-            {depth === 1 ? (
-                <text
-                    x={x + 4}
-                    y={y + 18}
-                    fill="#fff"
-                    fontSize={16}
-                    fillOpacity={0.9}
-                >
-                    {index + 1}
-                </text>
-            ) : null}
-        </g>
-    );
-};
 
   const DEFAULT_COLORS = [
     '#7A871E',
@@ -512,10 +123,6 @@ const GET_CATEGORY = (filter) => ({
 })
 
 
-const paramTemplate = {
-    method: "SP_SEL_TEMPLATE",
-    data: { id_corporation: null, id_organization: null, status: 'ACTIVO' }
-}
 
 const GET_FILTER = (filter) => ({
     method: "SP_SEL_FILTER",
@@ -597,14 +204,14 @@ const RB_MARCA = {
     }
 }
 
+
 const Exhibits_share_brand = () => {
     const classes = useStyles();
-    const [waitFilter, setWaitFilter] = useState(false)
-    const [dataGraph, setDataGraph] = useState([])
     const [dataGraphDate, setDataGraphDate] = useState([])
     const [categorybrandSKU, setcategorybrandSKU] = useState([])
     const [categorybrandSKUperc, setcategorybrandSKUperc] = useState([])
-    const [resultBrand, setResultBrand] = useState(0)
+    const [resultBrand, setResultBrand] = useState([])
+    const [totalbrand, settotalbrand] = useState(0)
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
@@ -697,6 +304,7 @@ const Exhibits_share_brand = () => {
         subcategoria: "",
         type_exhibit: '',
         area: '',
+        retail: ''
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -710,6 +318,7 @@ const Exhibits_share_brand = () => {
         marca: '',
         management: [],
         tipo_pvp: [],
+        retail:[],
     })
 
     useEffect(() => {
@@ -724,6 +333,7 @@ const Exhibits_share_brand = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("EXHIBICIONES")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
             ]);
             setdatafilters({
                 ...datafilters,
@@ -734,6 +344,7 @@ const Exhibits_share_brand = () => {
                 categoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
                 management: validateResArray(listResult[6], continuezyx),
+                retail: validateResArray(listResult[7], continuezyx),
             })
         })();
         return () => continuezyx = false;
@@ -753,17 +364,21 @@ const Exhibits_share_brand = () => {
             sub_category: filters.subcategoria,
             type_exhibit: filters.type_exhibit,
             area: filters.area,
+            retail: filters.retail,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
         setOpenBackdrop(true)     
         const listResultBrand = await triggeraxios('post', process.env.endpoints.selsimple, FILTERBRAND(filter_to_send))
         let resultbrandlistchildren = []
+        let counter=0
         listResultBrand.result.data.map((row)=>{
-          resultbrandlistchildren.push({name: (row.brand),children: [{name: (row.brand), cont:(row.cont)}]})
+            resultbrandlistchildren.push({name: (row.brand), cont:(row.cont)})
+            counter+=row.cont
         })
-
+        settotalbrand(counter)
         setResultBrand(resultbrandlistchildren)
+
         const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         let listbrand=[];
         let weeks=[];
@@ -829,6 +444,7 @@ const Exhibits_share_brand = () => {
                 pdf.save("download.pdf");
             })
     }
+    
 
     return (
         <Layout>
@@ -869,13 +485,13 @@ const Exhibits_share_brand = () => {
                     <SelectFunction
                         title="Retail"
                         variant="outlined"
-                        /*datatosend={datafilters.marca}
-                        optionvalue="brand"
-                        optiondesc="brand"
-                        valueselected={filters.marca}
-                        namefield="brand"
-                        descfield="brand"
-                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}*/
+                        datatosend={datafilters.retail}
+                        optionvalue="retail"
+                        optiondesc="retail"
+                        valueselected={filters.retail}
+                        namefield="retail"
+                        descfield="retail"
+                        callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <Button
                         variant="contained"
@@ -913,17 +529,16 @@ const Exhibits_share_brand = () => {
                         >
                             <div className={classes.titlecards}>Exhibiciones totales por Marca Q y %</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3}>
-                            <Treemap
-                                width={730}
-                                height={250}
-                                data={resultBrand}
-                                dataKey="cont"
-                                ratio={4 / 3}
-                                stroke="#fff"
-                                fill="#8884d8"
-                                  >
-                                  <Tooltip />
-                              </Treemap>
+                                <PieChart >
+                                    <Pie data={resultBrand} dataKey="cont" nameKey="name"  fill="#8884d8" 
+                                        cx="50%"
+                                        cy="50%">
+                                        {resultBrand.map((entry, index) => (
+                                          <Cell key={`cell-${name}`} fill={colors[index % colors.length]} />
+                                          ))}
+                                      </Pie>
+                                    <Tooltip formatter={(value,name)=>[value + "/" +(value*100/totalbrand).toFixed(2) +" %",name]}/>
+                                </PieChart  >
                             </ResponsiveContainer >
                             
                         </Box>
@@ -1089,44 +704,6 @@ const Exhibits_share_brand = () => {
                                 </TableBody>
                             </Table>
                             </TableContainer>
-                        </Box>
-                    </div>
-                    <div className={classes.replacerowzyx}>
-                        <Box
-                            className={classes.itemCard}
-                        >
-                            <div className={classes.titlecards}>Q Exhibiciones por Localización</div>
-                            <ResponsiveContainer width={"100%"} aspect={4.0/1}>
-                            <Treemap
-                                width={730}
-                                height={250}
-                                data={dataTreeMap}
-                                dataKey="size"
-                                ratio={4 / 3}
-                                stroke="#fff"
-                                fill="#8884d8"
-                                />
-                            </ResponsiveContainer >
-                            
-                        </Box>
-                    </div>
-                    <div className={classes.replacerowzyx}>
-                        <Box
-                            className={classes.itemCard}
-                        >
-                            <div className={classes.titlecards}>Q Exhibiciones por Localización</div>
-                            <ResponsiveContainer width={"100%"} aspect={4.0/1}>
-                            <Treemap
-                                width={730}
-                                height={250}
-                                data={dataTreeMap}
-                                dataKey="size"
-                                ratio={4 / 3}
-                                stroke="#fff"
-                                fill="#8884d8"
-                                />
-                            </ResponsiveContainer >
-                            
                         </Box>
                     </div>
                 </div>

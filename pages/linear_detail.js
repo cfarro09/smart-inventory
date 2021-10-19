@@ -252,6 +252,7 @@ const Linear_detail = () => {
         banda: '',
         marca: '',
         tipo_pvp: 'prom_price',
+        retail: ''
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -264,6 +265,7 @@ const Linear_detail = () => {
         banda: [],
         marca: [],
         tipo_pvp: [],
+        retail:[],
     })
 
     useEffect(() => {
@@ -277,6 +279,8 @@ const Linear_detail = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("model")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
             ]);
             setdatafilters({
                 ...datafilters,
@@ -286,6 +290,8 @@ const Linear_detail = () => {
                 store_name: validateResArray(listResult[3], continuezyx),
                 categoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
+                SKU: validateResArray(listResult[6], continuezyx),
+                retail: validateResArray(listResult[7], continuezyx),
             })
         })();
         return () => continuezyx = false;
@@ -306,6 +312,7 @@ const Linear_detail = () => {
             sku_code: filters.SKU,
             brand: filters.marca,
             sub_category: '',
+            retail: filters.retail,
             price: filters.tipo_pvp,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
@@ -365,24 +372,25 @@ const Linear_detail = () => {
 
                     <SelectFunction
                         title="SKU"
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
+                        datatosend={datafilters.SKU}
+                        optionvalue="model_2"
+                        optiondesc="model_2"
+                        valueselected={filters.SKU}
                         variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
+                        namefield="model_2"
+                        descfield="model_2"
+                        callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model_2 || '' })}
                     />
                     <SelectFunction
                         title="Retail"
                         variant="outlined"
-                        /*datatosend={datafilters.marca}
-                        optionvalue="brand"
-                        optiondesc="brand"
-                        valueselected={filters.marca}
-                        namefield="brand"
-                        descfield="brand"
-                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}*/
+                        datatosend={datafilters.retail}
+                        optionvalue="retail"
+                        optiondesc="retail"
+                        valueselected={filters.retail}
+                        namefield="retail"
+                        descfield="retail"
+                        callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
                         defaultValue="prom_price"

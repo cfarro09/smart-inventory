@@ -242,6 +242,7 @@ const Exhibits_data_base = () => {
         subcategoria: "",
         type_exhibit: '',
         area: '',
+        retail: ''
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -255,6 +256,7 @@ const Exhibits_data_base = () => {
         marca: '',
         management: [],
         tipo_pvp: [],
+        retail:[],
     })
 
     useEffect(() => {
@@ -269,6 +271,7 @@ const Exhibits_data_base = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("EXHIBICIONES")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
             ]);
             setdatafilters({
                 ...datafilters,
@@ -279,6 +282,7 @@ const Exhibits_data_base = () => {
                 categoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
                 management: validateResArray(listResult[6], continuezyx),
+                retail: validateResArray(listResult[7], continuezyx),
             })
             console.log(listResult)
         })();
@@ -304,6 +308,7 @@ const Exhibits_data_base = () => {
             sub_category: filters.subcategoria,
             type_exhibit: filters.type_exhibit,
             area: filters.area,
+            retail: filters.retail,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
@@ -362,13 +367,13 @@ const Exhibits_data_base = () => {
                     <SelectFunction
                         title="Retail"
                         variant="outlined"
-                        /*datatosend={datafilters.marca}
-                        optionvalue="brand"
-                        optiondesc="brand"
-                        valueselected={filters.marca}
-                        namefield="brand"
-                        descfield="brand"
-                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}*/
+                        datatosend={datafilters.retail}
+                        optionvalue="retail"
+                        optiondesc="retail"
+                        valueselected={filters.retail}
+                        namefield="retail"
+                        descfield="retail"
+                        callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <Button
                         variant="contained"

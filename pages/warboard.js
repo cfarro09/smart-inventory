@@ -119,8 +119,6 @@ const fields=[
     ],
     /*BATIDORA*/[
         {name:"subcategory", title:"subcategoría"},
-        {name:"regular_price", title:"precio regular"},
-        {name:"prom_price", title:"precio promoción"},
         {name:"power", title:"potencia"},
         {name:"speeds", title:"velocidades"},
         {name:"turbo", title:"turbo"},
@@ -134,39 +132,6 @@ const fields=[
         {name:"accessories", title:"accesorios"},
     ],
 ]
-
-const rows = [
-    {
-        marca: "OSTER", modelo: "6026", precio: 139.00, subcategoria: "SOFRITO", capacidad: "1.2LT", watts: 500, frecuenciahz: "50/60", acabado: "PINTADO AL HORNO", color: "SILVER", tazon: "ALUMINIO", medidastazon: "MAX", recubrimiento: "ANTIHADERENTE",
-        funciones: "COOK/WARM/ADEREZO", tapa: "VIDRIO", cable: "SI", vaporera: "NO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
-    },
-    {
-        marca: "PRACTIKA", modelo: "180MCS", precio: 149.90, subcategoria: "TRADICIONAL", capacidad: "1.8LT", watts: 750, frecuenciahz: "60", acabado: "METAL", color: "SILVER", tazon: "ALUMINIO", medidastazon: "SI", recubrimiento: "ANTIHADERENTE",
-        funciones: "COOK/WARM", tapa: "VIDRIO", cable: "NO", vaporera: "SI/ALUMINIO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
-    },
-    {
-        marca: "OSTER", modelo: "6026", precio: 139.00, subcategoria: "SOFRITO", capacidad: "1.2LT", watts: 500, frecuenciahz: "50/60", acabado: "PINTADO AL HORNO", color: "SILVER", tazon: "ALUMINIO", medidastazon: "MAX", recubrimiento: "ANTIHADERENTE",
-        funciones: "COOK/WARM/ADEREZO", tapa: "VIDRIO", cable: "SI", vaporera: "NO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
-    },
-    {
-        marca: "PRACTIKA", modelo: "180MCS", precio: 149.90, subcategoria: "TRADICIONAL", capacidad: "1.8LT", watts: 750, frecuenciahz: "60", acabado: "METAL", color: "SILVER", tazon: "ALUMINIO", medidastazon: "SI", recubrimiento: "ANTIHADERENTE",
-        funciones: "COOK/WARM", tapa: "VIDRIO", cable: "NO", vaporera: "SI/ALUMINIO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
-    },
-    {
-        marca: "OSTER", modelo: "6026", precio: 139.00, subcategoria: "SOFRITO", capacidad: "1.2LT", watts: 500, frecuenciahz: "50/60", acabado: "PINTADO AL HORNO", color: "SILVER", tazon: "ALUMINIO", medidastazon: "MAX", recubrimiento: "ANTIHADERENTE",
-        funciones: "COOK/WARM/ADEREZO", tapa: "VIDRIO", cable: "SI", vaporera: "NO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
-    },
-    {
-        marca: "PRACTIKA", modelo: "180MCS", precio: 149.90, subcategoria: "TRADICIONAL", capacidad: "1.8LT", watts: 750, frecuenciahz: "60", acabado: "METAL", color: "SILVER", tazon: "ALUMINIO", medidastazon: "SI", recubrimiento: "ANTIHADERENTE",
-        funciones: "COOK/WARM", tapa: "VIDRIO", cable: "NO", vaporera: "SI/ALUMINIO", accesorios: "TAZA MEDIDORA, CUCHARA", garantia: "1 AÑO", image: "https://falabella.scene7.com/is/image/FalabellaPE/880315975_1?wid=800&hei=800&qlt=70"
-    },
-];
-
-
-const paramTemplate = {
-    method: "SP_SEL_TEMPLATE",
-    data: { id_corporation: null, id_organization: null, status: 'ACTIVO' }
-}
 
 const GET_FILTER = (filter) => ({
     method: "SP_SEL_FILTER",
@@ -255,6 +220,7 @@ const BulkLoad = () => {
         banda: '',
         marca: '',
         tipo_pvp: 'prom_price',
+        retail: ''
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -267,6 +233,7 @@ const BulkLoad = () => {
         banda: [],
         marca: [],
         tipo_pvp: [],
+        retail:[],
     })
 
     useEffect(() => {
@@ -280,6 +247,8 @@ const BulkLoad = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("model")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
             ]);
             setdatafilters({
                 ...datafilters,
@@ -289,6 +258,8 @@ const BulkLoad = () => {
                 store_name: validateResArray(listResult[3], continuezyx),
                 categoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
+                SKU: validateResArray(listResult[6], continuezyx),
+                retail: validateResArray(listResult[7], continuezyx),
             })
         })();
         return () => continuezyx = false;
@@ -317,6 +288,7 @@ const BulkLoad = () => {
             brand: filters.marca,
             sub_category: '',
             price: filters.tipo_pvp,
+            retail: filters.retail,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
@@ -384,26 +356,28 @@ const BulkLoad = () => {
                         descfield="brand"
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
                     />
+
                     <SelectFunction
                         title="SKU"
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
+                        datatosend={datafilters.SKU}
+                        optionvalue="model_2"
+                        optiondesc="model_2"
+                        valueselected={filters.SKU}
                         variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
+                        namefield="model_2"
+                        descfield="model_2"
+                        callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model_2 || '' })}
                     />
                     <SelectFunction
                         title="Retail"
                         variant="outlined"
-                        /*datatosend={datafilters.marca}
-                        optionvalue="brand"
-                        optiondesc="brand"
-                        valueselected={filters.marca}
-                        namefield="brand"
-                        descfield="brand"
-                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}*/
+                        datatosend={datafilters.retail}
+                        optionvalue="retail"
+                        optiondesc="retail"
+                        valueselected={filters.retail}
+                        namefield="retail"
+                        descfield="retail"
+                        callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
                         defaultValue="prom_price"

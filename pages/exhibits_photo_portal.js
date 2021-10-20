@@ -207,12 +207,10 @@ const Exhibits_photo_portal = () => {
     }
 
     const [filters, setfilters] = useState({
-
         format: '',
         channel: '',
         department: '',
         store_name: '',
-        categoria: 1,
         management: '',
         SKU: '',
         marca: "",
@@ -233,7 +231,7 @@ const Exhibits_photo_portal = () => {
         marca: '',
         management: [],
         tipo_pvp: [],
-        retail: [],
+        retail:[],
     })
 
     useEffect(() => {

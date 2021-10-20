@@ -266,12 +266,10 @@ const Exhibits_share_brand = () => {
     );
 
     const [filters, setfilters] = useState({
-        
         format: '',
         channel: '',
         department: '',
         store_name: '',
-        categoria: 1,
         management: '',
         SKU: '',
         marca: "",
@@ -286,7 +284,7 @@ const Exhibits_share_brand = () => {
         channel: [],
         department: [],
         store_name: [],
-        categoria: [],
+        subcategoria: [],
         SKU: [],
         banda: [],
         marca: '',

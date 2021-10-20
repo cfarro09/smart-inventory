@@ -208,14 +208,13 @@ const Exhibits_detail = () => {
         channel: '',
         department: '',
         store_name: '',
-        categoria: 1,
+        management: '',
         SKU: '',
-        banda: '',
-        marca: '',
-        tipo_pvp: '',
-        retail: '',
+        marca: "",
         subcategoria: "",
-        management: "",
+        type_exhibit: '',
+        area: '',
+        retail: ''
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -226,10 +225,10 @@ const Exhibits_detail = () => {
         subcategoria: [],
         SKU: [],
         banda: [],
-        marca: [],
+        marca: '',
+        management: [],
         tipo_pvp: [],
         retail:[],
-        management:[],
     })
 
     useEffect(() => {
@@ -279,7 +278,8 @@ const Exhibits_detail = () => {
             brand: filters.marca,
             management: filters.management,
             sub_category: filters.subcategoria,
-            price: filters.tipo_pvp,
+            type_exhibit: filters.type_exhibit,
+            area: filters.area,
             retail: filters.retail,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)

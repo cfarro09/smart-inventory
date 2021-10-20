@@ -280,6 +280,7 @@ const Exhibits_detail = () => {
             sub_category: filters.subcategoria,
             type_exhibit: filters.type_exhibit,
             area: filters.area,
+            price:"",
             retail: filters.retail,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)

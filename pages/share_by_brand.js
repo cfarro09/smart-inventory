@@ -293,6 +293,7 @@ const Share_by_brand = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("model")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
             ]);
+            filtrar()
             setdatafilters({
                 ...datafilters,
                 channel: validateResArray(listResult[1], continuezyx),

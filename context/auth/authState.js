@@ -104,7 +104,7 @@ const AuthState = ({ children }) => {
                         settologged({ isloading: false, logged: true, appfound });
                     }
                     else
-                        router.push("/").then(() => settologged({ isloading: false, logged: true }));
+                        router.push("/share_by_brand").then(() => settologged({ isloading: false, logged: true }));
 
                 } catch (error) {
                     dispatch({

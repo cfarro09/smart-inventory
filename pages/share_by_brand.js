@@ -608,9 +608,9 @@ const Share_by_brand = () => {
                                 <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={categorybrandSKU} >
-                                        <XAxis dataKey="week" />
+                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                         <YAxis />
-                                        <Tooltip formatter={(value, name) => (value > 0 ? [value, name] : [])} />
+                                        <Tooltip />
                                         <CartesianGrid />
                                         {
                                             brands.map((brand, i) => (
@@ -627,7 +627,7 @@ const Share_by_brand = () => {
                                 <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría %</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={categorybrandSKUperc} >
-                                        <XAxis dataKey="week" />
+                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                         <YAxis domain={[0, 100]} />
                                         <Tooltip formatter={(value, name) => [value.toFixed(2) + " %", name]} />
                                         <CartesianGrid />
@@ -650,7 +650,7 @@ const Share_by_brand = () => {
                                     <BarChart data={poicategory} >
                                         <XAxis dataKey="week" />
                                         <YAxis />
-                                        <Tooltip formatter={(value, name) => (value > 0 ? [value, name] : [])} />
+                                        <Tooltip />
                                         <CartesianGrid />
                                         {
                                             brands.map((brand, i) => (

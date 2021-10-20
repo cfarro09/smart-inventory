@@ -153,7 +153,7 @@ const Exhibits_data_base = () => {
     const [dataGraph, setDataGraph] = useState([])
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
-    const [category, setcategory] = useState(null);
+    const [category, setcategory] = useState("");
 
     const [disablebutton, setdisablebutton] = useState(true)
     const { setLightBox, setOpenBackdrop } = useContext(popupsContext);
@@ -185,22 +185,6 @@ const Exhibits_data_base = () => {
             {
                 Header: 'Categoría',
                 accessor: 'category'
-            },
-            {
-                Header: 'Modelo',
-                accessor: 'model'
-            },
-            {
-                Header: 'Precio regular',
-                accessor: 'regular_price'
-            },
-            {
-                Header: 'Precio promocional',
-                accessor: 'prom_price'
-            },
-            {
-                Header: 'Mecanica de la promocion',
-                accessor: 'trading_option'
             },
             {
                 Header: 'Url de la foto',
@@ -235,7 +219,6 @@ const Exhibits_data_base = () => {
         channel: '',
         department: '',
         store_name: '',
-        categoria: 1,
         management: '',
         SKU: '',
         marca: "",
@@ -250,7 +233,7 @@ const Exhibits_data_base = () => {
         channel: [],
         department: [],
         store_name: [],
-        categoria: [],
+        subcategoria: [],
         SKU: [],
         banda: [],
         marca: '',
@@ -268,7 +251,7 @@ const Exhibits_data_base = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("EXHIBICIONES")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
@@ -279,7 +262,7 @@ const Exhibits_data_base = () => {
                 format: validateResArray(listResult[0], continuezyx),
                 department: validateResArray(listResult[2], continuezyx),
                 store_name: validateResArray(listResult[3], continuezyx),
-                categoria: validateResArray(listResult[4], continuezyx),
+                subcategoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
                 management: validateResArray(listResult[6], continuezyx),
                 retail: validateResArray(listResult[7], continuezyx),
@@ -301,7 +284,7 @@ const Exhibits_data_base = () => {
             channel: filters.channel,
             department: filters.department,
             store_name: filters.store_name,
-            category: filters.categoria,
+            category: 4,
             sku_code: filters.SKU,
             brand: filters.marca,
             management: filters.management,
@@ -339,18 +322,16 @@ const Exhibits_data_base = () => {
                         setDateRangeExt={setdateRange}
                     />
                     <SelectFunction
-                        title="Categoria"
+                        title="Subcategoría"
                         classname={classes.itemFilter}
-                        datatosend={datafilters.categoria}
-                        optionvalue="category"
-                        optiondesc="category"
+                        datatosend={datafilters.subcategoria}
+                        optionvalue="sub_category"
+                        optiondesc="sub_category"
                         variant="outlined"
-                        namefield="category"
-                        descfield="category"
+                        namefield="sub_category"
+                        descfield="sub_category"
                         callback={({ newValue: value }) => {
-                            setfilters({ ...filters, categoria: value?.id_form || 1 });
-                            setcategory(value)
-                            setdisablebutton(!value)
+                            setfilters({ ...filters, subcategoria: value?.sub_category || "" });
                         }}
                     />
                     <SelectFunction
@@ -379,7 +360,6 @@ const Exhibits_data_base = () => {
                         variant="contained"
                         color="primary"
                         onClick={() => filtrar()}
-                        disabled={disablebutton}
                         startIcon={<SearchIcon style={{ color: '#FFF' }} />}
                     >Buscar</Button>
                     {searchdone &&

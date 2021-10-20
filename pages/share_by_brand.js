@@ -32,8 +32,8 @@ import {
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
 
-const brands = [ "IMACO","B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "INSTAN POT", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO"]
-const colors = ["yellow","#bababa", "#575757", "#868686", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#535353",  "#b8b8b8", "#818181", "#a2a2a2", "#808080", "#838383", "#8a8a8a", "#929292", "#b5b5b5", "#d9d9d9", "#888888", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#565656", "#444444", "#d3d3d3", "rgb(251, 95, 95)", "#a9a9a9", "#878787", "#797979", "#797979", "#797979"]
+const brands = ["IMACO", "B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "INSTAN POT", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO"]
+const colors = ["yellow", "#bababa", "#575757", "#868686", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#535353", "#b8b8b8", "#818181", "#a2a2a2", "#808080", "#838383", "#8a8a8a", "#929292", "#b5b5b5", "#d9d9d9", "#888888", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#565656", "#444444", "#d3d3d3", "rgb(251, 95, 95)", "#a9a9a9", "#878787", "#797979", "#797979", "#797979"]
 const elementBrand = (week) => ({
     week: week,
     "B&D": 0,
@@ -308,7 +308,7 @@ const Share_by_brand = () => {
         })();
         return () => continuezyx = false;
     }, [])
-    
+
     async function filtrar() {
         setsearchdone(true)
         let count = 0;
@@ -337,7 +337,7 @@ const Share_by_brand = () => {
         let brandlist = [];
         let weeks = [];
         let totalweek = [];
-        let countbrand=new Array(37).fill(0);
+        let countbrand = new Array(37).fill(0);
 
         listResultDate.result.data.map(row => {
             if (!weeks.includes(row.Week)) { weeks.push(row.Week); totalweek.push(0) }
@@ -350,16 +350,16 @@ const Share_by_brand = () => {
         weeks.map(row => {
             listbrand.push(elementBrand(row))
         })
-        function compare( a, b ) {
-            if ( countbrand[brands.indexOf(a)] < countbrand[brands.indexOf(b)] ){
-              return -1;
+        function compare(a, b) {
+            if (countbrand[brands.indexOf(a)] < countbrand[brands.indexOf(b)]) {
+                return -1;
             }
-            if ( countbrand[brands.indexOf(a)] > countbrand[brands.indexOf(b)] ){
-              return 1;
+            if (countbrand[brands.indexOf(a)] > countbrand[brands.indexOf(b)]) {
+                return 1;
             }
             return 0;
-          }
-        brandlist.sort( compare );
+        }
+        brandlist.sort(compare);
         setorderbrandsDate(brandlist)
         listResultDate.result.data.map(row => {
             listbrand.forEach(list => {
@@ -379,7 +379,7 @@ const Share_by_brand = () => {
         let brandlistSKU = [];
         let skucategoryperc = [];
         let skucategorytotal = [];
-        let countbrandSKU=new Array(37).fill(0);
+        let countbrandSKU = new Array(37).fill(0);
         listResultSKU.result.data.map(row => {
             if (!categories.includes(row.subcategory)) { categories.push(row.subcategory); skucategorytotal.push(0) }
             if (!brandlistSKU.includes(row.brand)) brandlistSKU.push(row.brand)
@@ -404,16 +404,16 @@ const Share_by_brand = () => {
                 }
             })
         })
-        function compareSKU( a, b ) {
-            if ( countbrandSKU[brands.indexOf(a)] < countbrandSKU[brands.indexOf(b)] ){
-              return -1;
+        function compareSKU(a, b) {
+            if (countbrandSKU[brands.indexOf(a)] < countbrandSKU[brands.indexOf(b)]) {
+                return -1;
             }
-            if ( countbrandSKU[brands.indexOf(a)] > countbrandSKU[brands.indexOf(b)] ){
-              return 1;
+            if (countbrandSKU[brands.indexOf(a)] > countbrandSKU[brands.indexOf(b)]) {
+                return 1;
             }
             return 0;
-          }
-        brandlistSKU.sort( compareSKU );
+        }
+        brandlistSKU.sort(compareSKU);
         setorderbrandsSKU(brandlistSKU)
         setcategorybrandSKU(skucategory)
         setcategorybrandSKUperc(skucategoryperc)
@@ -425,7 +425,7 @@ const Share_by_brand = () => {
         let poicategoriesperc = [];
         let brandlistpoi = [];
         let poicategoriestotal = [];
-        let countbrandpoi=new Array(37).fill(0);
+        let countbrandpoi = new Array(37).fill(0);
         listpoiresult.result.data.map(row => {
             if (!categoriespoi.includes(row.retail)) { categoriespoi.push(row.retail); poicategoriestotal.push(0) }
             if (!brandlistpoi.includes(row.brand)) brandlistpoi.push(row.brand)
@@ -450,16 +450,16 @@ const Share_by_brand = () => {
                 }
             })
         })
-        function comparepoi( a, b ) {
-            if ( countbrandpoi[brands.indexOf(a)] < countbrandpoi[brands.indexOf(b)] ){
-              return -1;
+        function comparepoi(a, b) {
+            if (countbrandpoi[brands.indexOf(a)] < countbrandpoi[brands.indexOf(b)]) {
+                return -1;
             }
-            if ( countbrandpoi[brands.indexOf(a)] > countbrandpoi[brands.indexOf(b)] ){
-              return 1;
+            if (countbrandpoi[brands.indexOf(a)] > countbrandpoi[brands.indexOf(b)]) {
+                return 1;
             }
             return 0;
-          }
-        brandlistpoi.sort( comparepoi );
+        }
+        brandlistpoi.sort(comparepoi);
         setorderbrandspoi(brandlistpoi)
         setpoicategory(poicategories)
         setpoicategoryperc(poicategoriesperc)
@@ -628,7 +628,7 @@ const Share_by_brand = () => {
                                                         dataKey={brand}
                                                         stackId="a"
                                                         fill={colors[brands.indexOf(brand)]}
-                                                        label={{content: () => brand}}
+                                                        label={{ content: () => brand, className: brand === "OSTER" ? "textwhite" : undefined }}
                                                     />
                                                 )
                                             })
@@ -647,9 +647,9 @@ const Share_by_brand = () => {
                                 <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={categorybrandSKU} >
-                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
+                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
                                         <YAxis />
-                                        <Tooltip  itemSorter={item => -(item.value)}/>
+                                        <Tooltip itemSorter={item => -(item.value)} />
                                         <CartesianGrid />
                                         {
                                             orderbrandsSKU.map((brand, i) => (
@@ -666,9 +666,9 @@ const Share_by_brand = () => {
                                 <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría %</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={categorybrandSKUperc} >
-                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
+                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
                                         <YAxis domain={[0, 100]} />
-                                        <Tooltip  itemSorter={item => -(item.value)} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
+                                        <Tooltip itemSorter={item => -(item.value)} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
                                         <CartesianGrid />
                                         {
                                             orderbrandsSKU.map((brand, i) => (
@@ -687,13 +687,13 @@ const Share_by_brand = () => {
                                 <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={poicategory} >
-                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
+                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
                                         <YAxis />
-                                        <Tooltip  itemSorter={item => -(item.value)} />
+                                        <Tooltip itemSorter={item => -(item.value)} />
                                         <CartesianGrid />
                                         {
                                             orderbrandspoi.map((brand, i) => (
-                                                <Bar key={`marcpoi${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]}/>
+                                                <Bar key={`marcpoi${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]} />
                                             ))
                                         }
                                     </BarChart>
@@ -706,13 +706,13 @@ const Share_by_brand = () => {
                                 <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena %</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={poicategoryperc} >
-                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
+                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
                                         <YAxis domain={[0, 100]} />
                                         <Tooltip itemSorter={item => -(item.value)} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
                                         <CartesianGrid />
                                         {
                                             orderbrandspoi.map((brand, i) => (
-                                                <Bar key={`marcpoiperc${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]}/>
+                                                <Bar key={`marcpoiperc${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]} />
                                             ))
                                         }
                                     </BarChart>

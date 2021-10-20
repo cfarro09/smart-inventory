@@ -212,6 +212,9 @@ const Layout = ({ children }) => {
                         margin:0;
                         padding:0;
                     }
+                    .textwhite {
+                        fill: #FFF
+                    }
                     footer {
                         width: 100%;
                         height: 50px;

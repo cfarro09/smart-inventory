@@ -18,6 +18,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import popupsContext from '../context/pop-ups/pop-upsContext';
+import * as htmlToImage from 'html-to-image';
 
 import {
     Search as SearchIcon,
@@ -192,14 +193,19 @@ const User = () => {
         setDataGraph(listResult.result.data.map(x => ({ ...x, price: parseFloat(x.price) })))
     }
     function descargar() {
-        html2canvas(document.getElementById('divToPrint'),{ dpi: 300, useCORS: true })
+        
+        htmlToImage.toPng(document.getElementById('divToPrint')).then(function (dataUrl) {
+            require("downloadjs")(dataUrl, 'stepchart.png', "image/png");
+        });
+
+        /*html2canvas(document.getElementById('divToPrint'),{ dpi: 300, useCORS: true })
             .then((canvas) => {
                 const pdf = new jsPDF('l', 'mm', 'a4');
                 var width = pdf.internal.pageSize.getWidth();
                 var height = pdf.internal.pageSize.getHeight();
                 pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, width, height);
                 pdf.save("download.pdf");
-            })
+            })*/
     }
 
     return (
@@ -299,7 +305,7 @@ const User = () => {
                     }
                 </div>
                 {searchdone ?
-                    <div style={{ display: 'flex', gap: 8 }} id="divToPrint">
+                    <div style={{ display: 'flex', gap: 8 , background:"white"}} id="divToPrint">
                         <ResponsiveContainer aspect={4.0 / 2}>
                             <BarChart
                                 data={enabletop ? dataGraph.slice(dataGraph.length < 10 ? 0 : dataGraph.length - 11, dataGraph.length) : dataGraph}

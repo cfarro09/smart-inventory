@@ -213,7 +213,8 @@ const Exhibits_detail = () => {
         banda: '',
         marca: '',
         tipo_pvp: '',
-        retail: ''
+        retail: '',
+        subcategoria: ""
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -221,7 +222,7 @@ const Exhibits_detail = () => {
         channel: [],
         department: [],
         store_name: [],
-        categoria: [],
+        subcategoria: [],
         SKU: [],
         banda: [],
         marca: [],
@@ -238,7 +239,7 @@ const Exhibits_detail = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("EXHIBICIONES")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("model")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
@@ -249,7 +250,7 @@ const Exhibits_detail = () => {
                 format: validateResArray(listResult[0], continuezyx),
                 department: validateResArray(listResult[2], continuezyx),
                 store_name: validateResArray(listResult[3], continuezyx),
-                categoria: validateResArray(listResult[4], continuezyx),
+                subcategoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
                 model: validateResArray(listResult[6], continuezyx),
                 retail: validateResArray(listResult[7], continuezyx),
@@ -269,10 +270,11 @@ const Exhibits_detail = () => {
             channel: filters.channel,
             department: filters.department,
             store_name: filters.store_name,
-            category: filters.categoria,
+            category: 4,
             sku_code: filters.SKU,
             brand: filters.marca,
-            sub_category: '',
+            management: filters.management,
+            sub_category: filters.subcategoria,
             price: filters.tipo_pvp,
             retail: filters.retail,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
@@ -305,18 +307,16 @@ const Exhibits_detail = () => {
                         setDateRangeExt={setdateRange}
                     />
                     <SelectFunction
-                        title="Categoria"
+                        title="Subcategoría"
                         classname={classes.itemFilter}
-                        datatosend={datafilters.categoria}
-                        optionvalue="category"
-                        optiondesc="category"
+                        datatosend={datafilters.subcategoria}
+                        optionvalue="sub_category"
+                        optiondesc="sub_category"
                         variant="outlined"
-                        namefield="category"
-                        descfield="category"
+                        namefield="sub_category"
+                        descfield="sub_category"
                         callback={({ newValue: value }) => {
-                            setfilters({ ...filters, categoria: value?.id_form || 1 });
-                            setcategory(value)
-                            setdisablebutton(!value)
+                            setfilters({ ...filters, subcategoria: value?.sub_category || "" });
                         }}
                     />
                     <SelectFunction
@@ -345,7 +345,6 @@ const Exhibits_detail = () => {
                         variant="contained"
                         color="primary"
                         onClick={() => filtrar()}
-                        disabled={disablebutton}
                         startIcon={<SearchIcon style={{ color: '#FFF' }} />}
                     >Buscar</Button>
                     {searchdone &&

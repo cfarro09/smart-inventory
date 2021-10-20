@@ -32,8 +32,8 @@ import {
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
 
-const brands = ["B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "IMACO", "INDURAMA", "INSTAN POT", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO"]
-const colors = ["#bababa", "#575757", "#868686", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#535353", "yellow", "#b8b8b8", "#818181", "#a2a2a2", "#808080", "#838383", "#8a8a8a", "#929292", "#b5b5b5", "#d9d9d9", "#888888", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#565656", "#444444", "#d3d3d3", "rgb(251, 95, 95)", "#a9a9a9", "#878787", "#797979", "#797979", "#797979"]
+const brands = [ "IMACO","B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "INSTAN POT", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO"]
+const colors = ["yellow","#bababa", "#575757", "#868686", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#535353",  "#b8b8b8", "#818181", "#a2a2a2", "#808080", "#838383", "#8a8a8a", "#929292", "#b5b5b5", "#d9d9d9", "#888888", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#565656", "#444444", "#d3d3d3", "rgb(251, 95, 95)", "#a9a9a9", "#878787", "#797979", "#797979", "#797979"]
 const elementBrand = (week) => ({
     week: week,
     "B&D": 0,
@@ -162,23 +162,12 @@ const RB_MARCA = {
     }
 }
 
-const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-        return (
-            <div className="custom-tooltip">
-                <p className="label">{`${label} : ${payload[0].value}`}</p>
-
-            </div>
-        );
-    }
-
-    return null;
-};
-
 const Share_by_brand = () => {
     const classes = useStyles();
-    const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
+    const [orderbrandsDate, setorderbrandsDate] = useState([])
+    const [orderbrandsSKU, setorderbrandsSKU] = useState([])
+    const [orderbrandspoi, setorderbrandspoi] = useState([])
     const [dataGraphDate, setDataGraphDate] = useState([])
     const [categorybrandSKU, setcategorybrandSKU] = useState([])
     const [categorybrandSKUperc, setcategorybrandSKUperc] = useState([])
@@ -319,6 +308,7 @@ const Share_by_brand = () => {
         })();
         return () => continuezyx = false;
     }, [])
+    
     async function filtrar() {
         setsearchdone(true)
         let count = 0;
@@ -344,18 +334,33 @@ const Share_by_brand = () => {
         setDataGraph(listResult.result.data)
         const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTERDATE(filter_to_send))
         let listbrand = [];
+        let brandlist = [];
         let weeks = [];
         let totalweek = [];
+        let countbrand=new Array(37).fill(0);
 
         listResultDate.result.data.map(row => {
             if (!weeks.includes(row.Week)) { weeks.push(row.Week); totalweek.push(0) }
+            if (!brandlist.includes(row.brand)) brandlist.push(row.brand)
         })
         listResultDate.result.data.map(row => {
             totalweek[weeks.indexOf(row.Week)] += parseInt(row.cnt)
+            countbrand[brands.indexOf(row.brand)] += parseInt(row.cnt)
         })
         weeks.map(row => {
             listbrand.push(elementBrand(row))
         })
+        function compare( a, b ) {
+            if ( countbrand[brands.indexOf(a)] < countbrand[brands.indexOf(b)] ){
+              return -1;
+            }
+            if ( countbrand[brands.indexOf(a)] > countbrand[brands.indexOf(b)] ){
+              return 1;
+            }
+            return 0;
+          }
+        brandlist.sort( compare );
+        setorderbrandsDate(brandlist)
         listResultDate.result.data.map(row => {
             listbrand.forEach(list => {
                 if (list.week === row.Week) {
@@ -366,16 +371,22 @@ const Share_by_brand = () => {
         setDataGraphDate(listbrand)
         settotalSKA(count)
 
+
+
         const listResultSKU = await triggeraxios('post', process.env.endpoints.selsimple, FILTERGraph1(filter_to_send))
         let categories = []
         let skucategory = [];
+        let brandlistSKU = [];
         let skucategoryperc = [];
         let skucategorytotal = [];
+        let countbrandSKU=new Array(37).fill(0);
         listResultSKU.result.data.map(row => {
             if (!categories.includes(row.subcategory)) { categories.push(row.subcategory); skucategorytotal.push(0) }
+            if (!brandlistSKU.includes(row.brand)) brandlistSKU.push(row.brand)
         })
         listResultSKU.result.data.map(row => {
             skucategorytotal[categories.indexOf(row.subcategory)] += parseInt(row.cont)
+            countbrandSKU[brands.indexOf(row.brand)] += parseInt(row.cont)
         })
         categories.map(row => {
             skucategory.push(elementBrand(row))
@@ -393,20 +404,35 @@ const Share_by_brand = () => {
                 }
             })
         })
+        function compareSKU( a, b ) {
+            if ( countbrandSKU[brands.indexOf(a)] < countbrandSKU[brands.indexOf(b)] ){
+              return -1;
+            }
+            if ( countbrandSKU[brands.indexOf(a)] > countbrandSKU[brands.indexOf(b)] ){
+              return 1;
+            }
+            return 0;
+          }
+        brandlistSKU.sort( compareSKU );
+        setorderbrandsSKU(brandlistSKU)
         setcategorybrandSKU(skucategory)
         setcategorybrandSKUperc(skucategoryperc)
+
 
         const listpoiresult = await triggeraxios('post', process.env.endpoints.selsimple, FILTERPOI(filter_to_send))
         let categoriespoi = []
         let poicategories = [];
         let poicategoriesperc = [];
+        let brandlistpoi = [];
         let poicategoriestotal = [];
+        let countbrandpoi=new Array(37).fill(0);
         listpoiresult.result.data.map(row => {
             if (!categoriespoi.includes(row.retail)) { categoriespoi.push(row.retail); poicategoriestotal.push(0) }
+            if (!brandlistpoi.includes(row.brand)) brandlistpoi.push(row.brand)
         })
-        console.log(listpoiresult.result.data)
         listpoiresult.result.data.map(row => {
             poicategoriestotal[categoriespoi.indexOf(row.retail)] += parseInt(row.cont)
+            countbrandpoi[brands.indexOf(row.brand)] += parseInt(row.cont)
         })
         categoriespoi.map(row => {
             poicategories.push(elementBrand(row))
@@ -424,6 +450,17 @@ const Share_by_brand = () => {
                 }
             })
         })
+        function comparepoi( a, b ) {
+            if ( countbrandpoi[brands.indexOf(a)] < countbrandpoi[brands.indexOf(b)] ){
+              return -1;
+            }
+            if ( countbrandpoi[brands.indexOf(a)] > countbrandpoi[brands.indexOf(b)] ){
+              return 1;
+            }
+            return 0;
+          }
+        brandlistpoi.sort( comparepoi );
+        setorderbrandspoi(brandlistpoi)
         setpoicategory(poicategories)
         setpoicategoryperc(poicategoriesperc)
         setOpenBackdrop(false)
@@ -578,18 +615,19 @@ const Share_by_brand = () => {
                                         <YAxis domain={[0, 100]} />
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <Tooltip
+                                            itemSorter={item => -(item.value)}
                                             labelFormatter={(value) => [<b>Semana {value}</b>]}
                                             formatter={(value, name) => [value.toFixed(2) + " %", name]}
                                         />
                                         {
-                                            brands.map((brand, i) => {
+                                            orderbrandsDate.map((brand) => {
                                                 return (
                                                     <Bar
-                                                        key={brand}
+                                                        key={`cantskus${brand}`}
                                                         type="monotone"
                                                         dataKey={brand}
                                                         stackId="a"
-                                                        fill={colors[i]}
+                                                        fill={colors[brands.indexOf(brand)]}
                                                         label={{content: () => brand}}
                                                     />
                                                 )
@@ -611,11 +649,11 @@ const Share_by_brand = () => {
                                     <BarChart data={categorybrandSKU} >
                                         <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                         <YAxis />
-                                        <Tooltip />
+                                        <Tooltip  itemSorter={item => -(item.value)}/>
                                         <CartesianGrid />
                                         {
-                                            brands.map((brand, i) => (
-                                                <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
+                                            orderbrandsSKU.map((brand, i) => (
+                                                <Bar key={`marcC${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]} />
                                             ))
                                         }
                                     </BarChart>
@@ -630,11 +668,11 @@ const Share_by_brand = () => {
                                     <BarChart data={categorybrandSKUperc} >
                                         <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                         <YAxis domain={[0, 100]} />
-                                        <Tooltip formatter={(value, name) => [value.toFixed(2) + " %", name]} />
+                                        <Tooltip  itemSorter={item => -(item.value)} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
                                         <CartesianGrid />
                                         {
-                                            brands.map((brand, i) => (
-                                                <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
+                                            orderbrandsSKU.map((brand, i) => (
+                                                <Bar key={`marcCperc${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]} />
                                             ))
                                         }
                                     </BarChart>
@@ -649,13 +687,13 @@ const Share_by_brand = () => {
                                 <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={poicategory} >
-                                        <XAxis dataKey="week" />
+                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                         <YAxis />
-                                        <Tooltip />
+                                        <Tooltip  itemSorter={item => -(item.value)} />
                                         <CartesianGrid />
                                         {
-                                            brands.map((brand, i) => (
-                                                <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
+                                            orderbrandspoi.map((brand, i) => (
+                                                <Bar key={`marcpoi${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]}/>
                                             ))
                                         }
                                     </BarChart>
@@ -668,13 +706,13 @@ const Share_by_brand = () => {
                                 <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena %</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={poicategoryperc} >
-                                        <XAxis dataKey="week" />
+                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                         <YAxis domain={[0, 100]} />
-                                        <Tooltip formatter={(value, name) => [value.toFixed(2) + " %", name]} />
+                                        <Tooltip itemSorter={item => -(item.value)} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
                                         <CartesianGrid />
                                         {
-                                            brands.map((brand, i) => (
-                                                <Bar key={brand} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
+                                            orderbrandspoi.map((brand, i) => (
+                                                <Bar key={`marcpoiperc${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]}/>
                                             ))
                                         }
                                     </BarChart>

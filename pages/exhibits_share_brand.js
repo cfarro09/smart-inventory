@@ -34,6 +34,7 @@ import {
 function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
   }
+  
 const dataTable = [
     createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
     createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
@@ -52,7 +53,7 @@ const dataTable = [
 ];
 
 const brands = ["B&D","BLACKLINE","BORD","BOSCH","BOSSKO","CONTINENTAL","CUISINART","ELECTRICLIFE","ELECTROLUX","FINEZZA","FOSTERIER","HOLSTEIN","IMACO","INDURAMA","INSTAN POT","JATARIY","KENWOOD","KITCHEN AID","KORKMAZ","LOVEN","MAGEFESA","MIRAY","NEX","OSTER","PHILIPS","PRACTIKA","PRIMA","PROFESIONAL SERIES","RECCO","RECORD","TAURUS","THOMAS","VALESKA","WURDEN","ZYKLON","OTROS","DOLCE GUSTO"]
-const colors = ["#bababa","#575757","#868686","#4f4f4f","#909090","#c4c4c4","#9d9d9d","#494949","#b9b9b9","#545454","#5e5e5e","#535353","yellow","#b8b8b8","#818181","#a2a2a2","#808080","#838383","#8a8a8a","#929292","#b5b5b5","#d9d9d9","#888888","blue","#c5c5c5","#1e1e1e","#7c7c7c","#787878","#565656","#444444","#d3d3d3","red","#a9a9a9","#878787","#797979","#797979","#797979"]
+const colors = ["#bababa", "#575757", "#868686", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#535353", "yellow", "#b8b8b8", "#818181", "#a2a2a2", "#808080", "#838383", "#8a8a8a", "#929292", "#b5b5b5", "#d9d9d9", "#888888", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#565656", "#444444", "#d3d3d3", "rgb(251, 95, 95)", "#a9a9a9", "#878787", "#797979", "#797979", "#797979"]
 const elementBrand= (week)=>({
     week: week,
     "B&D": 0,
@@ -223,8 +224,9 @@ const Exhibits_share_brand = () => {
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
     const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
-
-    const [disablebutton, setdisablebutton] = useState(true)
+    const [orderbrandsDate, setorderbrandsDate] = useState([])
+    const [orderbrandsSKU, setorderbrandsSKU] = useState([])
+    const [orderbrandspoi, setorderbrandspoi] = useState([])
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -232,6 +234,36 @@ const Exhibits_share_brand = () => {
             key: 'selection'
         }
     ]);
+    
+    const columns = React.useMemo(
+        () => [
+            {
+                Header: 'Marca',
+                accessor: 'brand',
+            },
+            {
+                Header: 'Tipo de exhibición',
+                accessor: 'type_exhibit',
+            },
+            {
+                Header: 'Cantidad',
+                accessor: 'cont',
+            },
+            {
+                Header: 'Porcentaje',
+                accessor: 'percent',
+                Cell: props => {
+                    const price = ( parseFloat(props.cell.row.original.percent).toFixed(2))+" %";
+                    return (
+                        <div style={{ textAlign: 'right' }}>
+                            {price}
+                        </div>
+                    )
+                }
+            },
+        ],
+        []
+    );
 
     const [filters, setfilters] = useState({
         
@@ -293,7 +325,6 @@ const Exhibits_share_brand = () => {
     }, [])
     async function filtrar() {
         setsearchdone(true)
-        let count=0;
         const filter_to_send = {
             format: filters.format,
             channel: filters.channel,
@@ -323,17 +354,33 @@ const Exhibits_share_brand = () => {
 
         const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         let listbrand=[];
+        let brandlist = [];
         let weeks=[];
         let totalweek=[];
+        let countbrand=new Array(37).fill(0);
+
         listResultDate.result.data.map(row=>{
-          if(!weeks.includes(row.Week)) {weeks.push(row.Week);totalweek.push(0)}
+            if(!weeks.includes(row.Week)) {weeks.push(row.Week);totalweek.push(0)}
+            if (!brandlist.includes(row.brand)) brandlist.push(row.brand)
         })
         listResultDate.result.data.map(row=>{
             totalweek[weeks.indexOf(row.Week)] += parseInt(row.cont)
+            countbrand[brands.indexOf(row.brand)] += parseInt(row.cont)
         })
         weeks.map(row=>{
             listbrand.push(elementBrand(row))
         })
+        function compare( a, b ) {
+            if ( countbrand[brands.indexOf(a)] < countbrand[brands.indexOf(b)] ){
+                return -1;
+            }
+            if ( countbrand[brands.indexOf(a)] > countbrand[brands.indexOf(b)] ){
+                return 1;
+            }
+            return 0;
+        }
+        brandlist.sort( compare );
+        setorderbrandsDate(brandlist)
         listResultDate.result.data.map(row=>{
             listbrand.forEach(list=>{
                 if(list.week===row.Week){
@@ -341,19 +388,28 @@ const Exhibits_share_brand = () => {
                 }
             })
         })
+
         setDataGraphDate(listbrand)
+
+
+
+
         const listResultSKU = await triggeraxios('post', process.env.endpoints.selsimple, FILTERGraph1(filter_to_send))
         let categories= []
         let skucategory=[];
+        let brandlistSKU = [];
+        let countbrandSKU=new Array(37).fill(0);
         let uniqueBrands = [];
         let skucategoryperc=[];
         let skucategorytotal=[];
         listResultSKU.result.data.map(row=>{
             if(!categories.includes(row.category)) {categories.push(row.category);skucategorytotal.push(0)}
             if(!uniqueBrands.includes(row.brand)) {uniqueBrands.push(row.brand)}
+            if (!brandlistSKU.includes(row.brand)) brandlistSKU.push(row.brand)
         })
         listResultSKU.result.data.map(row=>{
             skucategorytotal[categories.indexOf(row.category)] += parseInt(row.cont)
+            countbrandSKU[brands.indexOf(row.brand)] += parseInt(row.cont)
         })
         categories.map(row=>{
             skucategory.push(elementBrand(row))
@@ -371,6 +427,17 @@ const Exhibits_share_brand = () => {
                 }
             })
         })
+        function compareSKU( a, b ) {
+            if ( countbrandSKU[brands.indexOf(a)] < countbrandSKU[brands.indexOf(b)] ){
+              return -1;
+            }
+            if ( countbrandSKU[brands.indexOf(a)] > countbrandSKU[brands.indexOf(b)] ){
+              return 1;
+            }
+            return 0;
+          }
+        brandlistSKU.sort( compareSKU );
+        setorderbrandsSKU(brandlistSKU)
         setcategorybrandSKU(skucategory)
         setcategorybrandSKUperc(skucategoryperc)
 
@@ -379,12 +446,16 @@ const Exhibits_share_brand = () => {
         let categoriespoi = []
         let poicategories = [];
         let poicategoriesperc = [];
+        let brandlistpoi = [];
         let poicategoriestotal = [];
+        let countbrandpoi=new Array(37).fill(0);
         listpoiresult.result.data.map(row => {
             if (!categoriespoi.includes(row.retail)) { categoriespoi.push(row.retail); poicategoriestotal.push(0) }
+            if (!brandlistpoi.includes(row.brand)) brandlistpoi.push(row.brand)
         })
         listpoiresult.result.data.map(row => {
             poicategoriestotal[categoriespoi.indexOf(row.retail)] += parseInt(row.cont)
+            countbrandpoi[brands.indexOf(row.brand)] += parseInt(row.cont)
         })
         categoriespoi.map(row => {
             poicategories.push(elementBrand(row))
@@ -402,6 +473,17 @@ const Exhibits_share_brand = () => {
                 }
             })
         })
+        function comparepoi( a, b ) {
+            if ( countbrandpoi[brands.indexOf(a)] < countbrandpoi[brands.indexOf(b)] ){
+              return -1;
+            }
+            if ( countbrandpoi[brands.indexOf(a)] > countbrandpoi[brands.indexOf(b)] ){
+              return 1;
+            }
+            return 0;
+          }
+        brandlistpoi.sort( comparepoi );
+        setorderbrandspoi(brandlistpoi)
         setpoicategory(poicategories)
         setpoicategoryperc(poicategoriesperc)
         const listtypeexhi = await triggeraxios('post', process.env.endpoints.selsimple, FILTERTYPEEXH(filter_to_send))
@@ -523,10 +605,10 @@ const Exhibits_share_brand = () => {
                                     <XAxis dataKey="week"/>
                                     <YAxis  domain={[0, 100]} />
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <Tooltip labelFormatter={(value)=>[<b>Semana {value}</b>]}  formatter={(value,name)=>[value.toFixed(2) + " %",name]} />
+                                    <Tooltip itemSorter={item => -(item.value)} labelFormatter={(value)=>[<b>Semana {value}</b>]}  formatter={(value,name)=>[value.toFixed(2) + " %",name]} />
                                     {
-                                        brands.map((brand,i)=>(
-                                            <Bar key={`exhibicionexmarcaperc${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[i]} />
+                                        orderbrandsDate.map((brand,i)=>(
+                                            <Bar key={`exhibicionexmarcaperc${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]} />
                                         ))
                                     }
                                 </BarChart >
@@ -545,11 +627,11 @@ const Exhibits_share_brand = () => {
                                 <BarChart data={categorybrandSKU} >
                                     <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                     <YAxis />
-                                    <Tooltip formatter={(value,name)=>(value>0?[value,name]:[])}/>
+                                    <Tooltip itemSorter={item => -(item.value)}/>
                                     <CartesianGrid />
                                     {
-                                        brands.map((brand,i)=>(
-                                            <Bar  key={`exhicat${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[i]}/>
+                                        orderbrandsSKU.map((brand,i)=>(
+                                            <Bar  key={`exhicat${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]}/>
                                         ))
                                     }
                                 </BarChart>
@@ -564,11 +646,11 @@ const Exhibits_share_brand = () => {
                                 <BarChart data={categorybrandSKUperc} >
                                     <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                     <YAxis  domain={[0, 100]} />
-                                    <Tooltip formatter={(value,name)=>[value.toFixed(2) + " %",name]}/>
+                                    <Tooltip  itemSorter={item => -(item.value)} formatter={(value,name)=>[value.toFixed(2) + " %",name]}/>
                                     <CartesianGrid />
                                     {
-                                        brands.map((brand,i)=>(
-                                            <Bar key={`exhicatperc${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[i]}/>
+                                        orderbrandsSKU.map((brand,i)=>(
+                                            <Bar key={`exhicatperc${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]}/>
                                         ))
                                     }
                                 </BarChart>
@@ -585,11 +667,11 @@ const Exhibits_share_brand = () => {
                                 <BarChart data={poicategory} >
                                     <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                     <YAxis />
-                                    <Tooltip formatter={(value,name)=>(value>0?[value,name]:[])}/>
+                                    <Tooltip  itemSorter={item => -(item.value)}/>
                                     <CartesianGrid />
                                     {
-                                        brands.map((brand,i)=>(
-                                            <Bar  key={`exhicad${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[i]}/>
+                                        orderbrandspoi.map((brand,i)=>(
+                                            <Bar  key={`exhicad${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]}/>
                                         ))
                                     }
                                 </BarChart>
@@ -604,11 +686,11 @@ const Exhibits_share_brand = () => {
                                 <BarChart data={poicategoryperc} >
                                     <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                     <YAxis  domain={[0, 100]} />
-                                    <Tooltip formatter={(value,name)=>[value.toFixed(2) + " %",name]}/>
+                                    <Tooltip  itemSorter={item => -(item.value)} formatter={(value,name)=>[value.toFixed(2) + " %",name]}/>
                                     <CartesianGrid />
                                     {
-                                        brands.map((brand,i)=>(
-                                            <Bar key={`exhicadperc${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[i]}/>
+                                        orderbrandspoi.map((brand,i)=>(
+                                            <Bar key={`exhicadperc${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]}/>
                                         ))
                                     }
                                 </BarChart>
@@ -621,28 +703,14 @@ const Exhibits_share_brand = () => {
                             className={classes.itemCard}
                         >
                             <div className={classes.titlecards}>Q Exhibiciones por Marca y Tipo de Exhibición</div>
-                            <TableContainer component={Paper}>
-                            <Table className={classes.table} aria-label="simple table">
-                                <TableHead>
-                                <TableRow>
-                                    <TableCell align="center">Marca</TableCell>
-                                    <TableCell align="center">Tipo de exhibición</TableCell>
-                                    <TableCell align="center">Cantidad</TableCell>
-                                    <TableCell align="center">Porcentaje</TableCell>
-                                </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                {typeexhibit.map((row,i) => (
-                                    <TableRow key={`exhmarcamod${row.brand}${i}`}>
-                                        <TableCell align="center">{row.brand}</TableCell>
-                                        <TableCell align="center">{row.type_exhibit}</TableCell>
-                                        <TableCell align="center">{row.cont}</TableCell>
-                                        <TableCell align="center">{parseFloat(row.percent).toFixed(2)}%</TableCell>
-                                    </TableRow>
-                                ))}
-                                </TableBody>
-                            </Table>
-                            </TableContainer>
+                            <div style={{width:"100%"}}>
+                                <TableZyx
+                                    columns={columns}
+                                    data={typeexhibit}
+                                    // fetchData={filtrar}
+                                    register={false}
+                                />
+                            </div>
                         </Box>
                     </div>
                 </div>

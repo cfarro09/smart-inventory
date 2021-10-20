@@ -208,13 +208,13 @@ const Exhibits_detail = () => {
         channel: '',
         department: '',
         store_name: '',
-        categoria: 1,
+        management: '',
         SKU: '',
-        banda: '',
-        marca: '',
-        tipo_pvp: '',
-        retail: '',
-        subcategoria: ""
+        marca: "",
+        subcategoria: "",
+        type_exhibit: '',
+        area: '',
+        retail: ''
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -225,7 +225,8 @@ const Exhibits_detail = () => {
         subcategoria: [],
         SKU: [],
         banda: [],
-        marca: [],
+        marca: '',
+        management: [],
         tipo_pvp: [],
         retail:[],
     })
@@ -243,6 +244,7 @@ const Exhibits_detail = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("model")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
             ]);
             setdatafilters({
                 ...datafilters,
@@ -254,6 +256,7 @@ const Exhibits_detail = () => {
                 marca: validateResArray(listResult[5], continuezyx),
                 model: validateResArray(listResult[6], continuezyx),
                 retail: validateResArray(listResult[7], continuezyx),
+                management: validateResArray(listResult[8], continuezyx),
             })
         })();
         return () => continuezyx = false;
@@ -275,7 +278,9 @@ const Exhibits_detail = () => {
             brand: filters.marca,
             management: filters.management,
             sub_category: filters.subcategoria,
-            price: filters.tipo_pvp,
+            type_exhibit: filters.type_exhibit,
+            area: filters.area,
+            price:"",
             retail: filters.retail,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
@@ -436,16 +441,48 @@ const Exhibits_detail = () => {
                         descfield="store_name"
                         callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
                     />
-                    {/* <SelectFunction
-                        title="Banda"
+
+                    <SelectFunction
+                        title="Subcategoría"
                         datatosend={[]}
-                        optionvalue="id_role"
+                        optionvalue="sub_category"
+                        optiondesc="sub_category"
+                        variant="outlined"
+                        namefield="sub_category"
+                        descfield="sub_category"
+                        callback={({ newValue: value }) => setfilters({ ...filters, sub_category: value?.id || '' })}
+                    />
+                    <SelectFunction
+                        title="Management"
+                        datatosend={datafilters.management}
+                        optionvalue="management"
+                        optiondesc="management"
+                        variant="outlined"
+                        valueselected={filters.management}
+                        namefield="management"
+                        descfield="management"
+                        callback={({ newValue: value }) => setfilters({ ...filters, management: value })}
+                    />
+                    <SelectFunction
+                        title="Tipo Exhibición"
+                        datatosend={[]}
+                        optionvalue="type_exhibit"
                         optiondesc="description"
                         variant="outlined"
-                        namefield="id_role"
+                        namefield="type_exhibit"
                         descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
-                    /> */}
+                        callback={({ newValue: value }) => setfilters({ ...filters, type_exhibit: value?.id || '' })}
+                    />
+                    <SelectFunction
+                        title="Área"
+                        datatosend={[]}
+                        optionvalue="area"
+                        optiondesc="description"
+                        variant="outlined"
+                        namefield="area"
+                        descfield="role_name"
+                        callback={({ newValue: value }) => setfilters({ ...filters, area: value?.id || '' })}
+                    />
                 </div>
             </SwipeableDrawer>
         </Layout>

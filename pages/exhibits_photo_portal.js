@@ -207,12 +207,10 @@ const Exhibits_photo_portal = () => {
     }
 
     const [filters, setfilters] = useState({
-
         format: '',
         channel: '',
         department: '',
         store_name: '',
-        categoria: 1,
         management: '',
         SKU: '',
         marca: "",
@@ -233,7 +231,7 @@ const Exhibits_photo_portal = () => {
         marca: '',
         management: [],
         tipo_pvp: [],
-        retail: [],
+        retail:[],
     })
 
     useEffect(() => {
@@ -459,16 +457,48 @@ const Exhibits_photo_portal = () => {
                         descfield="store_name"
                         callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
                     />
-                    {/* <SelectFunction
-                        title="Banda"
+
+                    <SelectFunction
+                        title="Subcategoría"
                         datatosend={[]}
-                        optionvalue="id_role"
+                        optionvalue="sub_category"
+                        optiondesc="sub_category"
+                        variant="outlined"
+                        namefield="sub_category"
+                        descfield="sub_category"
+                        callback={({ newValue: value }) => setfilters({ ...filters, sub_category: value?.id || '' })}
+                    />
+                    <SelectFunction
+                        title="Management"
+                        datatosend={datafilters.management}
+                        optionvalue="management"
+                        optiondesc="management"
+                        variant="outlined"
+                        valueselected={filters.management}
+                        namefield="management"
+                        descfield="management"
+                        callback={({ newValue: value }) => setfilters({ ...filters, management: value })}
+                    />
+                    <SelectFunction
+                        title="Tipo Exhibición"
+                        datatosend={[]}
+                        optionvalue="type_exhibit"
                         optiondesc="description"
                         variant="outlined"
-                        namefield="id_role"
+                        namefield="type_exhibit"
                         descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
-                    /> */}
+                        callback={({ newValue: value }) => setfilters({ ...filters, type_exhibit: value?.id || '' })}
+                    />
+                    <SelectFunction
+                        title="Área"
+                        datatosend={[]}
+                        optionvalue="area"
+                        optiondesc="description"
+                        variant="outlined"
+                        namefield="area"
+                        descfield="role_name"
+                        callback={({ newValue: value }) => setfilters({ ...filters, area: value?.id || '' })}
+                    />
                 </div>
             </SwipeableDrawer>
         </Layout>

@@ -302,7 +302,7 @@ const Exhibits_share_brand = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("category")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
@@ -512,7 +512,7 @@ const Exhibits_share_brand = () => {
                         setDateRangeExt={setdateRange}
                     />
                     <SelectFunction
-                        title="Subcategoría"
+                        title="Categoría"
                         classname={classes.itemFilter}
                         datatosend={datafilters.subcategoria}
                         optionvalue="sub_category"
@@ -770,17 +770,6 @@ const Exhibits_share_brand = () => {
                         namefield="store_name"
                         descfield="store_name"
                         callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
-                    />
-
-                    <SelectFunction
-                        title="Subcategoría"
-                        datatosend={[]}
-                        optionvalue="sub_category"
-                        optiondesc="sub_category"
-                        variant="outlined"
-                        namefield="sub_category"
-                        descfield="sub_category"
-                        callback={({ newValue: value }) => setfilters({ ...filters, sub_category: value?.id || '' })}
                     />
                     <SelectFunction
                         title="Management"

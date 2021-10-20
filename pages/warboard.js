@@ -3,7 +3,8 @@ import Layout from '../components/system/layout/layout'
 import triggeraxios from '../config/axiosv2';
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
-
+import FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 import Button from '@material-ui/core/Button';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -31,38 +32,6 @@ import {
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
 
-
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell);
-const StyledTableCell2 = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableRow);
 
 const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
@@ -190,6 +159,32 @@ const RB_MARCA = {
     }
 }
 
+function tmpgetfields(value) {
+    if (value.includes("ARROCERA")) {
+        return fields[0];
+    }
+    else if (value.includes("LICUADORA")) {
+        return fields[1];
+    }
+    else if (value.includes("BATIDORA")) {
+        return fields[2];
+    }
+}
+
+const exportToCSV = (csvData, fileName) => {
+    let datafromtable = csvData;
+    
+    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    const fileExtension = '.xlsx';
+
+    const ws = XLSX.utils.aoa_to_sheet(datafromtable);
+    const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
+}
+
+
 const BulkLoad = () => {
     const classes = useStyles();
     const [dataGraph, setDataGraph] = useState([])
@@ -201,7 +196,7 @@ const BulkLoad = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [category, setcategory] = useState(null);
     const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
-
+    const [dataArray, setDataArray] = useState([])
     const [disablebutton, setdisablebutton] = useState(true)
     const [dateRange, setdateRange] = useState([
         {
@@ -216,7 +211,7 @@ const BulkLoad = () => {
         channel: '',
         department: '',
         store_name: '',
-        categoria: 1,
+        categoria: 0,
         SKU: '',
         banda: '',
         marca: '',
@@ -266,15 +261,13 @@ const BulkLoad = () => {
         return () => continuezyx = false;
     }, [])
 
-    useEffect(() => {
-        console.log(fieldstoshow)
-    }, [fieldstoshow])
-
     async function filtrar() {
         setsearchdone(true)
         setpvpprom(true)
         setpvpreg(true)
         setcategorysearchfield(category.category)
+
+        const constfieldstouse = tmpgetfields(category.category);
 
         if (filters.tipo_pvp === "prom_price") setpvpreg(false)
         if (filters.tipo_pvp === "regular_price") setpvpprom(false)
@@ -297,42 +290,30 @@ const BulkLoad = () => {
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         setOpenBackdrop(false)
         setDataGraph(listResult.result.data)
+        
+        const listValues = [
+            { name: "model", title: "Modelo" },
+            { name: "graphic", title: "Gráfica" },
+            ...headerfields,
+            ...constfieldstouse
+        ]
+
+        const arrayinitials = listValues.map(x => [x.title]);
+
+        const ff = listResult.result.data.reduce((acc, item) => {
+            Object.entries(item).forEach(([key, value], index) => {
+                const indexfound = listValues.findIndex(x => x.name === key);
+                if (indexfound >= 0) {
+                    acc[indexfound].push(value)
+                }
+            });
+            return acc;
+        }, arrayinitials)
+
+        setDataArray(ff)
     }
     function descargar() {
-
-        var doc = new jsPDF({
-            orientation: "landscape",
-            unit: "in",
-        });
-        doc.autoTable({
-            html: '#maintable',
-            theme: 'plain',
-            columnWidth: 'wrap',
-
-            styles: { lineWidth: 0.01, lineColor: '#FFF', cellWidth: 'wrap', overflow: 'linebreak'
-        },
-            headStyles: { fillColor: '#afabaa', textColor: '#FFF', valign: 'middle', halign: 'center' },
-            columnStyles: {
-                0: { fillColor: '#bfbfbf', halign: 'left', valign: 'middle' }, 2: {
-                    cellWidth: 'auto',
-                    columnWidth: 'auto'
-
-                }
-            },
-            bodyStyles: { halign: 'center', fillColor: '#bfbfbf', valign: 'middle' },
-            footStyles: { halign: 'right', fillColor: '#bfbfbf' },
-            margin: { top: 0.1, left: 0.1, right: 0.1, bottom: 0.1 }
-        })
-        doc.save('table.pdf');
-
-        // html2canvas(document.getElementById('divToPrint'))
-        //     .then((canvas) => {
-        //         const pdf = new jsPDF('l', 'in', [100,100]);
-        //         var width = pdf.internal.pageSize.getWidth();
-        //         var height = pdf.internal.pageSize.getHeight();
-        //         pdf.addImage(canvas.toDataURL('image/png'), 'JPEG', 0, 0, width, height);
-        //         pdf.save("download.pdf");
-        //     })
+        exportToCSV(dataArray, "warboard")
     }
     function setcategorysearchfield(value) {
         if (value.includes("ARROCERA")) {

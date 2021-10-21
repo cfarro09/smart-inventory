@@ -210,7 +210,7 @@ const Exhibits_detail = () => {
             },
             {
                 Header: 'Tipo Exhibición',
-                accessor: 'model'
+                accessor: 'type_exhibit'
             },
             {
                 Header: 'Comentarios',

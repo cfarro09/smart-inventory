@@ -123,6 +123,7 @@ const User = () => {
         SKU: '',
         banda: '',
         marca: '',
+        retail: '',
         tipo_pvp: 'prom_price',
     })
 
@@ -135,6 +136,7 @@ const User = () => {
         SKU: [],
         banda: [],
         marca: [],
+        retail: [],
         tipo_pvp: [],
     })
 
@@ -152,6 +154,7 @@ const User = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
             ]);
             console.log(validateResArray(listResult[0], continuezyx))
             setdatafilters({
@@ -162,6 +165,7 @@ const User = () => {
                 store_name: validateResArray(listResult[3], continuezyx),
                 categoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
+                retail: validateResArray(listResult[6], continuezyx),
             })
         })();
         return () => continuezyx = false;
@@ -182,6 +186,7 @@ const User = () => {
             category: filters.categoria,
             sku_code: filters.SKU,
             brand: filters.marca,
+            retail: filters.retail,
             sub_category: '',
             price: filters.tipo_pvp,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
@@ -259,13 +264,13 @@ const User = () => {
                         <SelectFunction
                             title="Retail"
                             variant="outlined"
-                            /*datatosend={datafilters.marca}
-                            optionvalue="brand"
-                            optiondesc="brand"
-                            valueselected={filters.marca}
-                            namefield="brand"
-                            descfield="brand"
-                            callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}*/
+                            datatosend={datafilters.retail}
+                            optionvalue="retail"
+                            optiondesc="retail"
+                            valueselected={filters.retail}
+                            namefield="retail"
+                            descfield="retail"
+                            callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                         />
                         <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
                             defaultValue="prom_price"

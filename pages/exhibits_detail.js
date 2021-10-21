@@ -110,7 +110,7 @@ const GET_FILTER = (filter) => ({
     }
 })
 const FILTER = (filter) => ({
-    method: "SP_DATABASE",
+    method: "SP_EXHIBIT_DB",
     data: filter
 })
 

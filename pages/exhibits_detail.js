@@ -110,7 +110,7 @@ const GET_FILTER = (filter) => ({
     }
 })
 const FILTER = (filter) => ({
-    method: "SP_DATABASE",
+    method: "SP_EXHIBIT_DB",
     data: filter
 })
 
@@ -210,7 +210,7 @@ const Exhibits_detail = () => {
             },
             {
                 Header: 'Tipo Exhibición',
-                accessor: 'model'
+                accessor: 'type_exhibit'
             },
             {
                 Header: 'Comentarios',

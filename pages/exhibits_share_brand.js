@@ -639,7 +639,7 @@ const Exhibits_share_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Cadena %</div>
+                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Categoría %</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={categorybrandSKUperc} >
                                     <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
@@ -679,7 +679,7 @@ const Exhibits_share_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Categoría %</div>
+                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Cadena %</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={poicategoryperc} >
                                     <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>

@@ -85,7 +85,7 @@ const TableZyx = React.memo(({
     register,
     selectrow,
     HeadComponent = null,
-    pageSizeDefault = 10
+    pageSizeDefault = 15
 }) => {
     const classes = useStyles();
     const selectColumnFilter = React.useCallback(({

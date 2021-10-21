@@ -187,14 +187,14 @@ const Exhibits_detail = () => {
             
             {
                 Header: 'Foto',
-                accessor: 'photo_url',
+                accessor: 'exhibit_photo',
                 Cell: props => {
                     return (
                         <div className="container-button-floating">
                             <Avatar 
-                            src={props.cell.row.original.photo_url}                            
+                            src={props.cell.row.original.exhibit_photo}                            
                             style={{cursor: 'pointer'}}
-                            onClick={() => setLightBox({ open: true, index: 0, images: [props.cell.row.original.photo_url] })}
+                            onClick={() => setLightBox({ open: true, index: 0, images: [props.cell.row.original.exhibit_photo] })}
                             />
                         </div>
                     )

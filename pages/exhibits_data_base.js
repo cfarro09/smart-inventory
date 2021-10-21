@@ -22,6 +22,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
+import Avatar from '@material-ui/core/Avatar';
 import InputFormk from '../components/system/form/inputformik';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import popupsContext from '../context/pop-ups/pop-upsContext';
@@ -187,8 +188,46 @@ const Exhibits_data_base = () => {
                 accessor: 'category'
             },
             {
-                Header: 'Url de la foto',
-                accessor: 'photo_url'
+                Header: 'Foto 1',
+                accessor: 'exhibit_photo',
+                Cell: props => {
+                    return (
+                        <div className="container-button-floating">
+                            <Avatar 
+                            src={props.cell.row.original.exhibit_photo}                            
+                            style={{cursor: 'pointer'}}
+                            onClick={() => setLightBox({ open: true, index: 0, images: [props.cell.row.original.exhibit_photo] })}
+                            />
+                        </div>
+                    )
+                }
+            },
+            {
+                Header: 'Foto 2',
+                accessor: 'exhibit_photo2',
+                Cell: props => {
+                    return (
+                        <div className="container-button-floating">
+                            <Avatar 
+                            src={props.cell.row.original.exhibit_photo2}                            
+                            style={{cursor: 'pointer'}}
+                            onClick={() => setLightBox({ open: true, index: 0, images: [props.cell.row.original.exhibit_photo2] })}
+                            />
+                        </div>
+                    )
+                }
+            },
+            {
+                Header: 'Tipo de exhibición',
+                accessor: 'type_exhibit'
+            },
+            {
+                Header: 'Área',
+                accessor: 'area'
+            },
+            {
+                Header: 'Gestión',
+                accessor: 'management'
             },
             {
                 Header: 'Nombre',
@@ -209,6 +248,10 @@ const Exhibits_data_base = () => {
             {
                 Header: 'ID',
                 accessor: 'formid',
+            },
+            {
+                Header: 'Comentarios',
+                accessor: 'comments'
             },
         ],
         []
@@ -251,7 +294,7 @@ const Exhibits_data_base = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("category")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
@@ -322,7 +365,7 @@ const Exhibits_data_base = () => {
                         setDateRangeExt={setdateRange}
                     />
                     <SelectFunction
-                        title="Subcategoría"
+                        title="Categoría"
                         classname={classes.itemFilter}
                         datatosend={datafilters.subcategoria}
                         optionvalue="sub_category"
@@ -452,16 +495,6 @@ const Exhibits_data_base = () => {
                         callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
                     />
 
-                    <SelectFunction
-                        title="Subcategoría"
-                        datatosend={[]}
-                        optionvalue="sub_category"
-                        optiondesc="sub_category"
-                        variant="outlined"
-                        namefield="sub_category"
-                        descfield="sub_category"
-                        callback={({ newValue: value }) => setfilters({ ...filters, sub_category: value?.id || '' })}
-                    />
                     <SelectFunction
                         title="Management"
                         datatosend={datafilters.management}

@@ -184,20 +184,37 @@ const Exhibits_detail = () => {
                 Header: 'Categoría',
                 accessor: 'category'
             },
-            {
-                Header: 'Tipo Exhibición',
-                accessor: 'model'
-            },
+            
             {
                 Header: 'Foto',
                 accessor: 'photo_url',
                 Cell: props => {
                     return (
                         <div className="container-button-floating">
-                            <Avatar src={props.cell.row.original.photo_url} />
+                            <Avatar 
+                            src={props.cell.row.original.photo_url}                            
+                            style={{cursor: 'pointer'}}
+                            onClick={() => setLightBox({ open: true, index: 0, images: [props.cell.row.original.photo_url] })}
+                            />
                         </div>
                     )
                 }
+            },
+            {
+                Header: 'Área',
+                accessor: 'area'
+            },
+            {
+                Header: 'Gestión',
+                accessor: 'management'
+            },
+            {
+                Header: 'Tipo Exhibición',
+                accessor: 'model'
+            },
+            {
+                Header: 'Comentarios',
+                accessor: 'comments'
             },
         ],
         []
@@ -240,7 +257,7 @@ const Exhibits_detail = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("category")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("model")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
@@ -312,7 +329,7 @@ const Exhibits_detail = () => {
                         setDateRangeExt={setdateRange}
                     />
                     <SelectFunction
-                        title="Subcategoría"
+                        title="Categoría"
                         classname={classes.itemFilter}
                         datatosend={datafilters.subcategoria}
                         optionvalue="sub_category"
@@ -440,17 +457,6 @@ const Exhibits_detail = () => {
                         namefield="store_name"
                         descfield="store_name"
                         callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
-                    />
-
-                    <SelectFunction
-                        title="Subcategoría"
-                        datatosend={[]}
-                        optionvalue="sub_category"
-                        optiondesc="sub_category"
-                        variant="outlined"
-                        namefield="sub_category"
-                        descfield="sub_category"
-                        callback={({ newValue: value }) => setfilters({ ...filters, sub_category: value?.id || '' })}
                     />
                     <SelectFunction
                         title="Management"

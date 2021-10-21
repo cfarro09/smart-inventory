@@ -184,20 +184,37 @@ const Exhibits_detail = () => {
                 Header: 'Categoría',
                 accessor: 'category'
             },
-            {
-                Header: 'Tipo Exhibición',
-                accessor: 'model'
-            },
+            
             {
                 Header: 'Foto',
                 accessor: 'photo_url',
                 Cell: props => {
                     return (
                         <div className="container-button-floating">
-                            <Avatar src={props.cell.row.original.photo_url} />
+                            <Avatar 
+                            src={props.cell.row.original.photo_url}                            
+                            style={{cursor: 'pointer'}}
+                            onClick={() => setLightBox({ open: true, index: 0, images: [props.cell.row.original.photo_url] })}
+                            />
                         </div>
                     )
                 }
+            },
+            {
+                Header: 'Área',
+                accessor: 'area'
+            },
+            {
+                Header: 'Gestión',
+                accessor: 'management'
+            },
+            {
+                Header: 'Tipo Exhibición',
+                accessor: 'model'
+            },
+            {
+                Header: 'Comentarios',
+                accessor: 'comments'
             },
         ],
         []

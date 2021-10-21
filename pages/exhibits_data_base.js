@@ -22,6 +22,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
+import Avatar from '@material-ui/core/Avatar';
 import InputFormk from '../components/system/form/inputformik';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import popupsContext from '../context/pop-ups/pop-upsContext';
@@ -187,8 +188,46 @@ const Exhibits_data_base = () => {
                 accessor: 'category'
             },
             {
-                Header: 'Url de la foto',
-                accessor: 'photo_url'
+                Header: 'Foto 1',
+                accessor: 'exhibit_photo',
+                Cell: props => {
+                    return (
+                        <div className="container-button-floating">
+                            <Avatar 
+                            src={props.cell.row.original.exhibit_photo}                            
+                            style={{cursor: 'pointer'}}
+                            onClick={() => setLightBox({ open: true, index: 0, images: [props.cell.row.original.exhibit_photo] })}
+                            />
+                        </div>
+                    )
+                }
+            },
+            {
+                Header: 'Foto 2',
+                accessor: 'exhibit_photo2',
+                Cell: props => {
+                    return (
+                        <div className="container-button-floating">
+                            <Avatar 
+                            src={props.cell.row.original.exhibit_photo2}                            
+                            style={{cursor: 'pointer'}}
+                            onClick={() => setLightBox({ open: true, index: 0, images: [props.cell.row.original.exhibit_photo2] })}
+                            />
+                        </div>
+                    )
+                }
+            },
+            {
+                Header: 'Tipo de exhibición',
+                accessor: 'type_exhibit'
+            },
+            {
+                Header: 'Área',
+                accessor: 'area'
+            },
+            {
+                Header: 'Gestión',
+                accessor: 'management'
             },
             {
                 Header: 'Nombre',
@@ -209,6 +248,10 @@ const Exhibits_data_base = () => {
             {
                 Header: 'ID',
                 accessor: 'formid',
+            },
+            {
+                Header: 'Comentarios',
+                accessor: 'comments'
             },
         ],
         []

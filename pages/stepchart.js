@@ -125,6 +125,7 @@ const User = () => {
         marca: '',
         retail: '',
         tipo_pvp: 'prom_price',
+        subcategoria: '',
     })
 
     const [datafilters, setdatafilters] = useState({
@@ -138,6 +139,7 @@ const User = () => {
         marca: [],
         retail: [],
         tipo_pvp: [],
+        subcategoria: [],
     })
 
     useEffect(() => {
@@ -155,6 +157,7 @@ const User = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("category")),
             ]);
             console.log(validateResArray(listResult[0], continuezyx))
             setdatafilters({
@@ -166,6 +169,7 @@ const User = () => {
                 categoria: validateResArray(listResult[4], continuezyx),
                 marca: validateResArray(listResult[5], continuezyx),
                 retail: validateResArray(listResult[6], continuezyx),
+                subcategoria: validateResArray(listResult[7], continuezyx),
             })
         })();
         return () => continuezyx = false;
@@ -187,7 +191,7 @@ const User = () => {
             sku_code: filters.SKU,
             brand: filters.marca,
             retail: filters.retail,
-            sub_category: '',
+            sub_category: filters.subcategoria,
             price: filters.tipo_pvp,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
@@ -402,6 +406,18 @@ const User = () => {
                         namefield="store_name"
                         descfield="store_name"
                         callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
+                    />
+                    <SelectFunction
+                        title="Subcategoría"
+                        datatosend={datafilters.subcategoria}
+                        optionvalue="sub_category"
+                        optiondesc="sub_category"
+                        variant="outlined"
+                        namefield="sub_category"
+                        descfield="sub_category"
+                        callback={({ newValue: value }) => {
+                            setfilters({ ...filters, subcategoria: value?.sub_category || "" });
+                        }}
                     />
                     {/* <SelectFunction
                         title="Banda"

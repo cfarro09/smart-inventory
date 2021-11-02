@@ -88,7 +88,6 @@ const fields = [
         { name: "number_of_blades", title: "numero de aspas" },
     ],
     /*BATIDORA*/[
-        { name: "subcategory", title: "subcategoría" },
         { name: "power", title: "potencia" },
         { name: "speeds", title: "velocidades" },
         { name: "turbo", title: "turbo" },

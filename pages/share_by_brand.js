@@ -368,7 +368,7 @@ const Share_by_brand = () => {
         listResultDate.result.data.map(row => {
             listbrand.forEach(list => {
                 if (list.week === row.Week) {
-                    list[row.brand] = Math.floor((parseInt(row.cnt) / totalweek[weeks.indexOf(row.Week)]) * 100)
+                    list[row.brand] = ((parseInt(row.cnt) / totalweek[weeks.indexOf(row.Week)]) * 100)
                 }
             })
         })
@@ -404,7 +404,7 @@ const Share_by_brand = () => {
             })
             skucategoryperc.forEach(list => {
                 if (list.week === row.subcategory) {
-                    list[row.brand] = Math.floor((parseInt(row.cont) / skucategorytotal[categories.indexOf(row.subcategory)]) * 100)
+                    list[row.brand] = ((parseInt(row.cont) / skucategorytotal[categories.indexOf(row.subcategory)]) * 100)
                 }
             })
         })
@@ -450,7 +450,7 @@ const Share_by_brand = () => {
             })
             poicategoriesperc.forEach(list => {
                 if (list.week === row.retail) {
-                    list[row.brand] = Math.floor((parseInt(row.cont) / poicategoriestotal[categoriespoi.indexOf(row.retail)]) * 100)
+                    list[row.brand] = ((parseInt(row.cont) / poicategoriestotal[categoriespoi.indexOf(row.retail)]) * 100)
                 }
             })
         })

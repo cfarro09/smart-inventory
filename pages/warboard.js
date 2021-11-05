@@ -11,7 +11,6 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
-import { BarChart, Bar, Sector, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DateRange from '../components/system/form/daterange';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -20,11 +19,9 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import jsPDF from 'jspdf'
 import 'jspdf-autotable'
 import JSZip from "jszip";
 import JSZipUtils from "jszip-utils";
-import html2canvas from 'html2canvas';
 import InputFormk from '../components/system/form/inputformik';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import popupsContext from '../context/pop-ups/pop-upsContext';
@@ -41,9 +38,6 @@ const GET_CATEGORY = (filter) => ({
         type: filter
     }
 })
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
 
 const headerfields = [
     { name: "brand", title: "marca" },
@@ -172,19 +166,6 @@ function tmpgetfields(value) {
     }
 }
 
-const exportToCSV = (csvData, fileName) => {
-    let datafromtable = csvData;
-    
-    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    const fileExtension = '.xlsx';
-
-    const ws = XLSX.utils.aoa_to_sheet(datafromtable);
-    const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    const data = new Blob([excelBuffer], { type: fileType });
-    FileSaver.saveAs(data, fileName + fileExtension);
-}
-
 
 const BulkLoad = () => {
     const classes = useStyles();
@@ -196,7 +177,7 @@ const BulkLoad = () => {
 
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [category, setcategory] = useState(null);
-    const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
+    const { setOpenBackdrop } = React.useContext(popupsContext);
     const [dataArray, setDataArray] = useState([])
     const [disablebutton, setdisablebutton] = useState(true)
     const [dateRange, setdateRange] = useState([
@@ -295,7 +276,7 @@ const BulkLoad = () => {
         setOpenBackdrop(true)
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         setOpenBackdrop(false)
-        setDataGraph(listResult.result.data)
+        setDataGraph(listResult.result?.data||[])
         
         const listValues = [
             { name: "model", title: "Modelo" },
@@ -318,9 +299,6 @@ const BulkLoad = () => {
 
         setDataArray(ff)
     }
-    function descargar() {
-        exportToCSV(dataArray, "warboard")
-    }
     function setcategorysearchfield(value) {
         if (value.includes("ARROCERA")) {
             setfieldstoshow(fields[0])
@@ -339,7 +317,16 @@ const BulkLoad = () => {
         var zip = new JSZip();
         var count = 0;
         var zipFilename = "Pictures.zip";
-        setOpenBackdrop(true)
+        let datafromtable = dataArray;
+    
+        const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+        const fileExtension = '.xlsx';
+
+        const ws = XLSX.utils.aoa_to_sheet(datafromtable);
+        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const dataexcel = new Blob([excelBuffer], { type: fileType });
+        
         dataGraph.map((row,i)=>{
             JSZipUtils.getBinaryContent(row.graphic, function (err, data) {
                 if (err) {
@@ -349,6 +336,7 @@ const BulkLoad = () => {
                 zip.file(`image-${i}.jpg`, data, { binary: true });
                 count++;
                 if (count == dataGraph.length) {
+                    zip.file(`warboard.xlsx`, dataexcel, { binary: true });
                     zip.generateAsync({ type: 'blob' }).then(function (content) {
                         saveAs(content, zipFilename);
                         setOpenBackdrop(false)
@@ -437,14 +425,9 @@ const BulkLoad = () => {
                         <Fragment>
                             <Button
                                 style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                                onClick={() => descargar()}
-                                startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                            >Descargar</Button>
-                            <Button
-                                style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
                                 onClick={() => generateZIP()}
                                 startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                            >Descargar Imágenes</Button>
+                            >Descargar</Button>
                         </Fragment>
                     }
                     <Button

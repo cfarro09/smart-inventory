@@ -22,6 +22,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
+import JSZip from "jszip";
+import JSZipUtils from "jszip-utils";
 import html2canvas from 'html2canvas';
 import InputFormk from '../components/system/form/inputformik';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
@@ -246,7 +248,7 @@ const BulkLoad = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("model")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("category")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
             ]);
             setdatafilters({
                 ...datafilters,
@@ -263,6 +265,7 @@ const BulkLoad = () => {
         })();
         return () => continuezyx = false;
     }, [])
+    
 
     async function filtrar() {
         setsearchdone(true)
@@ -328,6 +331,31 @@ const BulkLoad = () => {
         else if (value.includes("BATIDORA")) {
             setfieldstoshow(fields[2])
         }
+    }
+
+    
+    function generateZIP() {
+        console.log('TEST');
+        var zip = new JSZip();
+        var count = 0;
+        var zipFilename = "Pictures.zip";
+        setOpenBackdrop(true)
+        dataGraph.map((row,i)=>{
+            JSZipUtils.getBinaryContent(row.graphic, function (err, data) {
+                if (err) {
+                    //throw err; // or handle the error
+                    console.log(err);
+                }
+                zip.file(`image-${i}.jpg`, data, { binary: true });
+                count++;
+                if (count == dataGraph.length) {
+                    zip.generateAsync({ type: 'blob' }).then(function (content) {
+                        saveAs(content, zipFilename);
+                        setOpenBackdrop(false)
+                    });
+                }
+            });
+        })
     }
 
     return (
@@ -406,11 +434,18 @@ const BulkLoad = () => {
                         startIcon={<SearchIcon style={{ color: '#FFF' }} />}
                     >Buscar</Button>
                     {searchdone &&
-                        <Button
-                            style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                            onClick={() => descargar()}
-                            startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                        >Descargar</Button>
+                        <Fragment>
+                            <Button
+                                style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                                onClick={() => descargar()}
+                                startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
+                            >Descargar</Button>
+                            <Button
+                                style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                                onClick={() => generateZIP()}
+                                startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
+                            >Descargar Imágenes</Button>
+                        </Fragment>
                     }
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}

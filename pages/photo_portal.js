@@ -215,7 +215,7 @@ const Photo_portal = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("model")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("category")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
             ]);
             
             setdatafilters({

@@ -308,7 +308,7 @@ const Share_by_brand = () => {
                 SKU: validateResArray(listResult[6], continuezyx),
                 retail: validateResArray(listResult[7], continuezyx),
                 subcategoria: validateResArray(listResult[8], continuezyx),
-            })
+            })            
         })();
         return () => continuezyx = false;
     }, [])
@@ -494,11 +494,12 @@ const Share_by_brand = () => {
                         title="Categoria"
                         classname={classes.itemFilter}
                         datatosend={datafilters.categoria}
-                        optionvalue="category"
+                        optionvalue="id_form"
                         optiondesc="category"
                         variant="outlined"
                         namefield="category"
                         descfield="category"
+                        valueselected={filters.categoria}
                         callback={({ newValue: value }) => {
                             setfilters({ ...filters, categoria: value?.id_form || 1 });
                             setcategory(value)

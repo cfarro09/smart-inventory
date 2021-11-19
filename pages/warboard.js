@@ -316,7 +316,7 @@ const BulkLoad = () => {
         console.log('TEST');
         var zip = new JSZip();
         var count = 0;
-        var zipFilename = "Pictures.zip";
+        var zipFilename = "Warboard.zip";
         let datafromtable = dataArray;
     
         const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
@@ -333,7 +333,7 @@ const BulkLoad = () => {
                     //throw err; // or handle the error
                     console.log(err);
                 }
-                zip.file(`image-${i}.jpg`, data, { binary: true });
+                //zip.file(`image-${i}.jpg`, data, { binary: true });
                 count++;
                 if (count == dataGraph.length) {
                     zip.file(`warboard.xlsx`, dataexcel, { binary: true });

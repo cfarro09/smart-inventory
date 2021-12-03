@@ -317,7 +317,7 @@ const User = () => {
                     <div style={{ display: 'flex', gap: 8 , background:"white"}} id="divToPrint">
                         <ResponsiveContainer aspect={4.0 / 2}>
                             <BarChart
-                                data={enabletop ? dataGraph.slice(dataGraph.length < 10 ? 0 : dataGraph.length - 11, dataGraph.length) : dataGraph}
+                                data={enabletop ? dataGraph.slice(dataGraph.length < 10 ? 0 : dataGraph.length - 10, dataGraph.length) : dataGraph}
                                 margin={{top: enabletop?150:10 }}
                             >
                                 <CartesianGrid strokeDasharray="3 3" />
@@ -326,8 +326,10 @@ const User = () => {
                                 <YAxis type="number" domain={[0, Math.ceil((dataGraph[dataGraph.length-1]?.price||0)/10)*10]} />
                                 <Tooltip formatter={(value) => { return `S/.${parseFloat(value).toFixed(2)}` }} />
                                 <Bar
+                                    layout="horizontal"
                                     dataKey="price"
                                     fill="#0c4da2"
+                                    maxBarSize={100}
                                 >
                                     {enabletop?
                                         <LabelList

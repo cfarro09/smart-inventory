@@ -164,6 +164,9 @@ function tmpgetfields(value) {
     else if (value.includes("BATIDORA")) {
         return fields[2];
     }
+    else{
+        return fields[2];
+    }
 }
 
 
@@ -253,7 +256,7 @@ const BulkLoad = () => {
         setpvpprom(true)
         setpvpreg(true)
         setcategorysearchfield(category.category)
-
+        console.log(category)
         const constfieldstouse = tmpgetfields(category.category);
 
         if (filters.tipo_pvp === "prom_price") setpvpreg(false)
@@ -277,7 +280,6 @@ const BulkLoad = () => {
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         setOpenBackdrop(false)
         setDataGraph(listResult.result?.data||[])
-        
         const listValues = [
             { name: "model", title: "Modelo" },
             { name: "graphic", title: "Gráfica" },
@@ -333,7 +335,7 @@ const BulkLoad = () => {
                     //throw err; // or handle the error
                     console.log(err);
                 }
-                //zip.file(`image-${i}.jpg`, data, { binary: true });
+                zip.file(`${row.model}.png`, data, { binary: true });
                 count++;
                 if (count == dataGraph.length) {
                     zip.file(`warboard.xlsx`, dataexcel, { binary: true });

@@ -31,6 +31,13 @@ import {
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
 
+const GET_SUBCATEGORY = (id_form) => ({
+    method: "SP_SUBCATEGORY_BYID",
+    data: {
+        id_form
+    }
+})
+
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -155,6 +162,8 @@ const Data_base = () => {
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
     const { setLightBox, setOpenBackdrop } = useContext(popupsContext);
+    const [subcategories, setsubcategories] = useState([]);
+
     const [disablebutton, setdisablebutton] = useState(true)
     const [dateRange, setdateRange] = useState([
         {
@@ -257,6 +266,13 @@ const Data_base = () => {
         subcategoria: [],
     })
 
+    const getSubctegories = (id_form) => {
+        triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(id_form)).then(x => {
+            setsubcategories(validateResArray(x, true))
+        })
+    }
+
+
     useEffect(() => {
         let continuezyx = true;
         (async () => {
@@ -339,6 +355,8 @@ const Data_base = () => {
                         namefield="category"
                         descfield="category"
                         callback={({ newValue: value }) => {
+                            getSubctegories(value?.id_form)
+
                             setfilters({ ...filters, categoria: value?.id_form || 1 });
                             setcategory(value)
                             setdisablebutton(!value)
@@ -477,14 +495,14 @@ const Data_base = () => {
                     />
                     <SelectFunction
                         title="Subcategoría"
-                        datatosend={datafilters.subcategoria}
-                        optionvalue="sub_category"
-                        optiondesc="sub_category"
+                        datatosend={subcategories}
+                        optionvalue="subcategory"
+                        optiondesc="subcategory"
                         variant="outlined"
-                        namefield="sub_category"
-                        descfield="sub_category"
+                        namefield="subcategory"
+                        descfield="subcategory"
                         callback={({ newValue: value }) => {
-                            setfilters({ ...filters, subcategoria: value?.sub_category || "" });
+                            setfilters({ ...filters, subcategoria: value?.subcategory || "" });
                         }}
                     />
                     {/* <SelectFunction

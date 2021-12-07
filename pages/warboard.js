@@ -39,6 +39,13 @@ const GET_CATEGORY = (filter) => ({
     }
 })
 
+const GET_SUBCATEGORY = (id_form) => ({
+    method: "SP_SUBCATEGORY_BYID",
+    data: {
+        id_form
+    }
+})
+
 const headerfields = [
     { name: "brand", title: "marca" },
     { name: "subcategory", title: "subcategoría" },
@@ -183,6 +190,7 @@ const BulkLoad = () => {
     const { setOpenBackdrop } = React.useContext(popupsContext);
     const [dataArray, setDataArray] = useState([])
     const [disablebutton, setdisablebutton] = useState(true)
+    const [subcategories, setsubcategories] = useState([]);
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -218,6 +226,12 @@ const BulkLoad = () => {
         retail: [],
         subcategoria: [],
     })
+
+    const getSubctegories = (id_form) => {
+        triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(id_form)).then(x => {
+            setsubcategories(validateResArray(x, true))
+        })
+    }
 
     useEffect(() => {
         let continuezyx = true;
@@ -312,7 +326,6 @@ const BulkLoad = () => {
             setfieldstoshow(fields[2])
         }
     }
-
     
     function generateZIP() {
         console.log('TEST');
@@ -368,6 +381,7 @@ const BulkLoad = () => {
                         namefield="category"
                         descfield="category"
                         callback={({ newValue: value }) => {
+                            getSubctegories(value?.id_form)
                             setdisablebutton(!value)
                             setfilters({ ...filters, categoria: value?.id_form || 1 });
                             setcategory(value)
@@ -581,14 +595,14 @@ const BulkLoad = () => {
                     />
                     <SelectFunction
                         title="Subcategoría"
-                        datatosend={datafilters.subcategoria}
-                        optionvalue="sub_category"
-                        optiondesc="sub_category"
+                        datatosend={subcategories}
+                        optionvalue="subcategory"
+                        optiondesc="subcategory"
                         variant="outlined"
-                        namefield="sub_category"
-                        descfield="sub_category"
+                        namefield="subcategory"
+                        descfield="subcategory"
                         callback={({ newValue: value }) => {
-                            setfilters({ ...filters, subcategoria: value?.sub_category || "" });
+                            setfilters({ ...filters, subcategoria: value?.subcategory || "" });
                         }}
                     />
                     {/* <SelectFunction

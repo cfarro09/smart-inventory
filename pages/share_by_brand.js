@@ -32,8 +32,8 @@ import {
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
 
-const brands = ["IMACO", "B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "INSTAN POT", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO", "LUMIKA", "INSTANTPOT"]
-const colors = ["yellow", "#bababa", "#575757", "#868686", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#535353", "#b8b8b8", "#818181", "#a2a2a2", "#808080", "#838383", "#8a8a8a", "#929292", "#b5b5b5", "#d9d9d9", "#888888", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#565656", "#444444", "#d3d3d3", "rgb(251, 95, 95)", "#a9a9a9", "#878787", "#797979", "#797979", "#797979", "#797979", "#797979"]
+const brands = ["IMACO", "B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "INSTAN POT", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO", "LUMIKA", "INSTANTPOT","WINIA","SMEG","DAEWWO","KENT","DELONGHI","SEVERIN","MIDIA","FDV"]
+const colors = ["yellow", "#bababa", "#575757", "#868686", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#535353", "#b8b8b8", "#818181", "#a2a2a2", "#808080", "#838383", "#8a8a8a", "#929292", "#b5b5b5", "#d9d9d9", "#888888", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#565656", "#444444", "#d3d3d3", "rgb(251, 95, 95)", "#a9a9a9", "#878787", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979"]
 const elementBrand = (week) => ({
     week: week,
     "B&D": 0,
@@ -73,6 +73,14 @@ const elementBrand = (week) => ({
     "ZYKLON": 0,
     "LUMIKA": 0,
     "INSTANTPOT": 0,
+    "WINIA": 0,
+    "SMEG": 0,
+    "DAEWWO": 0,
+    "KENT": 0,
+    "DELONGHI": 0,
+    "SEVERIN": 0,
+    "MIDIA": 0,
+    "FDV": 0,
     "OTROS": 0
 })
 
@@ -357,7 +365,7 @@ const Share_by_brand = () => {
         let brandlist = [];
         let weeks = [];
         let totalweek = [];
-        let countbrand = new Array(39).fill(0);
+        let countbrand = new Array(47).fill(0);
 
         listResultDate.result.data.map(row => {
             if (!weeks.includes(row.Week)) { weeks.push(row.Week); totalweek.push(0) }
@@ -399,7 +407,7 @@ const Share_by_brand = () => {
         let brandlistSKU = [];
         let skucategoryperc = [];
         let skucategorytotal = [];
-        let countbrandSKU = new Array(39).fill(0);
+        let countbrandSKU = new Array(47).fill(0);
         listResultSKU.result.data.map(row => {
             if (!categories.includes(row.subcategory)) { categories.push(row.subcategory); skucategorytotal.push(0) }
             if (!brandlistSKU.includes(row.brand)) brandlistSKU.push(row.brand)
@@ -445,7 +453,7 @@ const Share_by_brand = () => {
         let poicategoriesperc = [];
         let brandlistpoi = [];
         let poicategoriestotal = [];
-        let countbrandpoi = new Array(39).fill(0);
+        let countbrandpoi = new Array(47).fill(0);
         listpoiresult.result.data.map(row => {
             if (!categoriespoi.includes(row.retail)) { categoriespoi.push(row.retail); poicategoriestotal.push(0) }
             if (!brandlistpoi.includes(row.brand)) brandlistpoi.push(row.brand)

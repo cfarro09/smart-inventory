@@ -151,6 +151,13 @@ const FILTERTYPEEXH= (filter) => ({
     method: "SP_SKU_TYPE_OF_EXHIBIT ",
     data: filter
 })
+const GET_FILTERRETAIL = (filter,id_form) => ({
+    method: "SP_FILTER_BYID",
+    data: {
+        filter,
+        id_form
+    }
+})
 
 
 
@@ -301,11 +308,11 @@ const Exhibits_share_brand = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("format")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",4)),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("category")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",4)),
             ]);
             setdatafilters({
                 ...datafilters,

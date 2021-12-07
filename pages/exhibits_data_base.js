@@ -64,11 +64,11 @@ const StyledTableRow = withStyles((theme) => ({
         },
     },
 }))(TableRow);
-
-const GET_CATEGORY = (filter) => ({
-    method: "SP_SEL_CATEGORY",
+const GET_FILTERRETAIL = (filter,id_form) => ({
+    method: "SP_FILTER_BYID",
     data: {
-        type: filter
+        filter,
+        id_form
     }
 })
 function createData(name, calories, fat, carbs, protein) {
@@ -293,11 +293,11 @@ const Exhibits_data_base = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("format")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",4)),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("category")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",4)),
             ]);
             setdatafilters({
                 ...datafilters,
@@ -313,11 +313,6 @@ const Exhibits_data_base = () => {
             console.log(listResult)
         })();
         return () => continuezyx = false;
-    }, [])
-    useEffect(() => {
-        if (waitFilter) {
-
-        }
     }, [])
     async function filtrar() {
         setsearchdone(true)

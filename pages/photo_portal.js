@@ -140,6 +140,14 @@ const GET_SUBCATEGORY = (id_form) => ({
         id_form
     }
 })
+const GET_FILTERRETAIL = (filter,id_form) => ({
+    method: "SP_FILTER_BYID",
+    data: {
+        filter,
+        id_form
+    }
+})
+
 
 
 const Photo_portal = () => {
@@ -219,11 +227,9 @@ const Photo_portal = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("format")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("store_name")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("model")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("retail")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
             ]);
             
@@ -232,22 +238,27 @@ const Photo_portal = () => {
                 channel: validateResArray(listResult[1], continuezyx),
                 format: validateResArray(listResult[0], continuezyx),
                 department: validateResArray(listResult[2], continuezyx),
-                store_name: validateResArray(listResult[3], continuezyx),
-                categoria: validateResArray(listResult[4], continuezyx),
-                marca: validateResArray(listResult[5], continuezyx),
-                SKU: validateResArray(listResult[6], continuezyx),
-                retail: validateResArray(listResult[7], continuezyx),
-                subcategoria: validateResArray(listResult[8], continuezyx),
+                categoria: validateResArray(listResult[3], continuezyx),
+                marca: validateResArray(listResult[4], continuezyx),
+                SKU: validateResArray(listResult[5], continuezyx),
+                subcategoria: validateResArray(listResult[6], continuezyx),
             })
         })();
         return () => continuezyx = false;
     }, [])
-    useEffect(() => {
-        if (waitFilter) {
-
-        }
-    }, [])
-
+    
+    async function updatelistretail(id_form){
+        const listResult = await Promise.all([
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",id_form)),
+        ]);
+        console.log(listResult)
+        setdatafilters({
+            ...datafilters,
+            retail: validateResArray(listResult[0], true),
+            store_name: validateResArray(listResult[1], true),
+        })
+    }
     
     const getSubctegories = (id_form) => {
         triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(id_form)).then(x => {
@@ -312,6 +323,7 @@ const Photo_portal = () => {
                             setfilters({ ...filters, categoria: value?.id_form || 1 });
                             setcategory(value)
                             setdisablebutton(!value)
+                            updatelistretail(value?.id_form || 1)
                         }}
                     />
                     <SelectFunction

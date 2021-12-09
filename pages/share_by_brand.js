@@ -32,10 +32,11 @@ import {
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
 
-const brands = ["IMACO", "B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "INSTAN POT", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO", "LUMIKA", "INSTANTPOT","WINIA","SMEG","DAEWWO","KENT","DELONGHI","SEVERIN","MIDIA","FDV", "BLACKLNE","DAEWOO"]
-const colors = ["yellow", "#bababa", "#575757", "#868686", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#535353", "#b8b8b8", "#818181", "#a2a2a2", "#808080", "#838383", "#8a8a8a", "#929292", "#b5b5b5", "#d9d9d9", "#888888", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#565656", "#444444", "#d3d3d3", "rgb(251, 95, 95)", "#a9a9a9", "#878787", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979", "#797979"]
+const brands = ["IMACO", "B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO", "LUMIKA", "INSTANTPOT","WINIA","SMEG","KENT","DELONGHI","SEVERIN","MIDIA","FDV","DAEWOO"]
+const colors = ["#FFD600", "#bababa", "#26A69A", "#009688", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#00897B", "#b8b8b8", "#a2a2a2", "#808080", "#4527A0", "#8a8a8a", "#00695C", "#b5b5b5", "#4DB6AC", "#00796B", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#B2DFDB", "#444444", "#d3d3d3", "rgb(251, 95, 95)", "#a9a9a9", "#80CBC4", "#797979", "#5D4037", "#323232", "#7d7d7d", "#bababa", "#2c2c2c", "#828282", "#6d6d6d", "#757575", "#929292", "#6d6d6d", "#6f6f6f", "#bababa"]
 const elementBrand = (week) => ({
     week: week,
+    "IMACO":0,
     "B&D": 0,
     "BLACKLINE": 0,
     "BORD": 0,
@@ -48,9 +49,7 @@ const elementBrand = (week) => ({
     "FINEZZA": 0,
     "FOSTERIER": 0,
     "HOLSTEIN": 0,
-    "IMACO": 0,
     "INDURAMA": 0,
-    "INSTAN POT": 0,
     "JATARIY": 0,
     "KENWOOD": 0,
     "KITCHEN AID": 0,
@@ -71,19 +70,18 @@ const elementBrand = (week) => ({
     "VALESKA": 0,
     "WURDEN": 0,
     "ZYKLON": 0,
+    "OTROS": 0,
+    "DOLCE GUSTO": 0,
     "LUMIKA": 0,
     "INSTANTPOT": 0,
     "WINIA": 0,
     "SMEG": 0,
-    "DAEWWO": 0,
     "KENT": 0,
     "DELONGHI": 0,
     "SEVERIN": 0,
     "MIDIA": 0,
     "FDV": 0,
-    "BLACKLNE": 0,
-    "DAEWOO": 0,
-    "OTROS": 0
+    "DAEWOO": 0
 })
 
 const GET_CATEGORY = (filter) => ({
@@ -169,7 +167,8 @@ const useStyles = makeStyles((theme) => ({
     titlecards: {
         fontWeight: "bold",
         fontSize: "1.5em",
-        color: "blue"
+        color: "blue",
+        padding: 10
     }
 }));
 
@@ -514,7 +513,7 @@ const Share_by_brand = () => {
     function descargar() {
         html2canvas(document.getElementById('divToPrint'))
             .then((canvas) => {
-                const pdf = new jsPDF('l', 'mm', 'a4');
+                const pdf = new jsPDF('p', 'px', [1480, 2100]);
                 var width = pdf.internal.pageSize.getWidth();
                 var height = pdf.internal.pageSize.getHeight();
                 pdf.addImage(canvas.toDataURL('image/png'), 'JPEG', 0, 0, width, height);
@@ -559,6 +558,7 @@ const Share_by_brand = () => {
                         variant="outlined"
                         namefield="brand"
                         descfield="brand"
+                        style={{width: "150px"}}
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
                     />
 
@@ -571,6 +571,7 @@ const Share_by_brand = () => {
                         variant="outlined"
                         namefield="model_2"
                         descfield="model_2"
+                        style={{width: "200px"}}
                         callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model_2 || '' })}
                     />
                     <SelectFunction
@@ -582,6 +583,7 @@ const Share_by_brand = () => {
                         valueselected={filters.retail}
                         namefield="retail"
                         descfield="retail"
+                        style={{width: "200px"}}
                         callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
@@ -626,7 +628,7 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>Cantidad de SKUS por Marca</div>
+                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA EN UNIDADES</div>
                                 <TableContainer component={Paper}>
                                     <Table className={classes.table} aria-label="simple table">
                                         <TableHead>
@@ -657,11 +659,11 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>Cantidad de SKUS por Marca por Semana</div>
+                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA POR SEMANA EN PORCENTAJE</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.5}>
                                     <BarChart data={dataGraphDate}>
                                         <XAxis dataKey="week" />
-                                        <YAxis domain={[0, 100]} />
+                                        <YAxis domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <Tooltip
                                             itemSorter={item => -(item.value)}
@@ -693,12 +695,13 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría</div>
+                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CATEGORÍA EN UNIDADES</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={categorybrandSKU} >
+                                        <Legend verticalAlign="top"/>
                                         <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
                                         <YAxis />
-                                        <Tooltip itemSorter={item => -(item.value)} />
+                                        <Tooltip itemSorter={item => -(orderbrandsSKU.indexOf(item.dataKey))} />
                                         <CartesianGrid />
                                         {
                                             orderbrandsSKU.map((brand, i) => (
@@ -712,12 +715,13 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>Cantidad de SKUS por Marca y Categoría %</div>
+                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CATEGORÍA EN PORCENTAJE</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={categorybrandSKUperc} >
+                                        <Legend verticalAlign="top"/>
                                         <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
-                                        <YAxis domain={[0, 100]} />
-                                        <Tooltip itemSorter={item => -(item.value)} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
+                                        <YAxis domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
+                                        <Tooltip itemSorter={item => -(orderbrandsSKU.indexOf(item.dataKey))} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
                                         <CartesianGrid />
                                         {
                                             orderbrandsSKU.map((brand, i) => (
@@ -733,12 +737,13 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena</div>
+                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CADENA EN UNIDADES</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={poicategory} >
+                                        <Legend verticalAlign="top"/>
                                         <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
                                         <YAxis />
-                                        <Tooltip itemSorter={item => -(item.value)} />
+                                        <Tooltip itemSorter={item => -(orderbrandspoi.indexOf(item.dataKey))} />
                                         <CartesianGrid />
                                         {
                                             orderbrandspoi.map((brand, i) => (
@@ -752,12 +757,13 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>Cantidad de SKUS por Marca y Cadena %</div>
+                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CADENA EN PORCENTAJE</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={poicategoryperc} >
+                                        <Legend verticalAlign="top"/>
                                         <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
-                                        <YAxis domain={[0, 100]} />
-                                        <Tooltip itemSorter={item => -(item.value)} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
+                                        <YAxis domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
+                                        <Tooltip itemSorter={item => -(orderbrandspoi.indexOf(item.dataKey))} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
                                         <CartesianGrid />
                                         {
                                             orderbrandspoi.map((brand, i) => (

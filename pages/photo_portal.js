@@ -335,6 +335,7 @@ const Photo_portal = () => {
                         variant="outlined"
                         namefield="brand"
                         descfield="brand"
+                        style={{width: "150px"}}
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
                     />
 
@@ -347,6 +348,7 @@ const Photo_portal = () => {
                         variant="outlined"
                         namefield="model_2"
                         descfield="model_2"
+                        style={{width: "200px"}}
                         callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model_2 || '' })}
                     />
                     <SelectFunction
@@ -358,6 +360,7 @@ const Photo_portal = () => {
                         valueselected={filters.retail}
                         namefield="retail"
                         descfield="retail"
+                        style={{width: "200px"}}
                         callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"

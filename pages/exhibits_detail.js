@@ -322,6 +322,7 @@ const Exhibits_detail = () => {
                         variant="outlined"
                         namefield="brand"
                         descfield="brand"
+                        style={{width: "150px"}}
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
                     />
                     <SelectFunction
@@ -333,6 +334,7 @@ const Exhibits_detail = () => {
                         valueselected={filters.retail}
                         namefield="retail"
                         descfield="retail"
+                        style={{width: "200px"}}
                         callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <Button

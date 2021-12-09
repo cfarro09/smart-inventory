@@ -14,13 +14,6 @@ import { validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
 import { LineChart ,  BarChart , Bar, Treemap, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,PieChart,Pie,Cell, ResponsiveContainer } from 'recharts';
 import DateRange from '../components/system/form/daterange';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
 import InputFormk from '../components/system/form/inputformik';
@@ -52,10 +45,11 @@ const dataTable = [
     '#9F2B00',
 ];
 
-const brands = ["B&D","BLACKLINE","BORD","BOSCH","BOSSKO","CONTINENTAL","CUISINART","ELECTRICLIFE","ELECTROLUX","FINEZZA","FOSTERIER","HOLSTEIN","IMACO","INDURAMA","INSTAN POT","JATARIY","KENWOOD","KITCHEN AID","KORKMAZ","LOVEN","MAGEFESA","MIRAY","NEX","OSTER","PHILIPS","PRACTIKA","PRIMA","PROFESIONAL SERIES","RECCO","RECORD","TAURUS","THOMAS","VALESKA","WURDEN","ZYKLON","OTROS","DOLCE GUSTO"]
-const colors = ["#bababa", "#575757", "#868686", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#535353", "yellow", "#b8b8b8", "#818181", "#a2a2a2", "#808080", "#838383", "#8a8a8a", "#929292", "#b5b5b5", "#d9d9d9", "#888888", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#565656", "#444444", "#d3d3d3", "rgb(251, 95, 95)", "#a9a9a9", "#878787", "#797979", "#797979", "#797979"]
-const elementBrand= (week)=>({
+const brands = ["IMACO", "B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO", "LUMIKA", "INSTANTPOT","WINIA","SMEG","KENT","DELONGHI","SEVERIN","MIDIA","FDV","DAEWOO"]
+const colors = ["#FFD600", "#bababa", "#26A69A", "#009688", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#00897B", "#b8b8b8", "#a2a2a2", "#808080", "#4527A0", "#8a8a8a", "#00695C", "#b5b5b5", "#4DB6AC", "#00796B", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#B2DFDB", "#444444", "#d3d3d3", "rgb(251, 95, 95)", "#a9a9a9", "#80CBC4", "#797979", "#5D4037", "#323232", "#7d7d7d", "#bababa", "#2c2c2c", "#828282", "#6d6d6d", "#757575", "#929292", "#6d6d6d", "#6f6f6f", "#bababa"]
+const elementBrand = (week) => ({
     week: week,
+    "IMACO":0,
     "B&D": 0,
     "BLACKLINE": 0,
     "BORD": 0,
@@ -68,9 +62,7 @@ const elementBrand= (week)=>({
     "FINEZZA": 0,
     "FOSTERIER": 0,
     "HOLSTEIN": 0,
-    "IMACO": 0,
     "INDURAMA": 0,
-    "INSTAN POT": 0,
     "JATARIY": 0,
     "KENWOOD": 0,
     "KITCHEN AID": 0,
@@ -91,39 +83,19 @@ const elementBrand= (week)=>({
     "VALESKA": 0,
     "WURDEN": 0,
     "ZYKLON": 0,
-    "OTROS": 0
+    "OTROS": 0,
+    "DOLCE GUSTO": 0,
+    "LUMIKA": 0,
+    "INSTANTPOT": 0,
+    "WINIA": 0,
+    "SMEG": 0,
+    "KENT": 0,
+    "DELONGHI": 0,
+    "SEVERIN": 0,
+    "MIDIA": 0,
+    "FDV": 0,
+    "DAEWOO": 0
 })
-  const data2 = [
-    { name: 'A', x: 12, y: 23, z: 122 },
-    { name: 'B', x: 22, y: 3, z: 73 },
-    { name: 'C', x: 13, y: 15, z: 32 },
-    { name: 'D', x: 44, y: 35, z: 23 },
-    { name: 'E', x: 35, y: 45, z: 20 },
-    { name: 'F', x: 62, y: 25, z: 29 },
-    { name: 'G', x: 37, y: 17, z: 61 },
-    { name: 'H', x: 28, y: 32, z: 45 },
-    { name: 'I', x: 19, y: 43, z: 93 },
-];
-  const data3 = [
-    { name: 'A', x: 6, y: 77, z: 17 },
-    { name: 'B', x: 54, y: 15, z: 31 },
-    { name: 'C', x: 9, y: 90, z: 1 },
-    { name: 'D', x: 50, y: 39, z: 11 },
-    { name: 'E', x: 88, y: 4, z: 8 },
-    { name: 'F', x: 94, y: 2, z: 4 },
-    { name: 'G', x: 7, y: 12, z: 81 },
-    { name: 'H', x: 41, y: 50, z: 9 },
-    { name: 'I', x: 22, y: 77, z: 1 },
-];
-
-const GET_CATEGORY = (filter) => ({
-    method: "SP_SEL_CATEGORY",
-    data: {
-        type:filter
-    }
-})
-
-
 
 const GET_FILTER = (filter) => ({
     method: "SP_SEL_FILTER",
@@ -499,7 +471,7 @@ const Exhibits_share_brand = () => {
     function descargar() {
         html2canvas(document.getElementById('divToPrint'))
             .then((canvas) => {
-                const pdf = new jsPDF('l', 'mm', 'a4');
+                const pdf = new jsPDF('p', 'px', [1480, 2500]);
                 var width = pdf.internal.pageSize.getWidth();
                 var height = pdf.internal.pageSize.getHeight();
                 pdf.addImage(canvas.toDataURL('image/png'), 'JPEG', 0, 0, width, height);
@@ -540,6 +512,7 @@ const Exhibits_share_brand = () => {
                         variant="outlined"
                         namefield="brand"
                         descfield="brand"
+                        style={{width: "150px"}}
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
                     />
                     <SelectFunction
@@ -551,6 +524,7 @@ const Exhibits_share_brand = () => {
                         valueselected={filters.retail}
                         namefield="retail"
                         descfield="retail"
+                        style={{width: "200px"}}
                         callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <Button
@@ -596,6 +570,7 @@ const Exhibits_share_brand = () => {
                                           <Cell key={`exhibicionexmarca-${index}`} fill={colors[brands.indexOf(entry.name)]} />
                                           ))}
                                       </Pie>
+                                    <Legend verticalAlign="top"/>
                                     <Tooltip formatter={(value,name)=>[value + "/" +(value*100/totalbrand).toFixed(2) +" %",name]}/>
                                 </PieChart  >
                             </ResponsiveContainer >
@@ -607,10 +582,11 @@ const Exhibits_share_brand = () => {
                             <div className={classes.titlecards}>Evolución de Exhibiciones por semana y Marca</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3}>
                                 <BarChart  data={dataGraphDate}>
+                                    <Legend verticalAlign="top"/>
                                     <XAxis dataKey="week"/>
-                                    <YAxis  domain={[0, 100]} />
+                                    <YAxis  domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <Tooltip itemSorter={item => -(item.value)} labelFormatter={(value)=>[<b>Semana {value}</b>]}  formatter={(value,name)=>[value.toFixed(2) + " %",name]} />
+                                    <Tooltip itemSorter={item => -(orderbrandsDate.indexOf(item.dataKey))}  labelFormatter={(value)=>[<b>Semana {value}</b>]}  formatter={(value,name)=>[value.toFixed(2) + " %",name]} />
                                     {
                                         orderbrandsDate.map((brand,i)=>(
                                             <Bar key={`exhibicionexmarcaperc${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]} />
@@ -630,9 +606,10 @@ const Exhibits_share_brand = () => {
                             <div className={classes.titlecards}>Q Exhibiciones por Marca y Categoría</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={categorybrandSKU} >
+                                    <Legend verticalAlign="top"/>
                                     <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                     <YAxis />
-                                    <Tooltip itemSorter={item => -(item.value)}/>
+                                    <Tooltip itemSorter={item => -(orderbrandsSKU.indexOf(item.dataKey))} />
                                     <CartesianGrid />
                                     {
                                         orderbrandsSKU.map((brand,i)=>(
@@ -649,9 +626,10 @@ const Exhibits_share_brand = () => {
                             <div className={classes.titlecards}>Q Exhibiciones por Marca y Categoría %</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={categorybrandSKUperc} >
+                                    <Legend verticalAlign="top"/>
                                     <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
-                                    <YAxis  domain={[0, 100]} />
-                                    <Tooltip  itemSorter={item => -(item.value)} formatter={(value,name)=>[value.toFixed(2) + " %",name]}/>
+                                    <YAxis  domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
+                                    <Tooltip  itemSorter={item => -(orderbrandsSKU.indexOf(item.dataKey))} formatter={(value,name)=>[value.toFixed(2) + " %",name]}/>
                                     <CartesianGrid />
                                     {
                                         orderbrandsSKU.map((brand,i)=>(
@@ -670,9 +648,10 @@ const Exhibits_share_brand = () => {
                             <div className={classes.titlecards}>Q Exhibiciones por Marca y Cadena</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={poicategory} >
+                                    <Legend verticalAlign="top"/>
                                     <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                     <YAxis />
-                                    <Tooltip  itemSorter={item => -(item.value)}/>
+                                    <Tooltip  itemSorter={item => -(orderbrandspoi.indexOf(item.dataKey))}/>
                                     <CartesianGrid />
                                     {
                                         orderbrandspoi.map((brand,i)=>(
@@ -689,9 +668,10 @@ const Exhibits_share_brand = () => {
                             <div className={classes.titlecards}>Q Exhibiciones por Marca y Cadena %</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={poicategoryperc} >
+                                    <Legend verticalAlign="top"/>
                                     <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
-                                    <YAxis  domain={[0, 100]} />
-                                    <Tooltip  itemSorter={item => -(item.value)} formatter={(value,name)=>[value.toFixed(2) + " %",name]}/>
+                                    <YAxis  domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
+                                    <Tooltip  itemSorter={item => -(orderbrandspoi.indexOf(item.dataKey))} formatter={(value,name)=>[value.toFixed(2) + " %",name]}/>
                                     <CartesianGrid />
                                     {
                                         orderbrandspoi.map((brand,i)=>(

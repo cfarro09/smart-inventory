@@ -381,6 +381,7 @@ const Data_base = () => {
                         variant="outlined"
                         namefield="brand"
                         descfield="brand"
+                        style={{width: "150px"}}
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
                     />
 
@@ -393,6 +394,7 @@ const Data_base = () => {
                         variant="outlined"
                         namefield="model_2"
                         descfield="model_2"
+                        style={{width: "200px"}}
                         callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model_2 || '' })}
                     />
                     <SelectFunction
@@ -404,6 +406,7 @@ const Data_base = () => {
                         valueselected={filters.retail}
                         namefield="retail"
                         descfield="retail"
+                        style={{width: "200px"}}
                         callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"

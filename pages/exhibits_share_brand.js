@@ -94,7 +94,7 @@ const elementBrand = (week) => ({
     "SEVERIN": 0,
     "MIDIA": 0,
     "FDV": 0,
-    "DAEWOO": 0
+    "DAEWOO": 0,
 })
 
 const GET_FILTER = (filter) => ({
@@ -178,6 +178,21 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: "bold",
         fontSize: "1.5em",
         color: "blue"
+    },
+    ulist: {
+        padding: "0px",
+        margin: "0px",
+        textAlign: "center",
+        paddingBottom: "5px"
+    },
+    lilist: {
+        display: "inline-block",
+        marginRight: "10px",
+    },
+    svgstyle:{
+        display: "inline-block",
+        verticalAlign: "middle",
+        marginRight: "4px",        
     }
 }));
 
@@ -334,7 +349,7 @@ const Exhibits_share_brand = () => {
         let brandlist = [];
         let weeks=[];
         let totalweek=[];
-        let countbrand=new Array(37).fill(0);
+        let countbrand=new Array(49).fill(0);
 
         listResultDate.result.data.map(row=>{
             if(!weeks.includes(row.Week)) {weeks.push(row.Week);totalweek.push(0)}
@@ -375,7 +390,7 @@ const Exhibits_share_brand = () => {
         let categories= []
         let skucategory=[];
         let brandlistSKU = [];
-        let countbrandSKU=new Array(37).fill(0);
+        let countbrandSKU=new Array(49).fill(0);
         let uniqueBrands = [];
         let skucategoryperc=[];
         let skucategorytotal=[];
@@ -425,7 +440,7 @@ const Exhibits_share_brand = () => {
         let poicategoriesperc = [];
         let brandlistpoi = [];
         let poicategoriestotal = [];
-        let countbrandpoi=new Array(37).fill(0);
+        let countbrandpoi=new Array(49).fill(0);
         listpoiresult.result.data.map(row => {
             if (!categoriespoi.includes(row.retail)) { categoriespoi.push(row.retail); poicategoriestotal.push(0) }
             if (!brandlistpoi.includes(row.brand)) brandlistpoi.push(row.brand)
@@ -479,6 +494,22 @@ const Exhibits_share_brand = () => {
             })
     }
     
+    const renderLegend = (props) => {
+        const { payload } = props;
+        return (
+            <ul className={classes.ulist}>
+                {
+                payload.reverse().map((entry, index) => (
+                    <li key={`item-${index}`} className={classes.lilist}>
+                        <svg width="14" height="14" viewBox="0 0 32 32" version="1.1" className={classes.svgstyle}>
+                        <path stroke="none" fill={entry.color} d="M0,4h32v24h-32z" ></path></svg>
+                        <span >{entry.value}</span>
+                    </li>
+                ))
+                }
+            </ul>
+        );
+    }
 
     return (
         <Layout>
@@ -582,7 +613,7 @@ const Exhibits_share_brand = () => {
                             <div className={classes.titlecards}>Evolución de Exhibiciones por semana y Marca</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3}>
                                 <BarChart  data={dataGraphDate}>
-                                    <Legend verticalAlign="top"/>
+                                    <Legend verticalAlign="top" content={renderLegend}/>
                                     <XAxis dataKey="week"/>
                                     <YAxis  domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
                                     <CartesianGrid strokeDasharray="3 3" />
@@ -606,7 +637,7 @@ const Exhibits_share_brand = () => {
                             <div className={classes.titlecards}>Q Exhibiciones por Marca y Categoría</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={categorybrandSKU} >
-                                    <Legend verticalAlign="top"/>
+                                    <Legend verticalAlign="top" content={renderLegend}/>
                                     <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                     <YAxis />
                                     <Tooltip itemSorter={item => -(orderbrandsSKU.indexOf(item.dataKey))} />
@@ -626,7 +657,7 @@ const Exhibits_share_brand = () => {
                             <div className={classes.titlecards}>Q Exhibiciones por Marca y Categoría %</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={categorybrandSKUperc} >
-                                    <Legend verticalAlign="top"/>
+                                    <Legend verticalAlign="top" content={renderLegend}/>
                                     <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                     <YAxis  domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
                                     <Tooltip  itemSorter={item => -(orderbrandsSKU.indexOf(item.dataKey))} formatter={(value,name)=>[value.toFixed(2) + " %",name]}/>
@@ -648,7 +679,7 @@ const Exhibits_share_brand = () => {
                             <div className={classes.titlecards}>Q Exhibiciones por Marca y Cadena</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={poicategory} >
-                                    <Legend verticalAlign="top"/>
+                                    <Legend verticalAlign="top" content={renderLegend}/>
                                     <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                     <YAxis />
                                     <Tooltip  itemSorter={item => -(orderbrandspoi.indexOf(item.dataKey))}/>
@@ -668,7 +699,7 @@ const Exhibits_share_brand = () => {
                             <div className={classes.titlecards}>Q Exhibiciones por Marca y Cadena %</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={poicategoryperc} >
-                                    <Legend verticalAlign="top"/>
+                                    <Legend verticalAlign="top" content={renderLegend}/>
                                     <XAxis dataKey="week" angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
                                     <YAxis  domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
                                     <Tooltip  itemSorter={item => -(orderbrandspoi.indexOf(item.dataKey))} formatter={(value,name)=>[value.toFixed(2) + " %",name]}/>

@@ -169,6 +169,21 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "1.5em",
         color: "blue",
         padding: 10
+    },
+    ulist: {
+        padding: "0px",
+        margin: "0px",
+        textAlign: "center",
+        paddingBottom: "5px"
+    },
+    lilist: {
+        display: "inline-block",
+        marginRight: "10px",
+    },
+    svgstyle:{
+        display: "inline-block",
+        verticalAlign: "middle",
+        marginRight: "4px",        
     }
 }));
 
@@ -521,6 +536,23 @@ const Share_by_brand = () => {
             })
     }
 
+    const renderLegend = (props) => {
+        const { payload } = props;
+        return (
+            <ul className={classes.ulist}>
+                {
+                payload.reverse().map((entry, index) => (
+                    <li key={`item-${index}`} className={classes.lilist}>
+                        <svg width="14" height="14" viewBox="0 0 32 32" version="1.1" className={classes.svgstyle}>
+                        <path stroke="none" fill={entry.color} d="M0,4h32v24h-32z" ></path></svg>
+                        <span >{entry.value}</span>
+                    </li>
+                ))
+                }
+            </ul>
+        );
+    }
+
     return (
         <Layout>
             <div style={{ display: 'flex', gap: 16, flexDirection: 'column' }}>
@@ -628,7 +660,7 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA EN UNIDADES</div>
+                                <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA EN UNIDADES</div>
                                 <TableContainer component={Paper}>
                                     <Table className={classes.table} aria-label="simple table">
                                         <TableHead>
@@ -659,7 +691,7 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA POR SEMANA EN PORCENTAJE</div>
+                                <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA POR SEMANA EN PORCENTAJE</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.5}>
                                     <BarChart data={dataGraphDate}>
                                         <XAxis dataKey="week" />
@@ -695,10 +727,10 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CATEGORÍA EN UNIDADES</div>
+                                <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA Y CATEGORÍA EN UNIDADES</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={categorybrandSKU} >
-                                        <Legend verticalAlign="top"/>
+                                        <Legend verticalAlign="top" content={renderLegend}/>
                                         <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
                                         <YAxis />
                                         <Tooltip itemSorter={item => -(orderbrandsSKU.indexOf(item.dataKey))} />
@@ -715,10 +747,10 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CATEGORÍA EN PORCENTAJE</div>
+                                <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA Y CATEGORÍA EN PORCENTAJE</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={categorybrandSKUperc} >
-                                        <Legend verticalAlign="top"/>
+                                        <Legend verticalAlign="top" content={renderLegend}/>
                                         <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
                                         <YAxis domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
                                         <Tooltip itemSorter={item => -(orderbrandsSKU.indexOf(item.dataKey))} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
@@ -737,10 +769,10 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CADENA EN UNIDADES</div>
+                                <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA Y CADENA EN UNIDADES</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={poicategory} >
-                                        <Legend verticalAlign="top"/>
+                                        <Legend verticalAlign="top" content={renderLegend}/>
                                         <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
                                         <YAxis />
                                         <Tooltip itemSorter={item => -(orderbrandspoi.indexOf(item.dataKey))} />
@@ -757,10 +789,10 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CADENA EN PORCENTAJE</div>
+                                <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA Y CADENA EN PORCENTAJE</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={poicategoryperc} >
-                                        <Legend verticalAlign="top"/>
+                                        <Legend verticalAlign="top" content={renderLegend}/>
                                         <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
                                         <YAxis domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
                                         <Tooltip itemSorter={item => -(orderbrandspoi.indexOf(item.dataKey))} formatter={(value, name) => [value.toFixed(2) + " %", name]} />

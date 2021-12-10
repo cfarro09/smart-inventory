@@ -191,12 +191,14 @@ const User = () => {
         const listResult = await Promise.all([
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",id_form)),
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",id_form)),
         ]);
         console.log(listResult)
         setdatafilters({
             ...datafilters,
             retail: validateResArray(listResult[0], true),
             store_name: validateResArray(listResult[1], true),
+            SKU: validateResArray(listResult[2], true),
         })
     }
     async function filtrar() {
@@ -286,14 +288,15 @@ const User = () => {
                         />
                         <SelectFunction
                             title="SKU"
-                            datatosend={[]}
-                            optionvalue="id_role"
-                            optiondesc="description"
+                            datatosend={datafilters.SKU}
+                            optionvalue="model"
+                            optiondesc="model"
+                            valueselected={filters.SKU}
                             variant="outlined"
-                            namefield="id_role"
-                            descfield="role_name"
+                            namefield="model"
+                            descfield="model"
                             style={{width: "200px"}}
-                            callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
+                            callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model || '' })}
                         />
                         <SelectFunction
                             title="Retail"

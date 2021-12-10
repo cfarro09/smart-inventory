@@ -231,7 +231,7 @@ const Exhibits_detail = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",4)),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("category")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("model")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",4)),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",4)),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
             ]);
@@ -249,11 +249,6 @@ const Exhibits_detail = () => {
             })
         })();
         return () => continuezyx = false;
-    }, [])
-    useEffect(() => {
-        if (waitFilter) {
-
-        }
     }, [])
     async function filtrar() {
         setsearchdone(true)

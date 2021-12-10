@@ -301,7 +301,6 @@ const Linear_detail = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("model")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
             ]);
             setdatafilters({
@@ -311,8 +310,7 @@ const Linear_detail = () => {
                 department: validateResArray(listResult[2], continuezyx),
                 categoria: validateResArray(listResult[3], continuezyx),
                 marca: validateResArray(listResult[4], continuezyx),
-                SKU: validateResArray(listResult[5], continuezyx),
-                subcategoria: validateResArray(listResult[6], continuezyx),
+                subcategoria: validateResArray(listResult[5], continuezyx),
             })
         })();
         return () => continuezyx = false;
@@ -321,12 +319,14 @@ const Linear_detail = () => {
         const listResult = await Promise.all([
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",id_form)),
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",id_form)),
         ]);
         console.log(listResult)
         setdatafilters({
             ...datafilters,
             retail: validateResArray(listResult[0], true),
             store_name: validateResArray(listResult[1], true),
+            SKU: validateResArray(listResult[2], true),
         })
     }
     async function filtrar() {
@@ -404,14 +404,14 @@ const Linear_detail = () => {
                     <SelectFunction
                         title="SKU"
                         datatosend={datafilters.SKU}
-                        optionvalue="model_2"
-                        optiondesc="model_2"
+                        optionvalue="model"
+                        optiondesc="model"
                         valueselected={filters.SKU}
                         variant="outlined"
-                        namefield="model_2"
-                        descfield="model_2"
+                        namefield="model"
+                        descfield="model"
                         style={{width: "200px"}}
-                        callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model_2 || '' })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model || '' })}
                     />
                     <SelectFunction
                         title="Retail"

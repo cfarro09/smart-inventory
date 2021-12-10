@@ -94,7 +94,7 @@ const elementBrand = (week) => ({
     "SEVERIN": 0,
     "MIDIA": 0,
     "FDV": 0,
-    "DAEWOO": 0,
+    "DAEWOO": 0
 })
 
 const GET_FILTER = (filter) => ({

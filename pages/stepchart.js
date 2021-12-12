@@ -81,9 +81,6 @@ const RenderCustomizedLabel = (props) => {
     const radius = 10;
     console.log(datatmp[index].graphic)
     return (
-        // <g>
-
-        // </g>
         <g>
             <foreignObject x={x} y={y - width - 15} width={width} height={width}>
                 <img style={{ width: '100%', height: '100%', borderRadius: width / 2, border: '1px solid #e1e1e1' }} src={datatmp[index].graphic} />
@@ -114,6 +111,7 @@ const User = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
+    const [datainitial, setdatainitial] = useState([])
     const [disablebutton, setdisablebutton] = useState(true)
     const [searchdone, setsearchdone] = useState(false)
     const [enabletop, setenabletop] = useState(true)
@@ -159,8 +157,13 @@ const User = () => {
     })
 
     useEffect(() => {
-        console.log( Math.ceil((dataGraph[dataGraph.length-1]?.price||0)/10)*10)
-    }, [dataGraph])
+        if (enabletop) {
+            setDataGraph(datainitial.length < 10 ? datainitial : datainitial.slice(datainitial.length - 10, datainitial.length))
+        } else {
+            setDataGraph(datainitial)
+        }
+    }, [enabletop])
+
     useEffect(() => {
         let continuezyx = true;
         (async () => {
@@ -221,22 +224,14 @@ const User = () => {
         setOpenBackdrop(true)
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         setOpenBackdrop(false)
-        setDataGraph(listResult.result.data.map(x => ({ ...x, price: parseFloat(x.price) })))
+        const ff = listResult.result.data.map(x => ({ ...x, price: parseFloat(x.price) }));
+        setdatainitial(ff)
+        setDataGraph(enabletop ? ff.length < 10 ? ff : ff.slice(ff.length - 10, ff.length) : ff)
     }
     function descargar() {
-        
         htmlToImage.toPng(document.getElementById('divToPrint')).then(function (dataUrl) {
             require("downloadjs")(dataUrl, 'stepchart.png', "image/png");
         });
-
-        /*html2canvas(document.getElementById('divToPrint'),{ dpi: 300, useCORS: true })
-            .then((canvas) => {
-                const pdf = new jsPDF('l', 'mm', 'a4');
-                var width = pdf.internal.pageSize.getWidth();
-                var height = pdf.internal.pageSize.getHeight();
-                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, width, height);
-                pdf.save("download.pdf");
-            })*/
     }
 
     const getSubctegories = (id_form) => {
@@ -351,8 +346,8 @@ const User = () => {
                     <div style={{ display: 'flex', gap: 8 , background:"white"}} id="divToPrint">
                         <ResponsiveContainer aspect={4.0 / 2}>
                             <BarChart
-                                data={enabletop ? dataGraph.slice(dataGraph.length < 10 ? 0 : dataGraph.length - 10, dataGraph.length) : dataGraph}
-                                margin={{top: enabletop?150:10 }}
+                                data={dataGraph}
+                                margin={{top: enabletop ? 150 : 10 }}
                             >
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="model" style={{fontSize: "0.8em"}} angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>

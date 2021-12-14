@@ -111,6 +111,7 @@ const User = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
+    const [datagraphlength, setdatagraphlength] = useState(0)
     const [datainitial, setdatainitial] = useState([])
     const [disablebutton, setdisablebutton] = useState(true)
     const [searchdone, setsearchdone] = useState(false)
@@ -227,6 +228,7 @@ const User = () => {
         const ff = listResult.result.data.map(x => ({ ...x, price: parseFloat(x.price) }));
         setdatainitial(ff)
         setDataGraph(enabletop ? ff.length < 10 ? ff : ff.slice(ff.length - 10, ff.length) : ff)
+        setdatagraphlength(ff?.length||0)
     }
     function descargar() {
         htmlToImage.toPng(document.getElementById('divToPrint')).then(function (dataUrl) {
@@ -347,7 +349,7 @@ const User = () => {
                         <ResponsiveContainer aspect={4.0 / 2}>
                             <BarChart
                                 data={dataGraph}
-                                margin={{top: enabletop ? 150 : 10 }}
+                                margin={{top: enabletop ? 150 : (datagraphlength<=10?150: 1500/datagraphlength)}}
                             >
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="model" style={{fontSize: "0.8em"}} angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>

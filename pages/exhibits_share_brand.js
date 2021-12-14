@@ -486,7 +486,7 @@ const Exhibits_share_brand = () => {
     function descargar() {
         html2canvas(document.getElementById('divToPrint'))
             .then((canvas) => {
-                const pdf = new jsPDF('p', 'px', [1480, 2500]);
+                const pdf = new jsPDF('p', 'px', [1480, 2600]);
                 var width = pdf.internal.pageSize.getWidth();
                 var height = pdf.internal.pageSize.getHeight();
                 pdf.addImage(canvas.toDataURL('image/png'), 'JPEG', 0, 0, width, height);

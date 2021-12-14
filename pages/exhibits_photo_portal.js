@@ -277,6 +277,7 @@ const Exhibits_photo_portal = () => {
     }, [])
     async function filtrar() {
         //setWaitFilter(true)
+        setDataGraph([])
         const filter_to_send = {
             format: filters.format,
             channel: filters.channel,
@@ -365,11 +366,6 @@ const Exhibits_photo_portal = () => {
                     >Buscar</Button>
                     {dataGraph.length ?
                         <Fragment>
-                            <Button
-                                style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                                onClick={() => descargar()}
-                                startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                            >Descargar</Button>
                             <Button
                                 style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
                                 onClick={() => generateZIP()}

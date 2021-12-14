@@ -660,13 +660,13 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA EN UNIDADES</div>
+                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA EN UNIDADES</div>
                                 <TableContainer component={Paper}>
                                     <Table className={classes.table} aria-label="simple table">
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell></TableCell>
-                                                <TableCell align="center">N* SKU's</TableCell>
+                                                <TableCell align="center">N° SKU's</TableCell>
                                                 <TableCell align="center">Partic %</TableCell>
                                             </TableRow>
                                         </TableHead>
@@ -691,7 +691,7 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA POR SEMANA EN PORCENTAJE</div>
+                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA POR SEMANA EN PORCENTAJE</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.5}>
                                     <BarChart data={dataGraphDate}>
                                         <XAxis dataKey="week" />
@@ -727,7 +727,7 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA Y CATEGORÍA EN UNIDADES</div>
+                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CATEGORÍA EN UNIDADES</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={categorybrandSKU} >
                                         <Legend verticalAlign="top" content={renderLegend}/>
@@ -747,7 +747,7 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA Y CATEGORÍA EN PORCENTAJE</div>
+                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CATEGORÍA EN PORCENTAJE</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={categorybrandSKUperc} >
                                         <Legend verticalAlign="top" content={renderLegend}/>
@@ -769,7 +769,7 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA Y CADENA EN UNIDADES</div>
+                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CADENA EN UNIDADES</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={poicategory} >
                                         <Legend verticalAlign="top" content={renderLegend}/>
@@ -789,7 +789,7 @@ const Share_by_brand = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA Y CADENA EN PORCENTAJE</div>
+                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CADENA EN PORCENTAJE</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={poicategoryperc} >
                                         <Legend verticalAlign="top" content={renderLegend}/>

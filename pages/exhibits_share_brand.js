@@ -591,7 +591,7 @@ const Exhibits_share_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Exhibiciones totales por Marca Q y %</div>
+                            <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3}>
                                 <PieChart >
                                     <Pie data={resultBrand} dataKey="cont" nameKey="name"  fill="#8884d8" 
@@ -610,7 +610,7 @@ const Exhibits_share_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Evolución de Exhibiciones por semana y Marca</div>
+                            <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA POR SEMANA EN PORCENTAJE</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3}>
                                 <BarChart  data={dataGraphDate}>
                                     <Legend verticalAlign="top" content={renderLegend}/>
@@ -634,7 +634,7 @@ const Exhibits_share_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Categoría</div>
+                            <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA Y CATEGORÍA EN UNIDADES</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={categorybrandSKU} >
                                     <Legend verticalAlign="top" content={renderLegend}/>
@@ -654,7 +654,7 @@ const Exhibits_share_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Categoría %</div>
+                            <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA Y CATEGORÍA EN PORCENTAJE</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={categorybrandSKUperc} >
                                     <Legend verticalAlign="top" content={renderLegend}/>
@@ -676,7 +676,7 @@ const Exhibits_share_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Cadena</div>
+                            <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA Y CADENA EN UNIDADES</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={poicategory} >
                                     <Legend verticalAlign="top" content={renderLegend}/>
@@ -696,7 +696,7 @@ const Exhibits_share_brand = () => {
                         <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Cadena %</div>
+                            <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR MARCA Y CADENA EN PORCENTAJE</div>
                             <ResponsiveContainer width={"100%"} aspect={4.0/3.0}>
                                 <BarChart data={poicategoryperc} >
                                     <Legend verticalAlign="top" content={renderLegend}/>

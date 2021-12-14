@@ -186,7 +186,7 @@ const Exhibits_photo_portal = () => {
                 if (err) {
                     //throw err; // or handle the error
                 }
-                zip.file(`${row.form_timestamp.split(' ')[0]} - ${row.brand} - ${row.model} - ${row.poiname}.jpg`, data, { binary: true });
+                zip.file(`${row.form_timestamp.split(' ')[0]} - ${row.brand} - ${row.type_exhibit} - ${row.poiname}.jpg`, data, { binary: true });
                 count++;
                 if (count == rows.length) {
                     debugger

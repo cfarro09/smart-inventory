@@ -718,7 +718,7 @@ const Exhibits_share_brand = () => {
                     <Box
                             className={classes.itemCard}
                         >
-                            <div className={classes.titlecards}>Q Exhibiciones por Marca y Tipo de Exhibición</div>
+                            <div className={classes.titlecards}>CANTIDAD DE EXHIBICIONES POR TIPO</div>
                             <div style={{width:"100%"}}>
                                 <TableZyx
                                     columns={columns}

@@ -179,7 +179,7 @@ const Photo_portal = () => {
                     //throw err; // or handle the error
                     console.log(err);
                 }
-                zip.file(`image-${i}.jpg`, data, { binary: true });
+                zip.file(`${row.form_timestamp.split(' ')[0]} - ${row.brand} - ${row.model} - ${row.poiname}.jpg`, data, { binary: true });
                 count++;
                 if (count == dataGraph.length) {
                     zip.generateAsync({ type: 'blob' }).then(function (content) {
@@ -288,16 +288,6 @@ const Photo_portal = () => {
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         setOpenBackdrop(false)
         setDataGraph(listResult.result.data)
-    }
-    function descargar() {
-        html2canvas(document.getElementById('divToPrint'))
-            .then((canvas) => {
-                const pdf = new jsPDF('l', 'mm', 'a4');
-                var width = pdf.internal.pageSize.getWidth();
-                var height = pdf.internal.pageSize.getHeight();
-                pdf.addImage(canvas.toDataURL('image/png'), 'JPEG', 0, 0, width, height);
-                pdf.save("download.pdf");
-            })
     }
 
     return (
@@ -412,6 +402,7 @@ const Photo_portal = () => {
                                         <Typography color="inherit">{`Marca: ${row.brand}`}</Typography>
                                         <Typography color="inherit">{`Modelo: ${row.model}`}</Typography>
                                         <Typography color="inherit">{`Subcategoría: ${row.subcategory}`}</Typography>
+                                        <Typography color="inherit">{`Fecha: ${row.form_timestamp.split(' ')[0]}`}</Typography>
                                     </Fragment>
                                 }>
                                 <img

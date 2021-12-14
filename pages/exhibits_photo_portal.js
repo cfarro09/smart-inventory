@@ -186,7 +186,7 @@ const Exhibits_photo_portal = () => {
                 if (err) {
                     //throw err; // or handle the error
                 }
-                zip.file(`image-${i}.jpg`, data, { binary: true });
+                zip.file(`${row.form_timestamp.split(' ')[0]} - ${row.brand} - ${row.model} - ${row.poiname}.jpg`, data, { binary: true });
                 count++;
                 if (count == rows.length) {
                     debugger
@@ -396,6 +396,7 @@ const Exhibits_photo_portal = () => {
                                         <Typography color="inherit">{`Marca: ${row.brand}`}</Typography>
                                         <Typography color="inherit">{`Categoría: ${row.category}`}</Typography>
                                         <Typography color="inherit">{`Management: ${row.management}`}</Typography>
+                                        <Typography color="inherit">{`Fecha: ${row.form_timestamp}`}</Typography>
                                     </Fragment>
                                 }>
                                 <img crossOrigin="*"

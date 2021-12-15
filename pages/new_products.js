@@ -133,10 +133,6 @@ const useStyles = makeStyles((theme) => ({
     itemFilter: {
         flex: '0 0 215px'
     },
-
-    table: {
-        minWidth: 200,
-    },
     labelcell: {
         border: "1px #e0e0e0 solid",
         fontWeight: "bold",
@@ -169,7 +165,21 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "1.5em",
         color: "blue",
         padding: 10
-    }
+    },
+    datacelltitle: {
+        border: "1px #e0e0e0 solid",
+        position: "sticky",
+        left: 0,
+        background: "white",
+        textTransform: "uppercase",
+        fontWeight: "bold",
+        padding: 5
+    },
+    datacell: {
+        border: "1px #e0e0e0 solid",
+        backgroundColor: "white",
+        padding: 5
+    },
 }));
 
 const RB_MARCA = {
@@ -190,11 +200,82 @@ const New_Products = () => {
     const classes = useStyles();
     const [dataGraph, setDataGraph] = useState([])
     const [orderbrandsDate, setorderbrandsDate] = useState([])
-    const [orderbrandsSKU, setorderbrandsSKU] = useState([])
+    const [orderbrandsSKU, setorderbrandsSKU] = useState([ "BOSCH", "IMACO", "OSTER", "PHILIPS", "PRACTIKA", "RECCO", "TAURUS", "THOMAS"])
     const [orderbrandspoi, setorderbrandspoi] = useState([])
-    const [dataGraphDate, setDataGraphDate] = useState([])
+    const [dataGraphDate, setDataGraphDate] = useState(
+        [
+            {
+                week: "Licuadora",
+                BOSCH: 3,
+                IMACO: 3,
+                OSTER: 4,
+                PHILIPS: 3,
+                PRACTIKA: 3,
+                RECCO: 1,
+                TAURUS: 3,
+                THOMAS: 2
+            },  
+            {
+                week: "Arrocera",
+                BOSCH: 0,
+                IMACO: 1,
+                OSTER: 4,
+                PHILIPS: 1,
+                PRACTIKA: 1,
+                RECCO: 1,
+                TAURUS: 2,
+                THOMAS: 2
+            },  
+            {
+                week: "Freidora",
+                BOSCH: 3,
+                IMACO: 2,
+                OSTER: 1,
+                PHILIPS: 1,
+                PRACTIKA: 3,
+                RECCO: 3,
+                TAURUS: 3,
+                THOMAS: 0
+            },  
+        ])
     const [categorybrandSKU, setcategorybrandSKU] = useState([])
-    const [categorybrandSKUperc, setcategorybrandSKUperc] = useState([])
+    const [categorybrandSKUperc, setcategorybrandSKUperc] = useState(
+    [
+    {
+        mes:  "Agosto",
+        BOSCH: 3,
+        IMACO: 3,
+        OSTER: 4,
+        PHILIPS: 3,
+        PRACTIKA: 3,
+        RECCO: 1,
+        TAURUS: 3,
+        THOMAS: 2
+    },
+    {
+        mes:  "Setiembre",
+        BOSCH: 0,
+        IMACO: 1,
+        OSTER: 4,
+        PHILIPS: 1,
+        PRACTIKA: 1,
+        RECCO: 1,
+        TAURUS: 2,
+        THOMAS: 2
+    },
+    {
+        mes:  "Octubre",
+        BOSCH: 3,
+        IMACO: 2,
+        OSTER: 1,
+        PHILIPS: 1,
+        PRACTIKA: 3,
+        RECCO: 3,
+        TAURUS: 3,
+        THOMAS: 0
+    },
+
+    ])
     const [poicategory, setpoicategory] = useState([])
     const [poicategoryperc, setpoicategoryperc] = useState([])
     const [totalSKA, settotalSKA] = useState(0)
@@ -339,7 +420,6 @@ const New_Products = () => {
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",id_form)),
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",id_form)),
         ]);
-        console.log(listResult)
         setdatafilters({
             ...datafilters,
             retail: validateResArray(listResult[0], true),
@@ -413,7 +493,6 @@ const New_Products = () => {
                 }
             })
         })
-        setDataGraphDate(listbrand)
         settotalSKA(count)
 
 
@@ -459,9 +538,8 @@ const New_Products = () => {
             return 0;
         }
         brandlistSKU.sort(compareSKU);
-        setorderbrandsSKU(brandlistSKU)
+        //setorderbrandsSKU(brandlistSKU)
         setcategorybrandSKU(skucategory)
-        setcategorybrandSKUperc(skucategoryperc)
 
 
         const listpoiresult = await triggeraxios('post', process.env.endpoints.selsimple, FILTERPOI(filter_to_send))
@@ -628,12 +706,11 @@ const New_Products = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CATEGORÍA EN PORCENTAJE</div>
-                                <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
+                                <ResponsiveContainer width={"100%"} aspect={4.0 / 3.5}>
                                     <LineChart data={categorybrandSKUperc} >
-                                        <Legend verticalAlign="top"/>
-                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
-                                        <YAxis domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
+                                        <Legend verticalAlign="bottom"/>
+                                        <XAxis dataKey="mes" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
+                                        <YAxis allowDecimals={false} allowDataOverflow={true}/>
                                         <Tooltip itemSorter={item => -(orderbrandsSKU.indexOf(item.dataKey))} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
                                         <CartesianGrid />
                                         {
@@ -648,11 +725,10 @@ const New_Products = () => {
                             <Box
                                 className={classes.itemCard}
                             >
-                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA POR SEMANA EN PORCENTAJE</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.5}>
                                     <BarChart data={dataGraphDate}>
                                         <XAxis dataKey="week" />
-                                        <YAxis domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
+                                        <YAxis allowDecimals={false} allowDataOverflow={true}/>
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <Tooltip
                                             itemSorter={item => -(item.value)}
@@ -677,92 +753,198 @@ const New_Products = () => {
                                 </ResponsiveContainer >
 
                             </Box>
-
-
                         </div>
                         <div className={classes.replacerowzyx}>
-                            <Box
-                                className={classes.itemCard}
-                            >
-                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CATEGORÍA EN UNIDADES</div>
-                                <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
-                                    <BarChart data={categorybrandSKU} >
-                                        <Legend verticalAlign="top"/>
-                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
-                                        <YAxis />
-                                        <Tooltip itemSorter={item => -(orderbrandsSKU.indexOf(item.dataKey))} />
-                                        <CartesianGrid />
-                                        {
-                                            orderbrandsSKU.map((brand, i) => (
-                                                <Bar key={`marcC${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]} />
-                                            ))
-                                        }
-                                    </BarChart>
-                                </ResponsiveContainer >
-
-                            </Box>
-                            <Box
-                                className={classes.itemCard}
-                            >
-                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CATEGORÍA EN PORCENTAJE</div>
-                                <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
-                                    <BarChart data={categorybrandSKUperc} >
-                                        <Legend verticalAlign="top"/>
-                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
-                                        <YAxis domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
-                                        <Tooltip itemSorter={item => -(orderbrandsSKU.indexOf(item.dataKey))} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
-                                        <CartesianGrid />
-                                        {
-                                            orderbrandsSKU.map((brand, i) => (
-                                                <Bar key={`marcCperc${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]} />
-                                            ))
-                                        }
-                                    </BarChart>
-                                </ResponsiveContainer >
-
-                            </Box>
-                        </div>
-                        <div className={classes.replacerowzyx}>
-                            <Box
-                                className={classes.itemCard}
-                            >
-                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CADENA EN UNIDADES</div>
-                                <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
-                                    <BarChart data={poicategory} >
-                                        <Legend verticalAlign="top"/>
-                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
-                                        <YAxis />
-                                        <Tooltip itemSorter={item => -(orderbrandspoi.indexOf(item.dataKey))} />
-                                        <CartesianGrid />
-                                        {
-                                            orderbrandspoi.map((brand, i) => (
-                                                <Bar key={`marcpoi${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]} />
-                                            ))
-                                        }
-                                    </BarChart>
-                                </ResponsiveContainer >
-
-                            </Box>
-                            <Box
-                                className={classes.itemCard}
-                            >
-                                <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CADENA EN PORCENTAJE</div>
-                                <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
-                                    <BarChart data={poicategoryperc} >
-                                        <Legend verticalAlign="top"/>
-                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
-                                        <YAxis domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
-                                        <Tooltip itemSorter={item => -(orderbrandspoi.indexOf(item.dataKey))} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
-                                        <CartesianGrid />
-                                        {
-                                            orderbrandspoi.map((brand, i) => (
-                                                <Bar key={`marcpoiperc${brand}`} type="monotone" dataKey={brand} stackId="a" fill={colors[brands.indexOf(brand)]} />
-                                            ))
-                                        }
-                                    </BarChart>
-                                </ResponsiveContainer >
-
-                            </Box>
+                            <div style={{flex: 1}} className={classes.replacerowzyx}>
+                                <div style={{flex: 2}} >
+                                    <div style={{textAlign: "center"}}>
+                                        <div>RC006R</div>
+                                        <div>IMACO</div>
+                                    </div>
+                                    
+                                    <div style={{display: "flex"}} >
+                                        
+                                        <div style={{flex: 1}}>
+                                            <TableContainer component={Paper}>
+                                                <Table aria-label="simple table" >
+                                                    <TableBody>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">subcategoria</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">Arrocera</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Regular</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. 79.95</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Promoción</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. 7.50</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Capacidad</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">0.6LTS</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Watts</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">350</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Acabado</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">METAL</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">color</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">BLANCO</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">material del tazon</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row"></TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">medida del tazon</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SI</TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        </div>
+                                        <div style={{flex: 1}}>
+                                            <TableContainer component={Paper}>
+                                                <Table aria-label="simple table" >
+                                                    <TableBody>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">recubrimiento</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SIN RECUBRIMIENTO</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">funciones</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">COOK/WARM</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">MATERIAL DE LA TAPA</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">VIDRIO REFRACTADO</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">TIPO DE TAPA</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">NO HERMETICA</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">CABLE DESMONTABLE</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SI</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">VAPORERA</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">NO</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">MATERIAL DE LA VAPORERA</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SIN VAPORERA</TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style={{flex: 1}} >
+                                <img style={{ width: "100%", height: "auto"}} alt="image.jpg" src="http://142.44.214.184:5000/storage/master_imagenes/RC15.png"></img>
+                                </div>
+                            </div>
+                            <div style={{flex: 1}} className={classes.replacerowzyx}>
+                            <div style={{flex: 2}} >
+                                    <div style={{textAlign: "center"}}>
+                                        <div>RC006R</div>
+                                        <div>IMACO</div>
+                                    </div>
+                                    
+                                    <div style={{display: "flex"}} >
+                                        
+                                        <div style={{flex: 1}}>
+                                            <TableContainer component={Paper}>
+                                                <Table aria-label="simple table" >
+                                                    <TableBody>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">subcategoria</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">Arrocera</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Regular</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. 79.95</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Promoción</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. 7.50</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Capacidad</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">0.6LTS</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Watts</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">350</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Acabado</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">METAL</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">color</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">BLANCO</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">material del tazon</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row"></TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">medida del tazon</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SI</TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        </div>
+                                        <div style={{flex: 1}}>
+                                            <TableContainer component={Paper}>
+                                                <Table aria-label="simple table" >
+                                                    <TableBody>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">recubrimiento</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SIN RECUBRIMIENTO</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">funciones</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">COOK/WARM</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">MATERIAL DE LA TAPA</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">VIDRIO REFRACTADO</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">TIPO DE TAPA</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">NO HERMETICA</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">CABLE DESMONTABLE</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SI</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">VAPORERA</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">NO</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">MATERIAL DE LA VAPORERA</TableCell>
+                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SIN VAPORERA</TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style={{flex: 1}} >
+                                <img style={{ width: "100%", height: "auto"}} alt="image.jpg" src="http://142.44.214.184:5000/storage/master_imagenes/2816P.png"></img>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 }

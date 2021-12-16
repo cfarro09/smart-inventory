@@ -45,7 +45,7 @@ const GET_CATEGORY = (filter) => ({
         type: filter
     }
 })
-const GET_FILTERRETAIL = (filter,id_form) => ({
+const GET_FILTERRETAIL = (filter, id_form) => ({
     method: "SP_FILTER_BYID",
     data: {
         filter,
@@ -120,7 +120,7 @@ const User = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
     const [subcategories, setsubcategories] = useState([]);
-
+    const [listmodel, setlistmodel] = useState([]);
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -190,19 +190,19 @@ const User = () => {
         })();
         return () => continuezyx = false;
     }, [])
-    
-    async function updatelistretail(id_form){
+
+    async function updatelistretail(id_form) {
         const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", id_form)),
+            // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
         ]);
         console.log(listResult)
         setdatafilters({
             ...datafilters,
             retail: validateResArray(listResult[0], true),
             store_name: validateResArray(listResult[1], true),
-            SKU: validateResArray(listResult[2], true),
+            // SKU: validateResArray(listResult[2], true),
         })
     }
     async function filtrar() {
@@ -226,9 +226,25 @@ const User = () => {
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         setOpenBackdrop(false)
         const ff = listResult.result.data.map(x => ({ ...x, price: parseFloat(x.price) }));
-        setdatainitial(ff)
-        setDataGraph(enabletop ? ff.length < 10 ? ff : ff.slice(ff.length - 10, ff.length) : ff)
-        setdatagraphlength(ff?.length||0)
+        setdatainitial(ff);
+        setDataGraph(enabletop ? ff.length < 10 ? ff : ff.slice(ff.length - 10, ff.length) : ff);
+        setdatagraphlength(ff?.length || 0);
+
+        const listskus = Array.from(new Set(ff.map(x => x.model1)));
+        const listbrand = Array.from(new Set(ff.map(x => x.brand)));
+        const listdepartment = Array.from(new Set(ff.map(x => x.department)));
+        const listretail = Array.from(new Set(ff.map(x => x.retail)));
+        const liststore_name = Array.from(new Set(ff.map(x => x.store_name)));
+
+        setdatafilters({
+            ...datafilters,
+            SKU: listskus.map(x => ({ model: x })),
+            brand: listbrand.map(x => ({ brand: x })),
+            department: listdepartment.map(x => ({ department: x })),
+            retail: listretail.map(x => ({ retail: x })),
+            store_name: liststore_name.map(x => ({ store_name: x })),
+        })
+
     }
     function descargar() {
         htmlToImage.toPng(document.getElementById('divToPrint')).then(function (dataUrl) {
@@ -280,7 +296,7 @@ const User = () => {
                             variant="outlined"
                             namefield="brand"
                             descfield="brand"
-                            style={{width: "150px"}}
+                            style={{ width: "150px" }}
                             callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
                         />
                         <SelectFunction
@@ -292,7 +308,7 @@ const User = () => {
                             variant="outlined"
                             namefield="model"
                             descfield="model"
-                            style={{width: "200px"}}
+                            style={{ width: "200px" }}
                             callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model || '' })}
                         />
                         <SelectFunction
@@ -304,7 +320,7 @@ const User = () => {
                             valueselected={filters.retail}
                             namefield="retail"
                             descfield="retail"
-                            style={{width: "200px"}}
+                            style={{ width: "200px" }}
                             callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                         />
                         <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
@@ -345,16 +361,16 @@ const User = () => {
                     }
                 </div>
                 {searchdone ?
-                    <div style={{ display: 'flex', gap: 8 , background:"white"}} id="divToPrint">
+                    <div style={{ display: 'flex', gap: 8, background: "white" }} id="divToPrint">
                         <ResponsiveContainer aspect={4.0 / 2}>
                             <BarChart
                                 data={dataGraph}
-                                margin={{top: enabletop ? 150 : (datagraphlength<=10?150: 1500/datagraphlength)}}
+                                margin={{ top: enabletop ? 150 : (datagraphlength <= 10 ? 150 : 1500 / datagraphlength) }}
                             >
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="model" style={{fontSize: "0.8em"}} angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
-                                <XAxis dataKey="model" style={{fontSize: "0.8em"}} angle={270} interval={0} textAnchor ="end" height={160} dy={5} dx={-5}/>
-                                <YAxis type="number" domain={[0, Math.ceil((dataGraph[dataGraph.length-1]?.price||0)/10)*10]} />
+                                <XAxis dataKey="model" style={{ fontSize: "0.8em" }} angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
+                                <XAxis dataKey="model" style={{ fontSize: "0.8em" }} angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
+                                <YAxis type="number" domain={[0, Math.ceil((dataGraph[dataGraph.length - 1]?.price || 0) / 10) * 10]} />
                                 <Tooltip formatter={(value) => { return `S/.${parseFloat(value).toFixed(2)}` }} />
                                 <Bar
                                     layout="horizontal"
@@ -362,13 +378,13 @@ const User = () => {
                                     fill="#0c4da2"
                                     maxBarSize={100}
                                 >
-                                    {enabletop?
+                                    {enabletop ?
                                         <LabelList
                                             dataKey="price"
                                             position="top"
                                             content={<RenderCustomizedLabel datatmp={dataGraph} />}
                                         // formatter={(value) => `S/.${parseFloat(value).toFixed(2)}`}
-                                        />:
+                                        /> :
                                         <LabelList
                                             dataKey=""
                                             content={<RenderCustomizedLabelonly_Image datatmp={dataGraph} />}
@@ -441,16 +457,16 @@ const User = () => {
                         callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
                     />
                     <SelectFunction
-                         title="Subcategoría"
-                         datatosend={subcategories}
-                         optionvalue="subcategory"
-                         optiondesc="subcategory"
-                         variant="outlined"
-                         namefield="subcategory"
-                         descfield="subcategory"
-                         callback={({ newValue: value }) => {
-                             setfilters({ ...filters, subcategoria: value?.subcategory || "" });
-                         }}
+                        title="Subcategoría"
+                        datatosend={subcategories}
+                        optionvalue="subcategory"
+                        optiondesc="subcategory"
+                        variant="outlined"
+                        namefield="subcategory"
+                        descfield="subcategory"
+                        callback={({ newValue: value }) => {
+                            setfilters({ ...filters, subcategoria: value?.subcategory || "" });
+                        }}
                     />
                     {/* <SelectFunction
                         title="Banda"

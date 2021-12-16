@@ -288,6 +288,21 @@ const Photo_portal = () => {
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         setOpenBackdrop(false)
         setDataGraph(listResult.result.data)
+
+        const listskus = Array.from(new Set(listResult.result.data.map(x => x.model)));
+        const listbrand = Array.from(new Set(listResult.result.data.map(x => x.brand)));
+        const listdepartment = Array.from(new Set(listResult.result.data.map(x => x.department)));
+        const listretail = Array.from(new Set(listResult.result.data.map(x => x.retail)));
+        const liststore_name = Array.from(new Set(listResult.result.data.map(x => x.store_name)));
+        
+        setdatafilters({
+            ...datafilters,
+            SKU: listskus.filter(x => !!x).map(x => ({ model: x })),
+            brand: listbrand.filter(x => !!x).map(x => ({ brand: x })),
+            department: listdepartment.filter(x => !!x).map(x => ({ department: x })),
+            retail: listretail.filter(x => !!x).map(x => ({ retail: x })),
+            store_name: liststore_name.filter(x => !!x).map(x => ({ store_name: x })),
+        })
     }
 
     return (

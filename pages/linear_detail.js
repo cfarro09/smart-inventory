@@ -359,6 +359,25 @@ const Linear_detail = () => {
                 variation_percent_price: prom_price == 0 ? 0 : ((prom_price / regular_price) * 100) - 100,
             }
         }))
+
+        const listskus = Array.from(new Set(listResult.result.data.map(x => x.model)));
+        const listbrand = Array.from(new Set(listResult.result.data.map(x => x.brand)));
+        const listdepartment = Array.from(new Set(listResult.result.data.map(x => x.department)));
+        const listretail = Array.from(new Set(listResult.result.data.map(x => x.retail)));
+        const liststore_name = Array.from(new Set(listResult.result.data.map(x => x.store_name)));
+        
+        console.log("liststore_name", liststore_name)
+        console.log("listretail", listretail)
+        console.log("listdepartment", listdepartment)
+
+        setdatafilters({
+            ...datafilters,
+            SKU: listskus.filter(x => !!x).map(x => ({ model: x })),
+            brand: listbrand.filter(x => !!x).map(x => ({ brand: x })),
+            department: listdepartment.filter(x => !!x).map(x => ({ department: x })),
+            retail: listretail.filter(x => !!x).map(x => ({ retail: x })),
+            store_name: liststore_name.filter(x => !!x).map(x => ({ store_name: x })),
+        })
     }
 
     return (

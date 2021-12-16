@@ -270,14 +270,14 @@ const BulkLoad = () => {
         const listResult = await Promise.all([
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",id_form)),
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",id_form)),
+            // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",id_form)),
         ]);
         console.log(listResult)
         setdatafilters({
             ...datafilters,
             retail: validateResArray(listResult[0], true),
             store_name: validateResArray(listResult[1], true),
-            SKU: validateResArray(listResult[2], true),
+            // SKU: validateResArray(listResult[2], true),
         })
     }
     async function filtrar() {
@@ -329,6 +329,21 @@ const BulkLoad = () => {
         }, arrayinitials)
 
         setDataArray(ff)
+
+        const listskus = Array.from(new Set(listResult.result.data.map(x => x.model)));
+        const listbrand = Array.from(new Set(listResult.result.data.map(x => x.brand)));
+        // const listdepartment = Array.from(new Set(listResult.result.data.map(x => x.department)));
+        // const listretail = Array.from(new Set(listResult.result.data.map(x => x.retail)));
+        // const liststore_name = Array.from(new Set(listResult.result.data.map(x => x.store_name)));
+
+        setdatafilters({
+            ...datafilters,
+            SKU: listskus.filter(x => !!x).map(x => ({ model: x })),
+            brand: listbrand.filter(x => !!x).map(x => ({ brand: x })),
+            // department: listdepartment.filter(x => !!x).map(x => ({ department: x })),
+            // retail: listretail.filter(x => !!x).map(x => ({ retail: x })),
+            // store_name: liststore_name.filter(x => !!x).map(x => ({ store_name: x })),
+        })
     }
     function setcategorysearchfield(value) {
         if (value.includes("ARROCERA")) {

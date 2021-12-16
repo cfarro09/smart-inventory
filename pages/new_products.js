@@ -847,7 +847,7 @@ const New_Products = () => {
                                     </div>
                                 </div>
                                 <div style={{flex: 1}} >
-                                <img style={{ width: "100%", height: "auto"}} alt="image.jpg" src="http://142.44.214.184:5000/storage/master_imagenes/RC15.png"></img>
+                                <img style={{ width: "100%", height: "auto"}} alt="image.jpg" src="http://142.44.214.184:5000/storage/master_imagenes/RC6.png"></img>
                                 </div>
                             </div>
                             <div style={{flex: 1}} className={classes.replacerowzyx}>

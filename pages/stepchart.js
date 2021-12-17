@@ -230,19 +230,24 @@ const User = () => {
         setDataGraph(enabletop ? ff.length < 10 ? ff : ff.slice(ff.length - 10, ff.length) : ff);
         setdatagraphlength(ff?.length || 0);
 
-        const listskus = Array.from(new Set(ff.map(x => x.model1)));
-        const listbrand = Array.from(new Set(ff.map(x => x.brand)));
-        const listdepartment = Array.from(new Set(ff.map(x => x.department)));
-        const listretail = Array.from(new Set(ff.map(x => x.retail)));
-        const liststore_name = Array.from(new Set(ff.map(x => x.store_name)));
+        const datatofiltro = await triggeraxios('post', process.env.endpoints.selsimple, {
+            method: "SP_DATABASE",
+            data: filter_to_send
+        })
+        const tlistskus = Array.from(new Set(datatofiltro.result.data.map(x => x.model)));
+        const tlistbrand = Array.from(new Set(datatofiltro.result.data.map(x => x.brand)));
+        const tlistdepartment = Array.from(new Set(datatofiltro.result.data.map(x => x.department)));
+        const tlistretail = Array.from(new Set(datatofiltro.result.data.map(x => x.retail)));
+        const tliststore_name = Array.from(new Set(datatofiltro.result.data.map(x => x.store_name)));
 
         setdatafilters({
             ...datafilters,
-            SKU: listskus.map(x => ({ model: x })),
-            brand: listbrand.map(x => ({ brand: x })),
-            department: listdepartment.map(x => ({ department: x })),
-            retail: listretail.map(x => ({ retail: x })),
-            store_name: liststore_name.map(x => ({ store_name: x })),
+            SKU: tlistskus.filter(x => !!x).map(x => ({ model: x })),
+            brand: tlistbrand.filter(x => !!x).map(x => ({ brand: x })),
+            marca: tlistbrand.filter(x => !!x).map(x => ({ brand: x })),
+            department: tlistdepartment.filter(x => !!x).map(x => ({ department: x })),
+            retail: tlistretail.filter(x => !!x).map(x => ({ retail: x })),
+            store_name: tliststore_name.filter(x => !!x).map(x => ({ store_name: x })),
         })
 
     }

@@ -32,11 +32,11 @@ import {
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
 
-const brands = ["IMACO", "B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO", "LUMIKA", "INSTANTPOT","WINIA","SMEG","KENT","DELONGHI","SEVERIN","MIDIA","FDV","DAEWOO"]
+const brands = ["IMACO", "B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO", "LUMIKA", "INSTANTPOT", "WINIA", "SMEG", "KENT", "DELONGHI", "SEVERIN", "MIDIA", "FDV", "DAEWOO"]
 const colors = ["#FFD600", "#bababa", "#26A69A", "#009688", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#00897B", "#b8b8b8", "#a2a2a2", "#808080", "#4527A0", "#8a8a8a", "#00695C", "#b5b5b5", "#4DB6AC", "#00796B", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#B2DFDB", "#444444", "#d3d3d3", "rgb(251, 95, 95)", "#a9a9a9", "#80CBC4", "#797979", "#5D4037", "#323232", "#7d7d7d", "#bababa", "#2c2c2c", "#828282", "#6d6d6d", "#757575", "#929292", "#6d6d6d", "#6f6f6f", "#bababa"]
 const elementBrand = (week) => ({
     week: week,
-    "IMACO":0,
+    "IMACO": 0,
     "B&D": 0,
     "BLACKLINE": 0,
     "BORD": 0,
@@ -180,10 +180,10 @@ const useStyles = makeStyles((theme) => ({
         display: "inline-block",
         marginRight: "10px",
     },
-    svgstyle:{
+    svgstyle: {
         display: "inline-block",
         verticalAlign: "middle",
-        marginRight: "4px",        
+        marginRight: "4px",
     }
 }));
 
@@ -193,7 +193,7 @@ const RB_MARCA = {
         "filter": "brand"
     }
 }
-const GET_FILTERRETAIL = (filter,id_form) => ({
+const GET_FILTERRETAIL = (filter, id_form) => ({
     method: "SP_FILTER_BYID",
     data: {
         filter,
@@ -227,7 +227,7 @@ const Share_by_brand = () => {
             key: 'selection'
         }
     ]);
-    
+
     const columns = React.useMemo(
         () => [
             {
@@ -321,52 +321,59 @@ const Share_by_brand = () => {
         retail: [],
         subcategoria: [],
     })
+    const [initial, setinitial] = useState(0);
 
+    useEffect(() => {
+        if (initial === 1) {
+            filtrar()
+        }
+    }, [initial])
     useEffect(() => {
         let continuezyx = true;
         (async () => {
             // setdomains(p => ({ ...p, doc_type: validateResArray(r, continuezyx) }))
             const listResult = await Promise.all([
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("format")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
+                // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("format")),
+                // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
+                // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
-                triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
+                // triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+                // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
             ]);
-            filtrar()
+            
             setdatafilters({
-                ...datafilters,
-                channel: validateResArray(listResult[1], continuezyx),
-                format: validateResArray(listResult[0], continuezyx),
-                department: validateResArray(listResult[2], continuezyx),
-                categoria: validateResArray(listResult[3], continuezyx),
-                marca: validateResArray(listResult[4], continuezyx),
-                subcategoria: validateResArray(listResult[5], continuezyx),
-            })            
+                // ...datafilters,
+                categoria: validateResArray(listResult[0], continuezyx),
+                // channel: validateResArray(listResult[1], continuezyx),
+                // format: validateResArray(listResult[0], continuezyx),
+                // department: validateResArray(listResult[2], continuezyx),
+                // marca: validateResArray(listResult[4], continuezyx),
+                // subcategoria: validateResArray(listResult[5], continuezyx),
+            })
+            setinitial(1)
         })();
         return () => continuezyx = false;
     }, [])
-    
-    async function updatelistretail(id_form){
-        const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",id_form)),
-        ]);
-        console.log(listResult)
-        setdatafilters({
-            ...datafilters,
-            retail: validateResArray(listResult[0], true),
-            store_name: validateResArray(listResult[1], true),
-            SKU: validateResArray(listResult[2], true),
-        })
+
+    async function updatelistretail(id_form) {
+        // const listResult = await Promise.all([
+        //     triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", id_form)),
+        //     triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", id_form)),
+        //     triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
+        // ]);
+        // console.log(listResult)
+        // setdatafilters({
+        //     ...datafilters,
+        //     retail: validateResArray(listResult[0], true),
+        //     store_name: validateResArray(listResult[1], true),
+        //     SKU: validateResArray(listResult[2], true),
+        // })
     }
 
     const getSubctegories = (id_form) => {
-        triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(id_form)).then(x => {
-            setsubcategories(validateResArray(x, true))
-        })
+        // triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(id_form)).then(x => {
+        //     setsubcategories(validateResArray(x, true))
+        // })
     }
 
     async function filtrar() {
@@ -430,8 +437,6 @@ const Share_by_brand = () => {
         })
         setDataGraphDate(listbrand)
         settotalSKA(count)
-
-
 
         const listResultSKU = await triggeraxios('post', process.env.endpoints.selsimple, FILTERGraph1(filter_to_send))
         let categories = []
@@ -524,6 +529,26 @@ const Share_by_brand = () => {
         setpoicategory(poicategories)
         setpoicategoryperc(poicategoriesperc)
         setOpenBackdrop(false)
+
+        const datatofiltro = await triggeraxios('post', process.env.endpoints.selsimple, {
+            method: "SP_DATABASE",
+            data: filter_to_send
+        })
+        const tlistskus = Array.from(new Set(datatofiltro.result.data.map(x => x.model)));
+        const tlistbrand = Array.from(new Set(datatofiltro.result.data.map(x => x.brand)));
+        const tlistdepartment = Array.from(new Set(datatofiltro.result.data.map(x => x.department)));
+        const tlistretail = Array.from(new Set(datatofiltro.result.data.map(x => x.retail)));
+        const tliststore_name = Array.from(new Set(datatofiltro.result.data.map(x => x.store_name)));
+
+        setdatafilters({
+            ...datafilters,
+            SKU: tlistskus.filter(x => !!x).map(x => ({ model: x })),
+            brand: tlistbrand.filter(x => !!x).map(x => ({ brand: x })),
+            marca: tlistbrand.filter(x => !!x).map(x => ({ brand: x })),
+            department: tlistdepartment.filter(x => !!x).map(x => ({ department: x })),
+            retail: tlistretail.filter(x => !!x).map(x => ({ retail: x })),
+            store_name: tliststore_name.filter(x => !!x).map(x => ({ store_name: x })),
+        })
     }
     function descargar() {
         html2canvas(document.getElementById('divToPrint'))
@@ -541,13 +566,13 @@ const Share_by_brand = () => {
         return (
             <ul className={classes.ulist}>
                 {
-                payload.reverse().map((entry, index) => (
-                    <li key={`item-${index}`} className={classes.lilist}>
-                        <svg width="14" height="14" viewBox="0 0 32 32" version="1.1" className={classes.svgstyle}>
-                        <path stroke="none" fill={entry.color} d="M0,4h32v24h-32z" ></path></svg>
-                        <span >{entry.value}</span>
-                    </li>
-                ))
+                    payload.reverse().map((entry, index) => (
+                        <li key={`item-${index}`} className={classes.lilist}>
+                            <svg width="14" height="14" viewBox="0 0 32 32" version="1.1" className={classes.svgstyle}>
+                                <path stroke="none" fill={entry.color} d="M0,4h32v24h-32z" ></path></svg>
+                            <span >{entry.value}</span>
+                        </li>
+                    ))
                 }
             </ul>
         );
@@ -590,7 +615,7 @@ const Share_by_brand = () => {
                         variant="outlined"
                         namefield="brand"
                         descfield="brand"
-                        style={{width: "150px"}}
+                        style={{ width: "150px" }}
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
                     />
 
@@ -603,7 +628,7 @@ const Share_by_brand = () => {
                         variant="outlined"
                         namefield="model"
                         descfield="model"
-                        style={{width: "200px"}}
+                        style={{ width: "200px" }}
                         callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model || '' })}
                     />
                     <SelectFunction
@@ -615,7 +640,7 @@ const Share_by_brand = () => {
                         valueselected={filters.retail}
                         namefield="retail"
                         descfield="retail"
-                        style={{width: "200px"}}
+                        style={{ width: "200px" }}
                         callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
@@ -695,7 +720,7 @@ const Share_by_brand = () => {
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.5}>
                                     <BarChart data={dataGraphDate}>
                                         <XAxis dataKey="week" />
-                                        <YAxis domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
+                                        <YAxis domain={[0, 100]} allowDecimals={false} allowDataOverflow={true} />
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <Tooltip
                                             itemSorter={item => -(item.value)}
@@ -730,7 +755,7 @@ const Share_by_brand = () => {
                                 <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CATEGORÍA EN UNIDADES</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={categorybrandSKU} >
-                                        <Legend verticalAlign="top" content={renderLegend}/>
+                                        <Legend verticalAlign="top" content={renderLegend} />
                                         <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
                                         <YAxis />
                                         <Tooltip itemSorter={item => -(orderbrandsSKU.indexOf(item.dataKey))} />
@@ -750,9 +775,9 @@ const Share_by_brand = () => {
                                 <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CATEGORÍA EN PORCENTAJE</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={categorybrandSKUperc} >
-                                        <Legend verticalAlign="top" content={renderLegend}/>
+                                        <Legend verticalAlign="top" content={renderLegend} />
                                         <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
-                                        <YAxis domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
+                                        <YAxis domain={[0, 100]} allowDecimals={false} allowDataOverflow={true} />
                                         <Tooltip itemSorter={item => -(orderbrandsSKU.indexOf(item.dataKey))} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
                                         <CartesianGrid />
                                         {
@@ -772,7 +797,7 @@ const Share_by_brand = () => {
                                 <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CADENA EN UNIDADES</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={poicategory} >
-                                        <Legend verticalAlign="top" content={renderLegend}/>
+                                        <Legend verticalAlign="top" content={renderLegend} />
                                         <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
                                         <YAxis />
                                         <Tooltip itemSorter={item => -(orderbrandspoi.indexOf(item.dataKey))} />
@@ -792,9 +817,9 @@ const Share_by_brand = () => {
                                 <div className={classes.titlecards}>CANTIDAD DE SKUS POR MARCA Y CADENA EN PORCENTAJE</div>
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.0}>
                                     <BarChart data={poicategoryperc} >
-                                        <Legend verticalAlign="top" content={renderLegend}/>
+                                        <Legend verticalAlign="top" content={renderLegend} />
                                         <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
-                                        <YAxis domain={[0, 100]} allowDecimals={false} allowDataOverflow={true}/>
+                                        <YAxis domain={[0, 100]} allowDecimals={false} allowDataOverflow={true} />
                                         <Tooltip itemSorter={item => -(orderbrandspoi.indexOf(item.dataKey))} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
                                         <CartesianGrid />
                                         {

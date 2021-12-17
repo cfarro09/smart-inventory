@@ -360,23 +360,43 @@ const Linear_detail = () => {
             }
         }))
 
-        const listskus = Array.from(new Set(listResult.result.data.map(x => x.model)));
-        const listbrand = Array.from(new Set(listResult.result.data.map(x => x.brand)));
-        const listdepartment = Array.from(new Set(listResult.result.data.map(x => x.department)));
-        const listretail = Array.from(new Set(listResult.result.data.map(x => x.retail)));
-        const liststore_name = Array.from(new Set(listResult.result.data.map(x => x.store_name)));
+        // const listskus = Array.from(new Set(listResult.result.data.map(x => x.model)));
+        // const listbrand = Array.from(new Set(listResult.result.data.map(x => x.brand)));
+        // const listdepartment = Array.from(new Set(listResult.result.data.map(x => x.department)));
+        // const listretail = Array.from(new Set(listResult.result.data.map(x => x.retail)));
+        // const liststore_name = Array.from(new Set(listResult.result.data.map(x => x.store_name)));
         
-        console.log("liststore_name", liststore_name)
-        console.log("listretail", listretail)
-        console.log("listdepartment", listdepartment)
+        // console.log("liststore_name", liststore_name)
+        // console.log("listretail", listretail)
+        // console.log("listdepartment", listdepartment)
+
+        // setdatafilters({
+        //     ...datafilters,
+        //     SKU: listskus.filter(x => !!x).map(x => ({ model: x })),
+        //     brand: listbrand.filter(x => !!x).map(x => ({ brand: x })),
+        //     department: listdepartment.filter(x => !!x).map(x => ({ department: x })),
+        //     retail: listretail.filter(x => !!x).map(x => ({ retail: x })),
+        //     store_name: liststore_name.filter(x => !!x).map(x => ({ store_name: x })),
+        // })
+
+        const datatofiltro = await triggeraxios('post', process.env.endpoints.selsimple, {
+            method: "SP_DATABASE",
+            data: filter_to_send
+        })
+        const tlistskus = Array.from(new Set(datatofiltro.result.data.map(x => x.model)));
+        const tlistbrand = Array.from(new Set(datatofiltro.result.data.map(x => x.brand)));
+        const tlistdepartment = Array.from(new Set(datatofiltro.result.data.map(x => x.department)));
+        const tlistretail = Array.from(new Set(datatofiltro.result.data.map(x => x.retail)));
+        const tliststore_name = Array.from(new Set(datatofiltro.result.data.map(x => x.store_name)));
 
         setdatafilters({
             ...datafilters,
-            SKU: listskus.filter(x => !!x).map(x => ({ model: x })),
-            brand: listbrand.filter(x => !!x).map(x => ({ brand: x })),
-            department: listdepartment.filter(x => !!x).map(x => ({ department: x })),
-            retail: listretail.filter(x => !!x).map(x => ({ retail: x })),
-            store_name: liststore_name.filter(x => !!x).map(x => ({ store_name: x })),
+            SKU: tlistskus.filter(x => !!x).map(x => ({ model: x })),
+            brand: tlistbrand.filter(x => !!x).map(x => ({ brand: x })),
+            marca: tlistbrand.filter(x => !!x).map(x => ({ brand: x })),
+            department: tlistdepartment.filter(x => !!x).map(x => ({ department: x })),
+            retail: tlistretail.filter(x => !!x).map(x => ({ retail: x })),
+            store_name: tliststore_name.filter(x => !!x).map(x => ({ store_name: x })),
         })
     }
 

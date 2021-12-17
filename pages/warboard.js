@@ -211,7 +211,7 @@ const BulkLoad = () => {
         channel: '',
         department: '',
         store_name: '',
-        categoria: 0,
+        categoria: 1,
         SKU: '',
         banda: '',
         marca: '',
@@ -236,57 +236,65 @@ const BulkLoad = () => {
 
     const getSubctegories = (id_form) => {
         triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(id_form)).then(x => {
-            setsubcategories(validateResArray(x, true))
+             setsubcategories(validateResArray(x, true))
         })
     }
 
+    const [initial, setinitial] = useState(0);
+
+    useEffect(() => {
+        if (initial === 1) {
+            filtrar()
+        }
+    }, [initial])
     useEffect(() => {
         let continuezyx = true;
         (async () => {
             // setdomains(p => ({ ...p, doc_type: validateResArray(r, continuezyx) }))
             const listResult = await Promise.all([
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("format")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
+                // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("format")),
+                // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
+                // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
-                triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
+                // triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+                // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
             ]);
             setdatafilters({
-                ...datafilters,
-                channel: validateResArray(listResult[1], continuezyx),
-                format: validateResArray(listResult[0], continuezyx),
-                department: validateResArray(listResult[2], continuezyx),
-                categoria: validateResArray(listResult[3], continuezyx),
-                marca: validateResArray(listResult[4], continuezyx),
-                subcategoria: validateResArray(listResult[5], continuezyx),
+                categoria: validateResArray(listResult[0], continuezyx),
+                // channel: validateResArray(listResult[1], continuezyx),
+                // format: validateResArray(listResult[0], continuezyx),
+                // department: validateResArray(listResult[2], continuezyx),
+                // categoria: validateResArray(listResult[3], continuezyx),
+                // marca: validateResArray(listResult[4], continuezyx),
+                // subcategoria: validateResArray(listResult[5], continuezyx),
             })
+            setinitial(1)
         })();
         return () => continuezyx = false;
     }, [])
     
 
     async function updatelistretail(id_form){
-        const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",id_form)),
-            // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",id_form)),
-        ]);
-        console.log(listResult)
-        setdatafilters({
-            ...datafilters,
-            retail: validateResArray(listResult[0], true),
-            store_name: validateResArray(listResult[1], true),
-            // SKU: validateResArray(listResult[2], true),
-        })
+        // const listResult = await Promise.all([
+        //     triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",id_form)),
+        //     triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",id_form)),
+        //     // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",id_form)),
+        // ]);
+        // console.log(listResult)
+        // setdatafilters({
+        //     ...datafilters,
+        //     retail: validateResArray(listResult[0], true),
+        //     store_name: validateResArray(listResult[1], true),
+        //     // SKU: validateResArray(listResult[2], true),
+        // })
     }
     async function filtrar() {
         setsearchdone(true)
         setpvpprom(true)
         setpvpreg(true)
-        setcategorysearchfield(category.category)
+        setcategorysearchfield(category?.category || "ARROCERA")
         console.log(category)
-        const constfieldstouse = tmpgetfields(category.category);
+        const constfieldstouse = tmpgetfields(category?.category || "ARROCERA");
 
         if (filters.tipo_pvp === "prom_price") setpvpreg(false)
         if (filters.tipo_pvp === "regular_price") setpvpprom(false)
@@ -330,19 +338,24 @@ const BulkLoad = () => {
 
         setDataArray(ff)
 
-        const listskus = Array.from(new Set(listResult.result.data.map(x => x.model)));
-        const listbrand = Array.from(new Set(listResult.result.data.map(x => x.brand)));
-        // const listdepartment = Array.from(new Set(listResult.result.data.map(x => x.department)));
-        // const listretail = Array.from(new Set(listResult.result.data.map(x => x.retail)));
-        // const liststore_name = Array.from(new Set(listResult.result.data.map(x => x.store_name)));
+        const datatofiltro = await triggeraxios('post', process.env.endpoints.selsimple, {
+            method: "SP_DATABASE",
+            data: filter_to_send
+        })
+        const tlistskus = Array.from(new Set(datatofiltro.result.data.map(x => x.model)));
+        const tlistbrand = Array.from(new Set(datatofiltro.result.data.map(x => x.brand)));
+        const tlistdepartment = Array.from(new Set(datatofiltro.result.data.map(x => x.department)));
+        const tlistretail = Array.from(new Set(datatofiltro.result.data.map(x => x.retail)));
+        const tliststore_name = Array.from(new Set(datatofiltro.result.data.map(x => x.store_name)));
 
         setdatafilters({
             ...datafilters,
-            SKU: listskus.filter(x => !!x).map(x => ({ model: x })),
-            brand: listbrand.filter(x => !!x).map(x => ({ brand: x })),
-            // department: listdepartment.filter(x => !!x).map(x => ({ department: x })),
-            // retail: listretail.filter(x => !!x).map(x => ({ retail: x })),
-            // store_name: liststore_name.filter(x => !!x).map(x => ({ store_name: x })),
+            SKU: tlistskus.filter(x => !!x).map(x => ({ model: x })),
+            brand: tlistbrand.filter(x => !!x).map(x => ({ brand: x })),
+            marca: tlistbrand.filter(x => !!x).map(x => ({ brand: x })),
+            department: tlistdepartment.filter(x => !!x).map(x => ({ department: x })),
+            retail: tlistretail.filter(x => !!x).map(x => ({ retail: x })),
+            store_name: tliststore_name.filter(x => !!x).map(x => ({ store_name: x })),
         })
     }
     function setcategorysearchfield(value) {
@@ -405,12 +418,14 @@ const BulkLoad = () => {
                         title="Categoria"
                         classname={classes.itemFilter}
                         datatosend={datafilters.categoria}
-                        optionvalue="category"
+                        optionvalue="id_form"
                         optiondesc="category"
                         variant="outlined"
                         namefield="category"
                         descfield="category"
+                        valueselected={filters.categoria}
                         callback={({ newValue: value }) => {
+                            console.log("dd")
                             getSubctegories(value?.id_form)
                             setdisablebutton(!value)
                             setfilters({ ...filters, categoria: value?.id_form || 1 });

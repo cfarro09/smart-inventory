@@ -105,11 +105,12 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
             return null;
     }, [])
 
-    const LinkList = React.useCallback(({ IconLink = null, application }) => {
+    const LinkList = ({ IconLink = null, application }) => {
         if (user) {
             let routertmp = router.pathname;
 
             const appfound = user.menu.find(x => x.application === application);
+            console.log(appfound, routertmp, application)
 
             if (appfound && appfound.view)
                 return (
@@ -127,7 +128,7 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                 )
         }
         return null;
-    }, [appselected])
+    }
 
     return (
         <Drawer

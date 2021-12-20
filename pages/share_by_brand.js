@@ -228,72 +228,6 @@ const Share_by_brand = () => {
         }
     ]);
 
-    const columns = React.useMemo(
-        () => [
-            {
-                Header: 'ID',
-                accessor: 'formid',
-            },
-            {
-                Header: 'Nombre',
-                accessor: 'name',
-            },
-            {
-                Header: 'Dispositivo',
-                accessor: 'device',
-            },
-            {
-                Header: 'Tienda',
-                accessor: 'poiname',
-            },
-            {
-                Header: 'Hora',
-                accessor: 'form_timestamp',
-            },
-            {
-                Header: 'Posición',
-                accessor: 'position',
-            },
-            {
-                Header: 'Dirección',
-                accessor: 'address',
-            },
-            {
-                Header: 'Retail',
-                accessor: 'retail',
-            },
-            {
-                Header: 'Marca',
-                accessor: 'brand'
-            },
-            {
-                Header: 'Categoría',
-                accessor: 'category'
-            },
-            {
-                Header: 'Modelo',
-                accessor: 'model'
-            },
-            {
-                Header: 'Precio regular',
-                accessor: 'regular_price'
-            },
-            {
-                Header: 'Precio promocional',
-                accessor: 'prom_price'
-            },
-            {
-                Header: 'Mecanica de la promocion',
-                accessor: 'trading_option'
-            },
-            {
-                Header: 'Url de la foto',
-                accessor: 'photo_url'
-            },
-        ],
-        []
-    );
-
     const [filters, setfilters] = useState({
         format: '',
         channel: '',
@@ -356,24 +290,26 @@ const Share_by_brand = () => {
     }, [])
 
     async function updatelistretail(id_form) {
-        // const listResult = await Promise.all([
-        //     triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", id_form)),
-        //     triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", id_form)),
-        //     triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
-        // ]);
-        // console.log(listResult)
-        // setdatafilters({
-        //     ...datafilters,
-        //     retail: validateResArray(listResult[0], true),
-        //     store_name: validateResArray(listResult[1], true),
-        //     SKU: validateResArray(listResult[2], true),
-        // })
+        const listResult = await Promise.all([
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+        ]);
+        console.log(listResult)
+        setdatafilters({
+            ...datafilters,
+            retail: validateResArray(listResult[0], true),
+            store_name: validateResArray(listResult[1], true),
+            SKU: validateResArray(listResult[2], true),
+            marca: validateResArray(listResult[3], true),
+        })
     }
 
     const getSubctegories = (id_form) => {
-        // triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(id_form)).then(x => {
-        //     setsubcategories(validateResArray(x, true))
-        // })
+        triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(id_form)).then(x => {
+            setsubcategories(validateResArray(x, true))
+        })
     }
 
     async function filtrar() {

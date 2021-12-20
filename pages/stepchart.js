@@ -177,7 +177,7 @@ const User = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
             ]);
-            console.log(validateResArray(listResult[0], continuezyx))
+            
             setdatafilters({
                 ...datafilters,
                 channel: validateResArray(listResult[1], continuezyx),
@@ -195,14 +195,14 @@ const User = () => {
         const listResult = await Promise.all([
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", id_form)),
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", id_form)),
-            // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
         ]);
-        console.log(listResult)
+        
         setdatafilters({
             ...datafilters,
             retail: validateResArray(listResult[0], true),
             store_name: validateResArray(listResult[1], true),
-            // SKU: validateResArray(listResult[2], true),
+            SKU: validateResArray(listResult[2], true),
         })
     }
     async function filtrar() {
@@ -391,8 +391,9 @@ const User = () => {
                                         // formatter={(value) => `S/.${parseFloat(value).toFixed(2)}`}
                                         /> :
                                         <LabelList
-                                            dataKey=""
-                                            content={<RenderCustomizedLabelonly_Image datatmp={dataGraph} />}
+                                            dataKey="price"
+                                            position="top"
+                                            content={<RenderCustomizedLabel datatmp={dataGraph} />}
                                         // formatter={(value) => `S/.${parseFloat(value).toFixed(2)}`}
                                         />
                                     }
@@ -414,7 +415,7 @@ const User = () => {
                     </div>
                     {searchdone &&
                         <FormGroup>
-                            <FormControlLabel control={<Switch defaultChecked onChange={(e) => { setenabletop(e.target.checked) }} />} label={enabletop ? "Mostrando Top 10" : "Mostrando todo"} />
+                            <FormControlLabel control={<Switch checked={enabletop} onChange={(e) => { setenabletop(e.target.checked) }} />} label={enabletop ? "Mostrando Top 10" : "Mostrando todo"} />
                         </FormGroup>
                     }
                     <SelectFunction

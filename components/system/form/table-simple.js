@@ -110,7 +110,7 @@ const TableZyx = React.memo(({
             if (e.keyCode == 13) {
                 setFilter({ value, operator, type });
             }
-        }, [value])
+        }, [value, operator])
 
         useEffect(() => {
             if (type === "number")

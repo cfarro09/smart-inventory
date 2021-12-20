@@ -64,6 +64,24 @@ const RB_MARCA = {
     }
 }
 
+const FILTERv2 = (filter, filters) => ({
+    method: ["brand", "model", "sub_category"].includes(filter) ? "SP_ALL_FILTER_MASTER" : "SP_ALL_FILTER_DATA",
+    data: {
+        filter,
+        format: filters?.format || "",
+        channel: filters?.channel || "",
+        department: filters?.department || "",
+        store_name: filters?.store_name || "",
+        category: filters?.categoria || 1,
+        sku_code: filters?.SKU || "",
+        brand: filters?.marca || "",
+        sub_category: filters?.subcategoria || "",
+        retail: filters?.retail || "",
+        price: filters?.tipo_pvp || "",
+    }
+})
+
+
 const useStyles = makeStyles(() => ({
     containerFilters: {
         display: 'flex',
@@ -119,6 +137,8 @@ const User = () => {
     const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
     const [subcategories, setsubcategories] = useState([]);
     const [listmodel, setlistmodel] = useState([]);
+    const [initial, setinitial] = useState(0);
+
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -163,92 +183,35 @@ const User = () => {
         }
     }, [enabletop])
 
-    useEffect(() => {
-        let continuezyx = true;
-        (async () => {
-            // setdomains(p => ({ ...p, doc_type: validateResArray(r, continuezyx) }))
-            const listResult = await Promise.all([
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("format")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
-                triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
-            ]);
-            setdatafilters({
-                ...datafilters,
-                channel: validateResArray(listResult[1], continuezyx),
-                format: validateResArray(listResult[0], continuezyx),
-                department: validateResArray(listResult[2], continuezyx),
-                categoria: validateResArray(listResult[3], continuezyx),
-                marca: validateResArray(listResult[4], continuezyx),
-                subcategoria: validateResArray(listResult[5], continuezyx),
-            })
-        })();
-        return () => continuezyx = false;
-    }, [])
-
-    const cleanfilters = async () => {
-        triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(category?.id_form || 1)).then(x => {
-            setsubcategories(validateResArray(x, true))
-        })
+    const applyfilter = async (fill, initial = false) => {
+        console.log(fill?.category)
+        fill.categoria = fill?.categoria || 1;
         const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", category?.id_form || 1)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", category?.id_form || 1)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", category?.id_form || 1)),
-            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("format", fill)),
+            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("channel", fill)),
+            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("retail", fill)),
+            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("brand", fill)),
+            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("model", fill)),
+            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("sub_category", fill)),
+            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("store_name", fill)),
+            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("department", fill)),
+            ...(initial ? [triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL"))] : []),
         ]);
 
-
-        setfilters({
-            ...filters,
-            format: '',
-            department: '',
-            store_name: '',
-            SKU: '',
-            marca: '',
-            retail: '',
-            categoria: category?.id_form || 1
-        });
-
-        setdatafilters({
-            ...datafilters,
-            retail: validateResArray(listResult[0], true),
-            store_name: validateResArray(listResult[1], true),
-            SKU: validateResArray(listResult[2], true),
+        setdatafilters(x => ({
+            ...x,
+            format: validateResArray(listResult[0], true),
+            channel: validateResArray(listResult[1], true),
+            retail: validateResArray(listResult[2], true),
             marca: validateResArray(listResult[3], true),
-        })
+            SKU: validateResArray(listResult[4], true),
+            subcategoria: validateResArray(listResult[5], true),
+            store_name: validateResArray(listResult[6], true),
+            department: validateResArray(listResult[7], true),
+            categoria: initial ? validateResArray(listResult[8], true) : x.categoria,
+        }))
     }
 
-
-    async function updatelistretail(id_form) {
-        const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
-        ]);
-
-        setfilters({
-            ...filters,
-            format: '',
-            department: '',
-            store_name: '',
-            SKU: '',
-            marca: '',
-            retail: '',
-            categoria: id_form
-        });
-
-        setdatafilters({
-            ...datafilters,
-            retail: validateResArray(listResult[0], true),
-            store_name: validateResArray(listResult[1], true),
-            SKU: validateResArray(listResult[2], true),
-            marca: validateResArray(listResult[3], true),
-        })
-    }
-    console.log(filters)
     async function filtrar() {
         setsearchdone(true)
         //setWaitFilter(true)
@@ -274,36 +237,26 @@ const User = () => {
         setDataGraph(enabletop ? ff.length < 10 ? ff : ff.slice(ff.length - 10, ff.length) : ff);
         setdatagraphlength(ff?.length || 0);
 
-        const datatofiltro = await triggeraxios('post', process.env.endpoints.selsimple, {
-            method: "SP_DATABASE",
-            data: filter_to_send
-        })
-        const tlistskus = Array.from(new Set(datatofiltro.result.data.map(x => x.model)));
-        const tlistbrand = Array.from(new Set(datatofiltro.result.data.map(x => (x.brand || "").trim())));
-        const tlistdepartment = Array.from(new Set(datatofiltro.result.data.map(x => x.department)));
-        const tlistretail = Array.from(new Set(datatofiltro.result.data.map(x => x.retail)));
-        const tliststore_name = Array.from(new Set(datatofiltro.result.data.map(x => x.store_name)));
-
-        setdatafilters({
-            ...datafilters,
-            SKU: tlistskus.filter(x => !!x).map(x => ({ model: x })),
-            brand: tlistbrand.filter(x => !!x).map(x => ({ brand: x })),
-            marca: tlistbrand.filter(x => !!x).map(x => ({ brand: x })),
-            department: tlistdepartment.filter(x => !!x).map(x => ({ department: x })),
-            retail: tlistretail.filter(x => !!x).map(x => ({ retail: x })),
-            store_name: tliststore_name.filter(x => !!x).map(x => ({ store_name: x })),
-        })
     }
+
+    useEffect(() => {
+        let continuezyx = true;
+        (async () => {
+            await applyfilter({}, true)
+            setinitial(1)
+        })();
+        return () => continuezyx = false;
+    }, [])
+
+    useEffect(() => {
+        if (initial)
+            applyfilter(filters)
+    }, [filters])
+
     function descargar() {
         htmlToImage.toPng(document.getElementById('divToPrint')).then(function (dataUrl) {
             require("downloadjs")(dataUrl, 'stepchart.png', "image/png");
         });
-    }
-
-    const getSubctegories = (id_form) => {
-        triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(id_form)).then(x => {
-            setsubcategories(validateResArray(x, true))
-        })
     }
 
     return (
@@ -323,15 +276,16 @@ const User = () => {
                             datatosend={datafilters.categoria}
                             optionvalue="id_form"
                             optiondesc="category"
+                            onlyinitial={true}
                             variant="outlined"
                             namefield="category"
                             descfield="category"
                             callback={({ newValue: value }) => {
-                                getSubctegories(value?.id_form)
-                                // setfilters({ ...filters, categoria: value?.id_form || 1 });
+                                // getSubctegories(value?.id_form)
+                                setfilters({ ...filters, categoria: value?.id_form || 1 });
                                 setdisablebutton(!value)
                                 setcategory(value)
-                                updatelistretail(value?.id_form || 1)
+                                // updatelistretail(value?.id_form || 1)
                             }}
                         />
 
@@ -341,6 +295,7 @@ const User = () => {
                             optionvalue="brand"
                             optiondesc="brand"
                             valueselected={filters.marca}
+                            onlyinitial={true}
                             variant="outlined"
                             namefield="brand"
                             descfield="brand"
@@ -358,6 +313,7 @@ const User = () => {
                             optionvalue="model"
                             optiondesc="model"
                             valueselected={filters.SKU}
+                            onlyinitial={true}
                             variant="outlined"
                             namefield="model"
                             descfield="model"
@@ -371,6 +327,7 @@ const User = () => {
                             optionvalue="retail"
                             optiondesc="retail"
                             valueselected={filters.retail}
+                            onlyinitial={true}
                             namefield="retail"
                             descfield="retail"
                             style={{ width: "200px" }}
@@ -404,7 +361,7 @@ const User = () => {
                         >Filtros Extras</Button>
                         <Button
                             style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                            onClick={cleanfilters}
+                            onClick={() => applyfilter({})}
                         >Limpiar filtros</Button>
                     </div>
                     {category &&
@@ -474,6 +431,7 @@ const User = () => {
                         datatosend={datafilters.format}
                         optionvalue="format"
                         optiondesc="format"
+                        onlyinitial={true}
                         variant="outlined"
                         valueselected={filters.format}
                         namefield="format"
@@ -485,6 +443,7 @@ const User = () => {
                         datatosend={datafilters.channel}
                         optionvalue="channel"
                         optiondesc="channel"
+                        onlyinitial={true}
                         variant="outlined"
                         namefield="channel"
                         valueselected={filters.channel}
@@ -495,6 +454,7 @@ const User = () => {
                         title="Departamento"
                         datatosend={datafilters.department}
                         optionvalue="department"
+                        onlyinitial={true}
                         optiondesc="department"
                         valueselected={filters.department}
                         variant="outlined"
@@ -508,6 +468,7 @@ const User = () => {
                         optionvalue="store_name"
                         optiondesc="store_name"
                         variant="outlined"
+                        onlyinitial={true}
                         valueselected={filters.store_name}
                         namefield="store_name"
                         descfield="store_name"
@@ -515,9 +476,10 @@ const User = () => {
                     />
                     <SelectFunction
                         title="Subcategoría"
-                        datatosend={subcategories}
+                        datatosend={datafilters.subcategoria}
                         optionvalue="subcategory"
                         optiondesc="subcategory"
+                        onlyinitial={true}
                         variant="outlined"
                         namefield="subcategory"
                         descfield="subcategory"

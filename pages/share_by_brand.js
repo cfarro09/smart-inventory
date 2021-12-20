@@ -297,6 +297,7 @@ const Share_by_brand = () => {
             triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("model", fill)),
             triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("sub_category", fill)),
             triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("store_name", fill)),
+            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("department", fill)),
             ...(initial ? [triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL"))] : []),
         ]);
 
@@ -309,7 +310,8 @@ const Share_by_brand = () => {
             SKU: validateResArray(listResult[4], true),
             subcategoria: validateResArray(listResult[5], true),
             store_name: validateResArray(listResult[6], true),
-            categoria: initial ? validateResArray(listResult[7], true) : x.categoria,
+            department: validateResArray(listResult[7], true),
+            categoria: initial ? validateResArray(listResult[8], true) : x.categoria,
         }))
     }
 
@@ -852,7 +854,7 @@ const Share_by_brand = () => {
                     />
                     <SelectFunction
                         title="Subcategoría"
-                        datatosend={filters.sub_categoria}
+                        datatosend={datafilters.subcategoria}
                         optionvalue="subcategory"
                         onlyinitial={true}
                         optiondesc="subcategory"

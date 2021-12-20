@@ -252,17 +252,17 @@ const BulkLoad = () => {
         (async () => {
             // setdomains(p => ({ ...p, doc_type: validateResArray(r, continuezyx) }))
             const listResult = await Promise.all([
-                // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("format")),
-                // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("format")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
                 // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
                 // triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
             ]);
             setdatafilters({
-                categoria: validateResArray(listResult[0], continuezyx),
-                // channel: validateResArray(listResult[1], continuezyx),
-                // format: validateResArray(listResult[0], continuezyx),
+                format: validateResArray(listResult[0], continuezyx),
+                channel: validateResArray(listResult[1], continuezyx),
+                categoria: validateResArray(listResult[2], continuezyx),
                 // department: validateResArray(listResult[2], continuezyx),
                 // categoria: validateResArray(listResult[3], continuezyx),
                 // marca: validateResArray(listResult[4], continuezyx),

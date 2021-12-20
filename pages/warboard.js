@@ -290,6 +290,7 @@ const BulkLoad = () => {
             SKU: '',
             marca: '',
             retail: '',
+            categoria: id_form
         });
 
         setdatafilters({
@@ -440,7 +441,7 @@ const BulkLoad = () => {
                             console.log("dd")
                             getSubctegories(value?.id_form)
                             setdisablebutton(!value)
-                            setfilters({ ...filters, categoria: value?.id_form || 1 });
+                            // setfilters({ ...filters, categoria: value?.id_form || 1 });
                             setcategory(value)
                             updatelistretail(value?.id_form || 1)
                         }}

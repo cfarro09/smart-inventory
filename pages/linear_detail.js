@@ -331,6 +331,7 @@ const Linear_detail = () => {
             SKU: '',
             marca: '',
             retail: '',
+            categoria: id_form
         });
 
         setdatafilters({
@@ -433,7 +434,7 @@ const Linear_detail = () => {
                         descfield="category"
                         callback={({ newValue: value }) => {
                             getSubctegories(value?.id_form)
-                            setfilters({ ...filters, categoria: value?.id_form || 1 });
+                            // setfilters({ ...filters, categoria: value?.id_form || 1 });
                             setcategory(value)
                             setdisablebutton(!value)
                             updatelistretail(value?.id_form || 1)

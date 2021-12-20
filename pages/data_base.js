@@ -315,6 +315,7 @@ const Data_base = () => {
             SKU: '',
             marca: '',
             retail: '',
+            categoria: id_form
         });
 
         setdatafilters({
@@ -394,7 +395,7 @@ const Data_base = () => {
                         callback={({ newValue: value }) => {
                             getSubctegories(value?.id_form)
 
-                            setfilters({ ...filters, categoria: value?.id_form || 1 });
+                            // setfilters({ ...filters, categoria: value?.id_form || 1 });
                             setcategory(value)
                             setdisablebutton(!value)
                             updatelistretail(value?.id_form || 1)

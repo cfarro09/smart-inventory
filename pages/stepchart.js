@@ -204,6 +204,7 @@ const User = () => {
             SKU: '',
             marca: '',
             retail: '',
+            categoria: id_form
         });
 
         setdatafilters({
@@ -214,6 +215,7 @@ const User = () => {
             marca: validateResArray(listResult[3], true),
         })
     }
+    console.log(filters)
     async function filtrar() {
         setsearchdone(true)
         //setWaitFilter(true)
@@ -293,7 +295,7 @@ const User = () => {
                             descfield="category"
                             callback={({ newValue: value }) => {
                                 getSubctegories(value?.id_form)
-                                setfilters({ ...filters, categoria: value?.id_form || 1 });
+                                // setfilters({ ...filters, categoria: value?.id_form || 1 });
                                 setdisablebutton(!value)
                                 setcategory(value)
                                 updatelistretail(value?.id_form || 1)

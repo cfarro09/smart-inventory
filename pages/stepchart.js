@@ -188,20 +188,67 @@ const User = () => {
         return () => continuezyx = false;
     }, [])
 
-    async function updatelistretail(id_form) {
+    const cleanfilters = async () => {
+        triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(category?.id_form || 1)).then(x => {
+            setsubcategories(validateResArray(x, true))
+        })
         const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
         ]);
-        console.log(datafilters)
+
+
+        setfilters({
+            ...filters,
+            format: '',
+            department: '',
+            store_name: '',
+            SKU: '',
+            marca: '',
+            retail: '',
+            categoria: category?.id_form || 1
+        });
+
         setdatafilters({
             ...datafilters,
             retail: validateResArray(listResult[0], true),
             store_name: validateResArray(listResult[1], true),
             SKU: validateResArray(listResult[2], true),
+            marca: validateResArray(listResult[3], true),
         })
     }
+
+
+    async function updatelistretail(id_form) {
+        const listResult = await Promise.all([
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+        ]);
+
+        setfilters({
+            ...filters,
+            format: '',
+            department: '',
+            store_name: '',
+            SKU: '',
+            marca: '',
+            retail: '',
+            categoria: id_form
+        });
+
+        setdatafilters({
+            ...datafilters,
+            retail: validateResArray(listResult[0], true),
+            store_name: validateResArray(listResult[1], true),
+            SKU: validateResArray(listResult[2], true),
+            marca: validateResArray(listResult[3], true),
+        })
+    }
+    console.log(filters)
     async function filtrar() {
         setsearchdone(true)
         //setWaitFilter(true)
@@ -232,7 +279,7 @@ const User = () => {
             data: filter_to_send
         })
         const tlistskus = Array.from(new Set(datatofiltro.result.data.map(x => x.model)));
-        const tlistbrand = Array.from(new Set(datatofiltro.result.data.map(x => x.brand)));
+        const tlistbrand = Array.from(new Set(datatofiltro.result.data.map(x => (x.brand || "").trim())));
         const tlistdepartment = Array.from(new Set(datatofiltro.result.data.map(x => x.department)));
         const tlistretail = Array.from(new Set(datatofiltro.result.data.map(x => x.retail)));
         const tliststore_name = Array.from(new Set(datatofiltro.result.data.map(x => x.store_name)));
@@ -281,7 +328,7 @@ const User = () => {
                             descfield="category"
                             callback={({ newValue: value }) => {
                                 getSubctegories(value?.id_form)
-                                setfilters({ ...filters, categoria: value?.id_form || 1 });
+                                // setfilters({ ...filters, categoria: value?.id_form || 1 });
                                 setdisablebutton(!value)
                                 setcategory(value)
                                 updatelistretail(value?.id_form || 1)
@@ -298,7 +345,12 @@ const User = () => {
                             namefield="brand"
                             descfield="brand"
                             style={{ width: "150px" }}
-                            callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
+                            callback={({ newValue: value }) => setfilters({
+                                ...filters, department: '',
+                                store_name: '',
+                                SKU: '',
+                                retail: '', marca: value?.brand || ''
+                            })}
                         />
                         <SelectFunction
                             title="SKU"
@@ -350,7 +402,10 @@ const User = () => {
                             style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
                             onClick={() => setDrawerOpen(true)}
                         >Filtros Extras</Button>
-
+                        <Button
+                            style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                            onClick={cleanfilters}
+                        >Limpiar filtros</Button>
                     </div>
                     {category &&
                         <InputFormk
@@ -387,8 +442,9 @@ const User = () => {
                                         // formatter={(value) => `S/.${parseFloat(value).toFixed(2)}`}
                                         /> :
                                         <LabelList
-                                            dataKey=""
-                                            content={<RenderCustomizedLabelonly_Image datatmp={dataGraph} />}
+                                            dataKey="price"
+                                            position="top"
+                                            content={<RenderCustomizedLabel datatmp={dataGraph} />}
                                         // formatter={(value) => `S/.${parseFloat(value).toFixed(2)}`}
                                         />
                                     }
@@ -410,7 +466,7 @@ const User = () => {
                     </div>
                     {searchdone &&
                         <FormGroup>
-                            <FormControlLabel control={<Switch defaultChecked onChange={(e) => { setenabletop(e.target.checked) }} />} label={enabletop ? "Mostrando Top 10" : "Mostrando todo"} />
+                            <FormControlLabel control={<Switch checked={enabletop} onChange={(e) => { setenabletop(e.target.checked) }} />} label={enabletop ? "Mostrando Top 10" : "Mostrando todo"} />
                         </FormGroup>
                     }
                     <SelectFunction

@@ -6,7 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import axios from "axios";
 import Box from '@material-ui/core/Box';
 
-const SelectFunction = React.memo(({ title, datatosend, variant = "standard", optionvalue, optiondesc, valueselected = "", namefield = "", descfield = "", formik = false, callback, disabled = false, classname = null, style = null }) => {
+const SelectFunction = React.memo(({ title, datatosend, variant = "standard", optionvalue, optiondesc, valueselected = "", namefield = "", descfield = "", formik = false, callback, disabled = false, classname = null, style = null, onlyinitial = false }) => {
 
     const [options, setOptions] = useState([]);
     const [loading, setloading] = useState(true);
@@ -29,26 +29,54 @@ const SelectFunction = React.memo(({ title, datatosend, variant = "standard", op
     }
 
     useEffect(() => {
-        const source = axios.CancelToken.source();
-
-        (async () => {
-            if (datatosend instanceof Array) {
-                setOptions(datatosend);
-                setHardValue(datatosend, valueselected);
-            } else if (datatosend instanceof Object) {
-                const res = await triggeraxios('post', process.env.endpoints.selsimple, datatosend, null, source);
-                if (res.success && res.result.data instanceof Array) {
-                    setOptions(res.result.data);
-
-                    setHardValue(res.result.data, valueselected);
+        if (onlyinitial) {
+            const source = axios.CancelToken.source();
+    
+            (async () => {
+                if (datatosend instanceof Array) {
+                    setOptions(datatosend);
+                    setHardValue(datatosend, valueselected);
+                } else if (datatosend instanceof Object) {
+                    const res = await triggeraxios('post', process.env.endpoints.selsimple, datatosend, null, source);
+                    if (res.success && res.result.data instanceof Array) {
+                        setOptions(res.result.data);
+    
+                        setHardValue(res.result.data, valueselected);
+                    }
                 }
+                setloading(false);
+            })();
+    
+            return () => {
+                source.cancel();
             }
-            setloading(false);
-        })();
-
-        return () => {
-            source.cancel();
         }
+    }, []);
+
+    useEffect(() => {
+            const source = axios.CancelToken.source();
+    
+            (async () => {
+                if (datatosend instanceof Array) {
+                    setOptions(datatosend);
+                    if (!onlyinitial) {
+                        setHardValue(datatosend, valueselected);
+                    }
+                } else if (datatosend instanceof Object) {
+                    const res = await triggeraxios('post', process.env.endpoints.selsimple, datatosend, null, source);
+                    if (res.success && res.result.data instanceof Array) {
+                        setOptions(res.result.data);
+                        if (!onlyinitial) {
+                            setHardValue(res.result.data, valueselected);
+                        }
+                    }
+                }
+                setloading(false);
+            })();
+    
+            return () => {
+                source.cancel();
+            }
     }, [datatosend]);
 
     return (

@@ -140,7 +140,7 @@ const GET_SUBCATEGORY = (id_form) => ({
         id_form
     }
 })
-const GET_FILTERRETAIL = (filter,id_form) => ({
+const GET_FILTERRETAIL = (filter, id_form) => ({
     method: "SP_FILTER_BYID",
     data: {
         filter,
@@ -173,7 +173,7 @@ const Photo_portal = () => {
         var count = 0;
         var zipFilename = "Pictures.zip";
         setOpenBackdrop(true)
-        dataGraph.map((row,i)=>{
+        dataGraph.map((row, i) => {
             JSZipUtils.getBinaryContent(row.photo_url, function (err, data) {
                 if (err) {
                     //throw err; // or handle the error
@@ -187,7 +187,7 @@ const Photo_portal = () => {
                         setOpenBackdrop(false)
                     });
                 }
-        });
+            });
         })
     }
 
@@ -215,7 +215,7 @@ const Photo_portal = () => {
         banda: [],
         marca: [],
         tipo_pvp: [],
-        retail:[],
+        retail: [],
         subcategoria: [],
     })
 
@@ -231,7 +231,7 @@ const Photo_portal = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
             ]);
-            
+
             setdatafilters({
                 ...datafilters,
                 channel: validateResArray(listResult[1], continuezyx),
@@ -244,22 +244,69 @@ const Photo_portal = () => {
         })();
         return () => continuezyx = false;
     }, [])
+
     
-    async function updatelistretail(id_form){
+    const cleanfilters = async () => {
+        triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(category?.id_form || 1)).then(x => {
+            setsubcategories(validateResArray(x, true))
+        })
         const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
         ]);
-        console.log(listResult)
+
+
+        setfilters({
+            ...filters,
+            format: '',
+            department: '',
+            store_name: '',
+            SKU: '',
+            marca: '',
+            retail: '',
+            categoria: category?.id_form || 1
+        });
+
         setdatafilters({
             ...datafilters,
             retail: validateResArray(listResult[0], true),
             store_name: validateResArray(listResult[1], true),
             SKU: validateResArray(listResult[2], true),
+            marca: validateResArray(listResult[3], true),
         })
     }
+
     
+    async function updatelistretail(id_form) {
+        const listResult = await Promise.all([
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+        ]);
+
+        setfilters({
+            ...filters,
+            format: '',
+            department: '',
+            store_name: '',
+            SKU: '',
+            marca: '',
+            retail: '',
+            categoria: id_form
+        });
+
+        setdatafilters({
+            ...datafilters,
+            retail: validateResArray(listResult[0], true),
+            store_name: validateResArray(listResult[1], true),
+            SKU: validateResArray(listResult[2], true),
+            marca: validateResArray(listResult[3], true),
+        })
+    }
+
     const getSubctegories = (id_form) => {
         triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(id_form)).then(x => {
             setsubcategories(validateResArray(x, true))
@@ -294,7 +341,7 @@ const Photo_portal = () => {
         // const listdepartment = Array.from(new Set(listResult.result.data.map(x => x.department)));
         // const listretail = Array.from(new Set(listResult.result.data.map(x => x.retail)));
         // const liststore_name = Array.from(new Set(listResult.result.data.map(x => x.store_name)));
-        
+
         // setdatafilters({
         //     ...datafilters,
         //     SKU: listskus.filter(x => !!x).map(x => ({ model: x })),
@@ -308,7 +355,7 @@ const Photo_portal = () => {
             data: filter_to_send
         })
         const tlistskus = Array.from(new Set(datatofiltro.result.data.map(x => x.model)));
-        const tlistbrand = Array.from(new Set(datatofiltro.result.data.map(x => x.brand)));
+        const tlistbrand = Array.from(new Set(datatofiltro.result.data.map(x => (x.brand || "").trim())));
         const tlistdepartment = Array.from(new Set(datatofiltro.result.data.map(x => x.department)));
         const tlistretail = Array.from(new Set(datatofiltro.result.data.map(x => x.retail)));
         const tliststore_name = Array.from(new Set(datatofiltro.result.data.map(x => x.store_name)));
@@ -345,7 +392,7 @@ const Photo_portal = () => {
                         descfield="category"
                         callback={({ newValue: value }) => {
                             getSubctegories(value?.id_form)
-                            setfilters({ ...filters, categoria: value?.id_form || 1 });
+                            // setfilters({ ...filters, categoria: value?.id_form || 1 });
                             setcategory(value)
                             setdisablebutton(!value)
                             updatelistretail(value?.id_form || 1)
@@ -360,8 +407,13 @@ const Photo_portal = () => {
                         variant="outlined"
                         namefield="brand"
                         descfield="brand"
-                        style={{width: "150px"}}
-                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
+                        style={{ width: "150px" }}
+                        callback={({ newValue: value }) => setfilters({
+                            ...filters, department: '',
+                            store_name: '',
+                            SKU: '',
+                            retail: '', marca: value?.brand || ''
+                        })}
                     />
 
                     <SelectFunction
@@ -373,7 +425,7 @@ const Photo_portal = () => {
                         variant="outlined"
                         namefield="model"
                         descfield="model"
-                        style={{width: "200px"}}
+                        style={{ width: "200px" }}
                         callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model || '' })}
                     />
                     <SelectFunction
@@ -385,7 +437,7 @@ const Photo_portal = () => {
                         valueselected={filters.retail}
                         namefield="retail"
                         descfield="retail"
-                        style={{width: "200px"}}
+                        style={{ width: "200px" }}
                         callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
@@ -416,6 +468,10 @@ const Photo_portal = () => {
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
                         onClick={() => setDrawerOpen(true)}
                     >Filtros Extras</Button>
+                    <Button
+                        style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                        onClick={cleanfilters}
+                    >Limpiar filtros</Button>
                     {category &&
                         <InputFormk
                             valuedefault={category?.last_consulted}
@@ -509,7 +565,7 @@ const Photo_portal = () => {
                         callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
                     />
                     <SelectFunction
-                         title="Subcategoría"
+                        title="Subcategoría"
                         datatosend={subcategories}
                         optionvalue="subcategory"
                         optiondesc="subcategory"

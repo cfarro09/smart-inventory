@@ -341,10 +341,15 @@ const Share_by_brand = () => {
         }
         setOpenBackdrop(true)
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
-        listResult.result.data.map((row) => {
+        
+        listResult.result.data.forEach((row) => {
             count += row.cont
         })
-        setDataGraph(listResult.result.data)
+        const dd = listResult.result.data.map(x => ({
+            ...x,
+            percent: (x.cont / count) * 100,
+        }))
+        setDataGraph(dd)
         const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTERDATE(filter_to_send))
         let listbrand = [];
         let brandlist = [];
@@ -481,7 +486,7 @@ const Share_by_brand = () => {
             data: filter_to_send
         })
         const tlistskus = Array.from(new Set(datatofiltro.result.data.map(x => x.model)));
-        const tlistbrand = Array.from(new Set(datatofiltro.result.data.map(x => x.brand)));
+        const tlistbrand = Array.from(new Set(datatofiltro.result.data.map(x => (x.brand || "").trim())));
         const tlistdepartment = Array.from(new Set(datatofiltro.result.data.map(x => x.department)));
         const tlistretail = Array.from(new Set(datatofiltro.result.data.map(x => x.retail)));
         const tliststore_name = Array.from(new Set(datatofiltro.result.data.map(x => x.store_name)));

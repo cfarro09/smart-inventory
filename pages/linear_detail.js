@@ -396,7 +396,7 @@ const Linear_detail = () => {
             data: filter_to_send
         })
         const tlistskus = Array.from(new Set(datatofiltro.result.data.map(x => x.model)));
-        const tlistbrand = Array.from(new Set(datatofiltro.result.data.map(x => x.brand)));
+        const tlistbrand = Array.from(new Set(datatofiltro.result.data.map(x => (x.brand || "").trim())));
         const tlistdepartment = Array.from(new Set(datatofiltro.result.data.map(x => x.department)));
         const tlistretail = Array.from(new Set(datatofiltro.result.data.map(x => x.retail)));
         const tliststore_name = Array.from(new Set(datatofiltro.result.data.map(x => x.store_name)));

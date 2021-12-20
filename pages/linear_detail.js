@@ -515,7 +515,7 @@ const Linear_detail = () => {
                         Filtros personalizados
                     </div>
                     <SelectFunction
-                        
+                        onlyinitial={true}
                         title="Formato"
                         datatosend={datafilters.format}
                         optionvalue="format"

@@ -534,7 +534,6 @@ const Share_by_brand = () => {
                         variant="outlined"
                         namefield="category"
                         descfield="category"
-                        onlyinitial={true}
                         valueselected={filters.categoria}
                         callback={({ newValue: value }) => {
                             setdisablebutton(!value)

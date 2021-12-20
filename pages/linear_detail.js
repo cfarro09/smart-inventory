@@ -36,7 +36,7 @@ import {
 const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
     data: {
-        type:filter
+        type: filter
     }
 })
 const GET_SUBCATEGORY = (id_form) => ({
@@ -62,7 +62,7 @@ const FILTER = (filter) => ({
     method: "SP_DATABASE",
     data: filter
 })
-const GET_FILTERRETAIL = (filter,id_form) => ({
+const GET_FILTERRETAIL = (filter, id_form) => ({
     method: "SP_FILTER_BYID",
     data: {
         filter,
@@ -209,7 +209,7 @@ const Linear_detail = () => {
                     return (
                         <div className="container-button-floating">
                             <Avatar
-                                style={{cursor: 'pointer'}}
+                                style={{ cursor: 'pointer' }}
                                 src={props.cell.row.original.photo_url}
                                 onClick={() => setLightBox({ open: true, index: 0, images: [props.cell.row.original.photo_url] })}
                             />
@@ -224,7 +224,7 @@ const Linear_detail = () => {
                     return (
                         <div className="container-button-floating">
                             <Avatar
-                                style={{cursor: 'pointer'}}
+                                style={{ cursor: 'pointer' }}
                                 src={props.cell.row.original.graphic}
                                 onClick={() => setLightBox({ open: true, index: 0, images: [props.cell.row.original.graphic] })}
                             />
@@ -281,7 +281,7 @@ const Linear_detail = () => {
         banda: [],
         marca: [],
         tipo_pvp: [],
-        retail:[],
+        retail: [],
         subcategoria: [],
     })
 
@@ -290,6 +290,39 @@ const Linear_detail = () => {
             setsubcategories(validateResArray(x, true))
         })
     }
+
+    const cleanfilters = async () => {
+        triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(category?.id_form || 1)).then(x => {
+            setsubcategories(validateResArray(x, true))
+        })
+        const listResult = await Promise.all([
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+        ]);
+
+
+        setfilters({
+            ...filters,
+            format: '',
+            department: '',
+            store_name: '',
+            SKU: '',
+            marca: '',
+            retail: '',
+            categoria: category?.id_form || 1
+        });
+
+        setdatafilters({
+            ...datafilters,
+            retail: validateResArray(listResult[0], true),
+            store_name: validateResArray(listResult[1], true),
+            SKU: validateResArray(listResult[2], true),
+            marca: validateResArray(listResult[3], true),
+        })
+    }
+
 
     useEffect(() => {
         let continuezyx = true;
@@ -315,14 +348,14 @@ const Linear_detail = () => {
         })();
         return () => continuezyx = false;
     }, [])
-    async function updatelistretail(id_form){
+    async function updatelistretail(id_form) {
         const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
             triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
         ]);
-        
+
         setfilters({
             ...filters,
             format: '',
@@ -378,7 +411,7 @@ const Linear_detail = () => {
         // const listdepartment = Array.from(new Set(listResult.result.data.map(x => x.department)));
         // const listretail = Array.from(new Set(listResult.result.data.map(x => x.retail)));
         // const liststore_name = Array.from(new Set(listResult.result.data.map(x => x.store_name)));
-        
+
         // console.log("liststore_name", liststore_name)
         // console.log("listretail", listretail)
         // console.log("listdepartment", listdepartment)
@@ -449,11 +482,13 @@ const Linear_detail = () => {
                         variant="outlined"
                         namefield="brand"
                         descfield="brand"
-                        style={{width: "150px"}}
-                        callback={({ newValue: value }) => setfilters({ ...filters, department: '',
-                        store_name: '',
-                        SKU: '',
-                        retail: '', marca: value?.brand || '' })}
+                        style={{ width: "150px" }}
+                        callback={({ newValue: value }) => setfilters({
+                            ...filters, department: '',
+                            store_name: '',
+                            SKU: '',
+                            retail: '', marca: value?.brand || ''
+                        })}
                     />
 
                     <SelectFunction
@@ -465,7 +500,7 @@ const Linear_detail = () => {
                         variant="outlined"
                         namefield="model"
                         descfield="model"
-                        style={{width: "200px"}}
+                        style={{ width: "200px" }}
                         callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model || '' })}
                     />
                     <SelectFunction
@@ -477,7 +512,7 @@ const Linear_detail = () => {
                         valueselected={filters.retail}
                         namefield="retail"
                         descfield="retail"
-                        style={{width: "200px"}}
+                        style={{ width: "200px" }}
                         callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
@@ -500,6 +535,10 @@ const Linear_detail = () => {
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
                         onClick={() => setDrawerOpen(true)}
                     >Filtros Extras</Button>
+                    <Button
+                        style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                        onClick={cleanfilters}
+                    >Limpiar filtros</Button>
                     {category &&
                         <InputFormk
                             valuedefault={category?.last_consulted}
@@ -579,16 +618,16 @@ const Linear_detail = () => {
                         callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
                     />
                     <SelectFunction
-                         title="Subcategoría"
-                         datatosend={subcategories}
-                         optionvalue="subcategory"
-                         optiondesc="subcategory"
-                         variant="outlined"
-                         namefield="subcategory"
-                         descfield="subcategory"
-                         callback={({ newValue: value }) => {
-                             setfilters({ ...filters, subcategoria: value?.subcategory || "" });
-                         }}
+                        title="Subcategoría"
+                        datatosend={subcategories}
+                        optionvalue="subcategory"
+                        optiondesc="subcategory"
+                        variant="outlined"
+                        namefield="subcategory"
+                        descfield="subcategory"
+                        callback={({ newValue: value }) => {
+                            setfilters({ ...filters, subcategoria: value?.subcategory || "" });
+                        }}
                     />
                     {/* <SelectFunction
                         title="Banda"

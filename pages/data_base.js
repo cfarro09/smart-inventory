@@ -82,25 +82,25 @@ function createData(name, calories, fat, carbs, protein) {
 }
 
 const rows = [
-    { id: "667", fecha: "29/09/2021",hora: "19:23",activo: "ORE",grupos: "FFVV",cliente: "generic",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "668", fecha: "29/09/2021",hora: "19:24",activo: "KANA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "669", fecha: "29/09/2021",hora: "19:25",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "670", fecha: "29/09/2021",hora: "19:26",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "671", fecha: "29/09/2021",hora: "19:27",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "672", fecha: "29/09/2021",hora: "19:30",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "673", fecha: "29/09/2021",hora: "19:27",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "674", fecha: "29/09/2021",hora: "19:22",activo: "KANA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "675", fecha: "29/09/2021",hora: "19:21",activo: "KANA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "676", fecha: "29/09/2021",hora: "19:24",activo: "KANA",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "677", fecha: "29/09/2021",hora: "19:21",activo: "ORE",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "678", fecha: "29/09/2021",hora: "19:24",activo: "ORE",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "679", fecha: "29/09/2021",hora: "19:23",activo: "ORE",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "680", fecha: "29/09/2021",hora: "19:21",activo: "KANA",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "681", fecha: "29/09/2021",hora: "19:21",activo: "KANA",grupos: "FFVV",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "682", fecha: "29/09/2021",hora: "19:24",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "683", fecha: "29/09/2021",hora: "19:21",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "684", fecha: "29/09/2021",hora: "20:22",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
-    { id: "685", fecha: "29/09/2021",hora: "21:20",activo: "PLAZA",grupos: "COORDINADO",cliente: "PLAZA",formulario: "PRECIOS Y PROMOCIONES",posicion: "-12.00,23.00",direccion: "-",lineal: "OSTER",retail: "PLAZA VEA" },
+    { id: "667", fecha: "29/09/2021", hora: "19:23", activo: "ORE", grupos: "FFVV", cliente: "generic", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "668", fecha: "29/09/2021", hora: "19:24", activo: "KANA", grupos: "COORDINADO", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "669", fecha: "29/09/2021", hora: "19:25", activo: "PLAZA", grupos: "COORDINADO", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "670", fecha: "29/09/2021", hora: "19:26", activo: "PLAZA", grupos: "COORDINADO", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "671", fecha: "29/09/2021", hora: "19:27", activo: "PLAZA", grupos: "COORDINADO", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "672", fecha: "29/09/2021", hora: "19:30", activo: "PLAZA", grupos: "COORDINADO", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "673", fecha: "29/09/2021", hora: "19:27", activo: "PLAZA", grupos: "COORDINADO", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "674", fecha: "29/09/2021", hora: "19:22", activo: "KANA", grupos: "COORDINADO", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "675", fecha: "29/09/2021", hora: "19:21", activo: "KANA", grupos: "COORDINADO", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "676", fecha: "29/09/2021", hora: "19:24", activo: "KANA", grupos: "FFVV", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "677", fecha: "29/09/2021", hora: "19:21", activo: "ORE", grupos: "FFVV", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "678", fecha: "29/09/2021", hora: "19:24", activo: "ORE", grupos: "FFVV", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "679", fecha: "29/09/2021", hora: "19:23", activo: "ORE", grupos: "FFVV", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "680", fecha: "29/09/2021", hora: "19:21", activo: "KANA", grupos: "FFVV", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "681", fecha: "29/09/2021", hora: "19:21", activo: "KANA", grupos: "FFVV", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "682", fecha: "29/09/2021", hora: "19:24", activo: "PLAZA", grupos: "COORDINADO", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "683", fecha: "29/09/2021", hora: "19:21", activo: "PLAZA", grupos: "COORDINADO", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "684", fecha: "29/09/2021", hora: "20:22", activo: "PLAZA", grupos: "COORDINADO", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
+    { id: "685", fecha: "29/09/2021", hora: "21:20", activo: "PLAZA", grupos: "COORDINADO", cliente: "PLAZA", formulario: "PRECIOS Y PROMOCIONES", posicion: "-12.00,23.00", direccion: "-", lineal: "OSTER", retail: "PLAZA VEA" },
 ];
 
 const GET_FILTER = (filter) => ({
@@ -109,7 +109,7 @@ const GET_FILTER = (filter) => ({
         filter
     }
 })
-const GET_FILTERRETAIL = (filter,id_form) => ({
+const GET_FILTERRETAIL = (filter, id_form) => ({
     method: "SP_FILTER_BYID",
     data: {
         filter,
@@ -299,14 +299,14 @@ const Data_base = () => {
         return () => continuezyx = false;
     }, [])
 
-    async function updatelistretail(id_form){
+    async function updatelistretail(id_form) {
         const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
             triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
         ]);
-        
+
         setfilters({
             ...filters,
             format: '',
@@ -326,6 +326,39 @@ const Data_base = () => {
             marca: validateResArray(listResult[3], true),
         })
     }
+
+    const cleanfilters = async () => {
+        triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(category?.id_form || 1)).then(x => {
+            setsubcategories(validateResArray(x, true))
+        })
+        const listResult = await Promise.all([
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+        ]);
+
+
+        setfilters({
+            ...filters,
+            format: '',
+            department: '',
+            store_name: '',
+            SKU: '',
+            marca: '',
+            retail: '',
+            categoria: category?.id_form || 1
+        });
+
+        setdatafilters({
+            ...datafilters,
+            retail: validateResArray(listResult[0], true),
+            store_name: validateResArray(listResult[1], true),
+            SKU: validateResArray(listResult[2], true),
+            marca: validateResArray(listResult[3], true),
+        })
+    }
+
     async function filtrar() {
         setsearchdone(true)
         const filter_to_send = {
@@ -352,7 +385,7 @@ const Data_base = () => {
         const listdepartment = Array.from(new Set(listResult.result.data.map(x => x.department)));
         const listretail = Array.from(new Set(listResult.result.data.map(x => x.retail)));
         const liststore_name = Array.from(new Set(listResult.result.data.map(x => x.store_name)));
-        
+
         setdatafilters({
             ...datafilters,
             SKU: listskus.filter(x => !!x).map(x => ({ model: x })),
@@ -410,11 +443,13 @@ const Data_base = () => {
                         variant="outlined"
                         namefield="brand"
                         descfield="brand"
-                        style={{width: "150px"}}
-                        callback={({ newValue: value }) => setfilters({ ...filters, department: '',
-                        store_name: '',
-                        SKU: '',
-                        retail: '', marca: value?.brand || '' })}
+                        style={{ width: "150px" }}
+                        callback={({ newValue: value }) => setfilters({
+                            ...filters, department: '',
+                            store_name: '',
+                            SKU: '',
+                            retail: '', marca: value?.brand || ''
+                        })}
                     />
 
                     <SelectFunction
@@ -426,7 +461,7 @@ const Data_base = () => {
                         variant="outlined"
                         namefield="model"
                         descfield="model"
-                        style={{width: "200px"}}
+                        style={{ width: "200px" }}
                         callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model || '' })}
                     />
                     <SelectFunction
@@ -438,7 +473,7 @@ const Data_base = () => {
                         valueselected={filters.retail}
                         namefield="retail"
                         descfield="retail"
-                        style={{width: "200px"}}
+                        style={{ width: "200px" }}
                         callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
@@ -460,6 +495,10 @@ const Data_base = () => {
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
                         onClick={() => setDrawerOpen(true)}
                     >Filtros Extras</Button>
+                    <Button
+                        style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                        onClick={cleanfilters}
+                    >Limpiar filtros</Button>
                     {category &&
                         <InputFormk
                             valuedefault={category?.last_consulted}
@@ -472,14 +511,14 @@ const Data_base = () => {
             </div>
             {searchdone &&
 
-            <div id="divToPrint">
-                <TableZyx
-                    columns={columns}
-                    data={dataGraph}
-                    // fetchData={filtrar}
-                    register={false}
-                />
-            </div>
+                <div id="divToPrint">
+                    <TableZyx
+                        columns={columns}
+                        data={dataGraph}
+                        // fetchData={filtrar}
+                        register={false}
+                    />
+                </div>
             }
 
 

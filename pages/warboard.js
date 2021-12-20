@@ -371,6 +371,39 @@ const BulkLoad = () => {
             store_name: tliststore_name.filter(x => !!x).map(x => ({ store_name: x })),
         })
     }
+
+    const cleanfilters = async () => {
+        triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(category?.id_form || 1)).then(x => {
+            setsubcategories(validateResArray(x, true))
+        })
+        const listResult = await Promise.all([
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+        ]);
+
+
+        setfilters({
+            ...filters,
+            format: '',
+            department: '',
+            store_name: '',
+            SKU: '',
+            marca: '',
+            retail: '',
+            categoria: category?.id_form || 1
+        });
+
+        setdatafilters({
+            ...datafilters,
+            retail: validateResArray(listResult[0], true),
+            store_name: validateResArray(listResult[1], true),
+            SKU: validateResArray(listResult[2], true),
+            marca: validateResArray(listResult[3], true),
+        })
+    }
+
     function setcategorysearchfield(value) {
         if (value.includes("ARROCERA")) {
             setfieldstoshow(fields[0])
@@ -515,6 +548,10 @@ const BulkLoad = () => {
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
                         onClick={() => setDrawerOpen(true)}
                     >Filtros Extras</Button>
+                    <Button
+                            style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                            onClick={cleanfilters}
+                        >Limpiar filtros</Button>
                     {category &&
                         <InputFormk
                             valuedefault={category?.last_consulted}

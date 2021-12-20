@@ -330,6 +330,38 @@ const Share_by_brand = () => {
         })
     }
 
+    const cleanfilters = async () => {
+        triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(category?.id_form || 1)).then(x => {
+            setsubcategories(validateResArray(x, true))
+        })
+        const listResult = await Promise.all([
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", category?.id_form || 1)),
+            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+        ]);
+
+
+        setfilters({
+            ...filters,
+            format: '',
+            department: '',
+            store_name: '',
+            SKU: '',
+            marca: '',
+            retail: '',
+            categoria: category?.id_form || 1
+        });
+
+        setdatafilters({
+            ...datafilters,
+            retail: validateResArray(listResult[0], true),
+            store_name: validateResArray(listResult[1], true),
+            SKU: validateResArray(listResult[2], true),
+            marca: validateResArray(listResult[3], true),
+        })
+    }
+
     async function filtrar() {
         setsearchdone(true)
         let count = 0;
@@ -558,11 +590,14 @@ const Share_by_brand = () => {
                         descfield="category"
                         valueselected={filters.categoria}
                         callback={({ newValue: value }) => {
-                            getSubctegories(value?.id_form)
-                            // setfilters({ ...filters, categoria: value?.id_form || 1 });
-                            setcategory(value)
+                            
                             setdisablebutton(!value)
-                            updatelistretail(value?.id_form || 1)
+                            if (value?.id_form) {
+                                setcategory(value)
+                                getSubctegories(value?.id_form)
+                                // setfilters({ ...filters, categoria: value?.id_form || 1 });
+                                updatelistretail(value?.id_form || 1)
+                            }
                         }}
                     />
                     <SelectFunction
@@ -631,6 +666,10 @@ const Share_by_brand = () => {
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
                         onClick={() => setDrawerOpen(true)}
                     >Filtros Extras</Button>
+                    <Button
+                        style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
+                        onClick={cleanfilters}
+                    >Limpiar filtros</Button>
                     {category &&
                         <InputFormk
                             valuedefault={category?.last_consulted}

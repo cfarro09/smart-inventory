@@ -124,7 +124,7 @@ const Request_survey = () => {
             <div className={classes.containermain}>
                 <TextField label="Nombre" variant="outlined" className={classes.fieldstyles}/>
                 <TextField className={classes.fieldstyles} label="Apellidos" variant="outlined" />
-                <TextField className={classes.fieldstyles} label="Dirección" variant="outlined" />
+                <TextField className={classes.fieldstyles} label="Retail" variant="outlined" />
                 <TextField className={classes.fieldstyles} label="Correo Electrónico" variant="outlined" />
                 <TextField className={classes.fieldstyles} label="Teléfono" variant="outlined" />
                 <TextField className={classes.fieldstyles} label="Comentario" variant="outlined" multiline rows={4}/>

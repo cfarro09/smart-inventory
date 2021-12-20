@@ -231,7 +231,7 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                         <ListItemText primary="Portal GeoGestión" />
                     </ListItem>
                 </a>
-                <a href="https://webmail.capitalhuman.com.pe/" target="_BLANK">
+                <Link href="/request_survey">
                     <ListItem
                         button
                         style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: theme.spacing(2) }}
@@ -241,7 +241,7 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                         </ListItemIcon>
                         <ListItemText primary="Solicitar Encuesta" />
                     </ListItem>
-                </a>
+                </Link>
 
             </List>
             <div style={{ flexGrow: 1 }}></div>

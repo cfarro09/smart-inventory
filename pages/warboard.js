@@ -111,7 +111,7 @@ const GET_FILTER = (filter) => ({
         filter
     }
 })
-const GET_FILTERRETAIL = (filter,id_form) => ({
+const GET_FILTERRETAIL = (filter, id_form) => ({
     method: "SP_FILTER_BYID",
     data: {
         filter,
@@ -178,7 +178,7 @@ function tmpgetfields(value) {
     else if (value.includes("BATIDORA")) {
         return fields[2];
     }
-    else{
+    else {
         return fields[2];
     }
 }
@@ -236,7 +236,7 @@ const BulkLoad = () => {
 
     const getSubctegories = (id_form) => {
         triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(id_form)).then(x => {
-             setsubcategories(validateResArray(x, true))
+            setsubcategories(validateResArray(x, true))
         })
     }
 
@@ -272,21 +272,33 @@ const BulkLoad = () => {
         })();
         return () => continuezyx = false;
     }, [])
-    
 
-    async function updatelistretail(id_form){
-        // const listResult = await Promise.all([
-        //     triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",id_form)),
-        //     triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",id_form)),
-        //     // triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",id_form)),
-        // ]);
-        // console.log(listResult)
-        // setdatafilters({
-        //     ...datafilters,
-        //     retail: validateResArray(listResult[0], true),
-        //     store_name: validateResArray(listResult[1], true),
-        //     // SKU: validateResArray(listResult[2], true),
-        // })
+
+    async function updatelistretail(id_form) {
+        const listResult = await Promise.all([
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
+        ]);
+
+        setfilters({
+            ...filters,
+            format: '',
+            department: '',
+            store_name: '',
+            SKU: '',
+            marca: '',
+            retail: '',
+        });
+
+        setdatafilters({
+            ...datafilters,
+            retail: validateResArray(listResult[0], true),
+            store_name: validateResArray(listResult[1], true),
+            SKU: validateResArray(listResult[2], true),
+            marca: validateResArray(listResult[3], true),
+        })
     }
     async function filtrar() {
         setsearchdone(true)
@@ -316,7 +328,7 @@ const BulkLoad = () => {
         setOpenBackdrop(true)
         const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
         setOpenBackdrop(false)
-        setDataGraph(listResult.result?.data||[])
+        setDataGraph(listResult.result?.data || [])
         const listValues = [
             { name: "model", title: "Modelo" },
             { name: "graphic", title: "Gráfica" },
@@ -369,14 +381,14 @@ const BulkLoad = () => {
             setfieldstoshow(fields[2])
         }
     }
-    
+
     function generateZIP() {
         console.log('TEST');
         var zip = new JSZip();
         var count = 0;
         var zipFilename = "Warboard.zip";
         let datafromtable = dataArray;
-    
+
         const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
         const fileExtension = '.xlsx';
 
@@ -384,8 +396,8 @@ const BulkLoad = () => {
         const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
         const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
         const dataexcel = new Blob([excelBuffer], { type: fileType });
-        
-        dataGraph.map((row,i)=>{
+
+        dataGraph.map((row, i) => {
             JSZipUtils.getBinaryContent(row.graphic, function (err, data) {
                 if (err) {
                     //throw err; // or handle the error
@@ -443,8 +455,11 @@ const BulkLoad = () => {
                         variant="outlined"
                         namefield="brand"
                         descfield="brand"
-                        style={{width: "150px"}}
-                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
+                        style={{ width: "150px" }}
+                        callback={({ newValue: value }) => setfilters({ ...filters, department: '',
+                        store_name: '',
+                        SKU: '',
+                        retail: '', marca: value?.brand || '' })}
                     />
 
                     <SelectFunction
@@ -456,7 +471,7 @@ const BulkLoad = () => {
                         variant="outlined"
                         namefield="model"
                         descfield="model"
-                        style={{width: "200px"}}
+                        style={{ width: "200px" }}
                         callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model || '' })}
                     />
                     <SelectFunction
@@ -468,7 +483,7 @@ const BulkLoad = () => {
                         valueselected={filters.retail}
                         namefield="retail"
                         descfield="retail"
-                        style={{width: "200px"}}
+                        style={{ width: "200px" }}
                         callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"

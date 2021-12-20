@@ -320,13 +320,25 @@ const Linear_detail = () => {
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",id_form)),
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",id_form)),
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
         ]);
-        console.log(listResult)
+        
+        setfilters({
+            ...filters,
+            format: '',
+            department: '',
+            store_name: '',
+            SKU: '',
+            marca: '',
+            retail: '',
+        });
+
         setdatafilters({
             ...datafilters,
             retail: validateResArray(listResult[0], true),
             store_name: validateResArray(listResult[1], true),
             SKU: validateResArray(listResult[2], true),
+            marca: validateResArray(listResult[3], true),
         })
     }
     async function filtrar() {
@@ -437,7 +449,10 @@ const Linear_detail = () => {
                         namefield="brand"
                         descfield="brand"
                         style={{width: "150px"}}
-                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
+                        callback={({ newValue: value }) => setfilters({ ...filters, department: '',
+                        store_name: '',
+                        SKU: '',
+                        retail: '', marca: value?.brand || '' })}
                     />
 
                     <SelectFunction

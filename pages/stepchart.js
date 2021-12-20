@@ -79,7 +79,6 @@ const useStyles = makeStyles(() => ({
 const RenderCustomizedLabel = (props) => {
     const { x, y, width, height, value, datatmp, index } = props;
     const radius = 10;
-    console.log(datatmp[index].graphic)
     return (
         <g>
             <foreignObject x={x} y={y - width - 15} width={width} height={width}>
@@ -94,7 +93,6 @@ const RenderCustomizedLabel = (props) => {
 const RenderCustomizedLabelonly_Image = (props) => {
     const { x, y, width, height, value, datatmp, index } = props;
     const radius = 10;
-    console.log(datatmp[index].graphic)
     return (
         // <g>
 
@@ -177,7 +175,6 @@ const User = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
             ]);
-            
             setdatafilters({
                 ...datafilters,
                 channel: validateResArray(listResult[1], continuezyx),
@@ -196,13 +193,25 @@ const User = () => {
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", id_form)),
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", id_form)),
             triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
+            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
         ]);
-        
+
+        setfilters({
+            ...filters,
+            format: '',
+            department: '',
+            store_name: '',
+            SKU: '',
+            marca: '',
+            retail: '',
+        });
+
         setdatafilters({
             ...datafilters,
             retail: validateResArray(listResult[0], true),
             store_name: validateResArray(listResult[1], true),
             SKU: validateResArray(listResult[2], true),
+            marca: validateResArray(listResult[3], true),
         })
     }
     async function filtrar() {
@@ -249,7 +258,6 @@ const User = () => {
             retail: tlistretail.filter(x => !!x).map(x => ({ retail: x })),
             store_name: tliststore_name.filter(x => !!x).map(x => ({ store_name: x })),
         })
-
     }
     function descargar() {
         htmlToImage.toPng(document.getElementById('divToPrint')).then(function (dataUrl) {
@@ -302,7 +310,10 @@ const User = () => {
                             namefield="brand"
                             descfield="brand"
                             style={{ width: "150px" }}
-                            callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
+                            callback={({ newValue: value }) => setfilters({ ...filters, department: '',
+                            store_name: '',
+                            SKU: '',
+                            retail: '', marca: value?.brand || '' })}
                         />
                         <SelectFunction
                             title="SKU"

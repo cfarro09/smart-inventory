@@ -1,10 +1,9 @@
-import React, { useState, useContext, useEffect, Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/system/layout/layout'
-import { Box, Theme } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import triggeraxios from '../config/axiosv2';
 
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import TableZyx from '../components/system/form/table-simple';
+import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import Radio from '@material-ui/core/Radio';
@@ -12,7 +11,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
-import { AreaChart, Area, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DateRange from '../components/system/form/daterange';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -88,20 +87,6 @@ const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
     data: {
         type: filter
-    }
-})
-
-const GET_SUBCATEGORY = (id_form) => ({
-    method: "SP_SUBCATEGORY_BYID",
-    data: {
-        id_form
-    }
-})
-
-const GET_FILTER = (filter) => ({
-    method: "SP_SEL_FILTER",
-    data: {
-        filter
     }
 })
 const FILTER = (filter) => ({
@@ -202,27 +187,6 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const RB_MARCA = {
-    "method": "SP_SEL_DATA_MASTER",
-    "data": {
-        "filter": "brand"
-    }
-}
-const GET_FILTERRETAIL = (filter, id_form) => ({
-    method: "SP_FILTER_BYID",
-    data: {
-        filter,
-        id_form
-    }
-})
-
-var curr = new Date; // get current date
-var first = curr.getDate() - curr.getDay() + 1; // First day is the day of the month - the day of the week
-var last = first + 7; // last day is the first day + 6
-
-var firstday = new Date(curr.setDate(first));
-var lastday = new Date(curr.setDate(last));
-
 const Share_by_brand = () => {
     const classes = useStyles();
     const [dataGraph, setDataGraph] = useState([])
@@ -242,10 +206,11 @@ const Share_by_brand = () => {
     const [subcategories, setsubcategories] = useState([]);
     const [triggerfilter, settriggerfilter] = useState(false)
     const [disablebutton, setdisablebutton] = useState(true)
+    const [cleanfilters, setcleanfilters] = useState(false)
     const [dateRange, setdateRange] = useState([
         {
-            startDate: firstday,
-            endDate: lastday,
+            startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+            endDate: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
             key: 'selection'
         }
     ]);
@@ -287,7 +252,6 @@ const Share_by_brand = () => {
     }, [initial])
 
     const applyfilter = async (fill, initial = false) => {
-        console.log(fill?.category)
         fill.categoria = fill?.categoria || 1;
         const listResult = await Promise.all([
             triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("format", fill)),
@@ -328,6 +292,27 @@ const Share_by_brand = () => {
         if (initial)
             applyfilter(filters)
     }, [filters])
+    
+    useEffect(() => {
+        if(cleanfilters){
+            console.log("test")
+            setfilters({
+                format: '',
+                channel: '',
+                department: '',
+                store_name: '',
+                categoria: 0,
+                SKU: '',
+                banda: '',
+                marca: '',
+                tipo_pvp: 'prom_price',
+                retail: '',
+                subcategoria: '',
+            })
+            setcleanfilters(false)
+        }
+    }, [cleanfilters])
+
 
     async function filtrar() {
         setsearchdone(true)
@@ -539,14 +524,10 @@ const Share_by_brand = () => {
                         valueselected={filters.categoria}
                         callback={({ newValue: value }) => {
                             setdisablebutton(!value)
-                            console.log(value)
                             if (value?.id_form) {
-                                console.log('trigger combo')
                                 setcategory(value)
                                 setfilters({ ...filters, categoria: value?.id_form || 1 });
                                 settriggerfilter(!triggerfilter)
-                                // getSubctegories(value?.id_form)
-                                // updatelistretail(value?.id_form || 1)
                             }
                         }}
                     />
@@ -623,7 +604,7 @@ const Share_by_brand = () => {
                     >Filtros Extras</Button>
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                        onClick={() => applyfilter({})}
+                        onClick={() => setcleanfilters(true)}
                     >Limpiar filtros</Button>
                     {category &&
                         <InputFormk

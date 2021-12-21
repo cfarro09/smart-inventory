@@ -274,16 +274,6 @@ const Exhibits_detail = () => {
         setOpenBackdrop(false)
         setDataGraph(listResult.result.data)
     }
-    function descargar() {
-        html2canvas(document.getElementById('divToPrint'))
-            .then((canvas) => {
-                const pdf = new jsPDF('l', 'mm', 'a4');
-                var width = pdf.internal.pageSize.getWidth();
-                var height = pdf.internal.pageSize.getHeight();
-                pdf.addImage(canvas.toDataURL('image/png'), 'JPEG', 0, 0, width, height);
-                pdf.save("download.pdf");
-            })
-    }
 
     return (
         <Layout>
@@ -338,13 +328,6 @@ const Exhibits_detail = () => {
                         onClick={() => filtrar()}
                         startIcon={<SearchIcon style={{ color: '#FFF' }} />}
                     >Buscar</Button>
-                    {searchdone &&
-                        <Button
-                            style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                            onClick={() => descargar()}
-                            startIcon={<GetAppIcon style={{ color: '#FFF' }} />}
-                        >Descargar</Button>
-                    }
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
                         onClick={() => setDrawerOpen(true)}

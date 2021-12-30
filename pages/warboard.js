@@ -538,7 +538,19 @@ const BulkLoad = () => {
                     >Filtros Extras</Button>
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                        onClick={() => applyfilter({})}
+                        onClick={() => setfilters({
+                            format: '',
+                            channel: '',
+                            department: '',
+                            store_name: '',
+                            categoria: 1,
+                            SKU: '',
+                            banda: '',
+                            marca: '',
+                            tipo_pvp: 'prom_price',
+                            retail: '',
+                            subcategoria: '',
+                        })}
                     >Limpiar filtros</Button>
                     {category &&
                         <InputFormk

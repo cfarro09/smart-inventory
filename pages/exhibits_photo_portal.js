@@ -242,9 +242,7 @@ const Exhibits_photo_portal = () => {
     })
 
     useEffect(() => {
-        
         (async () => {
-            
             const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
                 GET_FILTER("format"),
                 GET_FILTER("channel"),
@@ -271,11 +269,7 @@ const Exhibits_photo_portal = () => {
             }
         })();
     }, [])
-    useEffect(() => {
-        if (waitFilter) {
 
-        }
-    }, [])
     async function filtrar() {
         //setWaitFilter(true)
         setDataGraph([])

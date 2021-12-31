@@ -47,37 +47,6 @@ const FILTERv2 = (filter, filters) => ({
     }
 })
 
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell);
-const StyledTableCell2 = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableRow);
 
 const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
@@ -100,11 +69,6 @@ const HtmlTooltip = withStyles((theme) => ({
     },
 }))(Tooltip);
 
-const paramTemplate = {
-    method: "SP_SEL_TEMPLATE",
-    data: { id_corporation: null, id_organization: null, status: 'ACTIVO' }
-}
-
 const GET_FILTER = (filter) => ({
     method: "SP_SEL_FILTER",
     data: {
@@ -115,8 +79,6 @@ const FILTER = (filter) => ({
     method: "SP_PHOTO_PORTAL",
     data: filter
 })
-
-
 
 const useStyles = makeStyles(() => ({
     containerFilters: {
@@ -150,21 +112,6 @@ const RB_MARCA = {
     }
 }
 
-const GET_SUBCATEGORY = (id_form) => ({
-    method: "SP_SUBCATEGORY_BYID",
-    data: {
-        id_form
-    }
-})
-const GET_FILTERRETAIL = (filter, id_form) => ({
-    method: "SP_FILTER_BYID",
-    data: {
-        filter,
-        id_form
-    }
-})
-
-
 
 const Photo_portal = () => {
     const classes = useStyles();
@@ -176,6 +123,8 @@ const Photo_portal = () => {
     const [subcategories, setsubcategories] = useState([]);
     const [initial, setinitial] = useState(0);
     const [disablebutton, setdisablebutton] = useState(true)
+    const [cleanFilter, setcleanFilter] = useState(false);
+    const [stopFilter, setstopFilter] = useState(-1);
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -279,8 +228,9 @@ const Photo_portal = () => {
     }, [])
 
     const applyfilter = async (fill, initial = false) => {
-        console.log(fill?.category)
+        
         fill.categoria = fill?.categoria || 1;
+        setOpenBackdrop(true);
         const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
             FILTERv2("format", fill),
             FILTERv2("channel", fill),
@@ -307,6 +257,8 @@ const Photo_portal = () => {
                 categoria: initial ? (resarray[8]?.success ? resarray[8].data : []) : x.categoria,
             }))
         }
+        setstopFilter(stopFilter * -1);
+        setOpenBackdrop(false);
     }
 
     async function filtrar() {
@@ -331,21 +283,29 @@ const Photo_portal = () => {
         setOpenBackdrop(false)
         setDataGraph(listResult.result.data)
 
-        // const listskus = Array.from(new Set(listResult.result.data.map(x => x.model)));
-        // const listbrand = Array.from(new Set(listResult.result.data.map(x => x.brand)));
-        // const listdepartment = Array.from(new Set(listResult.result.data.map(x => x.department)));
-        // const listretail = Array.from(new Set(listResult.result.data.map(x => x.retail)));
-        // const liststore_name = Array.from(new Set(listResult.result.data.map(x => x.store_name)));
-
-        // setdatafilters({
-        //     ...datafilters,
-        //     SKU: listskus.filter(x => !!x).map(x => ({ model: x })),
-        //     brand: listbrand.filter(x => !!x).map(x => ({ brand: x })),
-        //     department: listdepartment.filter(x => !!x).map(x => ({ department: x })),
-        //     retail: listretail.filter(x => !!x).map(x => ({ retail: x })),
-        //     store_name: liststore_name.filter(x => !!x).map(x => ({ store_name: x })),
-        // })
     }
+
+    useEffect(() => {
+        setcleanFilter(false);
+    }, [stopFilter])
+
+    useEffect(() => {
+        if (cleanFilter) {
+            setfilters({
+                format: '',
+                channel: '',
+                department: '',
+                store_name: '',
+                categoria: 1,
+                SKU: '',
+                banda: '',
+                marca: '',
+                tipo_pvp: 'prom_price',
+                retail: '',
+                subcategoria: '',
+            })
+        }
+    }, [cleanFilter])
 
     return (
         <Layout>
@@ -358,7 +318,7 @@ const Photo_portal = () => {
                         setDateRangeExt={setdateRange}
                     />
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="Categoria"
                         classname={classes.itemFilter}
                         datatosend={datafilters.categoria}
@@ -368,15 +328,15 @@ const Photo_portal = () => {
                         namefield="category"
                         descfield="category"
                         callback={({ newValue: value }) => {
-                            // getSubctegories(value?.id_form)
-                            setfilters({ ...filters, categoria: value?.id_form || 1 });
-                            setcategory(value)
-                            setdisablebutton(!value)
-                            // updatelistretail(value?.id_form || 1)
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, categoria: value?.id_form || 1 });
+                                setcategory(value)
+                                setdisablebutton(!value)
+                            }
                         }}
                     />
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="Marca"
                         datatosend={datafilters.marca}
                         optionvalue="brand"
@@ -386,16 +346,20 @@ const Photo_portal = () => {
                         namefield="brand"
                         descfield="brand"
                         style={{ width: "150px" }}
-                        callback={({ newValue: value }) => setfilters({
-                            ...filters, department: '',
-                            store_name: '',
-                            SKU: '',
-                            retail: '', marca: value?.brand || ''
-                        })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({
+                                    ...filters, department: '',
+                                    store_name: '',
+                                    SKU: '',
+                                    retail: '', marca: value?.brand || ''
+                                })
+                            }
+                        }}
                     />
 
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="SKU"
                         datatosend={datafilters.SKU}
                         optionvalue="model"
@@ -405,10 +369,14 @@ const Photo_portal = () => {
                         namefield="model"
                         descfield="model"
                         style={{ width: "200px" }}
-                        callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, SKU: value?.model || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="Retail"
                         variant="outlined"
                         datatosend={datafilters.retail}
@@ -418,7 +386,11 @@ const Photo_portal = () => {
                         namefield="retail"
                         descfield="retail"
                         style={{ width: "200px" }}
-                        callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, retail: value?.retail || '' })
+                            }
+                        }}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
                         defaultValue="prom_price"
@@ -450,7 +422,9 @@ const Photo_portal = () => {
                     >Filtros Extras</Button>
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                        onClick={() => applyfilter({})}
+                        onClick={() => {
+                            setcleanFilter(true)
+                        }}
                     >Limpiar filtros</Button>
                     {category &&
                         <InputFormk
@@ -501,7 +475,7 @@ const Photo_portal = () => {
                         Filtros personalizados
                     </div>
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="Formato"
                         datatosend={datafilters.format}
                         optionvalue="format"
@@ -510,10 +484,14 @@ const Photo_portal = () => {
                         valueselected={filters.format}
                         namefield="format"
                         descfield="format"
-                        callback={({ newValue: value }) => setfilters({ ...filters, format: value?.format || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, format: value?.format || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="Canal"
                         datatosend={datafilters.channel}
                         optionvalue="channel"
@@ -522,10 +500,14 @@ const Photo_portal = () => {
                         namefield="channel"
                         valueselected={filters.channel}
                         descfield="channel"
-                        callback={({ newValue: value }) => setfilters({ ...filters, channel: value?.channel || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, channel: value?.channel || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="Departamento"
                         datatosend={datafilters.department}
                         optionvalue="department"
@@ -534,10 +516,14 @@ const Photo_portal = () => {
                         variant="outlined"
                         namefield="department"
                         descfield="department"
-                        callback={({ newValue: value }) => setfilters({ ...filters, department: value?.department || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, department: value?.department || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="PDV"
                         datatosend={datafilters.store_name}
                         optionvalue="store_name"
@@ -546,10 +532,14 @@ const Photo_portal = () => {
                         valueselected={filters.store_name}
                         namefield="store_name"
                         descfield="store_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, store_name: value?.store_name || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="Subcategoría"
                         datatosend={subcategories}
                         optionvalue="subcategory"
@@ -558,11 +548,13 @@ const Photo_portal = () => {
                         namefield="subcategory"
                         descfield="subcategory"
                         callback={({ newValue: value }) => {
-                            setfilters({ ...filters, subcategoria: value?.subcategory || "" });
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, subcategoria: value?.subcategory || "" });
+                            }
                         }}
                     />
                     {/* <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="Banda"
                         datatosend={[]}
                         optionvalue="id_role"

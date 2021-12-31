@@ -422,7 +422,7 @@ const BulkLoad = () => {
                     //throw err; // or handle the error
                     console.log(err);
                 }
-                zip.file(`${row.model}.png`, data, { binary: true });
+                //zip.file(`${row.model}.png`, data, { binary: true });
                 count++;
                 if (count == dataGraph.length) {
                     zip.file(`warboard.xlsx`, dataexcel, { binary: true });

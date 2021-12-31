@@ -477,23 +477,25 @@ const Exhibits_photo_portal = () => {
                     />
                     <SelectFunction
                         title="Tipo Exhibición"
-                        datatosend={[]}
+                        datatosend={datafilters.type_exhibit}
                         optionvalue="type_exhibit"
-                        optiondesc="description"
+                        optiondesc="type_exhibit"
                         variant="outlined"
+                        valueselected={filters.type_exhibit}
                         namefield="type_exhibit"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, type_exhibit: value?.id || '' })}
+                        descfield="type_exhibit"
+                        callback={({ newValue: value }) => setfilters({ ...filters, type_exhibit: value?.type_exhibit || '' })}
                     />
                     <SelectFunction
                         title="Área"
-                        datatosend={[]}
+                        datatosend={datafilters.area}
                         optionvalue="area"
-                        optiondesc="description"
+                        optiondesc="area"
                         variant="outlined"
                         namefield="area"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, area: value?.id || '' })}
+                        valueselected={filters.area}
+                        descfield="area"
+                        callback={({ newValue: value }) => setfilters({ ...filters, area: value?.area || '' })}
                     />
                 </div>
             </SwipeableDrawer>

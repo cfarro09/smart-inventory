@@ -242,9 +242,7 @@ const Exhibits_photo_portal = () => {
     })
 
     useEffect(() => {
-        
         (async () => {
-            
             const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
                 GET_FILTER("format"),
                 GET_FILTER("channel"),
@@ -254,6 +252,8 @@ const Exhibits_photo_portal = () => {
                 RB_MARCA,
                 GET_FILTER("management"),
                 GET_FILTERRETAIL("retail",4),
+                GET_FILTER("type_exhibit"),
+                GET_FILTER("area"),
             ])
             if (resultMulti.result instanceof Array) {
                 const resarray = resultMulti.result;
@@ -267,14 +267,11 @@ const Exhibits_photo_portal = () => {
                     marca: resarray[5]?.success ? resarray[5].data : [],
                     management: resarray[6]?.success ? resarray[6].data : [],
                     retail: resarray[7]?.success ? resarray[7].data : [],
+                    type_exhibit: resarray[8]?.success ? resarray[8].data : [],
+                    area: resarray[9]?.success ? resarray[9].data : [],
                 })
             }
         })();
-    }, [])
-    useEffect(() => {
-        if (waitFilter) {
-
-        }
     }, [])
     async function filtrar() {
         //setWaitFilter(true)

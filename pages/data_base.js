@@ -273,39 +273,38 @@ const Data_base = () => {
         })
     }
 
-
     useEffect(() => {
-        let continuezyx = true;
         (async () => {
-            // setdomains(p => ({ ...p, doc_type: validateResArray(r, continuezyx) }))
-            const listResult = await Promise.all([
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("format")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL")),
-                triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("sub_category")),
-            ]);
-            setdatafilters({
-                ...datafilters,
-                channel: validateResArray(listResult[1], continuezyx),
-                format: validateResArray(listResult[0], continuezyx),
-                department: validateResArray(listResult[2], continuezyx),
-                categoria: validateResArray(listResult[3], continuezyx),
-                marca: validateResArray(listResult[4], continuezyx),
-                subcategoria: validateResArray(listResult[5], continuezyx),
-            })
+            const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
+                GET_FILTER("format"),
+                GET_FILTER("channel"),
+                GET_FILTER("department"),
+                GET_CATEGORY("LINEAL"),
+                RB_MARCA,
+                GET_FILTER("sub_category"),
+            ])
+            if (resultMulti.result instanceof Array) {
+                const resarray = resultMulti.result;
+                setdatafilters({
+                    ...datafilters,
+                    format: resarray[0]?.success ? resarray[0].data : [],
+                    channel: resarray[1]?.success ? resarray[1].data : [],
+                    department: resarray[2]?.success ? resarray[2].data : [],
+                    categoria: resarray[3]?.success ? resarray[3].data : [],
+                    marca: resarray[4]?.success ? resarray[4].data : [],
+                    subcategoria: resarray[5]?.success ? resarray[5].data : [],
+                })
+            }
         })();
-        return () => continuezyx = false;
     }, [])
 
     async function updatelistretail(id_form) {
-        const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
-        ]);
+        const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
+            GET_FILTERRETAIL("retail", id_form),
+            GET_FILTERRETAIL("store_name", id_form),
+            GET_FILTERRETAIL("model", id_form),
+            RB_MARCA
+        ])
 
         setfilters({
             ...filters,
@@ -317,26 +316,28 @@ const Data_base = () => {
             retail: '',
             categoria: id_form
         });
-
-        setdatafilters({
-            ...datafilters,
-            retail: validateResArray(listResult[0], true),
-            store_name: validateResArray(listResult[1], true),
-            SKU: validateResArray(listResult[2], true),
-            marca: validateResArray(listResult[3], true),
-        })
+        if (resultMulti.result instanceof Array) {
+            const resarray = resultMulti.result;
+            setdatafilters({
+                ...datafilters,
+                retail: resarray[0]?.success ? resarray[0].data : [],
+                store_name: resarray[1]?.success ? resarray[1].data : [],
+                SKU: resarray[2]?.success ? resarray[2].data : [],
+                marca: resarray[3]?.success ? resarray[3].data : [],
+            })
+        }
     }
 
     const cleanfilters = async () => {
         triggeraxios('post', process.env.endpoints.selsimple, GET_SUBCATEGORY(category?.id_form || 1)).then(x => {
             setsubcategories(validateResArray(x, true))
         })
-        const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", category?.id_form || 1)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", category?.id_form || 1)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", category?.id_form || 1)),
-            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
-        ]);
+        const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
+            GET_FILTERRETAIL("retail", id_form),
+            GET_FILTERRETAIL("store_name", id_form),
+            GET_FILTERRETAIL("model", id_form),
+            RB_MARCA
+        ])
 
 
         setfilters({
@@ -350,13 +351,17 @@ const Data_base = () => {
             categoria: category?.id_form || 1
         });
 
-        setdatafilters({
-            ...datafilters,
-            retail: validateResArray(listResult[0], true),
-            store_name: validateResArray(listResult[1], true),
-            SKU: validateResArray(listResult[2], true),
-            marca: validateResArray(listResult[3], true),
-        })
+        
+        if (resultMulti.result instanceof Array) {
+            const resarray = resultMulti.result;
+            setdatafilters({
+                ...datafilters,
+                retail: resarray[0]?.success ? resarray[0].data : [],
+                store_name: resarray[1]?.success ? resarray[1].data : [],
+                SKU: resarray[2]?.success ? resarray[2].data : [],
+                marca: resarray[3]?.success ? resarray[3].data : [],
+            })
+        }
     }
 
     async function filtrar() {

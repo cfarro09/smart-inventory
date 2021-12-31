@@ -232,13 +232,15 @@ const Exhibits_detail = () => {
                 GET_FILTERRETAIL("model",4),
                 GET_FILTERRETAIL("retail",4),
                 GET_FILTER("management"),
+                GET_FILTER("type_exhibit"),
+                GET_FILTER("area"),
             ])
             if (resultMulti.result instanceof Array) {
                 const resarray = resultMulti.result;
                 setdatafilters({
                     ...datafilters,
-                    channel: resarray[1]?.success ? resarray[1].data : [],
                     format: resarray[0]?.success ? resarray[0].data : [],
+                    channel: resarray[1]?.success ? resarray[1].data : [],
                     department: resarray[2]?.success ? resarray[2].data : [],
                     store_name: resarray[3]?.success ? resarray[3].data : [],
                     subcategoria: resarray[4]?.success ? resarray[4].data : [],
@@ -246,6 +248,8 @@ const Exhibits_detail = () => {
                     model: resarray[6]?.success ? resarray[6].data : [],
                     retail: resarray[7]?.success ? resarray[7].data : [],
                     management: resarray[8]?.success ? resarray[8].data : [],
+                    type_exhibit: resarray[9]?.success ? resarray[9].data : [],
+                    area: resarray[10]?.success ? resarray[10].data : [],
                 })
             }
         })();

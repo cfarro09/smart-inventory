@@ -234,6 +234,8 @@ const Exhibits_detail = () => {
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",4)),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",4)),
                 triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("type_exhibit")),
+                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("area")),
             ]);
             setdatafilters({
                 ...datafilters,
@@ -246,6 +248,8 @@ const Exhibits_detail = () => {
                 model: validateResArray(listResult[6], continuezyx),
                 retail: validateResArray(listResult[7], continuezyx),
                 management: validateResArray(listResult[8], continuezyx),
+                type_exhibit: validateResArray(listResult[9], continuezyx),
+                area: validateResArray(listResult[10], continuezyx),
             })
         })();
         return () => continuezyx = false;
@@ -423,23 +427,25 @@ const Exhibits_detail = () => {
                     />
                     <SelectFunction
                         title="Tipo Exhibición"
-                        datatosend={[]}
+                        datatosend={datafilters.type_exhibit}
                         optionvalue="type_exhibit"
-                        optiondesc="description"
+                        optiondesc="type_exhibit"
                         variant="outlined"
+                        valueselected={filters.type_exhibit}
                         namefield="type_exhibit"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, type_exhibit: value?.id || '' })}
+                        descfield="type_exhibit"
+                        callback={({ newValue: value }) => setfilters({ ...filters, type_exhibit: value?.type_exhibit || '' })}
                     />
                     <SelectFunction
                         title="Área"
-                        datatosend={[]}
+                        datatosend={datafilters.area}
                         optionvalue="area"
-                        optiondesc="description"
+                        optiondesc="area"
                         variant="outlined"
                         namefield="area"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, area: value?.id || '' })}
+                        valueselected={filters.area}
+                        descfield="area"
+                        callback={({ newValue: value }) => setfilters({ ...filters, area: value?.area || '' })}
                     />
                 </div>
             </SwipeableDrawer>

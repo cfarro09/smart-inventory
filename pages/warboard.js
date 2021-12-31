@@ -217,6 +217,8 @@ const BulkLoad = () => {
     const [dataArray, setDataArray] = useState([])
     const [disablebutton, setdisablebutton] = useState(true)
     const [subcategories, setsubcategories] = useState([]);
+    const [cleanFilter, setcleanFilter] = useState(false);
+    const [stopFilter, setstopFilter] = useState(-1);
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -278,33 +280,6 @@ const BulkLoad = () => {
     }, [filters])
 
 
-    async function updatelistretail(id_form) {
-        const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail", id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name", id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model", id_form)),
-            triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
-        ]);
-
-        setfilters({
-            ...filters,
-            format: '',
-            department: '',
-            store_name: '',
-            SKU: '',
-            marca: '',
-            retail: '',
-            categoria: id_form
-        });
-
-        setdatafilters({
-            ...datafilters,
-            retail: validateResArray(listResult[0], true),
-            store_name: validateResArray(listResult[1], true),
-            SKU: validateResArray(listResult[2], true),
-            marca: validateResArray(listResult[3], true),
-        })
-    }
     async function filtrar() {
         setsearchdone(true)
         setpvpprom(true)
@@ -357,36 +332,63 @@ const BulkLoad = () => {
 
     }
 
-   
-    const applyfilter = async (fill, initial = false) => {
-        console.log(fill?.category)
-        fill.categoria = fill?.categoria || 1;
-        const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("format", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("channel", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("retail", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("brand", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("model", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("sub_category", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("store_name", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("department", fill)),
-            ...(initial ? [triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL"))] : []),
-        ]);
 
-        setdatafilters(x => ({
-            ...x,
-            format: validateResArray(listResult[0], true),
-            channel: validateResArray(listResult[1], true),
-            retail: validateResArray(listResult[2], true),
-            marca: validateResArray(listResult[3], true),
-            SKU: validateResArray(listResult[4], true),
-            subcategoria: validateResArray(listResult[5], true),
-            store_name: validateResArray(listResult[6], true),
-            department: validateResArray(listResult[7], true),
-            categoria: initial ? validateResArray(listResult[8], true) : x.categoria,
-        }))
+    const applyfilter = async (fill, initial = false) => {
+        fill.categoria = fill?.categoria || 1;
+        setOpenBackdrop(true);
+        const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
+            FILTERv2("format", fill),
+            FILTERv2("channel", fill),
+            FILTERv2("retail", fill),
+            FILTERv2("brand", fill),
+            FILTERv2("model", fill),
+            FILTERv2("sub_category", fill),
+            FILTERv2("store_name", fill),
+            FILTERv2("department", fill),
+            ...(initial ? [GET_CATEGORY("LINEAL")] : [])
+        ])
+        if (resultMulti.result instanceof Array) {
+            const resarray = resultMulti.result;
+            setdatafilters(x => ({
+                ...x,
+                format: resarray[0]?.success ? resarray[0].data : [],
+                channel: resarray[1]?.success ? resarray[1].data : [],
+                retail: resarray[2]?.success ? resarray[2].data : [],
+                marca: resarray[3]?.success ? resarray[3].data : [],
+                SKU: resarray[4]?.success ? resarray[4].data : [],
+                subcategoria: resarray[5]?.success ? resarray[5].data : [],
+                store_name: resarray[6]?.success ? resarray[6].data : [],
+                department: resarray[7]?.success ? resarray[7].data : [],
+                categoria: initial ? (resarray[8]?.success ? resarray[8].data : []) : x.categoria,
+            }))
+        }
+        setstopFilter(stopFilter * -1);
+        setOpenBackdrop(false)
     }
 
+
+    useEffect(() => {
+        setcleanFilter(false);
+    }, [stopFilter])
+
+    useEffect(() => {
+        if (cleanFilter) {
+            setfilters({
+                format: '',
+                channel: '',
+                department: '',
+                store_name: '',
+                categoria: 1,
+                SKU: '',
+                banda: '',
+                marca: '',
+                tipo_pvp: 'prom_price',
+                retail: '',
+                subcategoria: '',
+            })
+        }
+    }, [cleanFilter])
+    
     function setcategorysearchfield(value) {
         if (value.includes("ARROCERA")) {
             setfieldstoshow(fields[0])
@@ -450,21 +452,20 @@ const BulkLoad = () => {
                         optionvalue="id_form"
                         optiondesc="category"
                         variant="outlined"
+                        onlyinitial={!cleanFilter}
                         namefield="category"
                         descfield="category"
                         valueselected={filters.categoria}
                         callback={({ newValue: value }) => {
-                            console.log("dd")
-                            // getSubctegories(value?.id_form)
-                            setdisablebutton(!value)
-                            // setfilters({ ...filters, categoria: value?.id_form || 1 });
-                            setcategory(value)
-                            // updatelistretail(value?.id_form || 1)
+                            if (!cleanFilter) {
+                                setdisablebutton(!value)
+                                setcategory(value)
+                            }
                         }}
                     />
 
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="Marca"
                         datatosend={datafilters.marca}
                         optionvalue="brand"
@@ -474,16 +475,20 @@ const BulkLoad = () => {
                         namefield="brand"
                         descfield="brand"
                         style={{ width: "150px" }}
-                        callback={({ newValue: value }) => setfilters({
-                            ...filters, department: '',
-                            store_name: '',
-                            SKU: '',
-                            retail: '', marca: value?.brand || ''
-                        })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({
+                                    ...filters, department: '',
+                                    store_name: '',
+                                    SKU: '',
+                                    retail: '', marca: value?.brand || ''
+                                })
+                            }
+                        }}
                     />
 
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="SKU"
                         datatosend={datafilters.SKU}
                         optionvalue="model"
@@ -493,10 +498,14 @@ const BulkLoad = () => {
                         namefield="model"
                         descfield="model"
                         style={{ width: "200px" }}
-                        callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, SKU: value?.model || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="Retail"
                         variant="outlined"
                         datatosend={datafilters.retail}
@@ -506,7 +515,11 @@ const BulkLoad = () => {
                         namefield="retail"
                         descfield="retail"
                         style={{ width: "200px" }}
-                        callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, retail: value?.retail || '' })
+                            }
+                        }}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
                         defaultValue="prom_price"
@@ -538,25 +551,15 @@ const BulkLoad = () => {
                     >Filtros Extras</Button>
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                        onClick={() => setfilters({
-                            format: '',
-                            channel: '',
-                            department: '',
-                            store_name: '',
-                            categoria: 1,
-                            SKU: '',
-                            banda: '',
-                            marca: '',
-                            tipo_pvp: 'prom_price',
-                            retail: '',
-                            subcategoria: '',
-                        })}
+                        onClick={() => {
+                            setcleanFilter(true)
+                        }}
                     >Limpiar filtros</Button>
                     {category &&
                         <InputFormk
                             valuedefault={category?.last_consulted}
                             variant="outlined"
-                            disabled={true}
+                            onlyinitial={!cleanFilter}
                             label="Última Actualización"
                         />
                     }
@@ -652,7 +655,7 @@ const BulkLoad = () => {
                         Filtros personalizados
                     </div>
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="Formato"
                         datatosend={datafilters.format}
                         optionvalue="format"
@@ -661,10 +664,14 @@ const BulkLoad = () => {
                         valueselected={filters.format}
                         namefield="format"
                         descfield="format"
-                        callback={({ newValue: value }) => setfilters({ ...filters, format: value?.format || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, format: value?.format || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="Canal"
                         datatosend={datafilters.channel}
                         optionvalue="channel"
@@ -673,10 +680,14 @@ const BulkLoad = () => {
                         namefield="channel"
                         valueselected={filters.channel}
                         descfield="channel"
-                        callback={({ newValue: value }) => setfilters({ ...filters, channel: value?.channel || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, channel: value?.channel || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="Departamento"
                         datatosend={datafilters.department}
                         optionvalue="department"
@@ -685,10 +696,14 @@ const BulkLoad = () => {
                         variant="outlined"
                         namefield="department"
                         descfield="department"
-                        callback={({ newValue: value }) => setfilters({ ...filters, department: value?.department || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, department: value?.department || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="PDV"
                         datatosend={datafilters.store_name}
                         optionvalue="store_name"
@@ -697,10 +712,14 @@ const BulkLoad = () => {
                         valueselected={filters.store_name}
                         namefield="store_name"
                         descfield="store_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, store_name: value?.store_name || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         title="Subcategoría"
                         datatosend={datafilters.subcategoria}
                         optionvalue="subcategory"
@@ -709,20 +728,11 @@ const BulkLoad = () => {
                         namefield="subcategory"
                         descfield="subcategory"
                         callback={({ newValue: value }) => {
-                            setfilters({ ...filters, subcategoria: value?.subcategory || "" });
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, subcategoria: value?.subcategory || "" });
+                            }
                         }}
                     />
-                    {/* <SelectFunction
-                    onlyinitial={true}
-                        title="Banda"
-                        datatosend={[]}
-                        optionvalue="id_role"
-                        optiondesc="description"
-                        variant="outlined"
-                        namefield="id_role"
-                        descfield="role_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, formato: value?.id || '' })}
-                    /> */}
                 </div>
             </SwipeableDrawer>
         </Layout>

@@ -280,30 +280,32 @@ const Photo_portal = () => {
     const applyfilter = async (fill, initial = false) => {
         console.log(fill?.category)
         fill.categoria = fill?.categoria || 1;
-        const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("format", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("channel", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("retail", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("brand", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("model", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("sub_category", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("store_name", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("department", fill)),
-            ...(initial ? [triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL"))] : []),
-        ]);
-
-        setdatafilters(x => ({
-            ...x,
-            format: validateResArray(listResult[0], true),
-            channel: validateResArray(listResult[1], true),
-            retail: validateResArray(listResult[2], true),
-            marca: validateResArray(listResult[3], true),
-            SKU: validateResArray(listResult[4], true),
-            subcategoria: validateResArray(listResult[5], true),
-            store_name: validateResArray(listResult[6], true),
-            department: validateResArray(listResult[7], true),
-            categoria: initial ? validateResArray(listResult[8], true) : x.categoria,
-        }))
+        const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
+            FILTERv2("format", fill),
+            FILTERv2("channel", fill),
+            FILTERv2("retail", fill),
+            FILTERv2("brand", fill),
+            FILTERv2("model", fill),
+            FILTERv2("sub_category", fill),
+            FILTERv2("store_name", fill),
+            FILTERv2("department", fill),
+            ...(initial ? [GET_CATEGORY("LINEAL")] : [])
+        ])
+        if (resultMulti.result instanceof Array) {
+            const resarray = resultMulti.result;
+            setdatafilters(x => ({
+                ...x,
+                format: resarray[0]?.success ? resarray[0].data : [],
+                channel: resarray[1]?.success ? resarray[1].data : [],
+                retail: resarray[2]?.success ? resarray[2].data : [],
+                marca: resarray[3]?.success ? resarray[3].data : [],
+                SKU: resarray[4]?.success ? resarray[4].data : [],
+                subcategoria: resarray[5]?.success ? resarray[5].data : [],
+                store_name: resarray[6]?.success ? resarray[6].data : [],
+                department: resarray[7]?.success ? resarray[7].data : [],
+                categoria: initial ? (resarray[8]?.success ? resarray[8].data : []) : x.categoria,
+            }))
+        }
     }
 
     async function filtrar() {

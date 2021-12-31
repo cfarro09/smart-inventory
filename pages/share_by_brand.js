@@ -203,7 +203,7 @@ const Share_by_brand = () => {
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
     const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
-    const [subcategories, setsubcategories] = useState([]);
+    
     const [triggerfilter, settriggerfilter] = useState(false)
     const [disablebutton, setdisablebutton] = useState(true)
     const [cleanfilters, setcleanfilters] = useState(false)
@@ -243,6 +243,8 @@ const Share_by_brand = () => {
         subcategoria: [],
     })
     const [initial, setinitial] = useState(0);
+    const [cleanFilter, setcleanFilter] = useState(false);
+    const [stopFilter, setstopFilter] = useState(-1);
 
     useEffect(() => {
         if (initial === 1) {
@@ -251,57 +253,86 @@ const Share_by_brand = () => {
         }
     }, [initial])
 
-    const applyfilter = async (fill, initial = false) => {
-        fill.categoria = fill?.categoria || 1;
-        const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("format", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("channel", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("retail", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("brand", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("model", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("sub_category", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("store_name", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("department", fill)),
-            ...(initial ? [triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL"))] : []),
-        ]);
-
-        setdatafilters(x => ({
-            ...x,
-            format: validateResArray(listResult[0], true),
-            channel: validateResArray(listResult[1], true),
-            retail: validateResArray(listResult[2], true),
-            marca: validateResArray(listResult[3], true),
-            SKU: validateResArray(listResult[4], true),
-            subcategoria: validateResArray(listResult[5], true),
-            store_name: validateResArray(listResult[6], true),
-            department: validateResArray(listResult[7], true),
-            categoria: initial ? validateResArray(listResult[8], true) : x.categoria,
-        }))
-    }
+    useEffect(() => {
+        setcleanFilter(false);
+    }, [stopFilter])
 
     useEffect(() => {
-        let continuezyx = true;
-        (async () => {
-            await applyfilter({}, true)
-            setinitial(1)
-        })();
-        return () => continuezyx = false;
-    }, [])
-
-    useEffect(() => {
-        if (initial)
-            applyfilter(filters)
-    }, [filters])
-    
-    useEffect(() => {
-        if(cleanfilters){
-            console.log("test")
+        if (cleanFilter) {
             setfilters({
                 format: '',
                 channel: '',
                 department: '',
                 store_name: '',
-                categoria: 0,
+                categoria: 1,
+                SKU: '',
+                banda: '',
+                marca: '',
+                tipo_pvp: 'prom_price',
+                retail: '',
+                subcategoria: '',
+            })
+        }
+    }, [cleanFilter])
+
+    const applyfilter = async (fill, initial = false) => {
+        if (initial) {
+            fill.categoria = fill?.categoria || 1;
+            setOpenBackdrop(true);
+            const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
+                FILTERv2("format", fill),
+                FILTERv2("channel", fill),
+                FILTERv2("retail", fill),
+                FILTERv2("brand", fill),
+                FILTERv2("model", fill),
+                FILTERv2("sub_category", fill),
+                FILTERv2("store_name", fill),
+                FILTERv2("department", fill),
+                ...(initial ? [GET_CATEGORY("LINEAL")] : [])
+            ])
+            if (resultMulti.result instanceof Array) {
+                const resarray = resultMulti.result;
+                setdatafilters(x => ({
+                    ...x,
+                    format: resarray[0]?.success ? resarray[0].data : [],
+                    channel: resarray[1]?.success ? resarray[1].data : [],
+                    retail: resarray[2]?.success ? resarray[2].data : [],
+                    marca: resarray[3]?.success ? resarray[3].data : [],
+                    SKU: resarray[4]?.success ? resarray[4].data : [],
+                    subcategoria: resarray[5]?.success ? resarray[5].data : [],
+                    store_name: resarray[6]?.success ? resarray[6].data : [],
+                    department: resarray[7]?.success ? resarray[7].data : [],
+                    categoria: initial ? (resarray[8]?.success ? resarray[8].data : []) : x.categoria,
+                }))
+            }
+            setstopFilter(stopFilter * -1);
+            setOpenBackdrop(false);
+        }
+    }
+
+    useEffect(() => {
+        
+        (async () => {
+            await applyfilter({}, true)
+            setinitial(1)
+        })();
+        
+    }, [])
+
+    useEffect(() => {
+        console.log('aplyfilter', initial)
+        if (initial)
+            applyfilter(filters, !!initial)
+    }, [filters])
+
+    useEffect(() => {
+        if (cleanfilters) {
+            setfilters({
+                format: '',
+                channel: '',
+                department: '',
+                store_name: '',
+                categoria: 1,
                 SKU: '',
                 banda: '',
                 marca: '',
@@ -332,28 +363,36 @@ const Share_by_brand = () => {
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
         setOpenBackdrop(true)
-        const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
 
-        listResult.result.data.forEach((row) => {
+        const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
+            FILTER(filter_to_send),
+            FILTERDATE(filter_to_send),
+            FILTERGraph1(filter_to_send),
+            FILTERPOI(filter_to_send)
+        ])
+
+        const listResult = resultMulti.result[0]
+
+        listResult.data.forEach((row) => {
             count += row.cont
         })
-        const dd = listResult.result.data.map(x => ({
+        const dd = listResult.data.map(x => ({
             ...x,
             percent: (x.cont / count) * 100,
         }))
         setDataGraph(dd)
-        const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTERDATE(filter_to_send))
+        const listResultDate = resultMulti.result[1]
         let listbrand = [];
         let brandlist = [];
         let weeks = [];
         let totalweek = [];
         let countbrand = new Array(49).fill(0);
 
-        listResultDate.result.data.map(row => {
+        listResultDate.data.map(row => {
             if (!weeks.includes(row.Week)) { weeks.push(row.Week); totalweek.push(0) }
             if (!brandlist.includes(row.brand)) brandlist.push(row.brand)
         })
-        listResultDate.result.data.map(row => {
+        listResultDate.data.map(row => {
             totalweek[weeks.indexOf(row.Week)] += parseInt(row.cnt)
             countbrand[brands.indexOf(row.brand)] += parseInt(row.cnt)
         })
@@ -371,7 +410,7 @@ const Share_by_brand = () => {
         }
         brandlist.sort(compare);
         setorderbrandsDate(brandlist)
-        listResultDate.result.data.map(row => {
+        listResultDate.data.map(row => {
             listbrand.forEach(list => {
                 if (list.week === row.Week) {
                     list[row.brand] = ((parseInt(row.cnt) / totalweek[weeks.indexOf(row.Week)]) * 100)
@@ -381,18 +420,18 @@ const Share_by_brand = () => {
         setDataGraphDate(listbrand)
         settotalSKA(count)
 
-        const listResultSKU = await triggeraxios('post', process.env.endpoints.selsimple, FILTERGraph1(filter_to_send))
+        const listResultSKU = resultMulti.result[2]
         let categories = []
         let skucategory = [];
         let brandlistSKU = [];
         let skucategoryperc = [];
         let skucategorytotal = [];
         let countbrandSKU = new Array(49).fill(0);
-        listResultSKU.result.data.map(row => {
+        listResultSKU.data.map(row => {
             if (!categories.includes(row.subcategory)) { categories.push(row.subcategory); skucategorytotal.push(0) }
             if (!brandlistSKU.includes(row.brand)) brandlistSKU.push(row.brand)
         })
-        listResultSKU.result.data.map(row => {
+        listResultSKU.data.map(row => {
             skucategorytotal[categories.indexOf(row.subcategory)] += parseInt(row.cont)
             countbrandSKU[brands.indexOf(row.brand)] += parseInt(row.cont)
         })
@@ -400,7 +439,7 @@ const Share_by_brand = () => {
             skucategory.push(elementBrand(row))
             skucategoryperc.push(elementBrand(row))
         })
-        listResultSKU.result.data.map(row => {
+        listResultSKU.data.map(row => {
             skucategory.forEach(list => {
                 if (list.week === row.subcategory) {
                     list[row.brand] = parseInt(row.cont)
@@ -427,18 +466,18 @@ const Share_by_brand = () => {
         setcategorybrandSKUperc(skucategoryperc)
 
 
-        const listpoiresult = await triggeraxios('post', process.env.endpoints.selsimple, FILTERPOI(filter_to_send))
+        const listpoiresult = resultMulti.result[3]
         let categoriespoi = []
         let poicategories = [];
         let poicategoriesperc = [];
         let brandlistpoi = [];
         let poicategoriestotal = [];
         let countbrandpoi = new Array(49).fill(0);
-        listpoiresult.result.data.map(row => {
+        listpoiresult.data.map(row => {
             if (!categoriespoi.includes(row.retail)) { categoriespoi.push(row.retail); poicategoriestotal.push(0) }
             if (!brandlistpoi.includes(row.brand)) brandlistpoi.push(row.brand)
         })
-        listpoiresult.result.data.map(row => {
+        listpoiresult.data.map(row => {
             poicategoriestotal[categoriespoi.indexOf(row.retail)] += parseInt(row.cont)
             countbrandpoi[brands.indexOf(row.brand)] += parseInt(row.cont)
         })
@@ -446,7 +485,7 @@ const Share_by_brand = () => {
             poicategories.push(elementBrand(row))
             poicategoriesperc.push(elementBrand(row))
         })
-        listpoiresult.result.data.map(row => {
+        listpoiresult.data.map(row => {
             poicategories.forEach(list => {
                 if (list.week === row.retail) {
                     list[row.brand] = parseInt(row.cont)
@@ -519,15 +558,16 @@ const Share_by_brand = () => {
                         optionvalue="id_form"
                         optiondesc="category"
                         variant="outlined"
+                        onlyinitial={!cleanFilter}
                         namefield="category"
                         descfield="category"
                         valueselected={filters.categoria}
                         callback={({ newValue: value }) => {
                             setdisablebutton(!value)
-                            if (value?.id_form) {
+                            if (value?.id_form && !cleanFilter) {
                                 setcategory(value)
                                 setfilters({ ...filters, categoria: value?.id_form || 1 });
-                                settriggerfilter(!triggerfilter)
+                                // settriggerfilter(!triggerfilter)
                             }
                         }}
                     />
@@ -537,17 +577,22 @@ const Share_by_brand = () => {
                         optionvalue="brand"
                         optiondesc="brand"
                         valueselected={filters.marca}
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         variant="outlined"
                         namefield="brand"
                         descfield="brand"
                         style={{ width: "150px" }}
-                        callback={({ newValue: value }) => setfilters({
-                            ...filters, department: '',
-                            store_name: '',
-                            SKU: '',
-                            retail: '', marca: value?.brand || ''
-                        })}
+                        callback={({ newValue: value }) => {
+                            console.log(cleanFilter)
+                            if (!cleanFilter) {
+                                setfilters({
+                                    ...filters, department: '',
+                                    store_name: '',
+                                    SKU: '',
+                                    retail: '', marca: value?.brand || ''
+                                })
+                            }
+                        }}
                     />
 
                     <SelectFunction
@@ -558,10 +603,14 @@ const Share_by_brand = () => {
                         valueselected={filters.SKU}
                         variant="outlined"
                         namefield="model"
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         descfield="model"
                         style={{ width: "200px" }}
-                        callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, SKU: value?.model || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
                         title="Retail"
@@ -569,12 +618,16 @@ const Share_by_brand = () => {
                         datatosend={datafilters.retail}
                         optionvalue="retail"
                         optiondesc="retail"
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         valueselected={filters.retail}
                         namefield="retail"
                         descfield="retail"
                         style={{ width: "200px" }}
-                        callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, retail: value?.retail || '' })
+                            }
+                        }}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
                         defaultValue="prom_price"
@@ -604,19 +657,9 @@ const Share_by_brand = () => {
                     >Filtros Extras</Button>
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                        onClick={() => setfilters({
-                            format: '',
-                            channel: '',
-                            department: '',
-                            store_name: '',
-                            categoria: 1,
-                            SKU: '',
-                            banda: '',
-                            marca: '',
-                            tipo_pvp: 'prom_price',
-                            retail: '',
-                            subcategoria: '',
-                        })}
+                        onClick={() => {
+                            setcleanFilter(true)
+                        }}
                     >Limpiar filtros</Button>
                     {category &&
                         <InputFormk
@@ -803,59 +846,77 @@ const Share_by_brand = () => {
                         optionvalue="format"
                         optiondesc="format"
                         variant="outlined"
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         valueselected={filters.format}
                         namefield="format"
                         descfield="format"
-                        callback={({ newValue: value }) => setfilters({ ...filters, format: value?.format || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, format: value?.format || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
                         title="Canal"
                         datatosend={datafilters.channel}
                         optionvalue="channel"
                         optiondesc="channel"
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         variant="outlined"
                         namefield="channel"
                         valueselected={filters.channel}
                         descfield="channel"
-                        callback={({ newValue: value }) => setfilters({ ...filters, channel: value?.channel || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, channel: value?.channel || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
                         title="Departamento"
                         datatosend={datafilters.department}
                         optionvalue="department"
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         optiondesc="department"
                         valueselected={filters.department}
                         variant="outlined"
                         namefield="department"
                         descfield="department"
-                        callback={({ newValue: value }) => setfilters({ ...filters, department: value?.department || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, department: value?.department || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
                         title="PDV"
                         datatosend={datafilters.store_name}
                         optionvalue="store_name"
                         optiondesc="store_name"
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         variant="outlined"
                         valueselected={filters.store_name}
                         namefield="store_name"
                         descfield="store_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, store_name: value?.store_name || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
                         title="Subcategoría"
                         datatosend={datafilters.subcategoria}
                         optionvalue="subcategory"
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         optiondesc="subcategory"
                         variant="outlined"
                         namefield="subcategory"
                         descfield="subcategory"
                         callback={({ newValue: value }) => {
-                            setfilters({ ...filters, subcategoria: value?.subcategory || "" });
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, subcategoria: value?.subcategory || "" });
+                            }
                         }}
                     />
                     {/* <SelectFunction

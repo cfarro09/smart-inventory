@@ -221,35 +221,36 @@ const Exhibits_detail = () => {
     })
 
     useEffect(() => {
-        let continuezyx = true;
         (async () => {
-            // setdomains(p => ({ ...p, doc_type: validateResArray(r, continuezyx) }))
-            const listResult = await Promise.all([
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("format")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("channel")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("department")),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("store_name",4)),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("category")),
-                triggeraxios('post', process.env.endpoints.selsimple, RB_MARCA),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("model",4)),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTERRETAIL("retail",4)),
-                triggeraxios('post', process.env.endpoints.selsimple, GET_FILTER("management")),
-            ]);
-            setdatafilters({
-                ...datafilters,
-                channel: validateResArray(listResult[1], continuezyx),
-                format: validateResArray(listResult[0], continuezyx),
-                department: validateResArray(listResult[2], continuezyx),
-                store_name: validateResArray(listResult[3], continuezyx),
-                subcategoria: validateResArray(listResult[4], continuezyx),
-                marca: validateResArray(listResult[5], continuezyx),
-                model: validateResArray(listResult[6], continuezyx),
-                retail: validateResArray(listResult[7], continuezyx),
-                management: validateResArray(listResult[8], continuezyx),
-            })
+            const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
+                GET_FILTER("format"),
+                GET_FILTER("channel"),
+                GET_FILTER("department"),
+                GET_FILTERRETAIL("store_name",4),
+                GET_FILTER("category"),
+                RB_MARCA,
+                GET_FILTERRETAIL("model",4),
+                GET_FILTERRETAIL("retail",4),
+                GET_FILTER("management"),
+            ])
+            if (resultMulti.result instanceof Array) {
+                const resarray = resultMulti.result;
+                setdatafilters({
+                    ...datafilters,
+                    channel: resarray[1]?.success ? resarray[1].data : [],
+                    format: resarray[0]?.success ? resarray[0].data : [],
+                    department: resarray[2]?.success ? resarray[2].data : [],
+                    store_name: resarray[3]?.success ? resarray[3].data : [],
+                    subcategoria: resarray[4]?.success ? resarray[4].data : [],
+                    marca: resarray[5]?.success ? resarray[5].data : [],
+                    model: resarray[6]?.success ? resarray[6].data : [],
+                    retail: resarray[7]?.success ? resarray[7].data : [],
+                    management: resarray[8]?.success ? resarray[8].data : [],
+                })
+            }
         })();
-        return () => continuezyx = false;
     }, [])
+
     async function filtrar() {
         setsearchdone(true)
         const filter_to_send = {

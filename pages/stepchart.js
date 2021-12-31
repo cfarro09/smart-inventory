@@ -64,7 +64,7 @@ const RB_MARCA = {
     }
 }
 
-const brands = ["IMACO", "B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO", "LUMIKA", "INSTANTPOT","WINIA","SMEG","KENT","DELONGHI","SEVERIN","MIDIA","FDV","DAEWOO"]
+const brands = ["IMACO", "B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO", "LUMIKA", "INSTANTPOT", "WINIA", "SMEG", "KENT", "DELONGHI", "SEVERIN", "MIDIA", "FDV", "DAEWOO"]
 const colors = ["#FFD600", "#bababa", "#26A69A", "#009688", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#00897B", "#b8b8b8", "#a2a2a2", "#808080", "#4527A0", "#8a8a8a", "#00695C", "#b5b5b5", "#4DB6AC", "#00796B", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#B2DFDB", "#444444", "#d3d3d3", "rgb(251, 95, 95)", "#a9a9a9", "#80CBC4", "#797979", "#5D4037", "#323232", "#7d7d7d", "#bababa", "#2c2c2c", "#828282", "#6d6d6d", "#757575", "#929292", "#6d6d6d", "#6f6f6f", "#bababa"]
 
 const FILTERv2 = (filter, filters) => ({
@@ -98,30 +98,24 @@ const useStyles = makeStyles(() => ({
 }));
 
 const RenderCustomizedLabel = (props) => {
-    const { x, y, width, height, value, datatmp, index } = props;
+    const { x, y, width, height, value, datatmp, index, enabletop } = props;
     const radius = 10;
     return (
         <g>
             <foreignObject x={x} y={y - width - 15} width={width} height={width}>
                 <img style={{ width: '100%', height: '100%', borderRadius: width / 2, border: '1px solid #e1e1e1' }} src={datatmp[index].graphic} />
             </foreignObject>
-            <text x={x + width / 2} y={y - 5} fill="#000" textAnchor="middle" dominantBaseline="middle">
-                S/ {value.toFixed(2)}
+            <text
+                x={x + width / 2}
+                y={y - 5}
+                fill="#000"
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fontSize={enabletop ? '12px' : '8px'}
+                writingMode={enabletop ? 'horizontal-tb' : 'vertical-rl'}
+            >
+                {enabletop ? "S/." : ""}{value.toFixed(1)}
             </text>
-        </g>
-    );
-};
-const RenderCustomizedLabelonly_Image = (props) => {
-    const { x, y, width, height, value, datatmp, index } = props;
-    const radius = 10;
-    return (
-        // <g>
-
-        // </g>
-        <g>
-            <foreignObject x={x} y={y - width} width={width} height={width}>
-                <img style={{ width: '100%', height: '100%', borderRadius: width / 2, border: '1px solid #e1e1e1' }} src={datatmp[index].graphic} />
-            </foreignObject>
         </g>
     );
 };
@@ -138,8 +132,8 @@ const User = () => {
     const [category, setcategory] = useState(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
-    const [subcategories, setsubcategories] = useState([]);
-    const [listmodel, setlistmodel] = useState([]);
+    const [cleanFilter, setcleanFilter] = useState(false);
+    const [stopFilter, setstopFilter] = useState(-1);
     const [initial, setinitial] = useState(0);
 
     const [dateRange, setdateRange] = useState([
@@ -187,33 +181,60 @@ const User = () => {
     }, [enabletop])
 
     const applyfilter = async (fill, initial = false) => {
-        console.log(fill?.category)
-        fill.categoria = fill?.categoria || 1;
-        const listResult = await Promise.all([
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("format", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("channel", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("retail", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("brand", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("model", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("sub_category", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("store_name", fill)),
-            triggeraxios('post', process.env.endpoints.selsimple, FILTERv2("department", fill)),
-            ...(initial ? [triggeraxios('post', process.env.endpoints.selsimple, GET_CATEGORY("LINEAL"))] : []),
-        ]);
 
-        setdatafilters(x => ({
-            ...x,
-            format: validateResArray(listResult[0], true),
-            channel: validateResArray(listResult[1], true),
-            retail: validateResArray(listResult[2], true),
-            marca: validateResArray(listResult[3], true),
-            SKU: validateResArray(listResult[4], true),
-            subcategoria: validateResArray(listResult[5], true),
-            store_name: validateResArray(listResult[6], true),
-            department: validateResArray(listResult[7], true),
-            categoria: initial ? validateResArray(listResult[8], true) : x.categoria,
-        }))
+        fill.categoria = fill?.categoria || 1;
+        setOpenBackdrop(true);
+        const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
+            FILTERv2("format", fill),
+            FILTERv2("channel", fill),
+            FILTERv2("retail", fill),
+            FILTERv2("brand", fill),
+            FILTERv2("model", fill),
+            FILTERv2("sub_category", fill),
+            FILTERv2("store_name", fill),
+            FILTERv2("department", fill),
+            ...(initial ? [GET_CATEGORY("LINEAL")] : [])
+        ])
+        if (resultMulti.result instanceof Array) {
+            const resarray = resultMulti.result;
+            setdatafilters(x => ({
+                ...x,
+                format: resarray[0]?.success ? resarray[0].data : [],
+                channel: resarray[1]?.success ? resarray[1].data : [],
+                retail: resarray[2]?.success ? resarray[2].data : [],
+                marca: resarray[3]?.success ? resarray[3].data : [],
+                SKU: resarray[4]?.success ? resarray[4].data : [],
+                subcategoria: resarray[5]?.success ? resarray[5].data : [],
+                store_name: resarray[6]?.success ? resarray[6].data : [],
+                department: resarray[7]?.success ? resarray[7].data : [],
+                categoria: initial ? (resarray[8]?.success ? resarray[8].data : []) : x.categoria,
+            }))
+        }
+        setstopFilter(stopFilter * -1);
+        setOpenBackdrop(false);
     }
+
+    useEffect(() => {
+        setcleanFilter(false);
+    }, [stopFilter])
+
+    useEffect(() => {
+        if (cleanFilter) {
+            setfilters({
+                format: '',
+                channel: '',
+                department: '',
+                store_name: '',
+                categoria: 1,
+                SKU: '',
+                banda: '',
+                marca: '',
+                tipo_pvp: 'prom_price',
+                retail: '',
+                subcategoria: '',
+            })
+        }
+    }, [cleanFilter])
 
     async function filtrar() {
         setsearchdone(true)
@@ -279,16 +300,16 @@ const User = () => {
                             datatosend={datafilters.categoria}
                             optionvalue="id_form"
                             optiondesc="category"
-                            onlyinitial={true}
+                            onlyinitial={!cleanFilter}
                             variant="outlined"
                             namefield="category"
                             descfield="category"
                             callback={({ newValue: value }) => {
-                                // getSubctegories(value?.id_form)
-                                setfilters({ ...filters, categoria: value?.id_form || 1 });
-                                setdisablebutton(!value)
-                                setcategory(value)
-                                // updatelistretail(value?.id_form || 1)
+                                if (!cleanFilter) {
+                                    setfilters({ ...filters, categoria: value?.id_form || 1 });
+                                    setcategory(value)
+                                    setdisablebutton(!value)
+                                }
                             }}
                         />
 
@@ -298,17 +319,21 @@ const User = () => {
                             optionvalue="brand"
                             optiondesc="brand"
                             valueselected={filters.marca}
-                            onlyinitial={true}
+                            onlyinitial={!cleanFilter}
                             variant="outlined"
                             namefield="brand"
                             descfield="brand"
                             style={{ width: "150px" }}
-                            callback={({ newValue: value }) => setfilters({
-                                ...filters, department: '',
-                                store_name: '',
-                                SKU: '',
-                                retail: '', marca: value?.brand || ''
-                            })}
+                            callback={({ newValue: value }) => {
+                                if (!cleanFilter) {
+                                    setfilters({
+                                        ...filters, department: '',
+                                        store_name: '',
+                                        SKU: '',
+                                        retail: '', marca: value?.brand || ''
+                                    })
+                                }
+                            }}
                         />
                         <SelectFunction
                             title="SKU"
@@ -316,12 +341,16 @@ const User = () => {
                             optionvalue="model"
                             optiondesc="model"
                             valueselected={filters.SKU}
-                            onlyinitial={true}
+                            onlyinitial={!cleanFilter}
                             variant="outlined"
                             namefield="model"
                             descfield="model"
                             style={{ width: "200px" }}
-                            callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model || '' })}
+                            callback={({ newValue: value }) => {
+                                if (!cleanFilter) {
+                                    setfilters({ ...filters, SKU: value?.model || '' })
+                                }
+                            }}
                         />
                         <SelectFunction
                             title="Retail"
@@ -330,11 +359,15 @@ const User = () => {
                             optionvalue="retail"
                             optiondesc="retail"
                             valueselected={filters.retail}
-                            onlyinitial={true}
+                            onlyinitial={!cleanFilter}
                             namefield="retail"
                             descfield="retail"
                             style={{ width: "200px" }}
-                            callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
+                            callback={({ newValue: value }) => {
+                                if (!cleanFilter) {
+                                    setfilters({ ...filters, retail: value?.retail || '' })
+                                }
+                            }}
                         />
                         <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
                             defaultValue="prom_price"
@@ -364,19 +397,9 @@ const User = () => {
                         >Filtros Extras</Button>
                         <Button
                             style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                            onClick={() => setfilters({
-                                format: '',
-                                channel: '',
-                                department: '',
-                                store_name: '',
-                                categoria: 1,
-                                SKU: '',
-                                banda: '',
-                                marca: '',
-                                tipo_pvp: 'prom_price',
-                                retail: '',
-                                subcategoria: '',
-                            })}
+                            onClick={() => {
+                                setcleanFilter(true)
+                            }}
                         >Limpiar filtros</Button>
                     </div>
                     {category &&
@@ -411,20 +434,11 @@ const User = () => {
                                             <Cell key={`cell-${index}`} fill={colors[brands.indexOf(entry.brand)]} />
                                         ))
                                     }
-                                    {enabletop ?
-                                        <LabelList
-                                            dataKey="price"
-                                            position="top"
-                                            content={<RenderCustomizedLabel datatmp={dataGraph} />}
-                                        // formatter={(value) => `S/.${parseFloat(value).toFixed(2)}`}
-                                        /> :
-                                        <LabelList
-                                            dataKey="price"
-                                            position="top"
-                                            content={<RenderCustomizedLabel datatmp={dataGraph} />}
-                                        // formatter={(value) => `S/.${parseFloat(value).toFixed(2)}`}
-                                        />
-                                    }
+                                    <LabelList
+                                        dataKey="price"
+                                        position="top"
+                                        content={<RenderCustomizedLabel datatmp={dataGraph} enabletop={enabletop} />}
+                                    />
                                 </Bar>
                             </BarChart>
                         </ResponsiveContainer>
@@ -451,36 +465,48 @@ const User = () => {
                         datatosend={datafilters.format}
                         optionvalue="format"
                         optiondesc="format"
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         variant="outlined"
                         valueselected={filters.format}
                         namefield="format"
                         descfield="format"
-                        callback={({ newValue: value }) => setfilters({ ...filters, format: value?.format || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, format: value?.format || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
                         title="Canal"
                         datatosend={datafilters.channel}
                         optionvalue="channel"
                         optiondesc="channel"
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         variant="outlined"
                         namefield="channel"
                         valueselected={filters.channel}
                         descfield="channel"
-                        callback={({ newValue: value }) => setfilters({ ...filters, channel: value?.channel || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, channel: value?.channel || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
                         title="Departamento"
                         datatosend={datafilters.department}
                         optionvalue="department"
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         optiondesc="department"
                         valueselected={filters.department}
                         variant="outlined"
                         namefield="department"
                         descfield="department"
-                        callback={({ newValue: value }) => setfilters({ ...filters, department: value?.department || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, department: value?.department || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
                         title="PDV"
@@ -488,23 +514,29 @@ const User = () => {
                         optionvalue="store_name"
                         optiondesc="store_name"
                         variant="outlined"
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         valueselected={filters.store_name}
                         namefield="store_name"
                         descfield="store_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
+                        callback={({ newValue: value }) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, store_name: value?.store_name || '' })
+                            }
+                        }}
                     />
                     <SelectFunction
                         title="Subcategoría"
                         datatosend={datafilters.subcategoria}
                         optionvalue="subcategory"
                         optiondesc="subcategory"
-                        onlyinitial={true}
+                        onlyinitial={!cleanFilter}
                         variant="outlined"
                         namefield="subcategory"
                         descfield="subcategory"
                         callback={({ newValue: value }) => {
-                            setfilters({ ...filters, subcategoria: value?.subcategory || "" });
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, subcategoria: value?.subcategory || "" });
+                            }
                         }}
                     />
                     {/* <SelectFunction

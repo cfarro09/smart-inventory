@@ -64,26 +64,6 @@ const AuthState = ({ children }) => {
 
     useEffect(() => {
         async function loadUserFromCookies() {
-            try {
-                const resultproperties = await clientAxios.get('/api/public/properties');
-                if (resultproperties.data.data.length > 0) {
-                    const auxx = resultproperties.data.data[0].reduce((o, x) => ({
-                        ...o,
-                        sys_company_name: x.name === "sys_company_name" ? x.value : o.sys_company_name,
-                        sys_company_img: x.name === "sys_company_img" ? x.value : o.sys_company_img,
-                        sys_company_color_primary: x.name === "sys_company_color_primary" ? x.value : o.sys_company_color_primary,
-                        sys_company_color_secondary: x.name === "sys_company_color_secondary" ? x.value : o.sys_company_color_secondary,
-                    }), DEFAULTPROPERTIES);
-
-                    dispatch({
-                        type: INFOSYS,
-                        payload: DEFAULTPROPERTIES
-                    });
-                }
-            } catch (error) {
-                console.log(error);
-            }
-
             if (token) {
                 try {
                     const result = await clientAxios.get(process.env.endpoints.validatetoken);

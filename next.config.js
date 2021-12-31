@@ -11,6 +11,7 @@ module.exports = {
         endpoints: {
             transaction: "/api/main/transaction",
             selsimple: "/api/main/",
+            multi: "/api/main/multi",
             selpaginated: "/api/main/paginated",
             login: '/api/auth/login',
             validatetoken: '/api/auth/validateToken'

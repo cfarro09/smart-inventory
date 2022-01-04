@@ -116,6 +116,10 @@ const FILTERDATE = (filter) => ({
     method: "SP_SKU_DATE",
     data: filter
 })
+const FILTERWARBOARD = (filter) => ({
+    method: "SP_WARBOARD_NEW_PRODUCTS",
+    data: filter
+})
 const FILTERGraph1 = (filter) => ({
     method: "SP_SKU_CATEGORY",
     data: filter
@@ -462,6 +466,8 @@ const New_Products = () => {
             count += row.cont
         })
         setDataGraph(listResult.result.data)
+        const listwarboard = await triggeraxios('post', process.env.endpoints.selsimple, FILTERWARBOARD(filter_to_send))
+        console.log(listwarboard)
         const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTERDATE(filter_to_send))
         let listbrand = [];
         let brandlist = [];

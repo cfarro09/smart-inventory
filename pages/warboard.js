@@ -490,6 +490,7 @@ const BulkLoad = () => {
                             if (!cleanFilter) {
                                 setdisablebutton(!value)
                                 setcategory(value)
+                                setfilters({ ...filters, categoria: value?.id_form || 1 });
                             }
                         }}
                     />

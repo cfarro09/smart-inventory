@@ -84,6 +84,107 @@ const elementBrand = (week) => ({
     "DAEWOO": 0
 })
 
+const FILTERv2 = (filter, filters) => ({
+    method: ["brand", "model", "sub_category"].includes(filter) ? "SP_ALL_FILTER_MASTER" : "SP_ALL_FILTER_DATA",
+    data: {
+        filter,
+        format: filters?.format || "",
+        channel: filters?.channel || "",
+        department: filters?.department || "",
+        store_name: filters?.store_name || "",
+        category: filters?.categoria || 1,
+        sku_code: filters?.SKU || "",
+        brand: filters?.marca || "",
+        sub_category: filters?.subcategoria || "",
+        retail: filters?.retail || "",
+        price: filters?.tipo_pvp || "",
+    }
+})
+
+const fields = [
+    /*ARROCERA*/[
+        { name: "capacity", title: "capacidad" },
+        { name: "watts", title: "watts" },
+        { name: "finish", title: "acabado" },
+        { name: "color", title: "color" },
+        { name: "bowl_material", title: "material del tazón" },
+        { name: "bowl_size", title: "medida del tazón" },
+        { name: "coating", title: "recubrimiento" },
+        { name: "functions", title: "funciones" },
+        { name: "lid_material", title: "material de la tapa" },
+        { name: "lid_type", title: "tipo de tapa" },
+        { name: "detachable_cable", title: "cable desmontable" },
+        { name: "steamer", title: "vaporera" },
+        { name: "steamer_position", title: "posición de la vaporera" },
+        { name: "steamer_material", title: "material de la vaporera" },
+        { name: "accessories", title: "accesorios" },
+        { name: "temperature_control", title: "control de temperatura" },
+    ],
+    /*LICUADORA*/[
+        { name: "base_material", title: "material de la base" },
+        { name: "color", title: "color" },
+        { name: "speeds", title: "velocidades" },
+        { name: "push_button", title: "pulsador" },
+        { name: "power", title: "potencia" },
+        { name: "tumbler_capacity", title: "capacidad del vaso" },
+        { name: "cover_with_measure", title: "sobretapa con medida" },
+        { name: "cup_material", title: "material del vaso" },
+        { name: "coupling_material", title: "material de acople" },
+        { name: "coupling_position", title: "posición de acople" },
+        { name: "reversible_technology", title: "tecnología reversible" },
+        { name: "num_automatic_programs", title: "cantidad de programas automáticos" },
+        { name: "automatic_programs", title: "programas automáticos" },
+        { name: "shut_off_times", title: "tiempos de apagado" },
+        { name: "accessories", title: "accesorios" },
+        { name: "blade_material", title: "material de las cuchillas" },
+        { name: "number_of_blades", title: "numero de aspas" },
+    ],
+    /*BATIDORA*/[
+        { name: "power", title: "potencia" },
+        { name: "speeds", title: "velocidades" },
+        { name: "turbo", title: "turbo" },
+        { name: "base_material", title: "material de la base" },
+        { name: "color", title: "color" },
+        { name: "kneading_hook", title: "gancho amasador" },
+        { name: "frothing_hook", title: "gancho espumador" },
+        { name: "double_motor", title: "doble motor" },
+        { name: "bowl_material", title: "material del tazón" },
+        { name: "capacity", title: "capacidad" },
+        { name: "accessories", title: "accesorios" },
+    ],
+    [],
+    /*FREIDORA*/[
+        { name: "capacity", title: "capacidad" },
+        { name: "watts", title: "watts" },
+        { name: "color", title: "color" },
+        { name: "external_finish", title: "acabado externo" },
+        { name: "inner_tray", title: "acabado externo" },
+        { name: "indicator_on_bowl", title: "INDICADOR EN EL TAZÓN" },
+        { name: "coating", title: "RECUBIMIENTO" },
+        { name: "functions", title: "funciones" },
+        { name: "food_types", title: "TIPOS DE ALIMENTOS" },
+        { name: "variable_temperature", title: "temperatura variable" },
+        { name: "max_time", title: "tiempo maximo" },
+        { name: "accessories", title: "accesorios" },
+        { name: "recipe_book", title: "recetario" },
+    ],
+    /*HORNOS*/[
+        {name: "liters", title: "LITROS"},
+        {name: "power", title: "POTENCIA"},
+        {name: "material", title: "MATERIAL"},
+        {name: "inner_finish", title: "ACABADO INTERNO"},
+        {name: "color", title: "COLOR"},
+        {name: "internal_light", title: "LUZ INTERNA"},
+        {name: "rotisserie", title: "ROSTICERO"},
+        {name: "accessories", title: "ACCESORIOS"},
+        {name: "recipe_book", title: "RECETARIO"},
+        {name: "functions", title: "FUNCIONES"},
+        {name: "variable_time", title: "TIEMPO VARIABLE"},
+        {name: "variable_temperature", title: "TEMPERATURA VARIABLE"},
+        {name: "fan_location", title: "UBICACIÓN DEL VENTILADOR"},
+    ],
+]
+
 const GET_CATEGORY = (filter) => ({
     method: "SP_SEL_CATEGORY",
     data: {
@@ -206,6 +307,7 @@ const New_Products = () => {
     const [orderbrandsDate, setorderbrandsDate] = useState([])
     const [orderbrandsSKU, setorderbrandsSKU] = useState([ "BOSCH", "IMACO", "OSTER", "PHILIPS", "PRACTIKA", "RECCO", "TAURUS", "THOMAS"])
     const [orderbrandspoi, setorderbrandspoi] = useState([])
+    const [miniwarboard, setminiwarboard] = useState([])
     const [dataGraphDate, setDataGraphDate] = useState(
         [
             {
@@ -280,6 +382,9 @@ const New_Products = () => {
     },
 
     ])
+    const [initial, setinitial] = useState(0);
+    const [cleanFilter, setcleanFilter] = useState(false);
+    const [stopFilter, setstopFilter] = useState(-1);
     const [poicategory, setpoicategory] = useState([])
     const [poicategoryperc, setpoicategoryperc] = useState([])
     const [totalSKA, settotalSKA] = useState(0)
@@ -392,34 +497,61 @@ const New_Products = () => {
         subcategoria: [],
     })
 
-    useEffect(() => {
-        let continuezyx = true;
-        (async () => {
+    const applyfilter = async (fill, initial = false) => {
+        if (initial) {
+            fill.categoria = fill?.categoria || 1;
+            setOpenBackdrop(true);
             const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
-                GET_FILTER("format"),
-                GET_FILTER("channel"),
-                GET_FILTER("department"),
-                GET_CATEGORY("LINEAL"),
-                RB_MARCA,
-                GET_FILTER("sub_category"),
+                FILTERv2("format", fill),
+                FILTERv2("channel", fill),
+                FILTERv2("department",fill),
+                FILTERv2("brand", fill),
+                FILTERv2("model", fill),
+                FILTERv2("sub_category", fill),
+                FILTERv2("store_name", fill),
+                FILTERv2("department", fill),
+                ...(initial ? [GET_CATEGORY("LINEAL")] : [])
             ])
-            filtrar()
             if (resultMulti.result instanceof Array) {
                 const resarray = resultMulti.result;
-                setdatafilters({
-                    ...datafilters,
+                setdatafilters(x => ({
+                    ...x,
                     format: resarray[0]?.success ? resarray[0].data : [],
                     channel: resarray[1]?.success ? resarray[1].data : [],
                     department: resarray[2]?.success ? resarray[2].data : [],
-                    categoria: resarray[3]?.success ? resarray[3].data : [],
-                    marca: resarray[4]?.success ? resarray[4].data : [],
+                    marca: resarray[3]?.success ? resarray[3].data : [],
+                    SKU: resarray[4]?.success ? resarray[4].data : [],
                     subcategoria: resarray[5]?.success ? resarray[5].data : [],
-                })
-            }         
-        })();
-        return () => continuezyx = false;
-    }, [])
+                    store_name: resarray[6]?.success ? resarray[6].data : [],
+                    department: resarray[7]?.success ? resarray[7].data : [],
+                    categoria: initial ? (resarray[8]?.success ? resarray[8].data : []) : x.categoria,
+                }))
+            }
+            setstopFilter(stopFilter * -1);
+            setOpenBackdrop(false);
+        }
+    }
+    useEffect(() => {
+        if (initial === 1) {
+            filtrar()
+        }
+    }, [initial])
     
+    useEffect(() => {
+        
+        (async () => {
+            await applyfilter({}, true)
+            setinitial(1)
+        })();
+        
+    }, [])
+    useEffect(() => {
+        if (initial){
+            applyfilter(filters, !!initial)
+            console.log(initial)
+            setinitial(0)
+        }
+    }, [filters])
     async function updatelistretail(id_form){
         const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
             GET_FILTERRETAIL("retail",id_form),
@@ -466,8 +598,9 @@ const New_Products = () => {
             count += row.cont
         })
         setDataGraph(listResult.result.data)
+        
         const listwarboard = await triggeraxios('post', process.env.endpoints.selsimple, FILTERWARBOARD(filter_to_send))
-        console.log(listwarboard)
+        setminiwarboard(listwarboard.result.data)
         const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTERDATE(filter_to_send))
         let listbrand = [];
         let brandlist = [];
@@ -765,198 +898,84 @@ const New_Products = () => {
 
                             </Box>
                         </div>
-                        <div className={classes.replacerowzyx}>
-                            <div style={{flex: 1}} className={classes.replacerowzyx}>
-                                <div style={{flex: 2}} >
-                                    <div style={{textAlign: "center"}}>
-                                        <div>RC006R</div>
-                                        <div>IMACO</div>
-                                    </div>
-                                    
-                                    <div style={{display: "flex"}} >
+                        {
+                            miniwarboard.map((x,i)=>{
+                                console.log(x)
+                                let tempCat = datafilters.categoria.filter(y=>y.id_form === x.id_form)
+                                let xcategory = tempCat.length>0?tempCat[0].category.split(" ")[3]:""
+                                let parameterquant = fields[Number(x.id_form)-1].length
+                                let firsthalf = Math.floor(parameterquant/2)
+                                return( 
+                                <div key={`miniwarboard-${i}`} className={classes.replacerowzyx}>
+                                    <div style={{flex: 2}} >
+                                        <div style={{textAlign: "center"}}>
+                                            <div>{x.model}</div>
+                                            <div>{x.brand}</div>
+                                        </div>
                                         
-                                        <div style={{flex: 1}}>
-                                            <TableContainer component={Paper}>
-                                                <Table aria-label="simple table" >
-                                                    <TableBody>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">subcategoria</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">Arrocera</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Regular</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. 79.95</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Promoción</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. 7.50</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Capacidad</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">0.6LTS</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Watts</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">350</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Acabado</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">METAL</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">color</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">BLANCO</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">material del tazon</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row"></TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">medida del tazon</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SI</TableCell>
-                                                        </TableRow>
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
+                                        <div style={{display: "flex"}} >
+                                            
+                                            <div style={{flex: 1}}>
+                                                <TableContainer component={Paper}>
+                                                    <Table aria-label="simple table" >
+                                                        <TableBody>
+                                                            <TableRow>
+                                                                <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">subcategoria</TableCell>
+                                                                <TableCell className={classes.datacell} align="center" component="th" scope="row">{xcategory}</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Regular</TableCell>
+                                                                <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. {Number(x.regular_price).toFixed(2)}</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Promoción</TableCell>
+                                                                <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. {Number(x.prom_price).toFixed(2)}</TableCell>
+                                                            </TableRow>
+                                                            {
+                                                                fields[Number(x.id_form)-1].map((y,i)=>{
+                                                                    if(i<firsthalf){
+                                                                        return <TableRow>
+                                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{y.title}</TableCell>
+                                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">{x[y.name]}</TableCell>
+                                                                        </TableRow>
+                                                                    }else{
+                                                                        return ""
+                                                                    }
+                                                                })
+                                                            }
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            </div>
+                                            <div style={{flex: 1}}>
+                                                <TableContainer component={Paper}>
+                                                    <Table aria-label="simple table" >
+                                                        <TableBody>
+                                                            {
+                                                                fields[Number(x.id_form)-1].map((y,i)=>{
+                                                                    if(i>=firsthalf){
+                                                                        return <TableRow>
+                                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{y.title}</TableCell>
+                                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">{x[y.name]}</TableCell>
+                                                                        </TableRow>
+                                                                    }else{
+                                                                        return ""
+                                                                    }
+                                                                })
+                                                            }
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            </div>
                                         </div>
-                                        <div style={{flex: 1}}>
-                                            <TableContainer component={Paper}>
-                                                <Table aria-label="simple table" >
-                                                    <TableBody>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">recubrimiento</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SIN RECUBRIMIENTO</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">funciones</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">COOK/WARM</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">MATERIAL DE LA TAPA</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">VIDRIO REFRACTADO</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">TIPO DE TAPA</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">NO HERMETICA</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">CABLE DESMONTABLE</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SI</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">VAPORERA</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">NO</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">MATERIAL DE LA VAPORERA</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SIN VAPORERA</TableCell>
-                                                        </TableRow>
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                        </div>
+                                    </div>    
+                                    <div style={{flex: 1}} >
+                                    <img style={{ width: "100%", height: "auto"}} alt="image.jpg" src={x.graphic}></img>
                                     </div>
                                 </div>
-                                <div style={{flex: 1}} >
-                                <img style={{ width: "100%", height: "auto"}} alt="image.jpg" src="http://142.44.214.184:5000/storage/master_imagenes/RC6.png"></img>
-                                </div>
-                            </div>
-                            <div style={{flex: 1}} className={classes.replacerowzyx}>
-                            <div style={{flex: 2}} >
-                                    <div style={{textAlign: "center"}}>
-                                        <div>RC006R</div>
-                                        <div>IMACO</div>
-                                    </div>
-                                    
-                                    <div style={{display: "flex"}} >
-                                        
-                                        <div style={{flex: 1}}>
-                                            <TableContainer component={Paper}>
-                                                <Table aria-label="simple table" >
-                                                    <TableBody>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">subcategoria</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">Arrocera</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Regular</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. 79.95</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Promoción</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. 7.50</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Capacidad</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">0.6LTS</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Watts</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">350</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Acabado</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">METAL</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">color</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">BLANCO</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">material del tazon</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row"></TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">medida del tazon</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SI</TableCell>
-                                                        </TableRow>
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                        </div>
-                                        <div style={{flex: 1}}>
-                                            <TableContainer component={Paper}>
-                                                <Table aria-label="simple table" >
-                                                    <TableBody>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">recubrimiento</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SIN RECUBRIMIENTO</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">funciones</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">COOK/WARM</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">MATERIAL DE LA TAPA</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">VIDRIO REFRACTADO</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">TIPO DE TAPA</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">NO HERMETICA</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">CABLE DESMONTABLE</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SI</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">VAPORERA</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">NO</TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">MATERIAL DE LA VAPORERA</TableCell>
-                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">SIN VAPORERA</TableCell>
-                                                        </TableRow>
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style={{flex: 1}} >
-                                <img style={{ width: "100%", height: "auto"}} alt="image.jpg" src="http://142.44.214.184:5000/storage/master_imagenes/2816P.png"></img>
-                                </div>
-                            </div>
-                        </div>
+                                )
+                            })
+                        }
                     </div>
                 }
             </div>

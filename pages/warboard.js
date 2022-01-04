@@ -122,6 +122,7 @@ const fields = [
         { name: "capacity", title: "capacidad" },
         { name: "accessories", title: "accesorios" },
     ],
+    [],
     /*FREIDORA*/[
         { name: "capacity", title: "capacidad" },
         { name: "watts", title: "watts" },

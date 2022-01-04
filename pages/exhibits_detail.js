@@ -65,21 +65,27 @@ const StyledTableRow = withStyles((theme) => ({
     },
 }))(TableRow);
 
-const GET_FILTER = (filter) => ({
-    method: "SP_SEL_FILTER",
-    data: {
-        filter
-    }
-})
 const FILTER = (filter) => ({
     method: "SP_EXHIBIT_DB",
     data: filter
 })
-const GET_FILTERRETAIL = (filter,id_form) => ({
-    method: "SP_FILTER_BYID",
+
+const FILTERv2 = (filter, filters) => ({
+    method: ["brand", "model", "sub_category","area", "management", "type_exhibit"].includes(filter) ? "SP_ALL_FILTER_MASTER_EXIHIBIT" : "SP_ALL_FILTER_DATA_EXIHIBIT",
     data: {
         filter,
-        id_form
+        format: filters?.format || "",
+        channel: filters?.channel || "",
+        department: filters?.department || "",
+        store_name: filters?.store_name || "",
+        category: 4,
+        sku_code: filters?.SKU || "",
+        brand: filters?.marca || "",
+        sub_category: filters?.subcategoria || "",
+        management: filters?.management || "",
+        area: filters?.area || "",
+        type_exhibit: filters?.type_exhibit || "",
+        retail: filters?.retail || "",
     }
 })
 
@@ -123,6 +129,7 @@ const Exhibits_detail = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
+    const [stopFilter, setstopFilter] = useState(-1);
 
     const [disablebutton, setdisablebutton] = useState(true)
     const { setLightBox, setOpenBackdrop } = useContext(popupsContext);
@@ -219,41 +226,48 @@ const Exhibits_detail = () => {
         tipo_pvp: [],
         retail:[],
     })
-
+    
     useEffect(() => {
         (async () => {
-            const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
-                GET_FILTER("format"),
-                GET_FILTER("channel"),
-                GET_FILTER("department"),
-                GET_FILTERRETAIL("store_name",4),
-                GET_FILTER("category"),
-                RB_MARCA,
-                GET_FILTERRETAIL("model",4),
-                GET_FILTERRETAIL("retail",4),
-                GET_FILTER("management"),
-                GET_FILTER("type_exhibit"),
-                GET_FILTER("area"),
-            ])
-            if (resultMulti.result instanceof Array) {
-                const resarray = resultMulti.result;
-                setdatafilters({
-                    ...datafilters,
-                    format: resarray[0]?.success ? resarray[0].data : [],
-                    channel: resarray[1]?.success ? resarray[1].data : [],
-                    department: resarray[2]?.success ? resarray[2].data : [],
-                    store_name: resarray[3]?.success ? resarray[3].data : [],
-                    subcategoria: resarray[4]?.success ? resarray[4].data : [],
-                    marca: resarray[5]?.success ? resarray[5].data : [],
-                    model: resarray[6]?.success ? resarray[6].data : [],
-                    retail: resarray[7]?.success ? resarray[7].data : [],
-                    management: resarray[8]?.success ? resarray[8].data : [],
-                    type_exhibit: resarray[9]?.success ? resarray[9].data : [],
-                    area: resarray[10]?.success ? resarray[10].data : [],
-                })
-            }
+            await applyfilter({})
         })();
+        return () => continuezyx = false;
     }, [])
+    const applyfilter = async (fill) => {
+        setOpenBackdrop(true);
+        const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
+            FILTERv2("format", fill),
+            FILTERv2("channel", fill),
+            FILTERv2("retail", fill),
+            FILTERv2("brand", fill),
+            FILTERv2("model", fill),
+            FILTERv2("sub_category", fill),
+            FILTERv2("store_name", fill),
+            FILTERv2("department", fill),
+            FILTERv2("management", fill),
+            FILTERv2("type_exhibit", fill),
+            FILTERv2("area", fill),
+        ])
+        if (resultMulti.result instanceof Array) {
+            const resarray = resultMulti.result;
+            setdatafilters(x => ({
+                ...x,
+                format: resarray[0]?.success ? resarray[0].data : [],
+                channel: resarray[1]?.success ? resarray[1].data : [],
+                retail: resarray[2]?.success ? resarray[2].data : [],
+                marca: resarray[3]?.success ? resarray[3].data : [],
+                SKU: resarray[4]?.success ? resarray[4].data : [],
+                subcategoria: resarray[5]?.success ? resarray[5].data : [],
+                store_name: resarray[6]?.success ? resarray[6].data : [],
+                department: resarray[7]?.success ? resarray[7].data : [],
+                management: resarray[8]?.success ? resarray[8].data : [],
+                type_exhibit: resarray[9]?.success ? resarray[9].data : [],
+                area: resarray[10]?.success ? resarray[10].data : [],
+            }));
+        }
+        setstopFilter(stopFilter * -1);
+        setOpenBackdrop(false)
+    }
 
     async function filtrar() {
         setsearchdone(true)
@@ -294,13 +308,13 @@ const Exhibits_detail = () => {
                         title="Categoría"
                         classname={classes.itemFilter}
                         datatosend={datafilters.subcategoria}
-                        optionvalue="sub_category"
-                        optiondesc="sub_category"
+                        optionvalue="category"
+                        optiondesc="category"
                         variant="outlined"
-                        namefield="sub_category"
-                        descfield="sub_category"
+                        namefield="category"
+                        descfield="category"
                         callback={({ newValue: value }) => {
-                            setfilters({ ...filters, subcategoria: value?.sub_category || "" });
+                            setfilters({ ...filters, subcategoria: value?.category || "" });
                         }}
                     />
                     <SelectFunction

@@ -368,13 +368,13 @@ const Exhibits_data_base = () => {
                         title="Categoría"
                         classname={classes.itemFilter}
                         datatosend={datafilters.subcategoria}
-                        optionvalue="sub_category"
-                        optiondesc="sub_category"
+                        optionvalue="category"
+                        optiondesc="category"
                         variant="outlined"
-                        namefield="sub_category"
-                        descfield="sub_category"
+                        namefield="category"
+                        descfield="category"
                         callback={({ newValue: value }) => {
-                            setfilters({ ...filters, subcategoria: value?.sub_category || "" });
+                            setfilters({ ...filters, subcategoria: value?.category || "" });
                         }}
                     />
                     <SelectFunction

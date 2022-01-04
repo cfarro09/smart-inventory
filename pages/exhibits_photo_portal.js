@@ -5,15 +5,9 @@ import triggeraxios from '../config/axiosv2';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
 import DateRange from '../components/system/form/daterange';
-import TableCell from '@material-ui/core/TableCell';
 import Box from '@material-ui/core/Box';
-import TableRow from '@material-ui/core/TableRow';
 import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -30,49 +24,6 @@ import {
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
 
-
-
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell);
-const StyledTableCell2 = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableRow);
-
-const GET_CATEGORY = (filter) => ({
-    method: "SP_SEL_CATEGORY",
-    data: {
-        type: filter
-    }
-})
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
 
 const rows = [
     { image: "http://142.44.214.184:5000/storage/master_images/BOA15V.png", description: "This is a photo", title: "Nombre de la tienda" },
@@ -102,27 +53,9 @@ const HtmlTooltip = withStyles((theme) => ({
     },
 }))(Tooltip);
 
-const paramTemplate = {
-    method: "SP_SEL_TEMPLATE",
-    data: { id_corporation: null, id_organization: null, status: 'ACTIVO' }
-}
-
-const GET_FILTER = (filter) => ({
-    method: "SP_SEL_FILTER",
-    data: {
-        filter
-    }
-})
 const FILTER = (filter) => ({
     method: "SP_PHOTO_PORTAL_EXHIBIT",
     data: filter
-})
-const GET_FILTERRETAIL = (filter,id_form) => ({
-    method: "SP_FILTER_BYID",
-    data: {
-        filter,
-        id_form
-    }
 })
 
 
@@ -151,22 +84,31 @@ const useStyles = makeStyles(() => ({
         backgroundColor: "white",
     }
 }));
-
-const RB_MARCA = {
-    "method": "SP_SEL_DATA_MASTER",
-    "data": {
-        "filter": "brand"
+const FILTERv2 = (filter, filters) => ({
+    method: ["brand", "model", "sub_category","area", "management", "type_exhibit"].includes(filter) ? "SP_ALL_FILTER_MASTER_EXIHIBIT" : "SP_ALL_FILTER_DATA_EXIHIBIT",
+    data: {
+        filter,
+        format: filters?.format || "",
+        channel: filters?.channel || "",
+        department: filters?.department || "",
+        store_name: filters?.store_name || "",
+        category: 4,
+        sku_code: filters?.SKU || "",
+        brand: filters?.marca || "",
+        sub_category: filters?.subcategoria || "",
+        management: filters?.management || "",
+        area: filters?.area || "",
+        type_exhibit: filters?.type_exhibit || "",
+        retail: filters?.retail || "",
     }
-}
+})
 
 const Exhibits_photo_portal = () => {
     const classes = useStyles();
-    const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [category, setcategory] = useState(null);
-
-    const [disablebutton, setdisablebutton] = useState(true)
+    const [stopFilter, setstopFilter] = useState(-1);
     const { setLightBox, setOpenBackdrop } = useContext(popupsContext);
     const [dateRange, setdateRange] = useState([
         {
@@ -240,39 +182,6 @@ const Exhibits_photo_portal = () => {
         tipo_pvp: [],
         retail:[],
     })
-
-    useEffect(() => {
-        (async () => {
-            const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
-                GET_FILTER("format"),
-                GET_FILTER("channel"),
-                GET_FILTER("department"),
-                GET_FILTERRETAIL("store_name",4),
-                GET_FILTER("category"),
-                RB_MARCA,
-                GET_FILTER("management"),
-                GET_FILTERRETAIL("retail",4),
-                GET_FILTER("type_exhibit"),
-                GET_FILTER("area"),
-            ])
-            if (resultMulti.result instanceof Array) {
-                const resarray = resultMulti.result;
-                setdatafilters({
-                    ...datafilters,
-                    channel: resarray[1]?.success ? resarray[1].data : [],
-                    format: resarray[0]?.success ? resarray[0].data : [],
-                    department: resarray[2]?.success ? resarray[2].data : [],
-                    store_name: resarray[3]?.success ? resarray[3].data : [],
-                    subcategoria: resarray[4]?.success ? resarray[4].data : [],
-                    marca: resarray[5]?.success ? resarray[5].data : [],
-                    management: resarray[6]?.success ? resarray[6].data : [],
-                    retail: resarray[7]?.success ? resarray[7].data : [],
-                    type_exhibit: resarray[8]?.success ? resarray[8].data : [],
-                    area: resarray[9]?.success ? resarray[9].data : [],
-                })
-            }
-        })();
-    }, [])
     async function filtrar() {
         //setWaitFilter(true)
         setDataGraph([])
@@ -298,15 +207,47 @@ const Exhibits_photo_portal = () => {
         console.log(listResult.result.data)
         setDataGraph(listResult.result.data)
     }
-    function descargar() {
-        html2canvas(document.getElementById('divToPrint'))
-            .then((canvas) => {
-                const pdf = new jsPDF('l', 'mm', 'a4');
-                var width = pdf.internal.pageSize.getWidth();
-                var height = pdf.internal.pageSize.getHeight();
-                pdf.addImage(canvas.toDataURL('image/png'), 'JPEG', 0, 0, width, height);
-                pdf.save("download.pdf");
-            })
+    useEffect(() => {
+        (async () => {
+            await applyfilter({})
+        })();
+        return () => continuezyx = false;
+    }, [])
+
+    const applyfilter = async (fill) => {
+        setOpenBackdrop(true);
+        const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
+            FILTERv2("format", fill),
+            FILTERv2("channel", fill),
+            FILTERv2("retail", fill),
+            FILTERv2("brand", fill),
+            FILTERv2("model", fill),
+            FILTERv2("sub_category", fill),
+            FILTERv2("store_name", fill),
+            FILTERv2("department", fill),
+            FILTERv2("management", fill),
+            FILTERv2("type_exhibit", fill),
+            FILTERv2("area", fill),
+        ])
+        if (resultMulti.result instanceof Array) {
+            const resarray = resultMulti.result;
+            setdatafilters(x => ({
+                ...x,
+                format: resarray[0]?.success ? resarray[0].data : [],
+                channel: resarray[1]?.success ? resarray[1].data : [],
+                retail: resarray[2]?.success ? resarray[2].data : [],
+                marca: resarray[3]?.success ? resarray[3].data : [],
+                SKU: resarray[4]?.success ? resarray[4].data : [],
+                subcategoria: resarray[5]?.success ? resarray[5].data : [],
+                store_name: resarray[6]?.success ? resarray[6].data : [],
+                department: resarray[7]?.success ? resarray[7].data : [],
+                management: resarray[8]?.success ? resarray[8].data : [],
+                type_exhibit: resarray[9]?.success ? resarray[9].data : [],
+                area: resarray[10]?.success ? resarray[10].data : [],
+            }));
+        }
+        setstopFilter(stopFilter * -1);
+        setOpenBackdrop(false)
     }
 
     return (
@@ -323,13 +264,13 @@ const Exhibits_photo_portal = () => {
                         title="Categoría"
                         classname={classes.itemFilter}
                         datatosend={datafilters.subcategoria}
-                        optionvalue="sub_category"
-                        optiondesc="sub_category"
+                        optionvalue="category"
+                        optiondesc="category"
                         variant="outlined"
-                        namefield="sub_category"
-                        descfield="sub_category"
+                        namefield="category"
+                        descfield="category"
                         callback={({ newValue: value }) => {
-                            setfilters({ ...filters, subcategoria: value?.sub_category || "" });
+                            setfilters({ ...filters, subcategoria: value?.category || "" });
                         }}
                     />
                     <SelectFunction

@@ -198,31 +198,16 @@ const GET_SUBCATEGORY = (id_form) => ({
         id_form
     }
 })
-
-const GET_FILTER = (filter) => ({
-    method: "SP_SEL_FILTER",
-    data: {
-        filter
-    }
-})
-const FILTER = (filter) => ({
-    method: "SP_SKU_BRAND",
-    data: filter
-})
-const FILTERPOI = (filter) => ({
-    method: "SP_SKU_POINAME",
-    data: filter
-})
-const FILTERDATE = (filter) => ({
-    method: "SP_SKU_DATE",
-    data: filter
-})
 const FILTERWARBOARD = (filter) => ({
     method: "SP_WARBOARD_NEW_PRODUCTS",
     data: filter
 })
-const FILTERGraph1 = (filter) => ({
-    method: "SP_SKU_CATEGORY",
+const FILTERFECHA = (filter) => ({
+    method: "SP_SKU_DATE_NEW_PRODUCT",
+    data: filter
+})
+const FILTERCAT  = (filter) => ({
+    method: "SP_SKU_CAT_NEW_PRODUCT",
     data: filter
 })
 
@@ -345,43 +330,9 @@ const New_Products = () => {
             },  
         ])
     const [categorybrandSKU, setcategorybrandSKU] = useState([])
-    const [categorybrandSKUperc, setcategorybrandSKUperc] = useState(
-    [
-    {
-        mes:  "Agosto",
-        BOSCH: 3,
-        IMACO: 3,
-        OSTER: 4,
-        PHILIPS: 3,
-        PRACTIKA: 3,
-        RECCO: 1,
-        TAURUS: 3,
-        THOMAS: 2
-    },
-    {
-        mes:  "Setiembre",
-        BOSCH: 0,
-        IMACO: 1,
-        OSTER: 4,
-        PHILIPS: 1,
-        PRACTIKA: 1,
-        RECCO: 1,
-        TAURUS: 2,
-        THOMAS: 2
-    },
-    {
-        mes:  "Octubre",
-        BOSCH: 3,
-        IMACO: 2,
-        OSTER: 1,
-        PHILIPS: 1,
-        PRACTIKA: 3,
-        RECCO: 3,
-        TAURUS: 3,
-        THOMAS: 0
-    },
-
-    ])
+    const [categorybrandSKUperc, setcategorybrandSKUperc] = useState([])
+    const [secondgraphcategory, setsecondgraphcategory] = useState([])
+    const [secondgraphdata, setsecondgraphdata] = useState([])
     const [initial, setinitial] = useState(0);
     const [cleanFilter, setcleanFilter] = useState(false);
     const [stopFilter, setstopFilter] = useState(-1);
@@ -577,7 +528,6 @@ const New_Products = () => {
 
     async function filtrar() {
         setsearchdone(true)
-        let count = 0;
         const filter_to_send = {
             format: filters.format,
             channel: filters.channel,
@@ -593,143 +543,42 @@ const New_Products = () => {
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
         }
         setOpenBackdrop(true)
-        const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTER(filter_to_send))
-        listResult.result.data.map((row) => {
-            count += row.cont
-        })
-        setDataGraph(listResult.result.data)
+        const listResult = await triggeraxios('post', process.env.endpoints.selsimple, FILTERFECHA(filter_to_send))
+        let dataFecha = listResult.result.data
+        let containerbrands = []
+        let dataFechasArray = []
+        dataFecha.forEach((x=>{
+            if(dataFechasArray.findIndex(y=>(y.week === x.date))==-1){
+                dataFechasArray.push(elementBrand(x.date))
+            }
+            if(!containerbrands.includes(x.brand)) containerbrands.push(x.brand)
+        }))
+        dataFecha.forEach((x=>{
+            let index = dataFechasArray.findIndex(y=>(y.week === x.date))
+            dataFechasArray[index][x.brand]=x.count
+        }))
+        setcategorybrandSKU(containerbrands)
+        setcategorybrandSKUperc(dataFechasArray)
         
+        const listcategory = await triggeraxios('post', process.env.endpoints.selsimple, FILTERCAT(filter_to_send))
+        let dataCategory = listcategory.result.data
+        let containerbrandscategory = []
+        let dataCategorysArray = []
+        dataCategory.forEach((x=>{
+            if(dataCategorysArray.findIndex(y=>(y.week === x.id_form))==-1){
+                dataCategorysArray.push(elementBrand(x.id_form))
+            }
+            if(!containerbrandscategory.includes(x.brand)) containerbrandscategory.push(x.brand)
+        }))
+        dataCategory.forEach((x=>{
+            let index = dataCategorysArray.findIndex(y=>(y.week === x.id_form))
+            dataCategorysArray[index][x.brand]=x.count
+        }))
+        setsecondgraphcategory(containerbrandscategory)
+        setsecondgraphdata(dataCategorysArray)
+
         const listwarboard = await triggeraxios('post', process.env.endpoints.selsimple, FILTERWARBOARD(filter_to_send))
         setminiwarboard(listwarboard.result.data)
-        const listResultDate = await triggeraxios('post', process.env.endpoints.selsimple, FILTERDATE(filter_to_send))
-        let listbrand = [];
-        let brandlist = [];
-        let weeks = [];
-        let totalweek = [];
-        let countbrand = new Array(49).fill(0);
-
-        listResultDate.result.data.map(row => {
-            if (!weeks.includes(row.Week)) { weeks.push(row.Week); totalweek.push(0) }
-            if (!brandlist.includes(row.brand)) brandlist.push(row.brand)
-        })
-        listResultDate.result.data.map(row => {
-            totalweek[weeks.indexOf(row.Week)] += parseInt(row.cnt)
-            countbrand[brands.indexOf(row.brand)] += parseInt(row.cnt)
-        })
-        weeks.map(row => {
-            listbrand.push(elementBrand(row))
-        })
-        function compare(a, b) {
-            if (countbrand[brands.indexOf(a)] < countbrand[brands.indexOf(b)]) {
-                return -1;
-            }
-            if (countbrand[brands.indexOf(a)] > countbrand[brands.indexOf(b)]) {
-                return 1;
-            }
-            return 0;
-        }
-        brandlist.sort(compare);
-        setorderbrandsDate(brandlist)
-        listResultDate.result.data.map(row => {
-            listbrand.forEach(list => {
-                if (list.week === row.Week) {
-                    list[row.brand] = ((parseInt(row.cnt) / totalweek[weeks.indexOf(row.Week)]) * 100)
-                }
-            })
-        })
-        settotalSKA(count)
-
-
-
-        const listResultSKU = await triggeraxios('post', process.env.endpoints.selsimple, FILTERGraph1(filter_to_send))
-        let categories = []
-        let skucategory = [];
-        let brandlistSKU = [];
-        let skucategoryperc = [];
-        let skucategorytotal = [];
-        let countbrandSKU = new Array(49).fill(0);
-        listResultSKU.result.data.map(row => {
-            if (!categories.includes(row.subcategory)) { categories.push(row.subcategory); skucategorytotal.push(0) }
-            if (!brandlistSKU.includes(row.brand)) brandlistSKU.push(row.brand)
-        })
-        listResultSKU.result.data.map(row => {
-            skucategorytotal[categories.indexOf(row.subcategory)] += parseInt(row.cont)
-            countbrandSKU[brands.indexOf(row.brand)] += parseInt(row.cont)
-        })
-        categories.map(row => {
-            skucategory.push(elementBrand(row))
-            skucategoryperc.push(elementBrand(row))
-        })
-        listResultSKU.result.data.map(row => {
-            skucategory.forEach(list => {
-                if (list.week === row.subcategory) {
-                    list[row.brand] = parseInt(row.cont)
-                }
-            })
-            skucategoryperc.forEach(list => {
-                if (list.week === row.subcategory) {
-                    list[row.brand] = ((parseInt(row.cont) / skucategorytotal[categories.indexOf(row.subcategory)]) * 100)
-                }
-            })
-        })
-        function compareSKU(a, b) {
-            if (countbrandSKU[brands.indexOf(a)] < countbrandSKU[brands.indexOf(b)]) {
-                return -1;
-            }
-            if (countbrandSKU[brands.indexOf(a)] > countbrandSKU[brands.indexOf(b)]) {
-                return 1;
-            }
-            return 0;
-        }
-        brandlistSKU.sort(compareSKU);
-        //setorderbrandsSKU(brandlistSKU)
-        setcategorybrandSKU(skucategory)
-
-
-        const listpoiresult = await triggeraxios('post', process.env.endpoints.selsimple, FILTERPOI(filter_to_send))
-        let categoriespoi = []
-        let poicategories = [];
-        let poicategoriesperc = [];
-        let brandlistpoi = [];
-        let poicategoriestotal = [];
-        let countbrandpoi = new Array(49).fill(0);
-        listpoiresult.result.data.map(row => {
-            if (!categoriespoi.includes(row.retail)) { categoriespoi.push(row.retail); poicategoriestotal.push(0) }
-            if (!brandlistpoi.includes(row.brand)) brandlistpoi.push(row.brand)
-        })
-        listpoiresult.result.data.map(row => {
-            poicategoriestotal[categoriespoi.indexOf(row.retail)] += parseInt(row.cont)
-            countbrandpoi[brands.indexOf(row.brand)] += parseInt(row.cont)
-        })
-        categoriespoi.map(row => {
-            poicategories.push(elementBrand(row))
-            poicategoriesperc.push(elementBrand(row))
-        })
-        listpoiresult.result.data.map(row => {
-            poicategories.forEach(list => {
-                if (list.week === row.retail) {
-                    list[row.brand] = parseInt(row.cont)
-                }
-            })
-            poicategoriesperc.forEach(list => {
-                if (list.week === row.retail) {
-                    list[row.brand] = ((parseInt(row.cont) / poicategoriestotal[categoriespoi.indexOf(row.retail)]) * 100)
-                }
-            })
-        })
-        function comparepoi(a, b) {
-            if (countbrandpoi[brands.indexOf(a)] < countbrandpoi[brands.indexOf(b)]) {
-                return -1;
-            }
-            if (countbrandpoi[brands.indexOf(a)] > countbrandpoi[brands.indexOf(b)]) {
-                return 1;
-            }
-            return 0;
-        }
-        brandlistpoi.sort(comparepoi);
-        setorderbrandspoi(brandlistpoi)
-        setpoicategory(poicategories)
-        setpoicategoryperc(poicategoriesperc)
         setOpenBackdrop(false)
     }
     function descargar() {
@@ -853,13 +702,13 @@ const New_Products = () => {
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.5}>
                                     <LineChart data={categorybrandSKUperc} >
                                         <Legend verticalAlign="bottom"/>
-                                        <XAxis dataKey="mes" angle={270} interval={0} textAnchor="end" height={160} dy={5} dx={-5} />
+                                        <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={100} dy={5} dx={-5} />
                                         <YAxis allowDecimals={false} allowDataOverflow={true}/>
-                                        <Tooltip itemSorter={item => -(orderbrandsSKU.indexOf(item.dataKey))} formatter={(value, name) => [value.toFixed(2) + " %", name]} />
+                                        <Tooltip itemSorter={item => -(categorybrandSKU.indexOf(item.dataKey))} formatter={(value, name) => [value.toFixed(0), name]} />
                                         <CartesianGrid />
                                         {
-                                            orderbrandsSKU.map((brand, i) => (
-                                                <Line key={`marcCperc${brand}`} type="monotone" dataKey={brand} stroke={colors[brands.indexOf(brand)]} />
+                                            categorybrandSKU.map((brand, i) => (
+                                                <Line key={`marcCperc${i}`} type="monotone" dataKey={brand} stroke={colors[brands.indexOf(brand)]} />
                                             ))
                                         }
                                     </LineChart>
@@ -870,20 +719,20 @@ const New_Products = () => {
                                 className={classes.itemCard}
                             >
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.5}>
-                                    <BarChart data={dataGraphDate}>
-                                        <XAxis dataKey="week" />
+                                    <BarChart data={secondgraphdata}>
+                                        <XAxis dataKey="week" tickFormatter={(x)=>datafilters.categoria.filter(y=>y.id_form === x)[0].category.split(" ")[3]}/>
                                         <YAxis allowDecimals={false} allowDataOverflow={true}/>
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <Tooltip
                                             itemSorter={item => -(item.value)}
-                                            labelFormatter={(value) => [<b>Semana {value}</b>]}
-                                            formatter={(value, name) => [value.toFixed(2) + " %", name]}
+                                            labelFormatter={(value) => [<b>{datafilters.categoria.filter(y=>y.id_form === value)[0].category.split(" ")[3]}</b>]}
+                                            formatter={(value, name) => [value.toFixed(0), name]}
                                         />
                                         {
-                                            orderbrandsDate.map((brand) => {
+                                            secondgraphcategory.map((brand,i) => {
                                                 return (
                                                     <Bar
-                                                        key={`cantskus${brand}`}
+                                                        key={`cantskus${i}`}
                                                         type="monotone"
                                                         dataKey={brand}
                                                         stackId="a"

@@ -1,10 +1,9 @@
-import React, { useState, useContext, useEffect, Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/system/layout/layout'
-import { Box, Theme } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import triggeraxios from '../config/axiosv2';
 
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import TableZyx from '../components/system/form/table-simple';
+import {  makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import Radio from '@material-ui/core/Radio';
@@ -12,13 +11,12 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { validateResArray } from '../config/helper';
 import SelectFunction from '../components/system/form/select-function';
-import { AreaChart, Area, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DateRange from '../components/system/form/daterange';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { jsPDF } from "jspdf";
@@ -271,13 +269,6 @@ const useStyles = makeStyles((theme) => ({
         padding: 5
     },
 }));
-
-const RB_MARCA = {
-    "method": "SP_SEL_DATA_MASTER",
-    "data": {
-        "filter": "brand"
-    }
-}
 const GET_FILTERRETAIL = (filter,id_form) => ({
     method: "SP_FILTER_BYID",
     data: {
@@ -288,61 +279,17 @@ const GET_FILTERRETAIL = (filter,id_form) => ({
 
 const New_Products = () => {
     const classes = useStyles();
-    const [dataGraph, setDataGraph] = useState([])
-    const [orderbrandsDate, setorderbrandsDate] = useState([])
-    const [orderbrandsSKU, setorderbrandsSKU] = useState([ "BOSCH", "IMACO", "OSTER", "PHILIPS", "PRACTIKA", "RECCO", "TAURUS", "THOMAS"])
-    const [orderbrandspoi, setorderbrandspoi] = useState([])
     const [miniwarboard, setminiwarboard] = useState([])
-    const [dataGraphDate, setDataGraphDate] = useState(
-        [
-            {
-                week: "Licuadora",
-                BOSCH: 3,
-                IMACO: 3,
-                OSTER: 4,
-                PHILIPS: 3,
-                PRACTIKA: 3,
-                RECCO: 1,
-                TAURUS: 3,
-                THOMAS: 2
-            },  
-            {
-                week: "Arrocera",
-                BOSCH: 0,
-                IMACO: 1,
-                OSTER: 4,
-                PHILIPS: 1,
-                PRACTIKA: 1,
-                RECCO: 1,
-                TAURUS: 2,
-                THOMAS: 2
-            },  
-            {
-                week: "Freidora",
-                BOSCH: 3,
-                IMACO: 2,
-                OSTER: 1,
-                PHILIPS: 1,
-                PRACTIKA: 3,
-                RECCO: 3,
-                TAURUS: 3,
-                THOMAS: 0
-            },  
-        ])
     const [categorybrandSKU, setcategorybrandSKU] = useState([])
     const [categorybrandSKUperc, setcategorybrandSKUperc] = useState([])
     const [secondgraphcategory, setsecondgraphcategory] = useState([])
     const [secondgraphdata, setsecondgraphdata] = useState([])
     const [initial, setinitial] = useState(0);
-    const [cleanFilter, setcleanFilter] = useState(false);
     const [stopFilter, setstopFilter] = useState(-1);
-    const [poicategory, setpoicategory] = useState([])
-    const [poicategoryperc, setpoicategoryperc] = useState([])
-    const [totalSKA, settotalSKA] = useState(0)
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
-    const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
+    const {  setOpenBackdrop } = React.useContext(popupsContext);
     const [subcategories, setsubcategories] = useState([]);
 
     const [disablebutton, setdisablebutton] = useState(true)

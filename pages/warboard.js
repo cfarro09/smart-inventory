@@ -139,19 +139,19 @@ const fields = [
         { name: "recipe_book", title: "recetario" },
     ],
     /*HORNOS*/[
-        {name: "liters", title: "LITROS"},
-        {name: "power", title: "POTENCIA"},
-        {name: "material", title: "MATERIAL"},
-        {name: "inner_finish", title: "ACABADO INTERNO"},
-        {name: "color", title: "COLOR"},
-        {name: "internal_light", title: "LUZ INTERNA"},
-        {name: "rotisserie", title: "ROSTICERO"},
-        {name: "accessories", title: "ACCESORIOS"},
-        {name: "recipe_book", title: "RECETARIO"},
-        {name: "functions", title: "FUNCIONES"},
-        {name: "variable_time", title: "TIEMPO VARIABLE"},
-        {name: "variable_temperature", title: "TEMPERATURA VARIABLE"},
-        {name: "fan_location", title: "UBICACIÓN DEL VENTILADOR"},
+        { name: "liters", title: "LITROS" },
+        { name: "power", title: "POTENCIA" },
+        { name: "material", title: "MATERIAL" },
+        { name: "inner_finish", title: "ACABADO INTERNO" },
+        { name: "color", title: "COLOR" },
+        { name: "internal_light", title: "LUZ INTERNA" },
+        { name: "rotisserie", title: "ROSTICERO" },
+        { name: "accessories", title: "ACCESORIOS" },
+        { name: "recipe_book", title: "RECETARIO" },
+        { name: "functions", title: "FUNCIONES" },
+        { name: "variable_time", title: "TIEMPO VARIABLE" },
+        { name: "variable_temperature", title: "TEMPERATURA VARIABLE" },
+        { name: "fan_location", title: "UBICACIÓN DEL VENTILADOR" },
     ],
 ]
 
@@ -216,6 +216,18 @@ const RB_MARCA = {
     "data": {
         "filter": "brand"
     }
+}
+
+function urlToPromise(url) {
+    return new Promise(function (resolve, reject) {
+        JSZipUtils.getBinaryContent(url, function (err, data) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(data);
+            }
+        });
+    });
 }
 
 function tmpgetfields(value) {
@@ -353,7 +365,7 @@ const BulkLoad = () => {
             Object.entries(item).forEach(([key, value], index) => {
                 const indexfound = listValues.findIndex(x => x.name === key);
                 if (indexfound >= 0) {
-                    acc[indexfound].push(value)
+                    acc[indexfound].push(key === "graphic" ? value.split("/").pop() : value)
                 }
             });
             return acc;
@@ -419,7 +431,7 @@ const BulkLoad = () => {
             })
         }
     }, [cleanFilter])
-    
+
     function setcategorysearchfield(value) {
         if (value.includes("ARROCERA")) {
             setfieldstoshow(fields[0])
@@ -431,9 +443,10 @@ const BulkLoad = () => {
             setfieldstoshow(fields[2])
         }
     }
+    const URLMACRO = "https://staticfileszyxme.s3.us-east.cloud-object-storage.appdomain.cloud/macro-warboard.xlsm"
 
-    function generateZIP() {
-        console.log('TEST');
+    async function generateZIP() {
+        setOpenBackdrop(true)
         var zip = new JSZip();
         var count = 0;
         var zipFilename = "Warboard.zip";
@@ -447,23 +460,23 @@ const BulkLoad = () => {
         const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
         const dataexcel = new Blob([excelBuffer], { type: fileType });
 
-        dataGraph.map((row, i) => {
-            JSZipUtils.getBinaryContent(row.graphic, function (err, data) {
-                if (err) {
-                    //throw err; // or handle the error
-                    console.log(err);
-                }
-                zip.file(`${row.model}.png`, data, { binary: true });
-                count++;
-                if (count == dataGraph.length) {
-                    zip.file(`warboard.xlsx`, dataexcel, { binary: true });
-                    zip.generateAsync({ type: 'blob' }).then(function (content) {
-                        saveAs(content, zipFilename);
-                        setOpenBackdrop(false)
-                    });
-                }
-            });
-        })
+        await Promise.all(dataGraph.map(async (row, i) => {
+            try {
+                const data = await urlToPromise(row.graphic);
+                zip.file(`images/${row.model}.png`, data, { binary: true });
+            } catch (error) {
+                return null;                
+            }
+        }));
+
+        const datamacro = await urlToPromise(URLMACRO);
+        zip.file('macro-warboard.xlsm', datamacro, { binary: true });
+
+        zip.file(`warboard.xlsx`, dataexcel, { binary: true });
+        zip.generateAsync({ type: 'blob' }).then(function (content) {
+            saveAs(content, zipFilename);
+            setOpenBackdrop(false)
+        });
     }
 
     return (

@@ -153,6 +153,61 @@ const fields = [
         { name: "variable_temperature", title: "TEMPERATURA VARIABLE" },
         { name: "fan_location", title: "UBICACIÓN DEL VENTILADOR" },
     ],
+    /*EXTRACTORES*/[
+        { name: 'accessories', title: 'ACCESORIOS' },
+        { name: 'bagasse_capacity', title: 'BAGAZO CAPACIDAD' },
+        { name: 'bagasse_receiving_material', title: 'MATERIAL DE RECEPCIÓN DE BAGAZO' },
+        { name: 'brand', title: 'MARCA' },
+        { name: 'capacity', title: 'CAPACIDAD' },
+        { name: 'carafe_capacity', title: 'CAPACIDAD DE LA JARRA' },
+        { name: 'color', title: 'COLOR' },
+        { name: 'feed_pipe_diameter', title: 'FEED PIPE DIAMETER' },
+        { name: 'finish', title: 'FINALIZAR' },
+        { name: 'foam_separator', title: 'SEPARADOR DE ESPUMA' },
+        { name: 'graphic', title: 'GRÁFICO' },
+        { name: 'juice_receiver_material', title: 'JUGO RECEPTOR MATERIAL' },
+        { name: 'model', title: 'MODELO' },
+        { name: 'number_of_blades', title: 'NÚMERO DE CUCHILLAS' },
+        { name: 'power', title: 'ENERGÍA' },
+        { name: 'safety_system_type', title: 'TIPO DE SISTEMA DE SEGURIDAD' },
+        { name: 'self_cleaning_system', title: 'SISTEMA DE AUTOLIMPIEZA' },
+        { name: 'speeds', title: 'VELOCIDADES' },
+        { name: 'subcategory', title: 'SUBCATEGORÍA' },
+        { name: 'technology', title: 'TECNOLOGÍA ' },
+    ],
+    /*CAFETERAS*/[
+        { name: 'accessories', title: 'ACCESORIOS' },
+        { name: 'automatic_shutoff', title: 'APAGADO AUTOMÁTICO' },
+        { name: 'barsdepression', title: 'BARESDEPRESIÓN' },
+        { name: 'brand', title: 'MARCA' },
+        { name: 'capacity_n_cups', title: 'CAPACIDAD N TAZAS' },
+        { name: 'cleaning_function', title: 'FUNCIÓN LIMPIEZA' },
+        { name: 'coffee_strength', title: 'CAFÉ FUERZA' },
+        { name: 'color', title: 'COLOR' },
+        { name: 'filter_type', title: 'TIPO DE FILTRO' },
+        { name: 'finish', title: 'FINALIZAR' },
+        { name: 'freshness_timer', title: 'FRESCURA TEMPORIZADOR' },
+        { name: 'grinder_capacity', title: 'MOLINILLO CAPACIDAD' },
+        { name: 'grinder_capactiy', title: 'GRINDER CAPACTIY' },
+        { name: 'hot_water_dispenser', title: 'DISPENSADOR DE AGUA CALIENTE' },
+        { name: 'integrated_grinder', title: 'MOLINILLO INTEGRADO' },
+        { name: 'milk_feeder', title: 'ALIMENTADOR DE LECHE' },
+        { name: 'milk_tank_capacity', title: 'CAPACIDAD TANQUE DE LECHE' },
+        { name: 'model', title: 'MODELO' },
+        { name: 'pitcher', title: 'LANZADOR' },
+        { name: 'power', title: 'ENERGÍA' },
+        { name: 'programmable', title: 'PROGRAMABLE' },
+        { name: 'pump_type', title: 'TIPO BOMBA' },
+        { name: 'recipe_book', title: 'LIBRO DE RECETAS' },
+        { name: 'removable_diffuser', title: 'DIFUSOR REMOVIBLE' },
+        { name: 'removable_filter', title: 'FILTRO REMOVIBLE' },
+        { name: 'subcategory', title: 'SUBCATEGORÍA' },
+        { name: 'technology', title: 'TECNOLOGÍA' },
+        { name: 'type_of_carafe', title: 'TIPO DE JARRA' },
+        { name: 'viewer_windows', title: 'VISOR VENTANAS' },
+        { name: 'water_tank_capacity', title: 'CAPACIDAD TANQUE DE AGUA' },
+        { name: 'watts', title: 'WATTS' },
+    ],
 ]
 
 const GET_FILTER = (filter) => ({
@@ -231,6 +286,7 @@ function urlToPromise(url) {
 }
 
 function tmpgetfields(value) {
+    console.log("aaa", value)
     if (value.includes("ARROCERA")) {
         return fields[0];
     }
@@ -239,6 +295,18 @@ function tmpgetfields(value) {
     }
     else if (value.includes("BATIDORA")) {
         return fields[2];
+    }
+    else if (value.includes("FREIDORAS")) {
+        return fields[4];
+    }
+    else if (value.includes("HORNOS")) {
+        return fields[5];
+    }
+    else if (value.includes("EXTRACTORES")) {
+        return fields[6];
+    }
+    else if (value.includes("CAFETERAS")) {
+        return fields[7];
     }
     else {
         return fields[2];
@@ -365,7 +433,7 @@ const BulkLoad = () => {
             Object.entries(item).forEach(([key, value], index) => {
                 const indexfound = listValues.findIndex(x => x.name === key);
                 if (indexfound >= 0) {
-                    acc[indexfound].push(key === "graphic" ? value.split("/").pop() : value)
+                    acc[indexfound].push(key === "graphic" ? value?.split("/").pop() || "" : value)
                 }
             });
             return acc;
@@ -433,6 +501,7 @@ const BulkLoad = () => {
     }, [cleanFilter])
 
     function setcategorysearchfield(value) {
+        console.log("bbbb", value)
         if (value.includes("ARROCERA")) {
             setfieldstoshow(fields[0])
         }
@@ -441,6 +510,18 @@ const BulkLoad = () => {
         }
         else if (value.includes("BATIDORA")) {
             setfieldstoshow(fields[2])
+        }
+        else if (value.includes("FREIDORAS")) {
+            setfieldstoshow(fields[4]);
+        }
+        else if (value.includes("HORNOS")) {
+            setfieldstoshow(fields[5]);
+        }
+        else if (value.includes("EXTRACTORES")) {
+            setfieldstoshow(fields[6]);
+        }
+        else if (value.includes("CAFETERAS")) {
+            setfieldstoshow(fields[7]);
         }
     }
     const URLMACRO = "https://staticfileszyxme.s3.us-east.cloud-object-storage.appdomain.cloud/macro-warboard.xlsm"
@@ -465,7 +546,7 @@ const BulkLoad = () => {
                 const data = await urlToPromise(row.graphic);
                 zip.file(`images/${row.model}.png`, data, { binary: true });
             } catch (error) {
-                return null;                
+                return null;
             }
         }));
 

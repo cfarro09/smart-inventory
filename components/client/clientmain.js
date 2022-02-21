@@ -56,7 +56,7 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientsele
         validationSchema: Yup.object({
             first_name: Yup.string().required('Elnombre es obligatorio'),
             last_name: Yup.string().required('El apellido es obligatorio'),
-            doc_number: Yup.string().required('El documento es obligatorio'),
+            // doc_number: Yup.string().required('El documento es obligatorio'),
             doc_type: Yup.string().required('El tipo documento es obligatorio'),
             email: Yup.string().email('El correo no es valido'),
             status: Yup.string().required('El estado es obligatorio')

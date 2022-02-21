@@ -12,7 +12,16 @@ import popupsContext from 'context/pop-ups/pop-upsContext';
 import authContext from 'context/auth/authContext';
 import SelectFunction from 'components/system/form/select-function';
 import ClientMain from 'components/client/clientmain';
-
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import EditIcon from '@material-ui/icons/Edit';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { useFormik } from 'formik';
+import InputFormk from 'components/system/form/inputformik';
+import * as Yup from 'yup';
 import {
     Scheduler,
     Resources,
@@ -33,6 +42,7 @@ import {
     ViewSwitcher
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { add } from 'date-fns';
+import { Fab } from '@material-ui/core';
 
 const resources = (data) => [{
     fieldName: 'id_field',
@@ -199,18 +209,109 @@ const validateField = (fields, id_field, startDate, endDate) => {
     return { ...fieldselected, price: timeselected.price }
 }
 
-const ItemEvent = ({ appointment }) => {
+
+const ChangePrice = ({ setData, index, appointment, data, openModal, setOpenModal }) => {
+
+    useEffect(() => {
+        if (openModal) {
+            formik.resetForm();
+        }
+    }, [openModal])
+
+    const formik = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            price: 0,
+        },
+        validationSchema: Yup.object({
+            price: Yup.number().min(1, 'El precio es requerido')
+        }),
+        onSubmit: async values => {
+            const newdata = [...data];
+            newdata[index].price = values.price;
+            newdata[index].total = values.price * newdata[index].hours;
+            setData(newdata);
+            console.log(newdata)
+            setOpenModal(false);
+        }
+    });
+
+    return (
+        <>
+            <Dialog
+                open={openModal}
+                fullWidth={true}
+                maxWidth='sm'
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <form
+                    noValidate
+                    onSubmit={formik.handleSubmit}
+                >
+                    <DialogTitle id="alert-dialog-title">Cambiar precio de {appointment?.title}</DialogTitle>
+                    <DialogContent>
+                        <div>
+                            Precio anterior: {(appointment?.price || 0).toFixed(2)}
+                        </div>
+                        <div className="row-zyx">
+                            <InputFormk
+                                name="price"
+                                classname="col-12"
+                                label="Nuevo precio"
+                                type='number'
+                                formik={formik}
+                            />
+                        </div>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            type="submit"
+                            color="primary"
+                        >
+                            GUARDAR
+                        </Button>
+                        <Button
+                            type="button"
+                            color="secondary"
+                            style={{ marginLeft: '1rem' }}
+                            onClick={() => setOpenModal(false)}
+                        >
+                            Cerrar
+                        </Button>
+                    </DialogActions>
+                </form>
+            </Dialog>
+        </>
+    );
+}
+
+const ItemEvent = ({ appointment, setAppontmentSelectedIndex, index, setAppontmentSelected }) => {
     const datetmp = appointment.startDate.toLocaleString().split("/");
     const hourtmp = appointment.startDate.toLocaleString().split(" ")[1].split(":");
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '4px', marginBottom: '4px', borderBottom: '1px solid #e1e1e1' }}>
-            <div style={{ width: '50%' }}>
+            <div style={{ width: 'calc(45% - 15px)' }}>
                 <div>{`${datetmp[0].padStart(2, "0")}/${datetmp[1].padStart(2, "0")}`}</div>
                 <div>{`${hourtmp[0].padStart(2, "0")}:${hourtmp[1].padStart(2, "0")} (${appointment.hours}H)`}</div>
                 <div>{appointment.title}({appointment.hours})</div>
             </div>
-            <div style={{ width: '50%', textAlign: 'right' }}>
+            <div style={{ width: 'calc(45% - 15px)' }}>
                 S/ {appointment.total.toFixed(2)}
+            </div>
+            <div style={{ width: 40, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Tooltip title="Cambiar el precio">
+                    <Fab
+                        size="small"
+                        style={{ width: 30, height: 30 }}
+                        onClick={() => {
+                            setAppontmentSelected(appointment)
+                            setAppontmentSelectedIndex(index)
+                        }}
+                    >
+                        <EditIcon style={{ fontSize: 20 }} />
+                    </Fab>
+                </Tooltip>
             </div>
         </div>
     )
@@ -251,6 +352,9 @@ const Boooking = () => {
     const [showAllEvents, setShowAllEvents] = useState(true); // valor del switch
     const [readOnly, setReadOnly] = useState(false); //bloquear cuando edite un evento ya creado en otra reserva
     const [validateResources, setValidateResources] = useState(false);
+    const [appontmentSelected, setAppontmentSelected] = useState(null)
+    const [appontmentSelectedIndex, setAppontmentSelectedIndex] = useState(null)
+    const [showChangePrice, setshowChangePrice] = useState(false);
 
     useEffect(() => {
         let continuezyx = true;
@@ -605,11 +709,16 @@ const Boooking = () => {
             setAppointmentsShowed(data)
     }
 
+    const selectAppointment = (appointment) => {
+        setAppontmentSelected(appointment);
+        setshowChangePrice(true);
+    }
+
     return (
         <Layout withPadding={false}>
             <div style={{ padding: '16px', paddingBottom: '0' }}>
                 <div className="row-zyx">
-                    <div className="col-2" style={{display: 'none'}}>
+                    <div className="col-2" style={{ display: 'none' }}>
                         <Switch
                             title="Ver eventos"
                             valueselected={true}
@@ -737,13 +846,13 @@ const Boooking = () => {
                                 setvisible(undefined)
                             }}
                             textEditorComponent={props => {
-                                if (props.placeholder === "Título") 
+                                if (props.placeholder === "Título")
                                     return null
                                 return <AppointmentForm.TextEditor {...props} />
                             }}
                             // labelComponent={props => {
                             //     if (props.text === "Título")
-                                    
+
                             //     return <AppointmentForm.Label {...props} />
                             // }}
                             commandLayoutComponent={({ onCancelButtonClick, ...props }) => {
@@ -806,12 +915,20 @@ const Boooking = () => {
                 </div>
                 {data.length > 0 &&
                     <div style={{ width: '200px', minWidth: '200px', padding: '8px', overflowY: 'auto', height: '600px' }}>
-                        <div style={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', paddingBottom: '4px', marginBottom: '4px', borderBottom: '1px solid #e1e1e1' }}>
-                            <span>Detalle</span>
-                            <span>Importe</span>
+                        <div style={{ fontWeight: 'bold', display: 'flex', paddingBottom: '4px', marginBottom: '4px', borderBottom: '1px solid #e1e1e1' }}>
+                            <span style={{ flex: 1 }}>Detalle</span>
+                            <span style={{ flex: 1 }}>Importe</span>
+                            <span style={{ flex: '0 0 30px' }}></span>
                         </div>
+                        {console.log(data)}
                         {data.map((appointment, index) => (
-                            <ItemEvent key={`index${index}`} appointment={appointment} />
+                            <ItemEvent
+                                key={`index${index}`}
+                                index={index}
+                                appointment={appointment}
+                                setAppontmentSelectedIndex={setAppontmentSelectedIndex}
+                                setAppontmentSelected={selectAppointment}
+                            />
                         ))}
                         <div style={{ fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', paddingBottom: '4px', marginBottom: '4px', borderBottom: '1px solid #e1e1e1' }}>
                             <span>Total reserva</span>
@@ -833,6 +950,14 @@ const Boooking = () => {
                 setOpenModal={setOpenModalClient}
                 fetchDataUser={getClients}
                 rowselected={null}
+            />
+            <ChangePrice
+                setData={setData}
+                data={data}
+                appointment={appontmentSelected}
+                index={appontmentSelectedIndex}
+                openModal={showChangePrice}
+                setOpenModal={setshowChangePrice}
             />
         </Layout>
     );

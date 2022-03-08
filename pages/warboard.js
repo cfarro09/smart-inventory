@@ -208,6 +208,46 @@ const fields = [
         { name: 'water_tank_capacity', title: 'CAPACIDAD TANQUE DE AGUA' },
         { name: 'watts', title: 'WATTS' },
     ],
+    /*HERVIDORES*/[
+        { name: "accessories", title: "ACCESORIOS" },
+        { name: "brand", title: "MARCA" },
+        { name: "capacity", title: "CAPACIDAD" },
+        { name: "color", title: "COLOR" },
+        { name: "fill_indicator", title: "INDICADOR_DE_RELLENO" },
+        { name: "fixed_cover", title: "CUBIERTA_FIJA" },
+        { name: "indicator_led", title: "INDICADOR_LED" },
+        { name: "light_switch", title: "INTERRUPTOR DE LUZ" },
+        { name: "model", title: "MODELO" },
+        { name: "subcategory", title: "SUBCATEGORÍA" },
+        { name: "technology", title: "TECNOLOGÍA" },
+        { name: "temperature_control", title: "CONTROL DE TEMPERATURA" },
+        { name: "type_resistance", title: "TIPO_RESISTENCIA" },
+        { name: "watts", title: "VATIOS" },
+    ],
+    /*PLANCHAS*/[
+        { name: "360_cable", title: "CABLE 360" },
+        { name: "accessories", title: "ACCESORIOS" },
+        { name: "anti_drip_system", title: "SISTEMA ANTIGOTEO" },
+        { name: "anti_scale_system", title: "SISTEMA ANTICAL" },
+        { name: "automatic_shutoff", title: "APAGADO AUTOMÁTICO" },
+        { name: "brand", title: "MARCA" },
+        { name: "coating", title: "REVESTIMIENTO" },
+        { name: "color", title: "COLOR" },
+        { name: "cord_type", title: "TIPO DE CABLE" },
+        { name: "extra_shot_steam", title: "TIRO EXTRA DE VAPOR" },
+        { name: "gram_steam_per_minutes", title: "GRAMO DE VAPOR POR MINUTO" },
+        { name: "model", title: "MODELO" },
+        { name: "self_cleaning_system", title: "SISTEMA DE AUTOLIMPIEZA" },
+        { name: "sprayer", title: "PULVERIZADOR" },
+        { name: "steam_level", title: "NIVEL DE VAPOR" },
+        { name: "steam_levels", title: "NIVELES DE VAPOR" },
+        { name: "subcategory", title: "SUBCATEGORÍA" },
+        { name: "times", title: "VECES" },
+        { name: "vertical_steam", title: "VAPOR VERTICAL" },
+        { name: "water_tank_capacity", title: "CAPACIDAD DEL TANQUE DE AGUA" },
+        { name: "watts", title: "VATIOS" },
+        { name: "wireless", title: "INALÁMBRICA" },
+    ],
 ]
 
 const GET_FILTER = (filter) => ({
@@ -307,6 +347,12 @@ function tmpgetfields(value) {
     }
     else if (value.includes("CAFETERAS")) {
         return fields[7];
+    }
+    else if (value.includes("HERVIDORES")) {
+        return fields[8];
+    }
+    else if (value.includes("PLANCHAS")) {
+        return fields[9];
     }
     else {
         return fields[2];
@@ -522,6 +568,12 @@ const BulkLoad = () => {
         }
         else if (value.includes("CAFETERAS")) {
             setfieldstoshow(fields[7]);
+        }
+        else if (value.includes("HERVIDORES")) {
+            setfieldstoshow(fields[8]);
+        }
+        else if (value.includes("PLANCHAS")) {
+            setfieldstoshow(fields[9]);
         }
     }
     const URLMACRO = "https://staticfileszyxme.s3.us-east.cloud-object-storage.appdomain.cloud/macro-warboard.xlsm"

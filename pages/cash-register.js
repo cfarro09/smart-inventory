@@ -134,6 +134,12 @@ const ScheduledBooking = () => {
         [appfound]
     );
 
+    const selectrow = async (row) => {
+        const res = await triggeraxios('get', `/api/export/invoice/${row.id_booking}`);
+
+        window.open(res.result.data.url, '_blank');
+    }
+
     useEffect(() => {
         triggeraxios('post', process.env.endpoints.selsimple, SELCAMPUS).then(res => setcampus(validateResArray(res, true)))
     }, [])

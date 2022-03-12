@@ -45,7 +45,7 @@ const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
             amount: Yup.number().min(1, "El monto debe ser mayor que 1").required('El monto es obligatorio')
         }),
         onSubmit: async values => {
-
+            console.log("booking", booking)
             const callback = async () => {
                 setModalQuestion({ visible: false });
                 const dattosend = {
@@ -67,8 +67,13 @@ const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
                     fetchData && fetchData();
                     setOpenModal(false);
                     setOpenSnackBack(true, { success: true, message: 'Se registró correctamente!.' });
-                } else
+
+                    const res = await triggeraxios('get', `/api/export/invoice/${booking.id_booking}`);
+
+                    window.open(res.result.data.url, '_blank');
+                } else {
                     setOpenSnackBack(true, { success: false, message: res.msg || 'Hubo un error, vuelva a intentarlo' });
+                }
 
                 setOpenBackdrop(false);
             }

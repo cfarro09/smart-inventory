@@ -813,14 +813,14 @@ const Boooking = () => {
                         <WeekView
                             cellDuration={60}
                             startDayHour={8}
-                            endDayHour={23}
+                            endDayHour={24}
                             name="Semana"
                             timeTableCellComponent={TimeTableCell}
                         />
                         <DayView
                             name="Día"
                             startDayHour={8}
-                            endDayHour={23}
+                            endDayHour={24}
                         />
                         <Toolbar />
                         <DateNavigator />

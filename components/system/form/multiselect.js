@@ -12,41 +12,54 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-const SelectMulti = ({ title, datatosend, optionvalue, optiondesc, valueselected = "", namefield, descfield, formik = false, classname = null, callback, callbackItem = null }) => {
+const SelectMulti = ({ title, datatosend, optionvalue, optiondesc, valueselected = "", namefield, descfield, formik = false, classname = null, callback, callbackItem = null, onlyinitial = false }) => {
 
     const [options, setOptions] = useState([]);
     const [loading, setloading] = useState(true);
     const [optionsSelected, setOptionsSelected] = useState([]);
 
     const setHardValues = (options, stringvalues) => {
+        setOptionsSelected([])
         if (stringvalues) {
+            console.log(stringvalues)
             const optionsselll = options.filter(o => stringvalues.split(",").indexOf(o[optionvalue].toString()) > -1)
             setOptionsSelected(optionsselll);
+            console.log("optionsselll", optionsselll)
+            if (callback)
+                callback(optionsselll)
         }
     }
 
     useEffect(() => {
-        const source = axios.CancelToken.source();
-
-        (async () => {
+        if (onlyinitial) {
+            console.log(datatosend)
             const valueselectedtmp = valueselected || "";
             if (datatosend instanceof Array) {
                 setOptions(datatosend);
                 setHardValues(datatosend, valueselectedtmp);
-            } else if (datatosend instanceof Object) {
-                const res = await triggeraxios('post', process.env.endpoints.selsimple, datatosend, null, source);
-                if (res.success && res.result.data instanceof Array) {
-                    setOptions(res.result.data);
-                    setHardValues(res.result, valueselectedtmp);
-                }
             }
 
             setloading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+
+        (async () => {
+            console.log("valueselected", valueselected)
+            if (datatosend instanceof Array) {
+                setOptions(datatosend);
+                if (!onlyinitial) {
+                    setHardValues(datatosend, valueselected || "");
+                } 
+                else {
+                    const optionsselll = options.filter(o => (valueselected || "").split(",").indexOf(o[optionvalue].toString()) > -1)
+                    setOptionsSelected(optionsselll);
+                }
+            }
+            setloading(false);
         })();
 
-        return () => {
-            source.cancel();
-        }
     }, [datatosend]);
 
     return (
@@ -67,10 +80,13 @@ const SelectMulti = ({ title, datatosend, optionvalue, optiondesc, valueselected
                     }
                 }
                 setOptionsSelected(values);
+                if (callback)
+                    callback(values)
                 // if (callback)
                 //     callback({ values })
             }}
             options={options}
+            filterSelectedOptions
             disableClearable
             getOptionLabel={option => option ? option[optiondesc] : ''}
             renderOption={(item, { selected }) => (
@@ -80,8 +96,7 @@ const SelectMulti = ({ title, datatosend, optionvalue, optiondesc, valueselected
                         checkedIcon={checkedIcon}
                         style={{ marginRight: 8 }}
                         onChange={(e) => {
-                            (callbackItem)
-                                callbackItem({ checked: e.target.checked, item })
+                            callbackItem && callbackItem({ checked: e.target.checked, item })
                         }}
                         checked={selected}
                     />

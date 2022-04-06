@@ -3,7 +3,7 @@ import Layout from '../components/system/layout/layout'
 import { Box } from "@material-ui/core";
 import triggeraxios from '../config/axiosv2';
 
-import {  makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import Radio from '@material-ui/core/Radio';
@@ -24,17 +24,17 @@ import html2canvas from 'html2canvas';
 import InputFormk from '../components/system/form/inputformik';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import popupsContext from '../context/pop-ups/pop-upsContext';
-
+import MultiSelectFunction from '../components/system/form/multiselect';
 import {
     Search as SearchIcon,
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
 
-const brands = ["IMACO", "B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO", "LUMIKA", "INSTANTPOT","WINIA","SMEG","KENT","DELONGHI","SEVERIN","MIDIA","FDV","DAEWOO", "INSTANT"]
+const brands = ["IMACO", "B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO", "LUMIKA", "INSTANTPOT", "WINIA", "SMEG", "KENT", "DELONGHI", "SEVERIN", "MIDIA", "FDV", "DAEWOO", "INSTANT"]
 const colors = ["#FFD600", "#bababa", "#26A69A", "#009688", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#00897B", "#b8b8b8", "#a2a2a2", "#808080", "#4527A0", "#8a8a8a", "#00695C", "#b5b5b5", "#4DB6AC", "#00796B", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#B2DFDB", "#444444", "#d3d3d3", "#fb5f5f", "#a9a9a9", "#80CBC4", "#797979", "#5D4037", "#323232", "#7d7d7d", "#bababa", "#2c2c2c", "#828282", "#6d6d6d", "#757575", "#929292", "#6d6d6d", "#6f6f6f", "#bababa", "#bababa"]
 const elementBrand = (week) => ({
     week: week,
-    "IMACO":0,
+    "IMACO": 0,
     "B&D": 0,
     "BLACKLINE": 0,
     "BORD": 0,
@@ -79,7 +79,7 @@ const elementBrand = (week) => ({
     "SEVERIN": 0,
     "MIDIA": 0,
     "FDV": 0,
-    "DAEWOO": 0, 
+    "DAEWOO": 0,
     "INSTANT": 0,
 })
 
@@ -168,19 +168,19 @@ const fields = [
         { name: "recipe_book", title: "recetario" },
     ],
     /*HORNOS*/[
-        {name: "liters", title: "LITROS"},
-        {name: "power", title: "POTENCIA"},
-        {name: "material", title: "MATERIAL"},
-        {name: "inner_finish", title: "ACABADO INTERNO"},
-        {name: "color", title: "COLOR"},
-        {name: "internal_light", title: "LUZ INTERNA"},
-        {name: "rotisserie", title: "ROSTICERO"},
-        {name: "accessories", title: "ACCESORIOS"},
-        {name: "recipe_book", title: "RECETARIO"},
-        {name: "functions", title: "FUNCIONES"},
-        {name: "variable_time", title: "TIEMPO VARIABLE"},
-        {name: "variable_temperature", title: "TEMPERATURA VARIABLE"},
-        {name: "fan_location", title: "UBICACIÓN DEL VENTILADOR"},
+        { name: "liters", title: "LITROS" },
+        { name: "power", title: "POTENCIA" },
+        { name: "material", title: "MATERIAL" },
+        { name: "inner_finish", title: "ACABADO INTERNO" },
+        { name: "color", title: "COLOR" },
+        { name: "internal_light", title: "LUZ INTERNA" },
+        { name: "rotisserie", title: "ROSTICERO" },
+        { name: "accessories", title: "ACCESORIOS" },
+        { name: "recipe_book", title: "RECETARIO" },
+        { name: "functions", title: "FUNCIONES" },
+        { name: "variable_time", title: "TIEMPO VARIABLE" },
+        { name: "variable_temperature", title: "TEMPERATURA VARIABLE" },
+        { name: "fan_location", title: "UBICACIÓN DEL VENTILADOR" },
     ],
 ]
 
@@ -205,7 +205,7 @@ const FILTERFECHA = (filter) => ({
     method: "SP_SKU_DATE_NEW_PRODUCT",
     data: filter
 })
-const FILTERCAT  = (filter) => ({
+const FILTERCAT = (filter) => ({
     method: "SP_SKU_CAT_NEW_PRODUCT",
     data: filter
 })
@@ -270,7 +270,7 @@ const useStyles = makeStyles((theme) => ({
         padding: 5
     },
 }));
-const GET_FILTERRETAIL = (filter,id_form) => ({
+const GET_FILTERRETAIL = (filter, id_form) => ({
     method: "SP_FILTER_BYID",
     data: {
         filter,
@@ -290,7 +290,7 @@ const New_Products = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
-    const {  setOpenBackdrop } = React.useContext(popupsContext);
+    const { setOpenBackdrop } = React.useContext(popupsContext);
     const [subcategories, setsubcategories] = useState([]);
 
     const [disablebutton, setdisablebutton] = useState(true)
@@ -301,7 +301,7 @@ const New_Products = () => {
             key: 'selection'
         }
     ]);
-    
+
     const columns = React.useMemo(
         () => [
             {
@@ -403,7 +403,7 @@ const New_Products = () => {
             const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
                 FILTERv2("format", fill),
                 FILTERv2("channel", fill),
-                FILTERv2("department",fill),
+                FILTERv2("department", fill),
                 FILTERv2("brand", fill),
                 FILTERv2("model", fill),
                 FILTERv2("sub_category", fill),
@@ -435,27 +435,27 @@ const New_Products = () => {
             filtrar()
         }
     }, [initial])
-    
+
     useEffect(() => {
-        
+
         (async () => {
             await applyfilter({}, true)
             setinitial(1)
         })();
-        
+
     }, [])
     useEffect(() => {
-        if (initial){
+        if (initial) {
             applyfilter(filters, !!initial)
             console.log(initial)
             setinitial(0)
         }
     }, [filters])
-    async function updatelistretail(id_form){
+    async function updatelistretail(id_form) {
         const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
-            GET_FILTERRETAIL("retail",id_form),
-            GET_FILTERRETAIL("store_name",id_form),
-            GET_FILTERRETAIL("model",id_form),
+            GET_FILTERRETAIL("retail", id_form),
+            GET_FILTERRETAIL("store_name", id_form),
+            GET_FILTERRETAIL("model", id_form),
         ])
         if (resultMulti.result instanceof Array) {
             const resarray = resultMulti.result;
@@ -465,7 +465,7 @@ const New_Products = () => {
                 store_name: resarray[1]?.success ? resarray[1].data : [],
                 SKU: resarray[2]?.success ? resarray[2].data : [],
             })
-        }    
+        }
     }
 
     const getSubctegories = (id_form) => {
@@ -495,32 +495,32 @@ const New_Products = () => {
         let dataFecha = listResult.result.data
         let containerbrands = []
         let dataFechasArray = []
-        dataFecha.forEach((x=>{
-            if(dataFechasArray.findIndex(y=>(y.week === x.date))==-1){
+        dataFecha.forEach((x => {
+            if (dataFechasArray.findIndex(y => (y.week === x.date)) == -1) {
                 dataFechasArray.push(elementBrand(x.date))
             }
-            if(!containerbrands.includes(x.brand)) containerbrands.push(x.brand)
+            if (!containerbrands.includes(x.brand)) containerbrands.push(x.brand)
         }))
-        dataFecha.forEach((x=>{
-            let index = dataFechasArray.findIndex(y=>(y.week === x.date))
-            dataFechasArray[index][x.brand]=x.count
+        dataFecha.forEach((x => {
+            let index = dataFechasArray.findIndex(y => (y.week === x.date))
+            dataFechasArray[index][x.brand] = x.count
         }))
         setcategorybrandSKU(containerbrands)
         setcategorybrandSKUperc(dataFechasArray)
-        
+
         const listcategory = await triggeraxios('post', process.env.endpoints.selsimple, FILTERCAT(filter_to_send))
         let dataCategory = listcategory.result.data
         let containerbrandscategory = []
         let dataCategorysArray = []
-        dataCategory.forEach((x=>{
-            if(dataCategorysArray.findIndex(y=>(y.week === x.id_form))==-1){
+        dataCategory.forEach((x => {
+            if (dataCategorysArray.findIndex(y => (y.week === x.id_form)) == -1) {
                 dataCategorysArray.push(elementBrand(x.id_form))
             }
-            if(!containerbrandscategory.includes(x.brand)) containerbrandscategory.push(x.brand)
+            if (!containerbrandscategory.includes(x.brand)) containerbrandscategory.push(x.brand)
         }))
-        dataCategory.forEach((x=>{
-            let index = dataCategorysArray.findIndex(y=>(y.week === x.id_form))
-            dataCategorysArray[index][x.brand]=x.count
+        dataCategory.forEach((x => {
+            let index = dataCategorysArray.findIndex(y => (y.week === x.id_form))
+            dataCategorysArray[index][x.brand] = x.count
         }))
         setsecondgraphcategory(containerbrandscategory)
         setsecondgraphdata(dataCategorysArray)
@@ -550,6 +550,29 @@ const New_Products = () => {
                         dateRangeinit={dateRange}
                         setDateRangeExt={setdateRange}
                     />
+
+                    <MultiSelectFunction
+                        title="Categoria"
+                        classname={classes.itemFilter}
+                        datatosend={datafilters.categoria}
+                        optionvalue="id_form"
+                        optiondesc="category"
+                        variant="outlined"
+                        namefield="id_form"
+                        descfield="category"
+                        valueselected={filters.categoria + ""}
+                        callback={(values) => {
+                            const value = values.map(x => x.id_form).join(',')
+
+                            getSubctegories(value?.id_form)
+                            setfilters({ ...filters, categoria: value });
+                            setcategory(value)
+                            setdisablebutton(!value)
+                            updatelistretail(value)
+                        }}
+                    />
+
+
                     <SelectFunction
                         title="Categoria"
                         classname={classes.itemFilter}
@@ -577,7 +600,7 @@ const New_Products = () => {
                         variant="outlined"
                         namefield="brand"
                         descfield="brand"
-                        style={{width: "150px"}}
+                        style={{ width: "150px" }}
                         callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
                     />
 
@@ -590,7 +613,7 @@ const New_Products = () => {
                         variant="outlined"
                         namefield="model"
                         descfield="model"
-                        style={{width: "200px"}}
+                        style={{ width: "200px" }}
                         callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model || '' })}
                     />
                     <SelectFunction
@@ -602,7 +625,7 @@ const New_Products = () => {
                         valueselected={filters.retail}
                         namefield="retail"
                         descfield="retail"
-                        style={{width: "200px"}}
+                        style={{ width: "200px" }}
                         callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
@@ -649,9 +672,9 @@ const New_Products = () => {
                             >
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.5}>
                                     <LineChart data={categorybrandSKUperc} >
-                                        <Legend verticalAlign="bottom"/>
+                                        <Legend verticalAlign="bottom" />
                                         <XAxis dataKey="week" angle={270} interval={0} textAnchor="end" height={100} dy={5} dx={-5} />
-                                        <YAxis allowDecimals={false} allowDataOverflow={true}/>
+                                        <YAxis allowDecimals={false} allowDataOverflow={true} />
                                         <Tooltip itemSorter={item => -(categorybrandSKU.indexOf(item.dataKey))} formatter={(value, name) => [value.toFixed(0), name]} />
                                         <CartesianGrid />
                                         {
@@ -668,16 +691,16 @@ const New_Products = () => {
                             >
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.5}>
                                     <BarChart data={secondgraphdata}>
-                                        <XAxis dataKey="week" tickFormatter={(x)=>datafilters.categoria.filter(y=>y.id_form === x)[0].category.split(" ")[3]}/>
-                                        <YAxis allowDecimals={false} allowDataOverflow={true}/>
+                                        <XAxis dataKey="week" tickFormatter={(x) => datafilters.categoria.filter(y => y.id_form === x)[0].category.split(" ")[3]} />
+                                        <YAxis allowDecimals={false} allowDataOverflow={true} />
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <Tooltip
                                             itemSorter={item => -(item.value)}
-                                            labelFormatter={(value) => [<b>{datafilters.categoria.filter(y=>y.id_form === value)[0].category.split(" ")[3]}</b>]}
+                                            labelFormatter={(value) => [<b>{datafilters.categoria.filter(y => y.id_form === value)[0].category.split(" ")[3]}</b>]}
                                             formatter={(value, name) => [value.toFixed(0), name]}
                                         />
                                         {
-                                            secondgraphcategory.map((brand,i) => {
+                                            secondgraphcategory.map((brand, i) => {
                                                 return (
                                                     <Bar
                                                         key={`cantskus${i}`}
@@ -696,80 +719,80 @@ const New_Products = () => {
                             </Box>
                         </div>
                         {
-                            miniwarboard.map((x,i)=>{
+                            miniwarboard.map((x, i) => {
                                 console.log(x)
-                                let tempCat = datafilters.categoria.filter(y=>y.id_form === x.id_form)
-                                let xcategory = tempCat.length>0?tempCat[0].category.split(" ")[3]:""
-                                let parameterquant = fields[Number(x.id_form)-1].length
-                                let firsthalf = Math.floor(parameterquant/2)
-                                return( 
-                                <div key={`miniwarboard-${i}`} className={classes.replacerowzyx}>
-                                    <div style={{flex: 2}} >
-                                        <div style={{textAlign: "center"}}>
-                                            <div>{x.model}</div>
-                                            <div>{x.brand}</div>
-                                        </div>
-                                        
-                                        <div style={{display: "flex"}} >
-                                            
-                                            <div style={{flex: 1}}>
-                                                <TableContainer component={Paper}>
-                                                    <Table aria-label="simple table" >
-                                                        <TableBody>
-                                                            <TableRow>
-                                                                <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">subcategoria</TableCell>
-                                                                <TableCell className={classes.datacell} align="center" component="th" scope="row">{xcategory}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Regular</TableCell>
-                                                                <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. {Number(x.regular_price).toFixed(2)}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Promoción</TableCell>
-                                                                <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. {Number(x.prom_price).toFixed(2)}</TableCell>
-                                                            </TableRow>
-                                                            {
-                                                                fields[Number(x.id_form)-1].map((y,i)=>{
-                                                                    if(i<firsthalf){
-                                                                        return <TableRow>
-                                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{y.title}</TableCell>
-                                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">{x[y.name]}</TableCell>
-                                                                        </TableRow>
-                                                                    }else{
-                                                                        return ""
-                                                                    }
-                                                                })
-                                                            }
-                                                        </TableBody>
-                                                    </Table>
-                                                </TableContainer>
+                                let tempCat = datafilters.categoria.filter(y => y.id_form === x.id_form)
+                                let xcategory = tempCat.length > 0 ? tempCat[0].category.split(" ")[3] : ""
+                                let parameterquant = fields[Number(x.id_form) - 1].length
+                                let firsthalf = Math.floor(parameterquant / 2)
+                                return (
+                                    <div key={`miniwarboard-${i}`} className={classes.replacerowzyx}>
+                                        <div style={{ flex: 2 }} >
+                                            <div style={{ textAlign: "center" }}>
+                                                <div>{x.model}</div>
+                                                <div>{x.brand}</div>
                                             </div>
-                                            <div style={{flex: 1}}>
-                                                <TableContainer component={Paper}>
-                                                    <Table aria-label="simple table" >
-                                                        <TableBody>
-                                                            {
-                                                                fields[Number(x.id_form)-1].map((y,i)=>{
-                                                                    if(i>=firsthalf){
-                                                                        return <TableRow>
-                                                                            <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{y.title}</TableCell>
-                                                                            <TableCell className={classes.datacell} align="center" component="th" scope="row">{x[y.name]}</TableCell>
-                                                                        </TableRow>
-                                                                    }else{
-                                                                        return ""
-                                                                    }
-                                                                })
-                                                            }
-                                                        </TableBody>
-                                                    </Table>
-                                                </TableContainer>
+
+                                            <div style={{ display: "flex" }} >
+
+                                                <div style={{ flex: 1 }}>
+                                                    <TableContainer component={Paper}>
+                                                        <Table aria-label="simple table" >
+                                                            <TableBody>
+                                                                <TableRow>
+                                                                    <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">subcategoria</TableCell>
+                                                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{xcategory}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Regular</TableCell>
+                                                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. {Number(x.regular_price).toFixed(2)}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Promoción</TableCell>
+                                                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. {Number(x.prom_price).toFixed(2)}</TableCell>
+                                                                </TableRow>
+                                                                {
+                                                                    fields[Number(x.id_form) - 1].map((y, i) => {
+                                                                        if (i < firsthalf) {
+                                                                            return <TableRow>
+                                                                                <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{y.title}</TableCell>
+                                                                                <TableCell className={classes.datacell} align="center" component="th" scope="row">{x[y.name]}</TableCell>
+                                                                            </TableRow>
+                                                                        } else {
+                                                                            return ""
+                                                                        }
+                                                                    })
+                                                                }
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                </div>
+                                                <div style={{ flex: 1 }}>
+                                                    <TableContainer component={Paper}>
+                                                        <Table aria-label="simple table" >
+                                                            <TableBody>
+                                                                {
+                                                                    fields[Number(x.id_form) - 1].map((y, i) => {
+                                                                        if (i >= firsthalf) {
+                                                                            return <TableRow>
+                                                                                <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{y.title}</TableCell>
+                                                                                <TableCell className={classes.datacell} align="center" component="th" scope="row">{x[y.name]}</TableCell>
+                                                                            </TableRow>
+                                                                        } else {
+                                                                            return ""
+                                                                        }
+                                                                    })
+                                                                }
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>    
-                                    <div style={{flex: 1}} >
-                                    <img style={{ width: "100%", height: "auto"}} alt="image.jpg" src={x.graphic}></img>
+                                        <div style={{ flex: 1 }} >
+                                            <img style={{ width: "100%", height: "auto" }} alt="image.jpg" src={x.graphic}></img>
+                                        </div>
                                     </div>
-                                </div>
                                 )
                             })
                         }

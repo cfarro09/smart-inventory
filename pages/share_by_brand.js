@@ -23,6 +23,7 @@ import Paper from '@material-ui/core/Paper';
 import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
 import InputFormk from '../components/system/form/inputformik';
+import MultiSelectFunction from '../components/system/form/multiselect';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import popupsContext from '../context/pop-ups/pop-upsContext';
 
@@ -552,7 +553,7 @@ const Share_by_brand = () => {
                         dateRangeinit={dateRange}
                         setDateRangeExt={setdateRange}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
                         title="Categoria"
                         classname={classes.itemFilter}
                         datatosend={datafilters.categoria}
@@ -560,15 +561,14 @@ const Share_by_brand = () => {
                         optiondesc="category"
                         variant="outlined"
                         onlyinitial={!cleanFilter}
-                        namefield="category"
+                        namefield="id_form"
                         descfield="category"
-                        valueselected={filters.categoria}
-                        callback={({ newValue: value }) => {
-                            setdisablebutton(!value)
-                            if (value?.id_form && !cleanFilter) {
-                                setcategory(value)
-                                setfilters({ ...filters, categoria: value?.id_form || 1 });
-                                // settriggerfilter(!triggerfilter)
+                        valueselected={filters.categoria + ""}
+                        callback={(values) => {
+                            setdisablebutton(!values)
+                            if (values.length > 0 && !cleanFilter) {
+                                setcategory(values.map(x => x.id_form).join(','))
+                                setfilters({ ...filters, categoria: values.map(x => x.id_form).join(',') });
                             }
                         }}
                     />

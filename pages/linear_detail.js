@@ -26,6 +26,7 @@ import html2canvas from 'html2canvas';
 import InputFormk from '../components/system/form/inputformik';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import popupsContext from '../context/pop-ups/pop-upsContext';
+import MultiSelectFunction from '../components/system/form/multiselect';
 
 import {
     Search as SearchIcon,
@@ -278,7 +279,7 @@ const Linear_detail = () => {
         channel: '',
         department: '',
         store_name: '',
-        categoria: 1,
+        categoria: "1",
         SKU: '',
         banda: '',
         marca: '',
@@ -341,7 +342,6 @@ const Linear_detail = () => {
             await applyfilter({}, true)
             setinitial(1)
         })();
-        return () => continuezyx = false;
     }, [])
 
     useEffect(() => {
@@ -393,7 +393,7 @@ const Linear_detail = () => {
                 channel: '',
                 department: '',
                 store_name: '',
-                categoria: 1,
+                categoria: "1",
                 SKU: '',
                 banda: '',
                 marca: '',
@@ -414,21 +414,23 @@ const Linear_detail = () => {
                         dateRangeinit={dateRange}
                         setDateRangeExt={setdateRange}
                     />
-                    <SelectFunction
-                        onlyinitial={!cleanFilter}
+                    <MultiSelectFunction
                         title="Categoria"
                         classname={classes.itemFilter}
                         datatosend={datafilters.categoria}
-                        optionvalue="category"
+                        optionvalue="id_form"
                         optiondesc="category"
                         variant="outlined"
-                        namefield="category"
+                        onlyinitial={!cleanFilter}
+                        namefield="id_form"
                         descfield="category"
-                        callback={({ newValue: value }) => {
+                        valueselected={filters.categoria + ""}
+                        callback={(values) => {
+                            console.log(values)
                             if (!cleanFilter) {
-                                setfilters({ ...filters, categoria: value?.id_form || 1 });
-                                setcategory(value)
-                                setdisablebutton(!value)
+                                setfilters({ ...filters, categoria: values.map(x => x.id_form).join(',') });
+                                setcategory(values.map(x => x.id_form).join(','))
+                                setdisablebutton(!values)
                             }
                         }}
                     />

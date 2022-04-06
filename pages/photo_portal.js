@@ -24,6 +24,7 @@ import JSZip from "jszip";
 import JSZipUtils from "jszip-utils";
 import { saveAs } from 'file-saver';
 import popupsContext from '../context/pop-ups/pop-upsContext';
+import MultiSelectFunction from '../components/system/form/multiselect';
 import {
     Search as SearchIcon,
     GetApp as GetAppIcon,
@@ -317,24 +318,25 @@ const Photo_portal = () => {
                         dateRangeinit={dateRange}
                         setDateRangeExt={setdateRange}
                     />
-                    <SelectFunction
-                        onlyinitial={!cleanFilter}
-                        title="Categoria"
-                        classname={classes.itemFilter}
-                        datatosend={datafilters.categoria}
-                        optionvalue="category"
-                        optiondesc="category"
-                        variant="outlined"
-                        namefield="category"
-                        descfield="category"
-                        callback={({ newValue: value }) => {
-                            if (!cleanFilter) {
-                                setfilters({ ...filters, categoria: value?.id_form || 1 });
-                                setcategory(value)
-                                setdisablebutton(!value)
-                            }
-                        }}
-                    />
+                    <MultiSelectFunction
+                            title="Categoria"
+                            classname={classes.itemFilter}
+                            datatosend={datafilters.categoria}
+                            optionvalue="id_form"
+                            optiondesc="category"
+                            variant="outlined"
+                            onlyinitial={!cleanFilter}
+                            namefield="id_form"
+                            descfield="category"
+                            valueselected={filters.categoria + ""}
+                            callback={(values) => {
+                                if (!cleanFilter) {
+                                    setfilters({ ...filters, categoria: values.map(x => x.id_form).join(',') });
+                                    setcategory(values.map(x => x.id_form).join(','))
+                                    setdisablebutton(!values)
+                                }
+                            }}
+                        />
                     <SelectFunction
                         onlyinitial={!cleanFilter}
                         title="Marca"

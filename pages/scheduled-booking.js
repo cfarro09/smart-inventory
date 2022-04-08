@@ -127,7 +127,9 @@ const ScheduledBooking = () => {
         ],
         [appfound]
     );
-
+    const fetchData2 = () => {
+        fetchData(datafetch);
+    }
     const fetchData = ({ pageSize, pageIndex, filters, sorts, daterange }) => {
         setdatafetch({ pageSize, pageIndex, filters, sorts, daterange });
         // if (!selected.id_client || !selected.type) {
@@ -186,7 +188,7 @@ const ScheduledBooking = () => {
             <Payment
                 openModal={openModal}
                 setOpenModal={setOpenModal}
-                fetchData={fetchData}
+                fetchData={fetchData2}
                 booking={rowselected}
             />
         </Layout>

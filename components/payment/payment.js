@@ -17,7 +17,7 @@ import { validateResArray, getDomain } from '../../config/helper';
 const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
     const { setOpenBackdrop, setModalQuestion, setOpenSnackBack } = useContext(popupsContext);
     const [paymenttype, setpaymenttype] = useState([])
-
+    
     useEffect(() => {
         let continuezyx = true;
         (async () => {
@@ -38,14 +38,14 @@ const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
             id_booking: booking.id_booking,
             paymenttype: '',
             reference: '',
-            amount: 0,
+            amount: booking?.pending_amount || 0,
         },
         validationSchema: Yup.object({
             paymenttype: Yup.string().required('El tipo de pago es obligatorio'),
             amount: Yup.number().min(1, "El monto debe ser mayor que 1").required('El monto es obligatorio')
         }),
         onSubmit: async values => {
-            console.log("booking", booking)
+            
             const callback = async () => {
                 setModalQuestion({ visible: false });
                 const dattosend = {

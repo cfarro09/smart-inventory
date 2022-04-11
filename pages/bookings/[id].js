@@ -13,7 +13,6 @@ import authContext from 'context/auth/authContext';
 import SelectFunction from 'components/system/form/select-function';
 import ClientMain from 'components/client/clientmain';
 import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
 import EditIcon from '@material-ui/icons/Edit';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -43,6 +42,17 @@ import {
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { add } from 'date-fns';
 import { Fab } from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
+
+const daysd = [
+    "Domingo",
+    "Lunes",
+    "Martes",
+    "Miercoles",
+    "Jueves",
+    "Viernes",
+    "Sabado"
+]
 
 const resources = (data) => [{
     fieldName: 'id_field',
@@ -163,7 +173,6 @@ const validateRule = (rule, startDate, endDate) => {
                 itt++
             })
         }
-        console.log(dates);
         return dates
     }
 }
@@ -175,7 +184,6 @@ const getStringFromDate = (date) => `${getDateZyx(date)} ${date.getHours().toStr
 const getFieldsFree = (setOpenSnackBack, fields, startDate, endDate, appointments, id = null) => {
     const aa = fields.map(field => {
         const appointmentsAux = id ? appointments.filter(x => x.id !== id) : appointments;
-        debugger
         const aux = appointmentsAux.some(x => x.id_field === field.id_field && (
             endDate >= x.startDate && endDate <= x.endDate ||
             startDate >= x.startDate && startDate < x.endDate ||
@@ -191,6 +199,7 @@ const getFieldsFree = (setOpenSnackBack, fields, startDate, endDate, appointment
         return fieldtime ? { ...field, price: fieldtime.price, text: field.field_name + " - S/ " + fieldtime.price } : null;
     })
     const aab = aa.filter(x => !!x)
+    console.log("aab", aa)
     if (aab.length === 0)
         setOpenSnackBack(true, { success: false, message: "No existe campos para este horario" })
     return aab;
@@ -199,7 +208,21 @@ const getFieldsFree = (setOpenSnackBack, fields, startDate, endDate, appointment
 const validateField = (fields, id_field, startDate, endDate) => {
     const fieldselected = fields.find(x => x.id_field === id_field);
 
-    const fieldstime = fieldselected.time_prices.map(x => ({
+    const times = fieldselected.time_prices.sort((a, b) => a.start_time > b.start_time ? 1 : (a.start_time < b.start_time ? -1 : 0)).reduce((acc, item) => {
+        const indexfound = acc.findIndex(x => x.end_time === item.start_time)
+        if (indexfound >= 0) {
+            const tmm = {
+                ...acc[indexfound],
+                end_time: item.end_time
+            }
+            acc[indexfound] = tmm;
+            return acc
+        } else {
+            return [...acc, item]
+        }
+    }, [])
+
+    const fieldstime = times.map(x => ({
         ...x,
         start_time: new Date(getDateZyx(startDate) + " " + x.start_time),
         end_time: new Date(getDateZyx(startDate) + " " + x.end_time),
@@ -209,6 +232,49 @@ const validateField = (fields, id_field, startDate, endDate) => {
     return { ...fieldselected, price: timeselected.price }
 }
 
+const validateFieldV2 = (fields, id_field, startDate, endDate) => {
+    const fieldselected = fields.find(x => x.id_field === id_field);
+
+    const times = fieldselected.time_prices.sort((a, b) => a.start_time > b.start_time ? 1 : (a.start_time < b.start_time ? -1 : 0)).reduce((acc, item) => {
+        const indexfound = acc.findIndex(x => x.end_time === item.start_time)
+        if (indexfound >= 0) {
+            const tmm = {
+                ...acc[indexfound],
+                end_time: item.end_time
+            }
+            acc[indexfound] = tmm;
+            return acc
+        } else {
+            return [...acc, item]
+        }
+    }, [])
+
+    const fieldstime = times.map(x => ({
+        ...x,
+        start_time: new Date(getDateZyx(startDate) + " " + x.start_time),
+        end_time: new Date(getDateZyx(startDate) + " " + x.end_time),
+    }));
+    const timeselected = fieldstime.find(x => x.start_time <= startDate && endDate <= x.end_time);
+    if (!timeselected) return null;
+    return { ...fieldselected, price: timeselected.price }
+}
+
+const validatePrice = (hours, startdate, enddate, times) => {
+    const fieldstime = times.map(x => ({
+        ...x,
+        start_time: new Date(getDateZyx(startdate) + " " + x.start_time),
+        end_time: new Date(getDateZyx(startdate) + " " + x.end_time),
+    }));
+    
+    return [...Array(hours).keys()].reduce((acc, j) => {
+        const startd = new Date(startdate.getTime() + (j * 36e5));
+        const endd = new Date(startdate.getTime() + ((j + 1) * 36e5));
+
+        
+        const timeselected = fieldstime.find(x => x.start_time <= startd && endd <= x.end_time);
+        return acc + (timeselected?.price || 0);
+    }, 0)
+}
 
 const ChangePrice = ({ setData, index, appointment, data, openModal, setOpenModal }) => {
 
@@ -370,7 +436,7 @@ const Boooking = () => {
 
                     const bookingselected = resultbooking[0];
 
-                    setbooking(bookingselected);
+                    setbooking({ ...bookingselected, pending_amount: parseFloat(bookingselected.booking_amount || "0") - parseFloat(bookingselected.paid_amount || "0") });
                     triggeraxios('post', process.env.endpoints.selsimple, SEL_EVENTS_BY_CAMPUS({ id_booking })).then(r => {
                         const appauxs = validateResArray(r, true).map(x => ({
                             ...x,
@@ -456,7 +522,6 @@ const Boooking = () => {
                         acc[curr.id_event_calendar] = curr;
                         return acc;
                     }, {});
-                    console.log("listIndexed", listIndexed);
                     const appauxs = validateResArray(res, true).filter(x => !listIndexed[x.id_event_calendar]).map(x => ({
                         ...x,
                         id: x.id_event_calendar,
@@ -551,7 +616,8 @@ const Boooking = () => {
         setData((data) => {
             if (added) {
                 setvisible(undefined);
-                const fieldselected = validateField(fields, added.id_field, added.startDate, added.endDate);
+                const fieldselected = validateFieldV2(fields, added.id_field, added.startDate, added.endDate);
+
                 if (!fieldselected) {
                     setOpenSnackBack(true, { success: false, message: "El campo no está disponible en ese horario" });
                     return data;
@@ -568,12 +634,20 @@ const Boooking = () => {
                         title: `${clientselected?.first_name || fieldselected.field_name}`,
                         price: fieldselected.price,
                         hours,
-                        total: fieldselected.price * hours
-
+                        total: validatePrice(hours, added.startDate, added.endDate, fieldselected.time_prices)
                     }))
                     data = [...data, ...events];
                 } else {
-                    data = [...data, { id: startingAddedId, ...added, id_campus: fieldselected.id_campus, title: `${clientselected?.first_name || fieldselected.field_name}`, price: fieldselected.price, hours, total: fieldselected.price * hours }];
+                    const event = {
+                        id: startingAddedId,
+                        ...added,
+                        id_campus: fieldselected.id_campus,
+                        title: `${clientselected?.first_name || fieldselected.field_name}`,
+                        price: fieldselected.price,
+                        hours,
+                        total: validatePrice(hours, added.startDate, added.endDate, fieldselected.time_prices)
+                    }
+                    data = [...data, event];
                 }
             }
             if (changed) {
@@ -592,7 +666,8 @@ const Boooking = () => {
                             title: `${clientselected?.first_name || fieldselected.field_name}`,
                             price: fieldselected.price,
                             hours,
-                            total: fieldselected.price * hours
+                            total: validatePrice(hours, newchange.startDate, newchange.endDate, fieldselected.time_prices)
+                            // total2: validatePrice(hours, newchange.startDate, newchange.endDate, fieldselected.time_prices)
                         }))
                         setEventsBookingDeleted(e => [...e, ...data.filter(x => !!x.id_event_calendar && x.id === newchange.id)]);
                         data = data.filter(x => x.id != newchange.id);
@@ -610,7 +685,14 @@ const Boooking = () => {
                                 throw new Error("El campo no está disponible en ese horario");
                             }
                             const hours = Math.ceil(Math.abs(changes.endDate - changes.startDate) / 36e5);
-                            return { ...changes, id_campus: fieldselected.id_campus, title: (clientselected?.first_name || fieldselected.field_name), price: fieldselected.price, hours, total: fieldselected.price * hours }
+                            return { 
+                                ...changes, 
+                                id_campus: fieldselected.id_campus, 
+                                title: (clientselected?.first_name || fieldselected.field_name), 
+                                price: fieldselected.price, 
+                                hours, 
+                                total: validatePrice(hours, newchange.startDate, newchange.endDate, fieldselected.time_prices)
+                            }
 
                         });
                     }
@@ -682,23 +764,29 @@ const Boooking = () => {
     }
 
     const TimeTableCell = React.useCallback(React.memo(({ onDoubleClick, endDate, startDate, ...restProps }) => (
-        <WeekView.TimeTableCell {...restProps} onDoubleClick={(e) => {
-            if (endDate < new Date())
-                return null;
-            if (!(booking.status === 'BORRADOR' || booking.status === '')) {
-                setOpenSnackBack(true, { success: false, message: "No puede registrar mas eventos." });
-                return null;
-            }
-            if (fields.length === 0) {
-                setOpenSnackBack(true, { success: false, message: "No hay campos a mostrar" });
-                return null;
-            }
+        <WeekView.TimeTableCell
+            {...restProps}
+            onDoubleClick={(e) => {
+                if (endDate < new Date())
+                    return null;
+                if (!(booking.status === 'BORRADOR' || booking.status === '')) {
+                    setOpenSnackBack(true, { success: false, message: "No puede registrar mas eventos." });
+                    return null;
+                }
+                if (fields.length === 0) {
+                    setOpenSnackBack(true, { success: false, message: "No hay campos a mostrar" });
+                    return null;
+                }
 
-            setfieldshowed(getFieldsFree(setOpenSnackBack, fields, startDate, endDate, [...appointments, ...data]));
-            setReadOnly(false)
-            onDoubleClick(e)
-        }}
-        />
+                setfieldshowed(getFieldsFree(setOpenSnackBack, fields, startDate, endDate, [...appointments, ...data]));
+                setReadOnly(false)
+                onDoubleClick(e)
+            }}
+        >
+            <Tooltip arrow placement="top" title={`${daysd[startDate.getDay()]} ${(startDate.getMonth() + 1).toString().padStart(2, "0")}/${startDate.getDate().toString().padStart(2, "0")} ${startDate.getHours()}:00`}>
+                <div style={{ height: "100%", width: "100%" }}></div>
+            </Tooltip>
+        </WeekView.TimeTableCell>
     )), [fields, appointments, data]);
 
     const onCheckedShowAllEvents = (checked) => {

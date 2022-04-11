@@ -25,6 +25,8 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientsele
                 triggeraxios('post', process.env.endpoints.selsimple, getDomain("ESTADO")).then(r => setdomains(p => ({ ...p, status: validateResArray(r, continuezyx) }))),
                 triggeraxios('post', process.env.endpoints.selsimple, getDomain("TIPODOCUMENTO")).then(r => setdomains(p => ({ ...p, doc_type: validateResArray(r, continuezyx) }))),
                 triggeraxios('post', process.env.endpoints.selsimple, getDomain("TIPOFACTURACION")).then(r => setdomains(p => ({ ...p, bill_type: validateResArray(r, continuezyx) }))),
+                triggeraxios('post', process.env.endpoints.selsimple, getDomain("TIPOPERSONASUNAT")).then(r => setdomains(p => ({ ...p, person_sunat: validateResArray(r, continuezyx) }))),
+                triggeraxios('post', process.env.endpoints.selsimple, getDomain("TIPOCLIENTE")).then(r => setdomains(p => ({ ...p, type_person: validateResArray(r, continuezyx) }))),
             ]);
 
         })();
@@ -52,6 +54,8 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientsele
             bill_number: '',
             photo: '',
             status: 'ACTIVO',
+            person_sunat: '',
+            type_person: '',
         },
         validationSchema: Yup.object({
             first_name: Yup.string().required('Elnombre es obligatorio'),
@@ -59,7 +63,9 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientsele
             // doc_number: Yup.string().required('El documento es obligatorio'),
             doc_type: Yup.string().required('El tipo documento es obligatorio'),
             email: Yup.string().email('El correo no es valido'),
-            status: Yup.string().required('El estado es obligatorio')
+            status: Yup.string().required('El estado es obligatorio'),
+            person_sunat: Yup.string().required('El estado es obligatorio'),
+            person_sunat: Yup.string().required('El estado es obligatorio')
         }),
         onSubmit: async values => {
 
@@ -166,6 +172,24 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientsele
                                 label="N° documento facturación"
                                 formik={formik}
                             />
+                            <UseSelectDomain
+                                classname="col-3"
+                                title="Tipo cliente"
+                                domainname={domains.type_person}
+                                valueselected={formik.values.type_person}
+                                namefield="type_person"
+                                formik={formik}
+                            />
+                            <UseSelectDomain
+                                classname="col-3"
+                                title="Tipo persona SUNAT"
+                                domainname={domains.person_sunat}
+                                valueselected={formik.values.person_sunat}
+                                namefield="person_sunat"
+                                formik={formik}
+                            />
+                        </div>
+                        <div className="row-zyx">
                             <UseSelectDomain
                                 classname="col-3"
                                 title="Estado"

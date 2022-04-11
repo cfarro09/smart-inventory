@@ -79,7 +79,10 @@ const Bookings = () => {
                                         aria-label="delete"
                                         size="small"
                                         disabled={!appfound.delete}
-                                        onClick={() => payBooking(props.cell.row.original)}
+                                        onClick={() => {
+                                            const { booking_amount, paid_amount } = props.cell.row.original;
+                                            payBooking({...props.cell.row.original, pending_amount: parseFloat(booking_amount || "0") - parseFloat(paid_amount || "0")})
+                                        }}
                                     >
                                         <PaymentIcon
                                             fontSize="inherit"
@@ -127,10 +130,10 @@ const Bookings = () => {
                 Header: 'IMPORTE PENDIENTE',
                 accessor: 'pending_amount',
                 Cell: (props) => {
-                    const { pending_amount } = props.cell.row.original;
+                    const { pending_amount, paid_amount, booking_amount } = props.cell.row.original;
                     return (
                         <div style={{textAlign: 'right'}}>
-                            {parseFloat(pending_amount || "0").toFixed(2)}
+                            {(parseFloat(booking_amount || "0") - parseFloat(paid_amount || "0")).toFixed(2)}
                         </div>
                     )
                 }

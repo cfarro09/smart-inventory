@@ -122,6 +122,7 @@ const convertDate = (str) => {
 const validateRule = (rule, startDate, endDate) => {
     if (!rule)
         return null;
+    console.log(rule)
     const paramsSplited = rule.replace("RRULE:", "").split(";");
     const rules = paramsSplited.reduce((acc, item) => {
         const [key, value] = item.split("=");
@@ -170,8 +171,8 @@ const validateRule = (rule, startDate, endDate) => {
                             countDid++;
                     }
                 }
-                itt++
             })
+            itt++
         }
         return dates
     }
@@ -592,7 +593,7 @@ const Boooking = () => {
             setOpenBackdrop(true)
             const diffDates = added ? added.endDate - added.startDate : newchange.endDate - newchange.startDate;
             const futureDates = added ? validateRule(added.rRule, added.startDate, added.endDate) : validateRule(newchange.rRule, newchange.startDate, newchange.endDate);
-            // console.log(futureDates);
+            console.log(futureDates);
             datesFromRecurrence = futureDates.map(x => {
                 return {
                     id_field: added ? added.id_field : newchange.id_field,

@@ -442,7 +442,7 @@ const Boooking = () => {
                         const appauxs = validateResArray(r, true).map(x => ({
                             ...x,
                             id: bookingselected.status === "BORRADOR" ? x.id_event_calendar * -1 : x.id_event_calendar,
-                            title: x.client_name || x.field_name,
+                            title: (x.client_name || x.field_name) + " - " + (x.status === "PAGADO" ? "PT" : (x.status === "PAGADO PARCIAL" ? "PP" : "NP")),
                             startDate: new Date(x.start_date),
                             endDate: new Date(x.end_date),
                             allDay: false,
@@ -450,6 +450,7 @@ const Boooking = () => {
                             hours: x.duration || 1,
                             price: parseFloat(x.amount) / (x.duration || 1)
                         }));
+                        console.log(appauxs)
                         setData(appauxs);
                     })
                 })()
@@ -526,7 +527,7 @@ const Boooking = () => {
                     const appauxs = validateResArray(res, true).filter(x => !listIndexed[x.id_event_calendar]).map(x => ({
                         ...x,
                         id: x.id_event_calendar,
-                        title: x.client_name || x.field_name,
+                        title: (x.client_name || x.field_name) + " - " + (x.status === "PAGADO" ? "PT" : (x.status === "PAGADO PARCIAL" ? "PP" : "NP")),
                         startDate: new Date(x.start_date),
                         endDate: new Date(x.end_date),
                         allDay: false,
@@ -539,7 +540,7 @@ const Boooking = () => {
                     const appauxs = validateResArray(res, true).map(x => ({
                         ...x,
                         id: x.id_event_calendar,
-                        title: x.client_name || x.field_name,
+                        title: (x.client_name || x.field_name) + " - " + (x.status === "PAGADO" ? "PT" : (x.status === "PAGADO PARCIAL" ? "PP" : "NP")),
                         startDate: new Date(x.start_date),
                         endDate: new Date(x.end_date),
                         allDay: false,

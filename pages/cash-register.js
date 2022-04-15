@@ -97,6 +97,11 @@ const ScheduledBooking = () => {
                 type: 'string',
             },
             {
+                Header: 'REFERENCIA',
+                accessor: 'reference',
+                type: 'string',
+            },
+            {
                 Header: 'C/R',
                 accessor: 'type',
                 type: 'string',

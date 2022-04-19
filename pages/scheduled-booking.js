@@ -146,9 +146,7 @@ const ScheduledBooking = () => {
             skip: pageIndex,
             filters,
             sorts,
-            // origin: 'reporte_inventario',
             daterange,
-            // offset: (new Date().getTimezoneOffset() / 60) * -1
         }
 
         triggeraxios('post', process.env.endpoints.selpaginated, datatosend).then(res => {
@@ -172,6 +170,21 @@ const ScheduledBooking = () => {
         setrowselected(row);
     }
 
+    const exportList = React.useCallback(async () => {
+        const r = await triggeraxios('post', "/api/export/scheduled_booking", {
+            methodcollection: "fn_sel_event_by_date",
+            take: datafetch.pageSize,
+            skip: datafetch.pageIndex,
+            filters: datafetch.filters,
+            sorts: datafetch.sorts,
+            daterange: datafetch.daterange,
+        });
+        if (r.success) {
+            window.open(r.result.data.url);
+        } else
+            setOpenSnackBack(true, { success: false, message: 'Hubo un error, intentelo mas tarde.' });
+    }, [datafetch])
+
     return (
         <Layout>
             <TableZyx
@@ -179,7 +192,7 @@ const ScheduledBooking = () => {
                 data={datatable}
                 titlemodule="Eventos programados"
                 totalrow={totalrow}
-                // exportPersonalized={exportList}
+                exportPersonalized={exportList}
                 // loading={loading}
                 filterrange={true}
                 pageCount={pageCount}

@@ -499,8 +499,8 @@ const BulkLoad = () => {
             FILTERv2("format", fill.last === "format" ? { ...fill, format: "" } : fill),
             FILTERv2("channel", fill.last === "channel" ? { ...fill, channel: "" } : fill),
             FILTERv2("retail", fill.last === "retail" ? { ...fill, retail: "" } : fill),
-            FILTERv2("brand", fill.last === "brand" ? { ...fill, marca: "" } : {...fill, retail: '', sku_code: '' }),
-            FILTERv2("model", fill.last === "model" ? { ...fill, SKU: "" } : fill),
+            FILTERv2("brand", fill.last === "brand" ? { ...fill, marca: "" } : {...fill, retail: '', SKU: '' }),
+            FILTERv2("model", fill.last === "SKU" ? { ...fill, SKU: "" } : fill),
             FILTERv2("sub_category", fill.last === "sub_category" ? { ...fill, sub_category: "" } : fill),
             FILTERv2("store_name", fill.last === "store_name" ? { ...fill, store_name: "" } : fill),
             FILTERv2("department", fill.last === "department" ? { ...fill, department: "" } : fill),
@@ -693,7 +693,7 @@ const BulkLoad = () => {
                             if (!cleanFilter) {
                                 setfilters({
                                     ...filters,
-                                    last: 'model',
+                                    last: 'SKU',
                                     SKU: values.map(x => `'${x.model}'`).join(','),
                                 })
                             }

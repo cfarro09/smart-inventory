@@ -32,11 +32,11 @@ import {
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
 
-const brands = ["IMACO", "B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO", "LUMIKA", "INSTANTPOT","WINIA","SMEG","KENT","DELONGHI","SEVERIN","MIDIA","FDV","DAEWOO", "INSTANT"]
+const brands = ["IMACO", "B&D", "BLACKLINE", "BORD", "BOSCH", "BOSSKO", "CONTINENTAL", "CUISINART", "ELECTRICLIFE", "ELECTROLUX", "FINEZZA", "FOSTERIER", "HOLSTEIN", "INDURAMA", "JATARIY", "KENWOOD", "KITCHEN AID", "KORKMAZ", "LOVEN", "MAGEFESA", "MIRAY", "NEX", "OSTER", "PHILIPS", "PRACTIKA", "PRIMA", "PROFESIONAL SERIES", "RECCO", "RECORD", "TAURUS", "THOMAS", "VALESKA", "WURDEN", "ZYKLON", "OTROS", "DOLCE GUSTO", "LUMIKA", "INSTANTPOT", "WINIA", "SMEG", "KENT", "DELONGHI", "SEVERIN", "MIDIA", "FDV", "DAEWOO", "INSTANT"]
 const colors = ["#FFD600", "#bababa", "#26A69A", "#009688", "#4f4f4f", "#909090", "#c4c4c4", "#9d9d9d", "#494949", "#b9b9b9", "#545454", "#5e5e5e", "#00897B", "#b8b8b8", "#a2a2a2", "#808080", "#4527A0", "#8a8a8a", "#00695C", "#b5b5b5", "#4DB6AC", "#00796B", "#0c4da2", "#c5c5c5", "#1e1e1e", "#7c7c7c", "#787878", "#B2DFDB", "#444444", "#d3d3d3", "#fb5f5f", "#a9a9a9", "#80CBC4", "#797979", "#5D4037", "#323232", "#7d7d7d", "#bababa", "#2c2c2c", "#828282", "#6d6d6d", "#757575", "#929292", "#6d6d6d", "#6f6f6f", "#bababa", "#bababa"]
 const elementBrand = (week) => ({
     week: week,
-    "IMACO":0,
+    "IMACO": 0,
     "B&D": 0,
     "BLACKLINE": 0,
     "BORD": 0,
@@ -81,7 +81,7 @@ const elementBrand = (week) => ({
     "SEVERIN": 0,
     "MIDIA": 0,
     "FDV": 0,
-    "DAEWOO": 0, 
+    "DAEWOO": 0,
     "INSTANT": 0,
 })
 
@@ -112,14 +112,14 @@ const FILTERv2 = (filter, filters) => ({
     method: ["brand", "model", "sub_category"].includes(filter) ? "SP_ALL_FILTER_MASTER" : "SP_ALL_FILTER_DATA",
     data: {
         filter,
-        format: filters?.format || "",
-        channel: filters?.channel || "",
-        department: filters?.department || "",
-        store_name: filters?.store_name || "",
+        format: "", //filters?.format || "",
+        channel: "",//filters?.channel || "",
+        department: "", //filters?.department || "",
+        store_name: "", //filters?.store_name || "",
         category: filters?.categoria || 1,
         sku_code: filters?.SKU || "",
         brand: filters?.marca || "",
-        sub_category: filters?.subcategoria || "",
+        sub_category: "", //filters?.subcategoria || "",
         retail: filters?.retail || "",
         price: filters?.tipo_pvp || "",
     }
@@ -135,7 +135,9 @@ const useStyles = makeStyles((theme) => ({
     itemFilter: {
         flex: '0 0 215px'
     },
-
+    itemFilter1: {
+        width: '100%',
+    },
     table: {
         minWidth: 200,
     },
@@ -205,7 +207,7 @@ const Share_by_brand = () => {
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
     const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
-    
+
     const [triggerfilter, settriggerfilter] = useState(false)
     const [disablebutton, setdisablebutton] = useState(true)
     const [cleanfilters, setcleanfilters] = useState(false)
@@ -282,14 +284,14 @@ const Share_by_brand = () => {
             fill.categoria = fill?.categoria || 1;
             setOpenBackdrop(true);
             const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
-                FILTERv2("format", fill),
-                FILTERv2("channel", fill),
-                FILTERv2("retail", fill),
-                FILTERv2("brand", fill),
-                FILTERv2("model", fill),
-                FILTERv2("sub_category", fill),
-                FILTERv2("store_name", fill),
-                FILTERv2("department", fill),
+                FILTERv2("format", fill.last === "format" ? { ...fill, format: "" } : fill),
+                FILTERv2("channel", fill.last === "channel" ? { ...fill, channel: "" } : fill),
+                FILTERv2("retail", fill.last === "retail" ? { ...fill, retail: "" } : fill),
+                FILTERv2("brand", fill.last === "brand" ? { ...fill, marca: "" } : { ...fill, retail: '', sku_code: '' }),
+                FILTERv2("model", fill.last === "model" ? { ...fill, SKU: "" } : fill),
+                FILTERv2("sub_category", fill.last === "sub_category" ? { ...fill, sub_category: "" } : fill),
+                FILTERv2("store_name", fill.last === "store_name" ? { ...fill, store_name: "" } : fill),
+                FILTERv2("department", fill.last === "department" ? { ...fill, department: "" } : fill),
                 ...(initial ? [GET_CATEGORY("LINEAL")] : [])
             ])
             if (resultMulti.result instanceof Array) {
@@ -313,12 +315,12 @@ const Share_by_brand = () => {
     }
 
     useEffect(() => {
-        
+
         (async () => {
             await applyfilter({}, true)
             setinitial(1)
         })();
-        
+
     }, [])
 
     useEffect(() => {
@@ -572,61 +574,74 @@ const Share_by_brand = () => {
                             }
                         }}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
                         title="Marca"
                         datatosend={datafilters.marca}
                         optionvalue="brand"
+                        classname={classes.itemFilter}
                         optiondesc="brand"
-                        valueselected={filters.marca}
                         onlyinitial={!cleanFilter}
                         variant="outlined"
+                        valueselected={filters.marca ? filters.marca.replace(/'/gi, "") : ""}
                         namefield="brand"
                         descfield="brand"
                         style={{ width: "150px" }}
-                        callback={({ newValue: value }) => {
-                            console.log(cleanFilter)
+                        callback={(values) => {
                             if (!cleanFilter) {
                                 setfilters({
-                                    ...filters, department: '',
+                                    ...filters,
+                                    department: '',
                                     store_name: '',
                                     SKU: '',
-                                    retail: '', marca: value?.brand || ''
+                                    retail: '',
+                                    last: 'brand',
+                                    marca: values.map(x => `'${x.brand}'`).join(',')
                                 })
                             }
                         }}
                     />
 
-                    <SelectFunction
+                    <MultiSelectFunction
+                        onlyinitial={!cleanFilter}
+                        classname={classes.itemFilter}
                         title="SKU"
                         datatosend={datafilters.SKU}
                         optionvalue="model"
                         optiondesc="model"
-                        valueselected={filters.SKU}
+                        valueselected={filters.SKU ? filters.SKU.replace(/'/gi, "") : ""}
                         variant="outlined"
                         namefield="model"
-                        onlyinitial={!cleanFilter}
                         descfield="model"
                         style={{ width: "200px" }}
-                        callback={({ newValue: value }) => {
+                        callback={(values) => {
                             if (!cleanFilter) {
-                                setfilters({ ...filters, SKU: value?.model || '' })
+                                setfilters({
+                                    ...filters,
+                                    last: 'model',
+                                    SKU: values.map(x => `'${x.model}'`).join(','),
+                                })
                             }
                         }}
                     />
-                    <SelectFunction
+                     <MultiSelectFunction
+                        onlyinitial={!cleanFilter}
+                        classname={classes.itemFilter}
                         title="Retail"
                         variant="outlined"
                         datatosend={datafilters.retail}
                         optionvalue="retail"
                         optiondesc="retail"
-                        onlyinitial={!cleanFilter}
-                        valueselected={filters.retail}
+                        valueselected={filters.retail ? filters.retail.replace(/'/gi, "") : ""}
                         namefield="retail"
                         descfield="retail"
                         style={{ width: "200px" }}
-                        callback={({ newValue: value }) => {
+                        callback={(values) => {
                             if (!cleanFilter) {
-                                setfilters({ ...filters, retail: value?.retail || '' })
+                                setfilters({
+                                    ...filters,
+                                    retail: values.map(x => `'${x.retail}'`).join(','),
+                                    last: 'retail'
+                                })
                             }
                         }}
                     />
@@ -841,82 +856,88 @@ const Share_by_brand = () => {
                     <div style={{ fontSize: 16, fontWeight: 500 }}>
                         Filtros personalizados
                     </div>
-                    <SelectFunction
+                    <MultiSelectFunction
+                        onlyinitial={!cleanFilter}
+                        classname={classes.itemFilter1}
                         title="Formato"
                         datatosend={datafilters.format}
                         optionvalue="format"
                         optiondesc="format"
                         variant="outlined"
-                        onlyinitial={!cleanFilter}
-                        valueselected={filters.format}
+                        valueselected={filters.format.replace(/'/gi, "")}
                         namefield="format"
                         descfield="format"
-                        callback={({ newValue: value }) => {
+                        callback={(values) => {
                             if (!cleanFilter) {
-                                setfilters({ ...filters, format: value?.format || '' })
+                                setfilters({ ...filters, last: "format", format: values.map(x => `'${x.format}'`).join(",") })
                             }
                         }}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
+                        onlyinitial={!cleanFilter}
+                        classname={classes.itemFilter1}
                         title="Canal"
                         datatosend={datafilters.channel}
                         optionvalue="channel"
                         optiondesc="channel"
-                        onlyinitial={!cleanFilter}
                         variant="outlined"
                         namefield="channel"
-                        valueselected={filters.channel}
+                        valueselected={filters.channel.replace(/'/gi, "")}
                         descfield="channel"
-                        callback={({ newValue: value }) => {
+                        callback={(values) => {
                             if (!cleanFilter) {
-                                setfilters({ ...filters, channel: value?.channel || '' })
+                                setfilters({ ...filters, last: "channel", channel: values.map(x => `'${x.channel}'`).join(",") })
                             }
                         }}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
+                        onlyinitial={!cleanFilter}
+                        classname={classes.itemFilter1}
                         title="Departamento"
                         datatosend={datafilters.department}
                         optionvalue="department"
-                        onlyinitial={!cleanFilter}
                         optiondesc="department"
-                        valueselected={filters.department}
+                        valueselected={filters.department.replace(/'/gi, "")}
                         variant="outlined"
                         namefield="department"
                         descfield="department"
-                        callback={({ newValue: value }) => {
+                        callback={(values) => {
                             if (!cleanFilter) {
-                                setfilters({ ...filters, department: value?.department || '' })
+                                setfilters({ ...filters, last: "department", department: values.map(x => `'${x.department}'`).join(",") })
                             }
                         }}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
+                        onlyinitial={!cleanFilter}
+                        classname={classes.itemFilter1}
                         title="PDV"
                         datatosend={datafilters.store_name}
                         optionvalue="store_name"
                         optiondesc="store_name"
-                        onlyinitial={!cleanFilter}
                         variant="outlined"
-                        valueselected={filters.store_name}
+                        valueselected={filters.store_name.replace(/'/gi, "")}
                         namefield="store_name"
                         descfield="store_name"
-                        callback={({ newValue: value }) => {
+                        callback={(values) => {
                             if (!cleanFilter) {
-                                setfilters({ ...filters, store_name: value?.store_name || '' })
+                                setfilters({ ...filters, last: "store_name", store_name: values.map(x => `'${x.store_name}'`).join(",") })
                             }
                         }}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
+                        onlyinitial={!cleanFilter}
+                        classname={classes.itemFilter1}
                         title="Subcategoría"
                         datatosend={datafilters.subcategoria}
                         optionvalue="subcategory"
-                        onlyinitial={!cleanFilter}
                         optiondesc="subcategory"
+                        valueselected={filters.subcategoria.replace(/'/gi, "")}
                         variant="outlined"
                         namefield="subcategory"
                         descfield="subcategory"
-                        callback={({ newValue: value }) => {
+                        callback={(values) => {
                             if (!cleanFilter) {
-                                setfilters({ ...filters, subcategoria: value?.subcategory || "" });
+                                setfilters({ ...filters, last: "subcategoria", subcategoria: values.map(x => `'${x.subcategory}'`).join(",") });
                             }
                         }}
                     />

@@ -26,6 +26,7 @@ import html2canvas from 'html2canvas';
 import InputFormk from '../components/system/form/inputformik';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import popupsContext from '../context/pop-ups/pop-upsContext';
+import MultiSelectFunction from '../components/system/form/multiselect';
 
 import {
     Search as SearchIcon,
@@ -71,20 +72,21 @@ const FILTER = (filter) => ({
 })
 
 const FILTERv2 = (filter, filters) => ({
-    method: ["brand", "model", "sub_category","area", "management", "type_exhibit"].includes(filter) ? "SP_ALL_FILTER_MASTER_EXIHIBIT" : "SP_ALL_FILTER_DATA_EXIHIBIT",
+    method: ["brand", "model", "sub_category", "area", "management", "type_exhibit"].includes(filter) ? "SP_ALL_FILTER_MASTER_EXIHIBIT" : "SP_ALL_FILTER_DATA_EXIHIBIT",
     data: {
         filter,
-        format: filters?.format || "",
-        channel: filters?.channel || "",
-        department: filters?.department || "",
-        store_name: filters?.store_name || "",
+        format: "", //filters?.format || "",
+        channel: "", //filters?.channel || "",
+        department: "", //filters?.department || "",
+        area: "", //filters?.area || "",
+        type_exhibit: "", //filters?.type_exhibit || "",
+        management: "", //filters?.management || "",
+        store_name: "", //filters?.store_name || "",
+
         category: 4,
         sku_code: filters?.SKU || "",
         brand: filters?.marca || "",
         sub_category: filters?.subcategoria || "",
-        management: filters?.management || "",
-        area: filters?.area || "",
-        type_exhibit: filters?.type_exhibit || "",
         retail: filters?.retail || "",
     }
 })
@@ -142,7 +144,7 @@ const Exhibits_detail = () => {
     ]);
     const columns = React.useMemo(
         () => [
-            
+
             {
                 Header: 'Tienda',
                 accessor: 'poiname',
@@ -159,17 +161,17 @@ const Exhibits_detail = () => {
                 Header: 'Categoría',
                 accessor: 'category'
             },
-            
+
             {
                 Header: 'Foto',
                 accessor: 'exhibit_photo',
                 Cell: props => {
                     return (
                         <div className="container-button-floating">
-                            <Avatar 
-                            src={props.cell.row.original.exhibit_photo}                            
-                            style={{cursor: 'pointer'}}
-                            onClick={() => setLightBox({ open: true, index: 0, images: [props.cell.row.original.exhibit_photo] })}
+                            <Avatar
+                                src={props.cell.row.original.exhibit_photo}
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => setLightBox({ open: true, index: 0, images: [props.cell.row.original.exhibit_photo] })}
                             />
                         </div>
                     )
@@ -224,23 +226,22 @@ const Exhibits_detail = () => {
         marca: '',
         management: [],
         tipo_pvp: [],
-        retail:[],
+        retail: [],
     })
-    
+
     useEffect(() => {
         (async () => {
             await applyfilter({})
         })();
-        return () => continuezyx = false;
     }, [])
     const applyfilter = async (fill) => {
         setOpenBackdrop(true);
         const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
             FILTERv2("format", fill),
             FILTERv2("channel", fill),
-            FILTERv2("retail", fill),
-            FILTERv2("brand", fill),
-            FILTERv2("model", fill),
+            FILTERv2("retail", fill.last === "retail" ? { ...fill, retail: "" } : fill),
+            FILTERv2("brand", fill.last === "brand" ? { ...fill, marca: "" } : { ...fill, retail: '', sku_code: '' }),
+            FILTERv2("model", fill.last === "model" ? { ...fill, SKU: "" } : fill),
             FILTERv2("sub_category", fill),
             FILTERv2("store_name", fill),
             FILTERv2("department", fill),
@@ -283,7 +284,7 @@ const Exhibits_detail = () => {
             sub_category: filters.subcategoria,
             type_exhibit: filters.type_exhibit,
             area: filters.area,
-            price:"",
+            price: "",
             retail: filters.retail,
             from_date: dateRange[0].startDate.toISOString().substring(0, 10),
             to_date: dateRange[0].endDate.toISOString().substring(0, 10)
@@ -304,7 +305,7 @@ const Exhibits_detail = () => {
                         dateRangeinit={dateRange}
                         setDateRangeExt={setdateRange}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
                         title="Categoría"
                         classname={classes.itemFilter}
                         datatosend={datafilters.subcategoria}
@@ -313,33 +314,35 @@ const Exhibits_detail = () => {
                         variant="outlined"
                         namefield="category"
                         descfield="category"
-                        callback={({ newValue: value }) => {
-                            setfilters({ ...filters, subcategoria: value?.category || "" });
+                        callback={(values) => {
+                            setfilters({ ...filters, subcategoria: values.map(x => `'${x.category}'`).join(',') });
                         }}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
                         title="Marca"
                         datatosend={datafilters.marca}
+                        classname={classes.itemFilter}
                         optionvalue="brand"
                         optiondesc="brand"
-                        valueselected={filters.marca}
+                        valueselected={filters.marca ? filters.marca.replace(/'/gi, "") : ""}
                         variant="outlined"
                         namefield="brand"
                         descfield="brand"
-                        style={{width: "150px"}}
-                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
+                        style={{ width: "150px" }}
+                        callback={(values) => setfilters({ ...filters, marca: values.map(x => `'${x.brand}'`).join(',') })}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
                         title="Retail"
+                        classname={classes.itemFilter}
                         variant="outlined"
                         datatosend={datafilters.retail}
                         optionvalue="retail"
                         optiondesc="retail"
-                        valueselected={filters.retail}
+                        valueselected={filters.retail ? filters.retail.replace(/'/gi, "") : ""}
                         namefield="retail"
                         descfield="retail"
-                        style={{width: "200px"}}
-                        callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
+                        style={{ width: "200px" }}
+                        callback={(values) => setfilters({ ...filters, retail: values.map(x => `'${x.retail}'`).join(',') })}
                     />
                     <Button
                         variant="contained"
@@ -362,14 +365,14 @@ const Exhibits_detail = () => {
                 </div>
                 {searchdone &&
 
-                <div id="divToPrint">
-                    <TableZyx
-                        columns={columns}
-                        data={dataGraph}
-                        // fetchData={filtrar}
-                        register={false}
-                    />
-                </div>
+                    <div id="divToPrint">
+                        <TableZyx
+                            columns={columns}
+                            data={dataGraph}
+                            // fetchData={filtrar}
+                            register={false}
+                        />
+                    </div>
                 }
             </div>
 
@@ -385,82 +388,88 @@ const Exhibits_detail = () => {
                     <div style={{ fontSize: 16, fontWeight: 500 }}>
                         Filtros personalizados
                     </div>
-                    <SelectFunction
+                    <MultiSelectFunction
+                        classname={classes.itemFilter1}
                         title="Formato"
                         datatosend={datafilters.format}
                         optionvalue="format"
                         optiondesc="format"
                         variant="outlined"
-                        valueselected={filters.format}
+                        valueselected={filters.format.replace(/'/gi, "")}
                         namefield="format"
                         descfield="format"
-                        callback={({ newValue: value }) => setfilters({ ...filters, format: value?.format || '' })}
+                        callback={(values) => setfilters({ ...filters, format: values.map(x => `'${x.format}'`).join(",") })}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
+                        classname={classes.itemFilter1}
                         title="Canal"
                         datatosend={datafilters.channel}
                         optionvalue="channel"
                         optiondesc="channel"
                         variant="outlined"
                         namefield="channel"
-                        valueselected={filters.channel}
+                        valueselected={filters.channel.replace(/'/gi, "")}
                         descfield="channel"
-                        callback={({ newValue: value }) => setfilters({ ...filters, channel: value?.channel || '' })}
+                        callback={(values) => setfilters({ ...filters, channel: values.map(x => `'${x.channel}'`).join(",") })}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
+                        classname={classes.itemFilter1}
                         title="Departamento"
                         datatosend={datafilters.department}
                         optionvalue="department"
                         optiondesc="department"
-                        valueselected={filters.department}
+                        valueselected={filters.department.replace(/'/gi, "")}
                         variant="outlined"
                         namefield="department"
                         descfield="department"
-                        callback={({ newValue: value }) => setfilters({ ...filters, department: value?.department || '' })}
+                        callback={(values) => setfilters({ ...filters, department: values.map(x => `'${x.department}'`).join(",") })}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
+                        classname={classes.itemFilter1}
                         title="PDV"
                         datatosend={datafilters.store_name}
                         optionvalue="store_name"
                         optiondesc="store_name"
                         variant="outlined"
-                        valueselected={filters.store_name}
+                        valueselected={filters.store_name.replace(/'/gi, "")}
                         namefield="store_name"
                         descfield="store_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
+                        callback={(values) => setfilters({ ...filters, store_name: values.map(x => `'${x.store_name}'`).join(",") })}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
+                        classname={classes.itemFilter1}
                         title="Management"
                         datatosend={datafilters.management}
                         optionvalue="management"
                         optiondesc="management"
                         variant="outlined"
-                        valueselected={filters.management}
+                        valueselected={filters.management.replace(/'/gi, "")}
                         namefield="management"
                         descfield="management"
-                        callback={({ newValue: value }) => setfilters({ ...filters, management: value })}
+                        callback={(values) => setfilters({ ...filters, management: values.map(x => `'${x.management}'`).join(",") })}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
                         title="Tipo Exhibición"
                         datatosend={datafilters.type_exhibit}
                         optionvalue="type_exhibit"
                         optiondesc="type_exhibit"
                         variant="outlined"
-                        valueselected={filters.type_exhibit}
+                        valueselected={filters.type_exhibit.replace(/'/gi, "")}
                         namefield="type_exhibit"
                         descfield="type_exhibit"
-                        callback={({ newValue: value }) => setfilters({ ...filters, type_exhibit: value?.type_exhibit || '' })}
+                        callback={(values) => setfilters({ ...filters, type_exhibit: values.map(x => `'${x.type_exhibit}'`).join(",") })}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
+                        classname={classes.itemFilter1}
                         title="Área"
                         datatosend={datafilters.area}
                         optionvalue="area"
                         optiondesc="area"
                         variant="outlined"
                         namefield="area"
-                        valueselected={filters.area}
+                        valueselected={filters.area.replace(/'/gi, "")}
                         descfield="area"
-                        callback={({ newValue: value }) => setfilters({ ...filters, area: value?.area || '' })}
+                        callback={(values) => setfilters({ ...filters, area: values.map(x => `'${x.area}'`).join(",") })}
                     />
                 </div>
             </SwipeableDrawer>

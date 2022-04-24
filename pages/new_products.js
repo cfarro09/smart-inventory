@@ -87,14 +87,14 @@ const FILTERv2 = (filter, filters) => ({
     method: ["brand", "model", "sub_category"].includes(filter) ? "SP_ALL_FILTER_MASTER" : "SP_ALL_FILTER_DATA",
     data: {
         filter,
-        format: filters?.format || "",
-        channel: filters?.channel || "",
-        department: filters?.department || "",
-        store_name: filters?.store_name || "",
+        format: "", //filters?.format || "",
+        channel: "",//filters?.channel || "",
+        department: "", //filters?.department || "",
+        store_name: "", //filters?.store_name || "",
         category: filters?.categoria || 1,
         sku_code: filters?.SKU || "",
         brand: filters?.marca || "",
-        sub_category: filters?.subcategoria || "",
+        sub_category: "", //filters?.subcategoria || "",
         retail: filters?.retail || "",
         price: filters?.tipo_pvp || "",
     }
@@ -222,6 +222,9 @@ const useStyles = makeStyles((theme) => ({
     itemFilter: {
         flex: '0 0 215px'
     },
+    itemFilter1: {
+        width: '100%',
+    },
     labelcell: {
         border: "1px #e0e0e0 solid",
         fontWeight: "bold",
@@ -292,7 +295,8 @@ const New_Products = () => {
     const [category, setcategory] = useState(null);
     const { setOpenBackdrop } = React.useContext(popupsContext);
     const [subcategories, setsubcategories] = useState([]);
-
+    const [cleanfilters, setcleanfilters] = useState(false)
+    const [cleanFilter, setcleanFilter] = useState(false);
     const [disablebutton, setdisablebutton] = useState(true)
     const [dateRange, setdateRange] = useState([
         {
@@ -373,7 +377,7 @@ const New_Products = () => {
         channel: '',
         department: '',
         store_name: '',
-        categoria: 1,
+        categoria: "1",
         SKU: '',
         banda: '',
         marca: '',
@@ -401,14 +405,14 @@ const New_Products = () => {
             fill.categoria = fill?.categoria || 1;
             setOpenBackdrop(true);
             const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
-                FILTERv2("format", fill),
-                FILTERv2("channel", fill),
-                FILTERv2("department", fill),
-                FILTERv2("brand", fill),
-                FILTERv2("model", fill),
-                FILTERv2("sub_category", fill),
-                FILTERv2("store_name", fill),
-                FILTERv2("department", fill),
+                FILTERv2("format", fill.last === "format" ? { ...fill, format: "" } : fill),
+                FILTERv2("channel", fill.last === "channel" ? { ...fill, channel: "" } : fill),
+                FILTERv2("retail", fill.last === "retail" ? { ...fill, retail: "" } : fill),
+                FILTERv2("brand", fill.last === "brand" ? { ...fill, marca: "" } : { ...fill, retail: '', sku_code: '' }),
+                FILTERv2("model", fill.last === "model" ? { ...fill, SKU: "" } : fill),
+                FILTERv2("sub_category", fill.last === "sub_category" ? { ...fill, sub_category: "" } : fill),
+                FILTERv2("store_name", fill.last === "store_name" ? { ...fill, store_name: "" } : fill),
+                FILTERv2("department", fill.last === "department" ? { ...fill, department: "" } : fill),
                 ...(initial ? [GET_CATEGORY("LINEAL")] : [])
             ])
             if (resultMulti.result instanceof Array) {
@@ -557,6 +561,7 @@ const New_Products = () => {
                         datatosend={datafilters.categoria}
                         optionvalue="id_form"
                         optiondesc="category"
+                        onlyinitial={!cleanFilter}
                         variant="outlined"
                         namefield="id_form"
                         descfield="category"
@@ -564,7 +569,7 @@ const New_Products = () => {
                         callback={(values) => {
                             const value = values.map(x => x.id_form).join(',')
 
-                            getSubctegories(value?.id_form)
+                            getSubctegories(value?.id_form || "1")
                             setfilters({ ...filters, categoria: value });
                             setcategory(value)
                             setdisablebutton(!value)
@@ -573,60 +578,76 @@ const New_Products = () => {
                     />
 
 
-                    <SelectFunction
-                        title="Categoria"
-                        classname={classes.itemFilter}
-                        datatosend={datafilters.categoria}
-                        optionvalue="id_form"
-                        optiondesc="category"
-                        variant="outlined"
-                        namefield="category"
-                        descfield="category"
-                        valueselected={filters.categoria}
-                        callback={({ newValue: value }) => {
-                            getSubctegories(value?.id_form)
-                            setfilters({ ...filters, categoria: value?.id_form || 1 });
-                            setcategory(value)
-                            setdisablebutton(!value)
-                            updatelistretail(value?.id_form || 1)
-                        }}
-                    />
-                    <SelectFunction
+                    <MultiSelectFunction
                         title="Marca"
                         datatosend={datafilters.marca}
                         optionvalue="brand"
+                        classname={classes.itemFilter}
                         optiondesc="brand"
-                        valueselected={filters.marca}
+                        onlyinitial={!cleanFilter}
                         variant="outlined"
+                        valueselected={filters.marca ? filters.marca.replace(/'/gi, "") : ""}
                         namefield="brand"
                         descfield="brand"
                         style={{ width: "150px" }}
-                        callback={({ newValue: value }) => setfilters({ ...filters, marca: value?.brand || '' })}
+                        callback={(values) => {
+                            if (!cleanFilter) {
+                                setfilters({
+                                    ...filters,
+                                    department: '',
+                                    store_name: '',
+                                    SKU: '',
+                                    retail: '',
+                                    last: 'brand',
+                                    marca: values.map(x => `'${x.brand}'`).join(',')
+                                })
+                            }
+                        }}
                     />
 
-                    <SelectFunction
+                    <MultiSelectFunction
+                        onlyinitial={!cleanFilter}
+                        classname={classes.itemFilter}
                         title="SKU"
                         datatosend={datafilters.SKU}
                         optionvalue="model"
                         optiondesc="model"
-                        valueselected={filters.SKU}
+                        valueselected={filters.SKU ? filters.SKU.replace(/'/gi, "") : ""}
                         variant="outlined"
                         namefield="model"
                         descfield="model"
                         style={{ width: "200px" }}
-                        callback={({ newValue: value }) => setfilters({ ...filters, SKU: value?.model || '' })}
+                        callback={(values) => {
+                            if (!cleanFilter) {
+                                setfilters({
+                                    ...filters,
+                                    last: 'model',
+                                    SKU: values.map(x => `'${x.model}'`).join(','),
+                                })
+                            }
+                        }}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
+                        onlyinitial={!cleanFilter}
+                        classname={classes.itemFilter}
                         title="Retail"
                         variant="outlined"
                         datatosend={datafilters.retail}
                         optionvalue="retail"
                         optiondesc="retail"
-                        valueselected={filters.retail}
+                        valueselected={filters.retail ? filters.retail.replace(/'/gi, "") : ""}
                         namefield="retail"
                         descfield="retail"
                         style={{ width: "200px" }}
-                        callback={({ newValue: value }) => setfilters({ ...filters, retail: value?.retail || '' })}
+                        callback={(values) => {
+                            if (!cleanFilter) {
+                                setfilters({
+                                    ...filters,
+                                    retail: values.map(x => `'${x.retail}'`).join(','),
+                                    last: 'retail'
+                                })
+                            }
+                        }}
                     />
                     <RadioGroup row aria-label="tipo_pvp" name="row-radio-buttons-group"
                         defaultValue="prom_price"
@@ -812,60 +833,89 @@ const New_Products = () => {
                     <div style={{ fontSize: 16, fontWeight: 500 }}>
                         Filtros personalizados
                     </div>
-                    <SelectFunction
+                    <MultiSelectFunction
+                        onlyinitial={!cleanFilter}
+                        classname={classes.itemFilter1}
                         title="Formato"
                         datatosend={datafilters.format}
                         optionvalue="format"
                         optiondesc="format"
                         variant="outlined"
-                        valueselected={filters.format}
+                        valueselected={filters.format.replace(/'/gi, "")}
                         namefield="format"
                         descfield="format"
-                        callback={({ newValue: value }) => setfilters({ ...filters, format: value?.format || '' })}
+                        callback={(values) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, last: "format", format: values.map(x => `'${x.format}'`).join(",") })
+                            }
+                        }}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
+                        onlyinitial={!cleanFilter}
+                        classname={classes.itemFilter1}
                         title="Canal"
                         datatosend={datafilters.channel}
                         optionvalue="channel"
                         optiondesc="channel"
                         variant="outlined"
                         namefield="channel"
-                        valueselected={filters.channel}
+                        valueselected={filters.channel.replace(/'/gi, "")}
                         descfield="channel"
-                        callback={({ newValue: value }) => setfilters({ ...filters, channel: value?.channel || '' })}
+                        callback={(values) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, last: "channel", channel: values.map(x => `'${x.channel}'`).join(",") })
+                            }
+                        }}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
+                        onlyinitial={!cleanFilter}
+                        classname={classes.itemFilter1}
                         title="Departamento"
                         datatosend={datafilters.department}
                         optionvalue="department"
                         optiondesc="department"
-                        valueselected={filters.department}
+                        valueselected={filters.department.replace(/'/gi, "")}
                         variant="outlined"
                         namefield="department"
                         descfield="department"
-                        callback={({ newValue: value }) => setfilters({ ...filters, department: value?.department || '' })}
+                        callback={(values) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, last: "department", department: values.map(x => `'${x.department}'`).join(",") })
+                            }
+                        }}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
+                        onlyinitial={!cleanFilter}
+                        classname={classes.itemFilter1}
                         title="PDV"
                         datatosend={datafilters.store_name}
                         optionvalue="store_name"
                         optiondesc="store_name"
                         variant="outlined"
-                        valueselected={filters.store_name}
+                        valueselected={filters.store_name.replace(/'/gi, "")}
                         namefield="store_name"
                         descfield="store_name"
-                        callback={({ newValue: value }) => setfilters({ ...filters, store_name: value?.store_name || '' })}
+                        callback={(values) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, last: "store_name", store_name: values.map(x => `'${x.store_name}'`).join(",") })
+                            }
+                        }}
                     />
-                    <SelectFunction
+                    <MultiSelectFunction
+                        onlyinitial={!cleanFilter}
+                        classname={classes.itemFilter1}
                         title="Subcategoría"
-                        datatosend={subcategories}
+                        datatosend={datafilters.subcategoria}
                         optionvalue="subcategory"
                         optiondesc="subcategory"
+                        valueselected={filters.subcategoria.replace(/'/gi, "")}
                         variant="outlined"
                         namefield="subcategory"
                         descfield="subcategory"
-                        callback={({ newValue: value }) => {
-                            setfilters({ ...filters, subcategoria: value?.subcategory || "" });
+                        callback={(values) => {
+                            if (!cleanFilter) {
+                                setfilters({ ...filters, last: "subcategoria", subcategoria: values.map(x => `'${x.subcategory}'`).join(",") });
+                            }
                         }}
                     />
                     {/* <SelectFunction

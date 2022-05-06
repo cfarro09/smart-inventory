@@ -198,8 +198,8 @@ const Photo_portal = () => {
     }, [])
 
     useEffect(() => {
-        if (initial)
-            applyfilter(filters)
+        // if (initial)
+        //     applyfilter(filters)
     }, [filters])
 
 
@@ -266,6 +266,7 @@ const Photo_portal = () => {
 
     async function filtrar() {
         //setWaitFilter(true)
+        applyfilter(filters)
         setDataGraph([])
         const filter_to_send = {
             format: filters.format,

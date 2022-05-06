@@ -307,6 +307,7 @@ const Linear_detail = () => {
 
 
     async function filtrar() {
+        applyfilter(filters, true)
         setsearchdone(true)
         const filter_to_send = {
             format: filters.format,
@@ -347,8 +348,8 @@ const Linear_detail = () => {
     }, [])
 
     useEffect(() => {
-        if (initial)
-            applyfilter(filters)
+        // if (initial)
+        //     applyfilter(filters)
     }, [filters])
 
     const applyfilter = async (fill, initial = false) => {

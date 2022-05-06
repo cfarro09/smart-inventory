@@ -433,12 +433,13 @@ const BulkLoad = () => {
     }, [])
 
     useEffect(() => {
-        if (initial)
-            applyfilter(filters)
+        // if (initial)
+        //     applyfilter(filters)
     }, [filters])
 
 
     async function filtrar() {
+        applyfilter(filters, true)
         setsearchdone(true)
         setpvpprom(true)
         setpvpreg(true)

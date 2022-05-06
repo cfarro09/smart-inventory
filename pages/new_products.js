@@ -449,11 +449,11 @@ const New_Products = () => {
 
     }, [])
     useEffect(() => {
-        if (initial) {
-            applyfilter(filters, !!initial)
-            console.log(initial)
-            setinitial(0)
-        }
+        // if (initial) {
+        //     applyfilter(filters, !!initial)
+        //     console.log(initial)
+        //     setinitial(0)
+        // }
     }, [filters])
     async function updatelistretail(id_form) {
         const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
@@ -479,6 +479,7 @@ const New_Products = () => {
     }
 
     async function filtrar() {
+        applyfilter(filters, true)
         setsearchdone(true)
         const filter_to_send = {
             format: filters.format,

@@ -325,8 +325,8 @@ const Share_by_brand = () => {
 
     useEffect(() => {
         console.log('aplyfilter', initial)
-        if (initial)
-            applyfilter(filters, !!initial)
+        // if (initial)
+            // applyfilter(filters, !!initial)
     }, [filters])
 
     useEffect(() => {
@@ -350,6 +350,8 @@ const Share_by_brand = () => {
 
 
     async function filtrar() {
+        applyfilter(filters, true)
+        
         setsearchdone(true)
         let count = 0;
         const filter_to_send = {

@@ -241,6 +241,7 @@ const User = () => {
     }, [cleanFilter])
 
     async function filtrar() {
+        applyfilter(filters, true);
         setsearchdone(true)
         //setWaitFilter(true)
         const filter_to_send = {
@@ -277,8 +278,8 @@ const User = () => {
     }, [])
 
     useEffect(() => {
-        if (initial)
-            applyfilter(filters)
+        // if (initial)
+        //     applyfilter(filters)
     }, [filters])
 
     function descargar() {

@@ -583,7 +583,7 @@ const Share_by_brand = () => {
                         optiondesc="brand"
                         onlyinitial={!cleanFilter}
                         variant="outlined"
-                        valueselected={filters.marca?.replace(/'/gi, "") || ""}
+                        valueselected={filters.marca?.marca.replace(/'/gi, "") || ""}
                         namefield="brand"
                         descfield="brand"
                         style={{ width: "150px" }}

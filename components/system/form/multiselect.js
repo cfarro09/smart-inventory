@@ -17,20 +17,20 @@ const SelectMulti = ({ title, datatosend, optionvalue, optiondesc, valueselected
     const [options, setOptions] = useState([]);
     const [loading, setloading] = useState(true);
     const [optionsSelected, setOptionsSelected] = useState([]);
-
+    const initial = React.useRef(true)
+    
     const setHardValues = (options, stringvalues) => {
         setOptionsSelected([])
         if (stringvalues) {
-            console.log(stringvalues)
             const optionsselll = options.filter(o => stringvalues.split(",").indexOf(o[optionvalue].toString()) > -1)
             setOptionsSelected(optionsselll);
-            console.log("optionsselll", optionsselll)
             if (callback)
                 callback(optionsselll)
         }
     }
 
     useEffect(() => {
+        initial.current = false
         if (onlyinitial) {
             console.log(datatosend)
             const valueselectedtmp = valueselected || "";
@@ -44,7 +44,6 @@ const SelectMulti = ({ title, datatosend, optionvalue, optiondesc, valueselected
     }, []);
 
     useEffect(() => {
-
         (async () => {
             console.log("valueselected", valueselected)
             if (datatosend instanceof Array) {
@@ -61,6 +60,15 @@ const SelectMulti = ({ title, datatosend, optionvalue, optiondesc, valueselected
         })();
 
     }, [datatosend]);
+
+    useEffect(() => {
+        console.log("changevalue")
+        if (!initial.current) {
+            const optionsselll = options.filter(o => valueselected.split(",").indexOf(o[optionvalue].toString()) > -1)
+            console.log(optionsselll)
+            setOptionsSelected(optionsselll);
+        }
+    }, [valueselected])
 
     return (
         <Autocomplete
@@ -88,6 +96,7 @@ const SelectMulti = ({ title, datatosend, optionvalue, optiondesc, valueselected
             options={options}
             filterSelectedOptions
             disableClearable
+            disableCloseOnSelect
             getOptionLabel={option => option ? option[optiondesc] : ''}
             renderOption={(item, { selected }) => (
                 <React.Fragment>

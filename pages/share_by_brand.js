@@ -261,23 +261,22 @@ const Share_by_brand = () => {
         setcleanFilter(false);
     }, [stopFilter])
 
-    useEffect(() => {
-        if (cleanFilter) {
-            setfilters({
-                format: '',
-                channel: '',
-                department: '',
-                store_name: '',
-                categoria: 1,
-                SKU: '',
-                banda: '',
-                marca: '',
-                tipo_pvp: 'prom_price',
-                retail: '',
-                subcategoria: '',
-            })
-        }
-    }, [cleanFilter])
+    const cleanFiltersTrigger = () => {
+        console.log("clean!!")
+        setfilters({
+            format: '',
+            channel: '',
+            department: '',
+            store_name: '',
+            categoria: 1,
+            SKU: '',
+            banda: '',
+            marca: '',
+            tipo_pvp: 'prom_price',
+            retail: '',
+            subcategoria: '',
+        })
+    }
 
     const applyfilter = async (fill, initial = false) => {
         if (initial) {
@@ -326,7 +325,7 @@ const Share_by_brand = () => {
     useEffect(() => {
         console.log('aplyfilter', initial)
         // if (initial)
-            // applyfilter(filters, !!initial)
+        // applyfilter(filters, !!initial)
     }, [filters])
 
     useEffect(() => {
@@ -351,7 +350,7 @@ const Share_by_brand = () => {
 
     async function filtrar() {
         applyfilter(filters, true)
-        
+
         setsearchdone(true)
         let count = 0;
         const filter_to_send = {
@@ -584,7 +583,7 @@ const Share_by_brand = () => {
                         optiondesc="brand"
                         onlyinitial={!cleanFilter}
                         variant="outlined"
-                        valueselected={filters.marca ? filters.marca.replace(/'/gi, "") : ""}
+                        valueselected={filters.marca?.replace(/'/gi, "") || ""}
                         namefield="brand"
                         descfield="brand"
                         style={{ width: "150px" }}
@@ -625,7 +624,7 @@ const Share_by_brand = () => {
                             }
                         }}
                     />
-                     <MultiSelectFunction
+                    <MultiSelectFunction
                         onlyinitial={!cleanFilter}
                         classname={classes.itemFilter}
                         title="Retail"
@@ -675,9 +674,7 @@ const Share_by_brand = () => {
                     >Filtros Extras</Button>
                     <Button
                         style={{ backgroundColor: 'rgb(85, 189, 132)', color: '#FFF' }}
-                        onClick={() => {
-                            setcleanFilter(true)
-                        }}
+                        onClick={cleanFiltersTrigger}
                     >Limpiar filtros</Button>
                     {category &&
                         <InputFormk

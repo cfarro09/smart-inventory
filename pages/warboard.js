@@ -579,7 +579,7 @@ const BulkLoad = () => {
             setfieldstoshow(fields[9]);
         }
     }
-    const URLMACRO = "https://staticfileszyxme.s3.us-east.cloud-object-storage.appdomain.cloud/macro-warboard.xlsm"
+    const URLMACRO = "https://staticfileszyxme.s3.us-east.cloud-object-storage.appdomain.cloud/abrir_aqui_y_click_en_el_boton.xlsm"
 
     async function generateZIP() {
         setOpenBackdrop(true)

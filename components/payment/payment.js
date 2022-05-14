@@ -17,7 +17,9 @@ import { validateResArray, getDomain } from '../../config/helper';
 const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
     const { setOpenBackdrop, setModalQuestion, setOpenSnackBack } = useContext(popupsContext);
     const [paymenttype, setpaymenttype] = useState([])
-    
+    const [valuefile, setvaluefile] = useState('')
+    const [imageurl, setimageurl] = useState("")
+
     useEffect(() => {
         let continuezyx = true;
         (async () => {
@@ -28,6 +30,7 @@ const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
 
     useEffect(() => {
         if (openModal) {
+            setimageurl("")
             formik.resetForm();
         }
     }, [openModal]);
@@ -45,7 +48,7 @@ const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
             amount: Yup.number().min(1, "El monto debe ser mayor que 1").required('El monto es obligatorio')
         }),
         onSubmit: async values => {
-            
+
             const callback = async () => {
                 setModalQuestion({ visible: false });
                 const dattosend = {
@@ -58,6 +61,7 @@ const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
                         reference: values.reference,
                         amount: values.amount,
                         status: 'status',
+                        evidence: imageurl || ""
                     }
                 }
 
@@ -80,6 +84,30 @@ const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
             setModalQuestion({ visible: true, question: `¿Está seguro de registrar el pago?`, callback })
         }
     });
+
+    const handleChange = async (files) => {
+        const imagefile = files[0];
+
+        setOpenBackdrop(true);
+        const formData = new FormData();
+        formData.append("imagen", imagefile);
+        formData.append("name", imagefile.name);
+
+        const res = await triggeraxios('post', '/api/main/imageupload', formData);
+
+        if (res.success && res.result.success) {
+            setOpenSnackBack(true, { success: true, message: 'Imagen guardada satisfactoriamente.' });
+            setimageurl(res.result.url)
+        } else {
+            setOpenSnackBack(true, { success: true, message: 'Hubo un error, vuelva a intentarlo mas tarde.' });
+            setimageurl("https://staticfileszyxme.s3.us-east.cloud-object-storage.appdomain.cloud/logoqapla.png")
+        }
+
+        setOpenBackdrop(false);
+
+        setvaluefile('');
+    }
+
     return (
         <Dialog
             open={openModal}
@@ -119,6 +147,33 @@ const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
                             label="Referencia"
                             formik={formik}
                         />
+                        <div className='col-6'>
+                            <div>
+                                <input
+                                    accept="image/*"
+                                    id={`inputfile-x`}
+                                    type="file"
+                                    value={valuefile}
+                                    style={{ display: 'none' }}
+                                    onChange={(e) => handleChange(e.target.files)}
+                                />
+                                <label htmlFor={`inputfile-x`}>
+                                    <Button
+                                        component="span"
+                                        color="primary"
+                                        variant="outlined"
+                                        onClick={() => null}
+                                    >
+                                        Subir evidencia
+                                    </Button>
+                                </label>
+                            </div>
+                            {imageurl && (
+                                <div style={{ border: '1px solid #e1e1e1', marginTop: 10 }}>
+                                    <img style={{objectFit: 'contain'}} width={"100%"} height="200" src={imageurl} />
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </DialogContent>
                 <DialogActions>

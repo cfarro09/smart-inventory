@@ -185,7 +185,7 @@ const CampusBooking = () => {
             const hour_start = parseInt(x.start_date.split(" ")[1].split(":")[0]);
             const hour_end = parseInt(x.end_date.split(" ")[1].split(":")[0]);
             const field_name = dataclients.find(y => y.id_field === x.id_field).field_name;
-            
+
             for (let i = hour_start; i < hour_end; i++) {
                 if (acc[i]) {
                     acc[i][`field_${x.id_field}`] = {
@@ -216,7 +216,7 @@ const CampusBooking = () => {
 
     return (
         <Layout>
-            <div style={{ display: 'flex', gap: 16 }}>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 24 }}>
                 <div style={{ width: 200 }}>
                     <TextField
                         id="date"
@@ -254,12 +254,18 @@ const CampusBooking = () => {
                     </Button>
                 </div>
             </div>
-            <div>
+            <div style={{marginTop: 10}}>
                 <TableContainer>
                     <Table size="small">
                         <TableHead>
                             <TableRow>
-                                <TableCell>Hora</TableCell>
+                                <TableCell style={{
+                                    position: "sticky",
+                                    width: 100,
+                                    left: 0,
+                                    backgroundColor: 'white',
+                                    borderRight: '1px solid #e1e1e1',
+                                }}>Hora</TableCell>
                                 {dataclients.map(x => (
                                     <TableCell key={x.id_field}>{x.field_name}</TableCell>
                                 ))}
@@ -268,7 +274,15 @@ const CampusBooking = () => {
                         <TableBody style={{ marginTop: 5 }}>
                             {datatable.map((item, i) =>
                                 <TableRow key={i}>
-                                    <TableCell width={130}>
+                                    <TableCell
+                                        style={{
+                                            position: "sticky",
+                                            width: 100,
+                                            left: 0,
+                                            backgroundColor: 'white',
+                                            borderRight: '1px solid #e1e1e1',
+                                        }}
+                                        width={130}>
                                         {item.description}
                                     </TableCell>
                                     {dataclients.map(x => {
@@ -282,6 +296,7 @@ const CampusBooking = () => {
                                                     }
                                                 }}
                                                 style={{
+                                                    minWidth: 150,
                                                     borderRight: '1px solid #e1e1e1',
                                                     borderLeft: '1px solid #e1e1e1',
                                                     cursor: field?.cliente && 'pointer',

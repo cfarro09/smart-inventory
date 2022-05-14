@@ -97,7 +97,8 @@ const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
 
         if (res.success && res.result.success) {
             setOpenSnackBack(true, { success: true, message: 'Imagen guardada satisfactoriamente.' });
-            setimageurl(res.result.url)
+            debugger
+            setimageurl(res.result.data.url)
         } else {
             setOpenSnackBack(true, { success: true, message: 'Hubo un error, vuelva a intentarlo mas tarde.' });
             setimageurl("https://staticfileszyxme.s3.us-east.cloud-object-storage.appdomain.cloud/logoqapla.png")

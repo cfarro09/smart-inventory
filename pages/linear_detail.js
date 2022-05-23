@@ -166,6 +166,10 @@ const Linear_detail = () => {
                 accessor: 'category'
             },
             {
+                Header: 'Subcategoría',
+                accessor: 'subcategory'
+            },
+            {
                 Header: 'Modelo',
                 accessor: 'model'
             },

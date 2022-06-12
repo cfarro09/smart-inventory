@@ -7,7 +7,7 @@ module.exports = {
         staticFolder: ''
    },
     env: {
-        urlapi: process.env.URLAPI,
+        urlapi: "http://149.56.22.124:5000",
         endpoints: {
             transaction: "/api/web/main/simpleTransaction",
             selsimple: "/api/web/main/",

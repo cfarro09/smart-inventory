@@ -114,7 +114,7 @@ const Example = () => {
 
         triggeraxios('post', process.env.endpoints.selsimple, dataRequestProducts(productToAdd.id_product, selected.id_client_store)).then(r => {
             const batches = validateResArray(r, true);
-            setlistproducts([...listproducts, { ...batches[0], batches, product_code: productToAdd.product_code }])
+            setlistproducts([...listproducts, { ...batches[0], batches: batches.map(x => ({...x, description: `${x.batch} - ${x.product_exp_date}`})), product_code: productToAdd.product_code }])
         })
     }
 
@@ -260,7 +260,6 @@ const Example = () => {
                                         <TableCell>Producto</TableCell>
                                         <TableCell>Lote</TableCell>
                                         <TableCell>Salida</TableCell>
-                                        <TableCell>F. Vencimiento</TableCell>
                                         <TableCell></TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -283,7 +282,7 @@ const Example = () => {
                                                     valueselected={item.batch}
                                                     classname="col-6"
                                                     optionvalue="batch"
-                                                    optiondesc="batch"
+                                                    optiondesc="description"
                                                 />
                                             </TableCell>
                                             <TableCell width={150}>
@@ -299,9 +298,6 @@ const Example = () => {
                                                         } : y))
                                                     }}
                                                 />
-                                            </TableCell>
-                                            <TableCell>
-                                                {item.product_exp_date}
                                             </TableCell>
                                             <TableCell width={30}>
                                                 <div style={{ display: 'flex' }}>

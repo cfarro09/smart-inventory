@@ -226,7 +226,7 @@ const Example = () => {
                     </div>
                     <div className="row-zyx">
                         <InputFormk
-                            label="Comprador"
+                            label="Cliente final"
                             classname="col-6"
                             callback={setnameclient}
                         />

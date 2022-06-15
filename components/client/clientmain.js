@@ -61,7 +61,7 @@ const TemplateModal = React.memo(({ title, openModal, setOpenModal, rowselected,
         }),
         onSubmit: async values => {
             if (!dataStore.length) {
-                setOpenSnackBack(true, { success: false, message: "Tiene que asignar al menos una tienda." });
+                setOpenSnackBack(true, { success: false, message: "Tiene que asignar al menos un almacen." });
                 return;
             }
             const datatosend = {
@@ -133,7 +133,7 @@ const TemplateModal = React.memo(({ title, openModal, setOpenModal, rowselected,
                 }
             },
             {
-                Header: 'TIENDA',
+                Header: 'ALMACEN',
                 accessor: 'store_name'
             },
             {
@@ -278,7 +278,7 @@ const TemplateModal = React.memo(({ title, openModal, setOpenModal, rowselected,
                         </form>
                         <TableZyx
                             columns={columns}
-                            titlemodule='Tiendas'
+                            titlemodule='Almacenes'
                             data={ React.useMemo( () => dataStore.filter(x => !x.deleted), [dataStore])}
                             register={true}
                             selectrow={selectrow}

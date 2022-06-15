@@ -95,7 +95,7 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                             button 
                             key={appfound.path} 
                             style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: theme.spacing(IconLink ? 2 : 9) }} 
-                            className={classes.listItem, (routertmp === appfound.path ? classes.activelink : undefined)}
+                            className={[classes.listItem, (routertmp === appfound.path ? classes.activelink : undefined)]}
                         >
                             {IconLink && <ListItemIcon style={{minWidth: '45px'}}><IconLink /></ListItemIcon>}
                             <ListItemText style={{ color: 'white' }} primary={appfound.description} />
@@ -147,6 +147,10 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                         <ShoppingCart style={{ color: theme.palette.primary.light }} />
                     )}
                 >
+                    <LinkList
+                        application="purchase-order-register"
+                        routeLink="/purchase-order/register"
+                    />
                     <LinkList
                         application="purchase-order-load"
                         routeLink="/purchase-order/load"

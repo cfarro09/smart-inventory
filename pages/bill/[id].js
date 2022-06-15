@@ -34,28 +34,30 @@ const Example = () => {
     console.log(datatmp);
 
     const processdata = React.useCallback(() => {
-        const isokaylocation = datatmp.every(x => x.hallway && x.level && x.column);
+        const dd = datatmp.map(x => ({
+            ...x,
+            hallway: 1,
+            level: 1,
+            column: 1
+        }))
+        // const isokaylocation = datatmp.every(x => x.hallway && x.level && x.column);
         const isokayarea = datatmp.every(x => x.shrinkage !== "" && x.quarantine !== "");
 
-        console.log({
-            id_bill_load: billLoad.id_bill_load,
-            data: datatmp
-        });
         if (!isokayarea) {
             setOpenSnackBack(true, { success: false, message: 'Hay campos de merma y cuarentena vacios.' });
             return;
         }
 
-        if (!isokaylocation) {
-            setOpenSnackBack(true, { success: false, message: 'Hay campos de ubicación vacios.' });
-            return;
-        }
+        // if (!isokaylocation) {
+        //     setOpenSnackBack(true, { success: false, message: 'Hay campos de ubicación vacios.' });
+        //     return;
+        // }
 
         const callback = async () => {
             setModalQuestion({ visible: false });
             const dattosend = {
                 id_bill_load: billLoad.id_bill_load,
-                data: datatmp
+                data: dd
             }
 
             setOpenBackdrop(true);
@@ -119,75 +121,6 @@ const Example = () => {
     }, [datatmp])
 
     const columns = [
-        {
-            Header: "COLUMNAS OBLIGATORIAS",
-            accessor: "id_bill_load_detail",
-            isComponent: true,
-            Cell: (props) => {
-                const { index, original: { id_bill_load_detail, product_quantity } } = props.cell.row;
-                return (
-                    <>
-                        <TextFieldAux
-                            id_bill_load_detail={id_bill_load_detail}
-                            column="hallway"
-                            label="Pasillo"
-                            index={index}
-                            quantity={product_quantity}
-                            type="number"
-                        />
-                        <TextFieldAux
-                            id_bill_load_detail={id_bill_load_detail}
-                            column="column"
-                            label="Columna"
-                            index={index}
-                            quantity={product_quantity}
-                            type="number"
-                        />
-                        <TextFieldAux
-                            id_bill_load_detail={id_bill_load_detail}
-                            column="level"
-                            label="Nivel"
-                            index={index}
-                            quantity={product_quantity}
-                            type="number"
-                        />
-                        <TextFieldAux
-                            id_bill_load_detail={id_bill_load_detail}
-                            column="shrinkage"
-                            label="Merma"
-                            index={index}
-                            quantity={product_quantity}
-                            type="number"
-                        />
-                        <TextFieldAux
-                            id_bill_load_detail={id_bill_load_detail}
-                            column="quarantine"
-                            label="Cuarentena"
-                            index={index}
-                            quantity={product_quantity}
-                            type="number"
-                        />
-
-                        <TextFieldAux
-                            id_bill_load_detail={id_bill_load_detail}
-                            column="scrap"
-                            label="Scrap"
-                            index={index}
-                            quantity={product_quantity}
-                            type="number"
-                        />
-                        <TextFieldAux
-                            id_bill_load_detail={id_bill_load_detail}
-                            column="demo"
-                            label="Demo"
-                            index={index}
-                            quantity={product_quantity}
-                            type="number"
-                        />
-                    </>
-                )
-            }
-        },
         {
             Header: 'CODIGO',
             accessor: 'product_code'

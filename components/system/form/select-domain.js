@@ -55,7 +55,7 @@ const UseSelectDomain = ({title, domainname, valueselected = "", namefield = "",
         return () => {
             source.cancel();
         }
-    }, []);
+    }, [domainname]);
 
     return (
         <Autocomplete

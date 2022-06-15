@@ -49,22 +49,22 @@ const InventaryMain = ({ title, openModal, setOpenModal, rowselected }) => {
                 Header: 'SALIDA',
                 accessor: 'salida'
             },
-            {
-                Header: 'MERMA',
-                accessor: 'shrinkage'
-            },
-            {
-                Header: 'CUARENTENA',
-                accessor: 'quarantine'
-            },
-            {
-                Header: 'SCRAP',
-                accessor: 'scrap'
-            },
-            {
-                Header: 'DEMO',
-                accessor: 'demo'
-            },
+            // {
+            //     Header: 'MERMA',
+            //     accessor: 'shrinkage'
+            // },
+            // {
+            //     Header: 'CUARENTENA',
+            //     accessor: 'quarantine'
+            // },
+            // {
+            //     Header: 'SCRAP',
+            //     accessor: 'scrap'
+            // },
+            // {
+            //     Header: 'DEMO',
+            //     accessor: 'demo'
+            // },
             {
                 Header: 'STOCK DISP',
                 accessor: 'balance_available'
@@ -74,8 +74,8 @@ const InventaryMain = ({ title, openModal, setOpenModal, rowselected }) => {
                 accessor: 'balance'
             },
             {
-                Header: 'UBICACION (P - N - C)',
-                accessor: 'ubicacion'
+                Header: 'LOTE',
+                accessor: 'batch'
             },
             {
                 Header: 'DETALLE',

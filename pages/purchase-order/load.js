@@ -132,7 +132,7 @@ const BulkLoad = () => {
     const handlerinsertload = async () => {
         
         if (!selectStore) {
-            setOpenSnackBack(true, { success: false, message: 'Tiene que seleccionar una tienda.' });
+            setOpenSnackBack(true, { success: false, message: 'Tiene que seleccionar un almacen.' });
             return;
         }
 
@@ -267,7 +267,7 @@ const BulkLoad = () => {
                             />
                             <SelectFunction
                                 classname="col-2"
-                                title="Tienda"
+                                title="Almacen"
                                 datatosend={dataStore}
                                 callback={handlerSelectStore}
                                 optionvalue="id_client_store"

@@ -64,7 +64,7 @@ const Buyer = () => {
                 accessor: 'client_name'
             },
             {
-                Header: 'TIENDA',
+                Header: 'ALMACEN',
                 accessor: 'store_name'
             },
             {

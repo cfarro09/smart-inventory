@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
@@ -6,7 +6,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 
-const InputFormk = React.memo(({ name, label, formik, type = "text", classname = null, disabled = false, valuedefault = null, callback = null, style = {}}) => {
+const InputFormk = React.memo(({ name, label, formik, type = "text", classname = null, disabled = false, valuedefault = null, callback = null, style = {} }) => {
     const [valuex, setValuex] = useState("");
     if (type === "password") {
         const [showPassword, setShowPassword] = React.useState(false);
@@ -29,7 +29,8 @@ const InputFormk = React.memo(({ name, label, formik, type = "text", classname =
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
                 value={!valuedefault ? (formik?.values?.[name] || "") : valuedefault}
-                onChange={ e => {
+
+                onChange={e => {
                     if (callback)
                         callback(e.target.value)
                     formik?.handleChange(e);
@@ -38,6 +39,9 @@ const InputFormk = React.memo(({ name, label, formik, type = "text", classname =
                 error={formik?.errors[name] ? true : false}
                 helperText={formik?.errors[name]}
                 InputProps={{
+                    inputProps: {
+                        min: 0
+                    },
                     endAdornment: (
                         <InputAdornment position="end">
                             <IconButton
@@ -67,14 +71,14 @@ const InputFormk = React.memo(({ name, label, formik, type = "text", classname =
                 variant="outlined"
                 size="small"
                 value={!valuedefault ? (formik ? formik?.values?.[name] || "" : valuex) : valuedefault}
-                onChange={ e => {
+                onChange={e => {
                     if (formik)
                         formik.handleChange(e);
-                    else 
+                    else
                         setValuex(e.target.value)
                     if (callback)
                         callback(e.target.value);
-                    
+
                 }}
                 // onBlur={formik?.handleBlur}
                 error={formik?.errors[name] ? true : false}

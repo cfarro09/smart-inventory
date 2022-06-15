@@ -65,13 +65,13 @@ const StoreMain = ({ openModal, setOpenModal, setData, rowselected }) => {
                 noValidate
                 onSubmit={formik.handleSubmit}
             >
-                <DialogTitle id="alert-dialog-title">Tienda</DialogTitle>
+                <DialogTitle id="alert-dialog-title">Almacen</DialogTitle>
                 <DialogContent>
                     <div className="row-zyx">
                     <InputFormk
                             name="store_name"
                             classname="col-6"
-                            label="Tienda"
+                            label="Almacen"
                             formik={formik}
                         />
                         <InputFormk

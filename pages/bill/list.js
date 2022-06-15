@@ -97,7 +97,7 @@ const Example = () => {
                 accessor: 'company_name'
             },
             {
-                Header: 'TIENDA',
+                Header: 'ALMACEN',
                 accessor: 'store_name'
             },
             {
@@ -110,7 +110,7 @@ const Example = () => {
                 accessor: 'status',
                 Cell: (props) => (
                     <div style={{display: 'flex', alignItems: 'center'}}>
-                        <span className={classes.circuler} style={{backgroundColor: props.cell.row.original.status === "PROCESADO" ? "green" : "yellow"}}></span>
+                        <span className={classes.circuler} style={{backgroundColor: props.cell.row.original.status === "PROCESADO" ? "#22b66e" : "#ffbf00"}}></span>
                         {props.cell.row.original.status}
                     </div>
                 )

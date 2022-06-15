@@ -142,7 +142,7 @@ const Example = () => {
                 accessor: 'company_name'
             },
             {
-                Header: 'TIENDA',
+                Header: 'ALMACEN',
                 accessor: 'store_name'
             },
             {

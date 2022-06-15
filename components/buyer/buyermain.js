@@ -73,7 +73,7 @@ const BuyerMain = ({ title, openModal, setOpenModal, rowselected, fetchDataUser,
                     if (fetchDataUser)
                         fetchDataUser({});
                     setOpenModal(false);
-                    setOpenSnackBack(true, { success: true, message: 'Se registró correctamente!.' });
+                        setOpenSnackBack(true, { success: true, message: 'Se registró correctamente!.' });
                 } else
                     setOpenSnackBack(true, { success: false, message: 'Hubo un error, vuelva a intentarlo' });
 

@@ -39,7 +39,7 @@ const Template = () => {
                                     aria-label="delete"
                                     size="small"
                                     className="button-floating"
-                                    disabled={ !appfound.update}
+                                    disabled={ !appfound?.update}
                                     onClick={() => {
                                         selectrow(props.cell.row.original);
                                     }}
@@ -55,7 +55,7 @@ const Template = () => {
                                     className="button-floating"
                                     aria-label="delete"
                                     size="small"
-                                    disabled={ !appfound.delete}
+                                    disabled={ !appfound?.delete}
                                     onClick={() => deleterow(props.cell.row.original)}
                                 >
                                     <DeleteIcon
@@ -151,7 +151,7 @@ const Template = () => {
                 titlemodule='Template'
                 data={datatable}
                 fetchData={fetchData}
-                register={!!appfound.insert}
+                register={!!appfound?.insert}
                 selectrow={selectrow}
             />
             <TemplateMain

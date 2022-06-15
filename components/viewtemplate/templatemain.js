@@ -182,6 +182,54 @@ const columnsinit = [
         selected: false,
         type: 'int'
     },
+    {
+        columnbd: "batch",
+        columnbddesc: "LOTE",
+        obligatory: false,
+        obligatorycolumn: false,
+        selected: false,
+        type: 'int'
+    },
+    {
+        columnbd: "document_type",
+        columnbddesc: "TIPO DOC",
+        obligatory: false,
+        obligatorycolumn: false,
+        selected: false,
+        type: 'int'
+    },
+    {
+        columnbd: "document_number",
+        columnbddesc: "N° DOC",
+        obligatory: false,
+        obligatorycolumn: false,
+        selected: false,
+        type: 'int'
+    },
+    {
+        columnbd: "entry_date",
+        columnbddesc: "FECHA DE INGRESO",
+        obligatory: false,
+        obligatorycolumn: false,
+        selected: false,
+        type: 'int'
+    },
+    {
+        columnbd: "observation",
+        columnbddesc: "OBSERVACION",
+        obligatory: false,
+        obligatorycolumn: false,
+        selected: false,
+        type: 'int'
+    },
+    {
+        columnbd: "owner",
+        columnbddesc: "RESPONSABLE",
+        obligatory: false,
+        obligatorycolumn: false,
+        selected: false,
+        type: 'int'
+    },
 ]
 
 const requestclient = {

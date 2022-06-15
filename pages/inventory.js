@@ -73,7 +73,7 @@ const Example = () => {
                 }
             },
             {
-                Header: 'TIENDA',
+                Header: 'ALMACEN',
                 accessor: 'store_name'
             },
             {
@@ -84,34 +84,22 @@ const Example = () => {
                 Header: 'DESC PROD',
                 accessor: 'product_description'
             },
-            ...(selected.type === "DETALLADO" ? [{
-                Header: 'PASILLO',
-                accessor: 'hallway'
-            }] : []),
-            ...(selected.type === "DETALLADO" ? [{
-                Header: 'COLUMNA',
-                accessor: 'column'
-            }] : []),
-            ...(selected.type === "DETALLADO" ? [{
-                Header: 'NIVEL',
-                accessor: 'level'
-            }] : []),
-            {
-                Header: 'EN CUARENTENA',
-                accessor: 'quarantine'
-            },
-            {
-                Header: 'EN MERMA',
-                accessor: 'shrinkage'
-            },
-            {
-                Header: 'SCRAP',
-                accessor: 'scrap'
-            },
-            {
-                Header: 'DEMO',
-                accessor: 'demo'
-            },
+            // {
+            //     Header: 'EN CUARENTENA',
+            //     accessor: 'quarantine'
+            // },
+            // {
+            //     Header: 'EN MERMA',
+            //     accessor: 'shrinkage'
+            // },
+            // {
+            //     Header: 'SCRAP',
+            //     accessor: 'scrap'
+            // },
+            // {
+            //     Header: 'DEMO',
+            //     accessor: 'demo'
+            // },
             {
                 Header: 'STOCK DISP',
                 accessor: 'available'
@@ -119,6 +107,10 @@ const Example = () => {
             {
                 Header: 'STOCK',
                 accessor: 'quantity'
+            },
+            {
+                Header: 'LOTE',
+                accessor: 'batch'
             },
             {
                 Header: 'METRO CUBICO/CAJA',
@@ -140,26 +132,47 @@ const Example = () => {
                 Header: 'LINEA',
                 accessor: 'product_line'
             },
-            {
-                Header: 'LOTE',
-                accessor: 'product_lots'
-            },
-            {
-                Header: 'NUM° PAQUETE',
-                accessor: 'product_package_number'
-            },
-            {
-                Header: 'SERIE',
-                accessor: 'product_serie'
-            },
-            {
-                Header: 'TAMAÑO',
-                accessor: 'product_size'
-            },
-            {
-                Header: 'UNIDAD/CAJA',
-                accessor: 'product_unitp_box'
-            },
+           
+            // {
+            //     Header: 'TIPO DOC',
+            //     accessor: 'document_type'
+            // },
+            // {
+            //     Header: 'N° DOC',
+            //     accessor: 'document_number'
+            // },
+            // {
+            //     Header: 'FECHA INGRESO',
+            //     accessor: 'entry_date'
+            // },
+            // {
+            //     Header: 'OBSERVACIÓN',
+            //     accessor: 'observation'
+            // },
+            // {
+            //     Header: 'RESPONSABLE',
+            //     accessor: 'owner'
+            // },
+            // {
+            //     Header: 'LOTE',
+            //     accessor: 'product_lots'
+            // },
+            // {
+            //     Header: 'NUM° PAQUETE',
+            //     accessor: 'product_package_number'
+            // },
+            // {
+            //     Header: 'SERIE',
+            //     accessor: 'product_serie'
+            // },
+            // {
+            //     Header: 'TAMAÑO',
+            //     accessor: 'product_size'
+            // },
+            // {
+            //     Header: 'UNIDAD/CAJA',
+            //     accessor: 'product_unitp_box'
+            // },
         ],
         [datatable]
     );
@@ -297,7 +310,7 @@ const Example = () => {
                     />
                     <SelectFunction
                         classname="col-3"
-                        title="Tienda"
+                        title="Almacen"
                         datatosend={dataStore}
                         callback={handlerSelectStore}
                         optionvalue="id_client_store"

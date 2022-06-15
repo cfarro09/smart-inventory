@@ -75,9 +75,9 @@ const BulkLoad = () => {
             setOpenSnackBack(true, { success: false, message: 'Tiene que llenar los campos faltantes.' });
             return;
         }
-
+        console.log("datatable", datatable)
         const datafiltred = datatable.rows.reduce((t, x) => {
-            const indexfind = t.findIndex(y => y.product_code === x.product_code && y.hallway === x.hallway && y.level === x.level && y.column === x.column);
+            const indexfind = t.findIndex(y => y.product_code === x.product_code && y.batch === x.batch);
             if (indexfind >= 0) {
                 t[indexfind].product_quantity += x.product_quantity;
             } else {

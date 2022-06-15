@@ -50,6 +50,7 @@ const Example = () => {
 
     const { setloadingglobal, setModalQuestion, setOpenBackdrop, setOpenSnackBack } = useContext(popupsContext);
     const [phoneclient, setphoneclient] = useState("")
+    const [nameclient, setnameclient] = useState("")
     const [dateexit, setdateexit] = useState("")
     const [documenttype, setdocumenttype] = useState("")
     const [documentnumber, setdocumentnumber] = useState("")
@@ -124,7 +125,7 @@ const Example = () => {
             exit_date: dateexit,
             document_type: documenttype,
             document_number: documentnumber,
-            client_name: 'admin'
+            client_name: nameclient
         }
         const ss = listproducts.map(x => ({
             ...x,
@@ -223,6 +224,13 @@ const Example = () => {
                             callback={setdocumentnumber}
                         />
                     </div>
+                    <div className="row-zyx">
+                        <InputFormk
+                            label="Comprador"
+                            classname="col-6"
+                            callback={setnameclient}
+                        />
+                    </div>
 
                     <div style={{ display: 'flex', gap: 8, padding: 20, backgroundColor: '#e1e1e1' }}>
                         <div style={{ width: 500 }}>
@@ -252,6 +260,7 @@ const Example = () => {
                                         <TableCell>Producto</TableCell>
                                         <TableCell>Lote</TableCell>
                                         <TableCell>Salida</TableCell>
+                                        <TableCell>F. Vencimiento</TableCell>
                                         <TableCell></TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -266,6 +275,7 @@ const Example = () => {
                                                         setlistproducts(listproducts.map((y, index1) => index === index1 ? {
                                                             ...item,
                                                             batch: (newValue?.batch || ""),
+                                                            product_exp_date: newValue?.product_exp_date || "",
                                                             available: (newValue?.available || 0),
                                                             availablemax: (newValue?.available || 0),
                                                         } : y))
@@ -290,7 +300,9 @@ const Example = () => {
                                                     }}
                                                 />
                                             </TableCell>
-
+                                            <TableCell>
+                                                {item.product_exp_date}
+                                            </TableCell>
                                             <TableCell width={30}>
                                                 <div style={{ display: 'flex' }}>
                                                     <IconButton

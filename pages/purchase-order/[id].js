@@ -71,7 +71,7 @@ const Example = () => {
         const res = await triggeraxios('post', process.env.endpoints.selsimple, datatosend(id_purchase_order));
         setdatatable(validateResArray(res, continuezyx).map(x => ({
             ...x, 
-            discount_from: x.discount_from.toUpperCase()
+            discount_from: x.discount_from?.toUpperCase()
                 .replace("SHRINKAGE", "MERMA")
                 .replace("QUARENTINE", "CUARENTENA")
                 .replace("AVAILABLE", "DISPONIBLE")

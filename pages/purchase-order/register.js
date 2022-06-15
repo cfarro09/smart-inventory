@@ -151,6 +151,10 @@ const Example = () => {
             const res = await triggeraxios('post', "/api/web/purchase_order/register", aa);
             if (res.success) {
                 setOpenSnackBack(true, { success: true, message: 'Se registró con exito' });
+
+                setTimeout(() => {
+                    location.reload()
+                }, 500);
             } else {
                 setOpenSnackBack(true, { success: false, message: !res.msg ? 'Hubo un error, vuelva a intentarlo' : res.msg });
             }
@@ -274,6 +278,7 @@ const Example = () => {
                                                         setlistproducts(listproducts.map((y, index1) => index === index1 ? {
                                                             ...item,
                                                             batch: (newValue?.batch || ""),
+                                                            id_inventory: (newValue?.id_inventory || 0),
                                                             product_exp_date: newValue?.product_exp_date || "",
                                                             available: (newValue?.available || 0),
                                                             availablemax: (newValue?.available || 0),

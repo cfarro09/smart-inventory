@@ -266,12 +266,12 @@ const validatePrice = (hours, startdate, enddate, times) => {
         start_time: new Date(getDateZyx(startdate) + " " + x.start_time),
         end_time: new Date(getDateZyx(startdate) + " " + x.end_time),
     }));
-    
+
     return [...Array(hours).keys()].reduce((acc, j) => {
         const startd = new Date(startdate.getTime() + (j * 36e5));
         const endd = new Date(startdate.getTime() + ((j + 1) * 36e5));
 
-        
+
         const timeselected = fieldstime.find(x => x.start_time <= startd && endd <= x.end_time);
         return acc + (timeselected?.price || 0);
     }, 0)
@@ -687,12 +687,12 @@ const Boooking = () => {
                                 throw new Error("El campo no está disponible en ese horario");
                             }
                             const hours = Math.ceil(Math.abs(changes.endDate - changes.startDate) / 36e5);
-                            return { 
-                                ...changes, 
-                                id_campus: fieldselected.id_campus, 
-                                title: (clientselected?.first_name || fieldselected.field_name), 
-                                price: fieldselected.price, 
-                                hours, 
+                            return {
+                                ...changes,
+                                id_campus: fieldselected.id_campus,
+                                title: (clientselected?.first_name || fieldselected.field_name),
+                                price: fieldselected.price,
+                                hours,
                                 total: validatePrice(hours, newchange.startDate, newchange.endDate, fieldselected.time_prices)
                             }
 
@@ -769,8 +769,8 @@ const Boooking = () => {
         <WeekView.TimeTableCell
             {...restProps}
             onDoubleClick={(e) => {
-                // if (endDate < new Date())
-                //     return null;
+                if (endDate < new Date())
+                    return null;
                 if (!(booking.status === 'BORRADOR' || booking.status === '')) {
                     setOpenSnackBack(true, { success: false, message: "No puede registrar mas eventos." });
                     return null;
@@ -785,7 +785,7 @@ const Boooking = () => {
                 onDoubleClick(e)
             }}
         >
-            <Tooltip arrow placement="top" title={`${daysd[startDate.getDay()]} ${(startDate.getMonth() + 1).toString().padStart(2, "0")}/${startDate.getDate().toString().padStart(2, "0")} ${startDate.getHours()}:00`}>
+            <Tooltip arrow placement="top" title={`${daysd[startDate.getDay()]} ${(startDate.getMonth() + 1).toString().padStart(2, "0")}/${startDate.getDate().toString().padStart(2, "0")} ${startDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`}>
                 <div style={{ height: "100%", width: "100%" }}></div>
             </Tooltip>
         </WeekView.TimeTableCell>
@@ -902,14 +902,17 @@ const Boooking = () => {
                         />
                         <WeekView
                             cellDuration={60}
-                            startDayHour={8}
+                            startDayHour={7}
                             endDayHour={24}
                             name="Semana"
                             timeTableCellComponent={TimeTableCell}
+                            timeScaleLabelComponent={({ formatDate, ...restProps }) => <WeekView.TimeScaleLabel {...restProps} formatDate={(date) => {
+                                return date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+                            }} />}
                         />
                         <DayView
                             name="Día"
-                            startDayHour={8}
+                            startDayHour={7}
                             endDayHour={24}
                         />
                         <Toolbar />
@@ -997,7 +1000,7 @@ const Boooking = () => {
                             mainResourceName="id_field"
                         />
                         <CurrentTimeIndicator
-                            shadePreviousCells={false}
+                            shadePreviousCells={true}
                         />
                         <ViewSwitcher />
                         <TodayButton />

@@ -769,8 +769,8 @@ const Boooking = () => {
         <WeekView.TimeTableCell
             {...restProps}
             onDoubleClick={(e) => {
-                if (endDate < new Date())
-                    return null;
+                // if (endDate < new Date())
+                //     return null;
                 if (!(booking.status === 'BORRADOR' || booking.status === '')) {
                     setOpenSnackBack(true, { success: false, message: "No puede registrar mas eventos." });
                     return null;
@@ -1000,7 +1000,7 @@ const Boooking = () => {
                             mainResourceName="id_field"
                         />
                         <CurrentTimeIndicator
-                            shadePreviousCells={true}
+                            shadePreviousCells={false}
                         />
                         <ViewSwitcher />
                         <TodayButton />

@@ -902,7 +902,7 @@ const Boooking = () => {
                         />
                         <WeekView
                             cellDuration={60}
-                            startDayHour={7}
+                            startDayHour={6}
                             endDayHour={24}
                             name="Semana"
                             timeTableCellComponent={TimeTableCell}

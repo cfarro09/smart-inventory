@@ -912,7 +912,7 @@ const Boooking = () => {
                         />
                         <DayView
                             name="Día"
-                            startDayHour={7}
+                            startDayHour={6}
                             endDayHour={24}
                         />
                         <Toolbar />

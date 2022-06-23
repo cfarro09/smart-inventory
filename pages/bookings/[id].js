@@ -870,6 +870,7 @@ const Boooking = () => {
             <div style={{ display: 'flex' }}>
                 <div style={{ zIndex: 2 }}>
                     <Scheduler
+                        firstDayOfWeek={1}
                         locale="es-ES"
                         data={appointmentsShowed}
                         style={{ zIndex: '1000' }}

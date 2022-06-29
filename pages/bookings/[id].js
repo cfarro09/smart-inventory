@@ -76,7 +76,7 @@ const SEL_BOOKING_BY_ID = (id_booking) => ({
 })
 
 const SEL_FIELDS_BY_CAMPUS = (id_campus) => ({
-    method: "fn_sel_field_by_campus ",
+    method: "fn_sel_field_by_campus",
     data: { status: 'ACTIVO', id_campus }
 })
 
@@ -422,6 +422,13 @@ const Boooking = () => {
     const [appontmentSelected, setAppontmentSelected] = useState(null)
     const [appontmentSelectedIndex, setAppontmentSelectedIndex] = useState(null)
     const [showChangePrice, setshowChangePrice] = useState(false);
+    
+    const [timesbb, settimesbb] = useState({
+        min: 8,
+        max: 24
+    });
+    
+    console.log(timesbb)
 
     useEffect(() => {
         let continuezyx = true;
@@ -487,6 +494,27 @@ const Boooking = () => {
             setCampusSelected(newValue)
             setOpenBackdrop(true);
             await triggeraxios('post', process.env.endpoints.selsimple, SEL_FIELDS_BY_CAMPUS(newValue.id_campus)).then(res => {
+                const cleanTime = (tt) => {
+                    const aux = tt.split(":");
+                    let hour = parseInt(aux[0]);
+                    const minutes = parseInt(aux[1]);
+                    if (minutes === 59) {
+                        if (hour === 23) {
+                            hour = 0;
+                        } else {
+                            hour++;
+                        }
+                    }
+                    return hour;
+                }
+                const aa = validateResArray(res, true).reduce((acc, item) => [
+                    ...acc,
+                    ...JSON.parse(item.time_prices).reduce((a, b) => [...a, cleanTime(b.start_time), cleanTime(b.end_time)] , [])
+                ], []);
+                settimesbb({
+                    min: Math.min.apply(Math, aa.filter(x => x !== 0)),
+                    max: aa.some(x => x === 0) ? 0 : Math.max.apply(Math, aa)
+                })
                 const datafields = validateResArray(res, true).map(x => ({ ...x, id_campus: newValue.id_campus, id: x.id_field, text: x.field_name, time_prices: JSON.parse(x.time_prices) }));
                 setfields(datafields);
             });
@@ -568,7 +596,6 @@ const Boooking = () => {
             </Appointments.Appointment>
         )
     };
-
 
     const commitChanges = async ({ added, changed, deleted }) => {
         let datesFromRecurrence = null;
@@ -903,8 +930,8 @@ const Boooking = () => {
                         />
                         <WeekView
                             cellDuration={60}
-                            startDayHour={6}
-                            endDayHour={24}
+                            startDayHour={timesbb.min}
+                            endDayHour={timesbb.max || 24}
                             name="Semana"
                             timeTableCellComponent={TimeTableCell}
                             timeScaleLabelComponent={({ formatDate, ...restProps }) => <WeekView.TimeScaleLabel {...restProps} formatDate={(date) => {
@@ -913,8 +940,8 @@ const Boooking = () => {
                         />
                         <DayView
                             name="Día"
-                            startDayHour={6}
-                            endDayHour={24}
+                            startDayHour={timesbb.min}
+                            endDayHour={timesbb.max}
                         />
                         <Toolbar />
                         <DateNavigator />

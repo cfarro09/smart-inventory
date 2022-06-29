@@ -499,11 +499,7 @@ const Boooking = () => {
                     let hour = parseInt(aux[0]);
                     const minutes = parseInt(aux[1]);
                     if (minutes === 59) {
-                        if (hour === 23) {
-                            hour = 0;
-                        } else {
-                            hour++;
-                        }
+                        hour++;
                     }
                     return hour;
                 }
@@ -512,8 +508,8 @@ const Boooking = () => {
                     ...JSON.parse(item.time_prices).reduce((a, b) => [...a, cleanTime(b.start_time), cleanTime(b.end_time)] , [])
                 ], []);
                 settimesbb({
-                    min: Math.min.apply(Math, aa.filter(x => x !== 0)),
-                    max: aa.some(x => x === 0) ? 0 : Math.max.apply(Math, aa)
+                    min: Math.min.apply(Math, aa),
+                    max: Math.max.apply(Math, aa)
                 })
                 const datafields = validateResArray(res, true).map(x => ({ ...x, id_campus: newValue.id_campus, id: x.id_field, text: x.field_name, time_prices: JSON.parse(x.time_prices) }));
                 setfields(datafields);

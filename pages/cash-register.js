@@ -140,7 +140,7 @@ const ScheduledBooking = () => {
     );
 
     const selectrow = async (row) => {
-        const res = await triggeraxios('get', `/api/export/invoice/${row.id_booking}`);
+        const res = await triggeraxios('get', `/api/export/invoice/${row.id_booking}/${row.recipe_number}`);
 
         window.open(res.result.data.url, '_blank');
     }

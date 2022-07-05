@@ -66,13 +66,13 @@ const Payment = ({ openModal, setOpenModal, booking, fetchData }) => {
                 }
 
                 setOpenBackdrop(true);
-                const res = await triggeraxios('post', process.env.endpoints.selsimple, dattosend);
-                if (res.success) {
+                const res0 = await triggeraxios('post', process.env.endpoints.selsimple, dattosend);
+                if (res0.success) {
                     fetchData && fetchData();
                     setOpenModal(false);
                     setOpenSnackBack(true, { success: true, message: 'Se registró correctamente!.' });
-
-                    const res = await triggeraxios('get', `/api/export/invoice/${booking.id_booking}`);
+                    debugger
+                    const res = await triggeraxios('get', `/api/export/invoice/${booking.id_booking}/${res0.result.data[0].recipe_number}`);
 
                     window.open(res.result.data.url, '_blank');
                 } else {

@@ -76,7 +76,7 @@ const SEL_BOOKING_BY_ID = (id_booking) => ({
 })
 
 const SEL_FIELDS_BY_CAMPUS = (id_campus) => ({
-    method: "fn_sel_field_by_campus ",
+    method: "fn_sel_field_by_campus",
     data: { status: 'ACTIVO', id_campus }
 })
 
@@ -266,12 +266,12 @@ const validatePrice = (hours, startdate, enddate, times) => {
         start_time: new Date(getDateZyx(startdate) + " " + x.start_time),
         end_time: new Date(getDateZyx(startdate) + " " + x.end_time),
     }));
-    
+
     return [...Array(hours).keys()].reduce((acc, j) => {
         const startd = new Date(startdate.getTime() + (j * 36e5));
         const endd = new Date(startdate.getTime() + ((j + 1) * 36e5));
 
-        
+
         const timeselected = fieldstime.find(x => x.start_time <= startd && endd <= x.end_time);
         return acc + (timeselected?.price || 0);
     }, 0)
@@ -422,6 +422,13 @@ const Boooking = () => {
     const [appontmentSelected, setAppontmentSelected] = useState(null)
     const [appontmentSelectedIndex, setAppontmentSelectedIndex] = useState(null)
     const [showChangePrice, setshowChangePrice] = useState(false);
+    
+    const [timesbb, settimesbb] = useState({
+        min: 8,
+        max: 24
+    });
+    
+    console.log(timesbb)
 
     useEffect(() => {
         let continuezyx = true;
@@ -487,6 +494,23 @@ const Boooking = () => {
             setCampusSelected(newValue)
             setOpenBackdrop(true);
             await triggeraxios('post', process.env.endpoints.selsimple, SEL_FIELDS_BY_CAMPUS(newValue.id_campus)).then(res => {
+                const cleanTime = (tt) => {
+                    const aux = tt.split(":");
+                    let hour = parseInt(aux[0]);
+                    const minutes = parseInt(aux[1]);
+                    if (minutes === 59) {
+                        hour++;
+                    }
+                    return hour;
+                }
+                const aa = validateResArray(res, true).reduce((acc, item) => [
+                    ...acc,
+                    ...JSON.parse(item.time_prices).reduce((a, b) => [...a, cleanTime(b.start_time), cleanTime(b.end_time)] , [])
+                ], []);
+                settimesbb({
+                    min: Math.min.apply(Math, aa),
+                    max: Math.max.apply(Math, aa)
+                })
                 const datafields = validateResArray(res, true).map(x => ({ ...x, id_campus: newValue.id_campus, id: x.id_field, text: x.field_name, time_prices: JSON.parse(x.time_prices) }));
                 setfields(datafields);
             });
@@ -568,7 +592,6 @@ const Boooking = () => {
             </Appointments.Appointment>
         )
     };
-
 
     const commitChanges = async ({ added, changed, deleted }) => {
         let datesFromRecurrence = null;
@@ -687,12 +710,12 @@ const Boooking = () => {
                                 throw new Error("El campo no está disponible en ese horario");
                             }
                             const hours = Math.ceil(Math.abs(changes.endDate - changes.startDate) / 36e5);
-                            return { 
-                                ...changes, 
-                                id_campus: fieldselected.id_campus, 
-                                title: (clientselected?.first_name || fieldselected.field_name), 
-                                price: fieldselected.price, 
-                                hours, 
+                            return {
+                                ...changes,
+                                id_campus: fieldselected.id_campus,
+                                title: (clientselected?.first_name || fieldselected.field_name),
+                                price: fieldselected.price,
+                                hours,
                                 total: validatePrice(hours, newchange.startDate, newchange.endDate, fieldselected.time_prices)
                             }
 
@@ -769,8 +792,8 @@ const Boooking = () => {
         <WeekView.TimeTableCell
             {...restProps}
             onDoubleClick={(e) => {
-                if (endDate < new Date())
-                    return null;
+                // if (endDate < new Date())
+                //     return null;
                 if (!(booking.status === 'BORRADOR' || booking.status === '')) {
                     setOpenSnackBack(true, { success: false, message: "No puede registrar mas eventos." });
                     return null;
@@ -785,7 +808,7 @@ const Boooking = () => {
                 onDoubleClick(e)
             }}
         >
-            <Tooltip arrow placement="top" title={`${daysd[startDate.getDay()]} ${(startDate.getMonth() + 1).toString().padStart(2, "0")}/${startDate.getDate().toString().padStart(2, "0")} ${startDate.getHours()}:00`}>
+            <Tooltip arrow placement="top" title={`${daysd[startDate.getDay()]} ${(startDate.getMonth() + 1).toString().padStart(2, "0")}/${startDate.getDate().toString().padStart(2, "0")} ${startDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`}>
                 <div style={{ height: "100%", width: "100%" }}></div>
             </Tooltip>
         </WeekView.TimeTableCell>
@@ -870,6 +893,7 @@ const Boooking = () => {
             <div style={{ display: 'flex' }}>
                 <div style={{ zIndex: 2 }}>
                     <Scheduler
+                        firstDayOfWeek={1}
                         locale="es-ES"
                         data={appointmentsShowed}
                         style={{ zIndex: '1000' }}
@@ -902,15 +926,18 @@ const Boooking = () => {
                         />
                         <WeekView
                             cellDuration={60}
-                            startDayHour={8}
-                            endDayHour={24}
+                            startDayHour={timesbb.min}
+                            endDayHour={timesbb.max || 24}
                             name="Semana"
                             timeTableCellComponent={TimeTableCell}
+                            timeScaleLabelComponent={({ formatDate, ...restProps }) => <WeekView.TimeScaleLabel {...restProps} formatDate={(date) => {
+                                return date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+                            }} />}
                         />
                         <DayView
                             name="Día"
-                            startDayHour={8}
-                            endDayHour={24}
+                            startDayHour={timesbb.min}
+                            endDayHour={timesbb.max}
                         />
                         <Toolbar />
                         <DateNavigator />
@@ -997,7 +1024,7 @@ const Boooking = () => {
                             mainResourceName="id_field"
                         />
                         <CurrentTimeIndicator
-                            shadePreviousCells={true}
+                            shadePreviousCells={false}
                         />
                         <ViewSwitcher />
                         <TodayButton />

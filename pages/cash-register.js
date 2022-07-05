@@ -263,16 +263,6 @@ const ScheduledBooking = () => {
                         }}
                     >Buscar
                     </Button>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        disabled={loading || !!!campusSelected}
-                        style={{marginLeft: 8}}
-                        onClick={() => {
-                            exportData(datafetch);
-                        }}
-                    >Exportar
-                    </Button>
                 </span>
             </div>
             {resumen &&
@@ -291,6 +281,18 @@ const ScheduledBooking = () => {
                     </div>
                 </div>
             }
+            <div style={{textAlign: 'right'}}>
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    disabled={loading || !!!campusSelected}
+                    style={{ marginLeft: 8 }}
+                    onClick={() => {
+                        exportData(datafetch);
+                    }}
+                >Exportar
+                </Button>
+            </div>
             <TableZyx
                 columns={columns}
                 data={datatable}

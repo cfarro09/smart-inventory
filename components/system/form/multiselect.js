@@ -32,7 +32,6 @@ const SelectMulti = ({ title, datatosend, optionvalue, optiondesc, valueselected
     useEffect(() => {
         initial.current = false
         if (onlyinitial) {
-            console.log(datatosend)
             const valueselectedtmp = valueselected || "";
             if (datatosend instanceof Array) {
                 setOptions(datatosend);
@@ -45,7 +44,6 @@ const SelectMulti = ({ title, datatosend, optionvalue, optiondesc, valueselected
 
     useEffect(() => {
         (async () => {
-            console.log("valueselected", valueselected)
             if (datatosend instanceof Array) {
                 setOptions(datatosend);
                 if (!onlyinitial) {
@@ -62,10 +60,8 @@ const SelectMulti = ({ title, datatosend, optionvalue, optiondesc, valueselected
     }, [datatosend]);
 
     useEffect(() => {
-        console.log("changevalue")
         if (!initial.current) {
             const optionsselll = options.filter(o => valueselected.split(",").indexOf(o[optionvalue].toString()) > -1)
-            console.log(optionsselll)
             setOptionsSelected(optionsselll);
         }
     }, [valueselected])

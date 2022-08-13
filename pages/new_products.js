@@ -236,7 +236,6 @@ const useStyles = makeStyles((theme) => ({
     },
     replacerowzyx: {
         display: 'flex',
-        flex: 1,
         gap: theme.spacing(2),
         flexWrap: "wrap",
     },
@@ -457,9 +456,9 @@ const New_Products = () => {
     }, [filters])
     async function updatelistretail(id_form) {
         const resultMulti = await triggeraxios('post', process.env.endpoints.multi, [
-            GET_FILTERRETAIL("retail", id_form),
-            GET_FILTERRETAIL("store_name", id_form),
-            GET_FILTERRETAIL("model", id_form),
+            FILTERv2("retail", { categoria: id_form }),
+            FILTERv2("store_name", { categoria: id_form }),
+            FILTERv2("model", { categoria: id_form }),
         ])
         if (resultMulti.result instanceof Array) {
             const resarray = resultMulti.result;
@@ -713,12 +712,12 @@ const New_Products = () => {
                             >
                                 <ResponsiveContainer width={"100%"} aspect={4.0 / 3.5}>
                                     <BarChart data={secondgraphdata}>
-                                        <XAxis dataKey="week" tickFormatter={(x) => datafilters.categoria.filter(y => y.id_form === x)[0].category.split(" ")[3]} />
+                                        <XAxis dataKey="week" tickFormatter={(x) => datafilters.categoria.filter(y => y.id_form === x)[0].category} />
                                         <YAxis allowDecimals={false} allowDataOverflow={true} />
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <Tooltip
                                             itemSorter={item => -(item.value)}
-                                            labelFormatter={(value) => [<b>{datafilters.categoria.filter(y => y.id_form === value)[0].category.split(" ")[3]}</b>]}
+                                            labelFormatter={(value) => [<b>{datafilters.categoria.filter(y => y.id_form === value)[0].category}</b>]}
                                             formatter={(value, name) => [value.toFixed(0), name]}
                                         />
                                         {
@@ -740,84 +739,89 @@ const New_Products = () => {
 
                             </Box>
                         </div>
-                        {
-                            miniwarboard.map((x, i) => {
-                                console.log(x)
-                                let tempCat = datafilters.categoria.filter(y => y.id_form === x.id_form)
-                                let xcategory = tempCat.length > 0 ? tempCat[0].category.split(" ")[3] : ""
-                                let parameterquant = fields[Number(x.id_form) - 1].length
-                                let firsthalf = Math.floor(parameterquant / 2)
-                                return (
-                                    <div key={`miniwarboard-${i}`} className={classes.replacerowzyx}>
-                                        <div style={{ flex: 2 }} >
-                                            <div style={{ textAlign: "center" }}>
-                                                <div>{x.model}</div>
-                                                <div>{x.brand}</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                            {
+                                miniwarboard.map((x, i) => {
+                                    console.log(x)
+                                    let tempCat = datafilters.categoria.filter(y => y.id_form === x.id_form)
+                                    let xcategory = tempCat.length > 0 ? tempCat[0].category.split(" ")[3] : ""
+                                    console.log("fieldsxx", fields, x.id_form)
+                                    let parameterquant = fields[Number(x.id_form) - 1]?.length
+                                    if (!parameterquant)
+                                        return null;
+                                    let firsthalf = Math.floor(parameterquant / 2)
+                                    return (
+                                        <div key={`miniwarboard-${i}`} className={classes.replacerowzyx}>
+                                            <div style={{ flex: 2 }} >
+                                                <div style={{ textAlign: "center", fontWeight: 'bold', border: '1px solid #e0e0e0' }}>
+                                                    <div style={{ marginTop: 4 }}>{x.model}</div>
+                                                    <div style={{ paddingTop: 4, borderTop: '1px solid #e0e0e0' }}>{x.brand}</div>
+                                                </div>
+
+                                                <div style={{ display: "flex" }} >
+
+                                                    <div style={{ flex: 1 }}>
+                                                        <TableContainer component={Paper}>
+                                                            <Table aria-label="simple table" >
+                                                                <TableBody>
+                                                                    <TableRow>
+                                                                        <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">subcategoria</TableCell>
+                                                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">{xcategory}</TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Regular</TableCell>
+                                                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. {Number(x.regular_price).toFixed(2)}</TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Promoción</TableCell>
+                                                                        <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. {Number(x.prom_price).toFixed(2)}</TableCell>
+                                                                    </TableRow>
+                                                                    {
+                                                                        fields[Number(x.id_form) - 1]?.map((y, i) => {
+                                                                            if (i < firsthalf) {
+                                                                                return <TableRow>
+                                                                                    <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{y.title}</TableCell>
+                                                                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{x[y.name]}</TableCell>
+                                                                                </TableRow>
+                                                                            } else {
+                                                                                return ""
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                </TableBody>
+                                                            </Table>
+                                                        </TableContainer>
+                                                    </div>
+                                                    <div style={{ flex: 1 }}>
+                                                        <TableContainer component={Paper}>
+                                                            <Table aria-label="simple table" >
+                                                                <TableBody>
+                                                                    {
+                                                                        fields[Number(x.id_form) - 1]?.map((y, i) => {
+                                                                            if (i >= firsthalf) {
+                                                                                return <TableRow>
+                                                                                    <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{y.title}</TableCell>
+                                                                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{x[y.name]}</TableCell>
+                                                                                </TableRow>
+                                                                            } else {
+                                                                                return ""
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                </TableBody>
+                                                            </Table>
+                                                        </TableContainer>
+                                                    </div>
+                                                </div>
                                             </div>
-
-                                            <div style={{ display: "flex" }} >
-
-                                                <div style={{ flex: 1 }}>
-                                                    <TableContainer component={Paper}>
-                                                        <Table aria-label="simple table" >
-                                                            <TableBody>
-                                                                <TableRow>
-                                                                    <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">subcategoria</TableCell>
-                                                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">{xcategory}</TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Regular</TableCell>
-                                                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. {Number(x.regular_price).toFixed(2)}</TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">Precio Promoción</TableCell>
-                                                                    <TableCell className={classes.datacell} align="center" component="th" scope="row">S/. {Number(x.prom_price).toFixed(2)}</TableCell>
-                                                                </TableRow>
-                                                                {
-                                                                    fields[Number(x.id_form) - 1].map((y, i) => {
-                                                                        if (i < firsthalf) {
-                                                                            return <TableRow>
-                                                                                <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{y.title}</TableCell>
-                                                                                <TableCell className={classes.datacell} align="center" component="th" scope="row">{x[y.name]}</TableCell>
-                                                                            </TableRow>
-                                                                        } else {
-                                                                            return ""
-                                                                        }
-                                                                    })
-                                                                }
-                                                            </TableBody>
-                                                        </Table>
-                                                    </TableContainer>
-                                                </div>
-                                                <div style={{ flex: 1 }}>
-                                                    <TableContainer component={Paper}>
-                                                        <Table aria-label="simple table" >
-                                                            <TableBody>
-                                                                {
-                                                                    fields[Number(x.id_form) - 1].map((y, i) => {
-                                                                        if (i >= firsthalf) {
-                                                                            return <TableRow>
-                                                                                <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{y.title}</TableCell>
-                                                                                <TableCell className={classes.datacell} align="center" component="th" scope="row">{x[y.name]}</TableCell>
-                                                                            </TableRow>
-                                                                        } else {
-                                                                            return ""
-                                                                        }
-                                                                    })
-                                                                }
-                                                            </TableBody>
-                                                        </Table>
-                                                    </TableContainer>
-                                                </div>
+                                            <div style={{ flex: 1, display: 'flex', alignItems: "center" }} >
+                                                <img style={{ width: "300px", height: "300px", objectFit: "cover" }} alt="image.jpg" src={x.graphic}></img>
                                             </div>
                                         </div>
-                                        <div style={{ flex: 1 }} >
-                                            <img style={{ width: "100%", height: "auto" }} alt="image.jpg" src={x.graphic}></img>
-                                        </div>
-                                    </div>
-                                )
-                            })
-                        }
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
                 }
             </div>

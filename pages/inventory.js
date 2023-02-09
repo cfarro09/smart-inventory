@@ -248,7 +248,7 @@ const Example = () => {
             },
             sorts,
             origin: 'reporte_inventario',
-            daterange,
+            // daterange,
             offset: (new Date().getTimezoneOffset() / 60) * -1
         }
 

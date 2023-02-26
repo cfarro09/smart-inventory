@@ -93,6 +93,7 @@ const DateRange = ({ label, dateRangeinit, setDateRangeExt, className, fullWidth
                             moveRangeOnFirstSelection={false}
                             ranges={dateRange}
                             direction="vertical"
+                            weekStartsOn={1}
                         />
                     </div>
                 </DialogContent>

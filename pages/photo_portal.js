@@ -3,7 +3,7 @@ import Layout from '../components/system/layout/layout'
 import triggeraxios from '../config/axiosv2';
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
-
+import CheckIcon from '@material-ui/icons/Check';
 import Button from '@material-ui/core/Button';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -29,6 +29,7 @@ import {
     Search as SearchIcon,
     GetApp as GetAppIcon,
 } from '@material-ui/icons';
+import Avatar from '@material-ui/core/Avatar';
 
 
 const FILTERv2 = (filter, filters) => ({
@@ -120,6 +121,7 @@ const Photo_portal = () => {
     const classes = useStyles();
     const [waitFilter, setWaitFilter] = useState(false)
     const [dataGraph, setDataGraph] = useState([])
+    const [dataToExport, setDataToExport] = useState({})
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [category, setcategory] = useState(null);
     const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
@@ -141,7 +143,9 @@ const Photo_portal = () => {
         var count = 0;
         var zipFilename = "Pictures.zip";
         setOpenBackdrop(true)
-        dataGraph.map((row, i) => {
+        const datt = Object.values(dataToExport)
+
+        datt.map((row, i) => {
             JSZipUtils.getBinaryContent(row.photo_url, function (err, data) {
                 if (err) {
                     //throw err; // or handle the error
@@ -149,7 +153,7 @@ const Photo_portal = () => {
                 }
                 zip.file(`${row.form_timestamp.split(' ')[0]} - ${row.brand} - ${row.model} - ${row.poiname}.jpg`, data, { binary: true });
                 count++;
-                if (count == dataGraph.length) {
+                if (count == datt.length) {
                     zip.generateAsync({ type: 'blob' }).then(function (content) {
                         saveAs(content, zipFilename);
                         setOpenBackdrop(false)
@@ -266,6 +270,7 @@ const Photo_portal = () => {
 
     async function filtrar() {
         //setWaitFilter(true)
+        setDataToExport([])
         applyfilter(filters)
         setDataGraph([])
         const filter_to_send = {
@@ -310,6 +315,19 @@ const Photo_portal = () => {
             })
         }
     }, [cleanFilter])
+
+    const manageImage = (row) => {
+        if (dataToExport[row.model]) {
+            const copyxz = { ...dataToExport }
+            delete copyxz[row.model];
+            setDataToExport(copyxz);
+        } else {
+            setDataToExport({
+                ...dataToExport,
+                [row.model]: row
+            })
+        }
+    }
 
     return (
         <Layout>
@@ -468,13 +486,21 @@ const Photo_portal = () => {
                                         <Typography color="inherit">{`Fecha: ${row.form_timestamp.split(' ')[0]}`}</Typography>
                                     </Fragment>
                                 }>
-                                <img
-                                    style={{ height: "150px", width: "150px", objectFit: 'cover' }}
-                                    alt="image.jpg"
-                                    src={row.photo_url}
-                                    crossOrigin="*"
-                                    onClick={() => setLightBox({ open: true, index: i, images: dataGraph.map(x => x.photo_url) })}
-                                />
+                                <div style={{ position: "relative", height: "150px", width: "150px" }}>
+                                    <img
+                                        style={{ height: "100%", width: "100%", objectFit: 'cover', cursor: "pointer" }}
+                                        alt="image.jpg"
+                                        src={row.photo_url}
+                                        crossOrigin="*"
+                                        onClick={() => manageImage(row)}
+                                    // onClick={() => setLightBox({ open: true, index: i, images: dataGraph.map(x => x.photo_url) })}
+                                    />
+                                    {dataToExport[row.model] && (
+                                        <Avatar style={{ position: "absolute", top: 5, left: 5, width: 30, height: 30, backgroundColor: "white" }}>
+                                            <CheckIcon style={{ color: "black" }} />
+                                        </Avatar>
+                                    )}
+                                </div>
                             </HtmlTooltip>
                         </Box>
                     ))}

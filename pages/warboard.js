@@ -311,7 +311,7 @@ const useStyles = makeStyles(() => ({
 
     table: {
         minWidth: 700,
-        borderCollapse: "separate"
+        borderCollapse: "separate",
     },
     labelcell: {
         border: "1px #e0e0e0 solid",
@@ -321,7 +321,13 @@ const useStyles = makeStyles(() => ({
     datacell: {
         border: "1px #e0e0e0 solid",
         backgroundColor: "white",
-        padding: 5
+        padding: 3,
+        maxWidth: 150,
+        minWidth: 150,
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+        fontSize: 12
     },
     datacelltitle: {
         border: "1px #e0e0e0 solid",
@@ -330,7 +336,8 @@ const useStyles = makeStyles(() => ({
         background: "white",
         textTransform: "uppercase",
         fontWeight: "bold",
-        padding: 5
+        padding: 3,
+        fontSize: 12
     }
 }));
 
@@ -644,7 +651,7 @@ const BulkLoad = () => {
 
     return (
         <Layout>
-            <div style={{}}>
+            <div style={{ display: "flex", flexDirection: "column", flex: 1, overflowY: "auto", gap: 8 }}>
                 <div className={classes.containerFilters}>
                     <DateRange
                         classname={classes.itemFilter}
@@ -791,80 +798,78 @@ const BulkLoad = () => {
                     }
                 </div>
                 {searchdone &&
-                    <div id="divToPrint">
-                        <TableContainer component={Paper}>
-                            <Table stickyHeader id="maintable" className={classes.table} aria-label="simple table" >
-                                <TableHead style={{ zIndex: 1000 }}>
+                    <TableContainer style={{ display: "flex", flexDirection: "column", flex: 1, overflowY: "auto" }}>
+                        <Table stickyHeader id="maintable" className={classes.table} aria-label="simple table" style={{}}>
+                            <TableHead style={{ zIndex: 1000 }}>
 
-                                    <TableRow style={{ position: "sticky", top: 0, zIndex: 1000 }} >
-                                        <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">modelo</TableCell>
-                                        {dataGraph.map((row, j) => (
-                                            <TableCell key={`graphic2${j}`} className={classes.datacell} align="center" component="th" scope="row">{row.model}</TableCell>
-                                        ))}
+                                <TableRow style={{ position: "sticky", top: 0, zIndex: 1000 }} >
+                                    <TableCell className={classes.datacelltitle} align="right" >modelo</TableCell>
+                                    {dataGraph.map((row, j) => (
+                                        <TableCell key={`graphic2${j}`} className={classes.datacell} align="center" >{row.model}</TableCell>
+                                    ))}
 
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell className={classes.datacelltitle} align="right" component="th" scope="row"></TableCell>
-                                        {dataGraph.map((row, j) => (
-                                            <TableCell key={`graphic${j}`} className={classes.datacell} align="center" component="th" scope="row"><img style={{ width: "100px", height: "100px" }} alt="image.jpg" src={row.graphic}></img></TableCell>
-                                        ))}
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell className={classes.datacelltitle} align="right"></TableCell>
+                                    {dataGraph.map((row, j) => (
+                                        <TableCell key={`graphic${j}`} className={classes.datacell} style={{ padding: 0, height: "100px" }} align="center"><img style={{ width: "150px", height: "100%", objectFit: "cover" }} alt="image.jpg" src={row.graphic}></img></TableCell>
+                                    ))}
 
-                                    </TableRow>
-                                </TableBody>
-                                <TableBody>
-                                    {headerfields.map((field, i) => {
-                                        if (field.name === "regular_price") {
-                                            if (pvppreg) {
-                                                return (
-                                                    <TableRow key={`fieldstoshow${i}`}>
-                                                        <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{field.title}</TableCell>
-                                                        {dataGraph.map((row, j) => (
+                                </TableRow>
+                            </TableBody>
+                            <TableBody>
+                                {headerfields.map((field, i) => {
+                                    if (field.name === "regular_price") {
+                                        if (pvppreg) {
+                                            return (
+                                                <TableRow key={`fieldstoshow${i}`}>
+                                                    <TableCell className={classes.datacelltitle} align="right" >{field.title}</TableCell>
+                                                    {dataGraph.map((row, j) => (
 
-                                                            <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" component="th" scope="row">S/.{parseFloat(row[field.name]).toFixed(2)}</TableCell>
-                                                        ))}
+                                                        <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" >S/.{parseFloat(row[field.name]).toFixed(2)}</TableCell>
+                                                    ))}
 
-                                                    </TableRow>)
-                                            } else return (null)
-                                        }
-                                        else if (field.name === "prom_price") {
-                                            if (pvpprom) {
-                                                return (
-                                                    <TableRow key={`fieldstoshow${i}`}>
-                                                        <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{field.title}</TableCell>
-                                                        {dataGraph.map((row, j) => (
+                                                </TableRow>)
+                                        } else return (null)
+                                    }
+                                    else if (field.name === "prom_price") {
+                                        if (pvpprom) {
+                                            return (
+                                                <TableRow key={`fieldstoshow${i}`}>
+                                                    <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{field.title}</TableCell>
+                                                    {dataGraph.map((row, j) => (
 
-                                                            <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" component="th" scope="row">S/.{parseFloat(row[field.name]).toFixed(2)}</TableCell>
-                                                        ))}
+                                                        <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" component="th" scope="row">S/.{parseFloat(row[field.name]).toFixed(2)}</TableCell>
+                                                    ))}
 
-                                                    </TableRow>)
-                                            } else return (null)
-                                        }
-                                        else {
-                                            return (<TableRow key={`fieldstoshow${i}`}>
-                                                <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{field.title}</TableCell>
-                                                {dataGraph.map((row, j) => (
-
-                                                    <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" component="th" scope="row">{row[field.name]}</TableCell>
-                                                ))}
-
-                                            </TableRow>)
-                                        }
-                                    })}
-                                    {fieldstoshow.map((field, i) => (
-                                        <TableRow key={`fieldstoshow${i}`}>
+                                                </TableRow>)
+                                        } else return (null)
+                                    }
+                                    else {
+                                        return (<TableRow key={`fieldstoshow${i}`}>
                                             <TableCell className={classes.datacelltitle} align="right" component="th" scope="row">{field.title}</TableCell>
                                             {dataGraph.map((row, j) => (
+
                                                 <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" component="th" scope="row">{row[field.name]}</TableCell>
                                             ))}
 
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </div>
+                                        </TableRow>)
+                                    }
+                                })}
+                                {fieldstoshow.map((field, i) => (
+                                    <TableRow key={`fieldstoshow${i}`}>
+                                        <TableCell className={classes.datacelltitle} align="right" >{field.title}</TableCell>
+                                        {dataGraph.map((row, j) => (
+                                            <TableCell key={`${field.name}${j}`} className={classes.datacell} align="center" title={row[field.name]}>{row[field.name]}</TableCell>
+                                        ))}
+
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 }
             </div>
 

@@ -38,16 +38,22 @@ const useStyles = makeStyles((theme) => ({
             maxWidth: `60vw`,
         },
         [theme.breakpoints.up('sm')]: {
-            maxWidth: `calc(100vw - ${drawerWidth}px - 49px)`,
+            maxWidth: `calc(100vw - ${drawerWidth}px)`,
         },
+        display: "flex",
+        flexDirection: "column",
+        flex: 1
     },
     containermainclose: {
         [theme.breakpoints.down('sm')]: {
             maxWidth: `100vw`,
         },
         [theme.breakpoints.up('sm')]: {
-            maxWidth: `calc(100vw - 49px)`,
+            maxWidth: `calc(100vw)`,
         },
+        display: "flex",
+        flexDirection: "column",
+        flex: 1
     },
     menuButton: {
         marginRight: 36,
@@ -111,12 +117,13 @@ const useStyles = makeStyles((theme) => ({
     },
     content: {
         flexGrow: 1,
-        padding: theme.spacing(2),
+        display: "flex",
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
         marginLeft: -drawerWidth,
+        flexDirection: "column"
     },
     contentShift: {
         transition: theme.transitions.create('margin', {
@@ -243,6 +250,7 @@ const Layout = ({ children }) => {
                     .containercon {
                         min-height: 90vh;
                         display: flex;
+                        flex: 1;
                         flex-direction: column;
                         justify-content: center;
                     }
@@ -298,6 +306,63 @@ const Layout = ({ children }) => {
                         .row-zyx > .col-4:first-of-type, .row-zyx > .col-6:first-of-type, .row-zyx > .col-3:first-of-type, .row-zyx > .col-2:first-of-type, .row-zyx > .col-8:first-of-type {
                             padding-right: ${theme.spacing(2)}px;
                         }
+                    }
+                    .scroll-style-go::-webkit-scrollbar-track
+                    {
+                        border-radius: 5px;
+                        background-color: transparent;
+                    }
+                    .scroll-style-go:hover::-webkit-scrollbar-track
+                    {
+                        border-radius: 5px;
+                        background-color: #dbdfe4;
+                    }
+                    .scroll-style-go::-webkit-scrollbar
+                    {
+                        width: 10px;
+                        background-color: transparent;
+                    }
+                    .scroll-style-go:hover:-webkit-scrollbar
+                    {
+                        width: 5px;
+                        background-color: #dbdfe4;
+                    }
+                    .scroll-style-go::-webkit-scrollbar-thumb
+                    {
+                        border-radius: 10px;
+                        background-color: rgba(0, 0, 0, .2);
+                        -webkit-transition: .2s ease-in-out;
+                        transition: .2s ease-in-out
+                    }
+                    
+                    .scroll-style-go:hover::-webkit-scrollbar-thumb
+                    {
+                        border-radius: 10px;
+                        background-color: rgba(0, 0, 0, .2);
+                        -webkit-transition: .2s ease-in-out;
+                        transition: .2s ease-in-out
+                    }
+
+                    /* width */
+                    ::-webkit-scrollbar {
+                        width: 8px;
+                        height: 8px;
+                    }
+
+                    /* Track */
+                    ::-webkit-scrollbar-track {
+                        background: transparent;
+                    }
+                    
+                    /* Handle */
+                    ::-webkit-scrollbar-thumb {
+                        border-radius: 7px;
+                        background: #7721AD;
+                    }
+
+                    /* Handle on hover */
+                    ::-webkit-scrollbar-thumb:hover {
+                        background: #381052;
                     }
                     @media (min-width: 992px) {
                         .row-zyx {
@@ -369,7 +434,7 @@ const Layout = ({ children }) => {
 
                                     <div className='containercon'>
                                         <Box
-                                            component='div' style={{ flex: 1 }}
+                                            component='div' style={{ flex: 1, maxHeight: 'calc(100vh - 64px)', padding: 8 }}
                                             className={clsx({
                                                 [classes.containermainopen]: openDrawer,
                                                 [classes.containermainclose]: !openDrawer,

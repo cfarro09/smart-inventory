@@ -10,6 +10,7 @@ import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import popupsContext from '../../../context/pop-ups/pop-upsContext';
 import authContext from '../../../context/auth/authContext';
+import { Helmet } from "react-helmet";
 
 const drawerWidth = 240;
 
@@ -402,6 +403,9 @@ const Layout = ({ children }) => {
             <Head>
                 {infosys.sys_company_name && <title key={infosys.sys_company_name}>{infosys.sys_company_name}</title>}
             </Head>
+            <Helmet>
+                <script src="https://zyxmelinux.zyxmeapp.com/zyxme/chat/src/chatwebclient.min.js" integrationid="63fba177762b546856d9ad29" type="text/javascript" />
+            </Helmet>
 
             <div className={classes.root}>
                 {['/sign-in', '/sign-up'].indexOf(router.pathname) !== -1 ?
@@ -414,6 +418,7 @@ const Layout = ({ children }) => {
                     ) : (user !== undefined &&
                         (
                             <>
+
                                 <Header
                                     classes={classes}
                                     open={openDrawer}
@@ -444,6 +449,7 @@ const Layout = ({ children }) => {
                                     </div>
 
                                 </main>
+
                             </>
                         ))
                 }

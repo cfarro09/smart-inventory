@@ -174,6 +174,10 @@ const Linear_detail = () => {
                 accessor: 'model'
             },
             {
+                Header: 'Nombre',
+                accessor: 'user_name'
+            },
+            {
                 Header: 'Precio regular',
                 accessor: 'regular_price',
                 Cell: props => {

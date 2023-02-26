@@ -21,6 +21,7 @@ export default class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
+          <script src="https://zyxmelinux.zyxmeapp.com/zyxme/chat/src/chatwebclient.min.js" integrationid="63fba177762b546856d9ad29" type="text/javascript" />
         </body>
       </Html>
     );

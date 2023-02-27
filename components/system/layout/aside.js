@@ -109,7 +109,7 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
         if (user) {
             let routertmp = router.pathname;
 
-            const appfound = user.menu.find(x => x.application === application);
+            const appfound = [...user.menu, { view: true, application: "report_bi", path: "/report_bi", description: "Reportes BI" }].find(x => x.application === application);
             
 
             if (appfound && appfound.view)
@@ -167,6 +167,10 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                 />
                 <LinkList
                     application="photo_portal"
+                    IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
+                />
+                <LinkList
+                    application="report_bi"
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />
 

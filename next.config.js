@@ -7,7 +7,7 @@ module.exports = {
         staticFolder: ''
    },
     env: {
-        urlapi: "http://142.44.214.184:5000",
+        urlapi: "https://api.capitalhuman.com.pe",
         endpoints: {
             transaction: "/api/main/transaction",
             selsimple: "/api/main/",

@@ -18,7 +18,8 @@ import JSZip from "jszip";
 import JSZipUtils from "jszip-utils";
 import { saveAs } from 'file-saver';
 import popupsContext from '../context/pop-ups/pop-upsContext';
-
+import Avatar from '@material-ui/core/Avatar';
+import CheckIcon from '@material-ui/icons/Check';
 import {
     Search as SearchIcon,
     GetApp as GetAppIcon,
@@ -112,6 +113,7 @@ const Exhibits_photo_portal = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [category, setcategory] = useState(null);
     const [stopFilter, setstopFilter] = useState(-1);
+    const [dataToExport, setDataToExport] = useState({})
     const { setLightBox, setOpenBackdrop } = useContext(popupsContext);
     const [dateRange, setdateRange] = useState([
         {
@@ -125,15 +127,16 @@ const Exhibits_photo_portal = () => {
         var zip = new JSZip();
         var count = 0;
         var zipFilename = "Pictures.zip";
+        const datt = Object.values(dataToExport)
 
-        rows.map((row, i) => {
-            JSZipUtils.getBinaryContent(row.image, function (err, data) {
+        datt.map((row, i) => {
+            JSZipUtils.getBinaryContent(row.exhibit_photo, function (err, data) {
                 if (err) {
                     //throw err; // or handle the error
                 }
                 zip.file(`${row.form_timestamp.split(' ')[0]} - ${row.brand} - ${row.type_exhibit} - ${row.poiname}.jpg`, data, { binary: true });
                 count++;
-                if (count == rows.length) {
+                if (count == datt.length) {
                     debugger
                     zip.generateAsync({ type: 'blob' }).then(function (content) {
                         saveAs(content, zipFilename);
@@ -187,6 +190,7 @@ const Exhibits_photo_portal = () => {
     })
     async function filtrar() {
         //setWaitFilter(true)
+        setDataToExport([])
         setDataGraph([])
         const filter_to_send = {
             format: filters.format,
@@ -214,7 +218,7 @@ const Exhibits_photo_portal = () => {
         (async () => {
             await applyfilter({})
         })();
-        return () => continuezyx = false;
+        // return () => continuezyx = false;
     }, [])
 
     const applyfilter = async (fill) => {
@@ -251,6 +255,19 @@ const Exhibits_photo_portal = () => {
         }
         setstopFilter(stopFilter * -1);
         setOpenBackdrop(false)
+    }
+
+    const manageImage = (row) => {
+        if (dataToExport[row.exhibit_photo]) {
+            const copyxz = { ...dataToExport }
+            delete copyxz[row.exhibit_photo];
+            setDataToExport(copyxz);
+        } else {
+            setDataToExport({
+                ...dataToExport,
+                [row.exhibit_photo]: row
+            })
+        }
     }
 
     return (
@@ -332,7 +349,7 @@ const Exhibits_photo_portal = () => {
                 </div>
                 <div style={{ display: 'flex', gap: 8, flexWrap: "wrap" }} id="divToPrint">
                     {dataGraph.map((row, i) => (
-                        <Box key={i} width="19%" height={"200px"}>
+                        <Box key={i} >
                             <HtmlTooltip placement="bottom"
                                 title={
                                     <Fragment>
@@ -343,8 +360,18 @@ const Exhibits_photo_portal = () => {
                                         <Typography color="inherit">{`Fecha: ${row.form_timestamp}`}</Typography>
                                     </Fragment>
                                 }>
-                                <img crossOrigin="*"
-                                    style={{ height: "200px", width: "200px", objectFit: 'cover' }} alt="image.jpg" src={row.exhibit_photo}></img>
+                                <div style={{ position: "relative", height: "150px", width: "150px" }}>
+                                    <img crossOrigin="*"
+                                        style={{ height: "100%", width: "100%", objectFit: 'cover', cursor: "pointer" }}
+                                        alt="image.jpg"
+                                        onClick={() => manageImage(row)}
+                                        src={row.exhibit_photo} />
+                                    {dataToExport[row.exhibit_photo] && (
+                                        <Avatar style={{ position: "absolute", top: 5, left: 5, width: 30, height: 30, backgroundColor: "white" }}>
+                                            <CheckIcon style={{ color: "black" }} />
+                                        </Avatar>
+                                    )}
+                                </div>
                             </HtmlTooltip>
                         </Box>
                     ))}

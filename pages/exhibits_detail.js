@@ -362,18 +362,18 @@ const Exhibits_detail = () => {
                             label="Última Actualización"
                         />
                     }
-                </div>
-                {searchdone &&
+                    {searchdone &&
 
-                    <div id="divToPrint">
-                        <TableZyx
-                            columns={columns}
-                            data={dataGraph}
-                            // fetchData={filtrar}
-                            register={false}
-                        />
-                    </div>
-                }
+                        <div id="divToPrint">
+                            <TableZyx
+                                columns={columns}
+                                data={dataGraph}
+                                // fetchData={filtrar}
+                                register={false}
+                            />
+                        </div>
+                    }
+                </div>
             </div>
 
 

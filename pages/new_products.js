@@ -297,6 +297,7 @@ const New_Products = () => {
     const [cleanfilters, setcleanfilters] = useState(false)
     const [cleanFilter, setcleanFilter] = useState(false);
     const [disablebutton, setdisablebutton] = useState(true)
+    const [categorydate, setcategorydate] = useState(null);
     const [dateRange, setdateRange] = useState([
         {
             startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -568,7 +569,7 @@ const New_Products = () => {
                         valueselected={filters.categoria + ""}
                         callback={(values) => {
                             const value = values.map(x => x.id_form).join(',')
-
+                            setcategorydate(values.map(x => x.last_consulted).join(','))
                             getSubctegories(value?.id_form || "1")
                             setfilters({ ...filters, categoria: value });
                             setcategory(value)
@@ -677,7 +678,7 @@ const New_Products = () => {
                     >Filtros Extras</Button>
                     {category &&
                         <InputFormk
-                            valuedefault={category?.last_consulted}
+                            valuedefault={categorydate}
                             variant="outlined"
                             disabled={true}
                             label="Última Actualización"

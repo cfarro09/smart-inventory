@@ -139,6 +139,7 @@ const User = () => {
     const [cleanFilter, setcleanFilter] = useState(false);
     const [stopFilter, setstopFilter] = useState(-1);
     const [initial, setinitial] = useState(0);
+    const [categorydate, setcategorydate] = useState(null);
 
     const [dateRange, setdateRange] = useState([
         {
@@ -312,6 +313,7 @@ const User = () => {
                             valueselected={filters.categoria + ""}
                             callback={(values) => {
                                 if (!cleanFilter) {
+                                    setcategorydate(values.map(x => x.last_consulted).join(','))
                                     setfilters({ ...filters, categoria: values.map(x => x.id_form).join(',') });
                                     setcategory(values.map(x => x.id_form).join(','))
                                     setdisablebutton(!values)
@@ -422,15 +424,15 @@ const User = () => {
                                 setcleanFilter(true)
                             }}
                         >Limpiar filtros</Button>
+                        {category &&
+                            <InputFormk
+                                valuedefault={categorydate}
+                                variant="outlined"
+                                disabled={true}
+                                label="Última Actualización"
+                            />
+                        }
                     </div>
-                    {category &&
-                        <InputFormk
-                            valuedefault={category?.last_consulted}
-                            variant="outlined"
-                            disabled={true}
-                            label="Última Actualización"
-                        />
-                    }
                 </div>
                 {searchdone ?
                     <div style={{ display: 'flex', gap: 8, background: "white" }} id="divToPrint">

@@ -130,6 +130,7 @@ const Linear_detail = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
+    const [categorydate, setcategorydate] = useState(null);
     const { setLightBox, setOpenBackdrop } = useContext(popupsContext);
     const [disablebutton, setdisablebutton] = useState(true)
     const [cleanFilter, setcleanFilter] = useState(false);
@@ -414,7 +415,7 @@ const Linear_detail = () => {
             })
         }
     }, [cleanFilter])
-
+    console.log("categorycategory", category)
     return (
         <Layout>
             <div style={{ display: 'flex', gap: 16, flexDirection: 'column' }}>
@@ -441,6 +442,7 @@ const Linear_detail = () => {
                             if (!cleanFilter) {
                                 setfilters({ ...filters, categoria: values.map(x => x.id_form).join(',') });
                                 setcategory(values.map(x => x.id_form).join(','))
+                                setcategorydate(values.map(x => x.last_consulted).join(','))
                                 setdisablebutton(!values)
                             }
                         }}
@@ -544,7 +546,7 @@ const Linear_detail = () => {
                     >Limpiar filtros</Button>
                     {category &&
                         <InputFormk
-                            valuedefault={category?.last_consulted}
+                            valuedefault={categorydate}
                             variant="outlined"
                             disabled={true}
                             label="Última Actualización"

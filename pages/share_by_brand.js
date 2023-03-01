@@ -207,6 +207,7 @@ const Share_by_brand = () => {
     const [searchdone, setsearchdone] = useState(false)
     const [category, setcategory] = useState(null);
     const { setLightBox, setOpenBackdrop } = React.useContext(popupsContext);
+    const [categorydate, setcategorydate] = useState(null);
 
     const [triggerfilter, settriggerfilter] = useState(false)
     const [disablebutton, setdisablebutton] = useState(true)
@@ -569,6 +570,7 @@ const Share_by_brand = () => {
                         valueselected={filters.categoria + ""}
                         callback={(values) => {
                             setdisablebutton(!values)
+                            setcategorydate(values.map(x => x.last_consulted).join(','))
                             if (values.length > 0 && !cleanFilter) {
                                 setcategory(values.map(x => x.id_form).join(','))
                                 setfilters({ ...filters, categoria: values.map(x => x.id_form).join(',') });
@@ -678,7 +680,7 @@ const Share_by_brand = () => {
                     >Limpiar filtros</Button>
                     {category &&
                         <InputFormk
-                            valuedefault={category?.last_consulted}
+                            valuedefault={categorydate}
                             variant="outlined"
                             disabled={true}
                             label="Última Actualización"

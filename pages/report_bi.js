@@ -20,7 +20,7 @@ const Role = () => {
             <iframe
                 title="Reportes BI"
                 style={{ width: '100%', height: '100%' }}
-                src="https://app.powerbi.com/view?r=eyJrIjoiODY3ZDJmMDktYzNkZC00MTQzLWJlYTYtYTk4M2U1Yjg3YTIxIiwidCI6IjBlMGNiMDYwLTA5YWQtNDlmNS1hMDA1LTY4YjliNDlhYTFmNiIsImMiOjR9&pageName=ReportSection3ebaf5326a34eebd1998"
+                src="https://app.powerbi.com/view?r=eyJrIjoiN2YwZmEwMWYtODA0NS00NTgyLWIzZGQtYzVmYjU3YWJhYThmIiwidCI6IjBlMGNiMDYwLTA5YWQtNDlmNS1hMDA1LTY4YjliNDlhYTFmNiIsImMiOjR9"
                 allowFullScreen={true}
             />
         </Layout>

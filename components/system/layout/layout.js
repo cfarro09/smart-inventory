@@ -365,6 +365,10 @@ const Layout = ({ children }) => {
                     ::-webkit-scrollbar-thumb:hover {
                         background: #381052;
                     }
+                    .chat-button-chatweb {
+                        height: 70px;
+                        width: 70px;
+                    }
                     @media (min-width: 992px) {
                         .row-zyx {
                             margin-bottom: ${theme.spacing(1)}px;

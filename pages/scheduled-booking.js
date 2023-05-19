@@ -39,21 +39,24 @@ const ScheduledBooking = () => {
                 accessor: 'id_property',
                 activeOnHover: true,
                 Cell: props => {
+                    const { status, id_booking } = props.cell.row.original
                     return (
                         <div className="container-button-floating">
-                            <IconButton
-                                aria-label="delete"
-                                size="small"
-                                className="button-floating"
-                                onClick={() => {
-                                    selectrow(props.cell.row.original);
-                                }}
-                            >
-                                <PaymentIcon
-                                    fontSize="inherit"
+                            {status !== "PAGADO" &&
+                                <IconButton
+                                    aria-label="delete"
                                     size="small"
-                                />
-                            </IconButton>
+                                    className="button-floating"
+                                    onClick={() => {
+                                        selectrow(props.cell.row.original);
+                                    }}
+                                >
+                                    <PaymentIcon
+                                        fontSize="inherit"
+                                        size="small"
+                                    />
+                                </IconButton>
+                             }
                         </div>
                     )
                 }
@@ -98,10 +101,10 @@ const ScheduledBooking = () => {
                 accessor: 'amount',
                 type: 'string',
                 Cell: (props) => {
-                    const { amout } = props.cell.row.original;
+                    const { amount } = props.cell.row.original;
                     return (
                         <div style={{textAlign: 'right'}}>
-                            {parseFloat(amout || "0").toFixed(2)}
+                            {parseFloat(amount || "0").toFixed(2)}
                         </div>
                     )
                 }

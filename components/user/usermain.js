@@ -48,6 +48,12 @@ const UserModal = ({ title, openModal, setOpenModal, rowselected, fetchDataUser 
         return () => continuezyx = false;
     }, [])
 
+    useEffect(() => {
+        if (openModal) {
+            formik.resetForm();
+        }
+    }, [openModal])
+
 
     //    #endregion
 

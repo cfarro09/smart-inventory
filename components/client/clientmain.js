@@ -11,12 +11,16 @@ import SelectFunction from '../system/form/select-function';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import UseSelectDomain from '../system/form/select-domain';
+import AddIcon from '@material-ui/icons/Add';
+import FindInPageIcon from '@material-ui/icons/FindInPage';
 
 import { validateResArray, getDomain } from '../../config/helper';
+import { IconButton } from '@material-ui/core';
 
 const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientselected, fetchDataUser, disabled = false, method_ins }) => {
     const { setOpenBackdrop, setModalQuestion, setOpenSnackBack } = useContext(popupsContext);
     const [domains, setdomains] = useState({ status: [] })
+    const [showConsultButton, setShowConsultButton] = useState(false)
 
     useEffect(() => {
         let continuezyx = true;
@@ -38,6 +42,44 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientsele
             formik.resetForm();
         }
     }, [openModal])
+
+    useEffect(() => {
+        if (showConsultButton) console.log({showConsultButton})
+    },[showConsultButton])
+
+    const handleDocNumberChange = (value) => {
+        if ((value.length === 8 && formik.values.doc_type === 'DNI') || (value.length === 11 && formik.values.doc_type === 'RUC')) {
+            return setShowConsultButton(true)
+        }
+        setShowConsultButton(false)
+    }
+
+    const handleDocChange = (value) => {
+        if ((formik.values.doc_number.length === 8 && value.newValue.domain_value === 'DNI') || (formik.values.doc_number.length === 11 && value.newValue.domain_value === 'RUC')) {
+            return setShowConsultButton(true)
+        }
+        setShowConsultButton(false)
+    }
+
+    const handleCheckDocument = async () => {
+        setOpenBackdrop(true);
+        const dattosend = {
+            document: formik.values.doc_number,
+            doc_type: formik.values.doc_type
+        }
+
+        const res = await triggeraxios('post', '/api/main/checkDocument', dattosend);
+        if (res.success) {
+            formik.setFieldValue('first_name', (formik.values.doc_type === 'RUC') ? res.result.data.nombre || '' : res.result.data.nombres || '')
+            formik.setFieldValue('last_name', `${res.result.data.apellidoPaterno ||''} ${res.result.data.apellidoMaterno || ''}`)
+            formik.setFieldValue('address', res.result.data.direccion || '')
+            setOpenSnackBack(true, { success: true, message: 'Documento encontrado.' });
+        } else {
+            console.log(res);
+            setOpenSnackBack(true, { success: false, message: res?.msg || 'Hubo un error, vuelva a intentarlo' });
+        }
+        setOpenBackdrop(false);
+    }
 
     const formik = useFormik({
         enableReinitialize: true,
@@ -64,8 +106,8 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientsele
             doc_type: Yup.string().required('El tipo documento es obligatorio'),
             email: Yup.string().email('El correo no es valido'),
             status: Yup.string().required('El estado es obligatorio'),
-            person_sunat: Yup.string().required('El estado es obligatorio'),
-            person_sunat: Yup.string().required('El estado es obligatorio')
+            // person_sunat: Yup.string().required('El estado es obligatorio'),
+            // person_sunat: Yup.string().required('El estado es obligatorio')
         }),
         onSubmit: async values => {
 
@@ -109,6 +151,32 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientsele
                     <DialogTitle id="alert-dialog-title">{title} - {rowselected ? "Editar" : "Registrar"}</DialogTitle>
                     <DialogContent>
                         <div className="row-zyx">
+                            <UseSelectDomain
+                                classname="col-3"
+                                title="Tipo Doc"
+                                domainname={domains.doc_type}
+                                valueselected={formik.values.doc_type}
+                                namefield="doc_type"
+                                formik={formik}
+                                callback={handleDocChange}
+                            />
+                            <InputFormk
+                                name="doc_number"
+                                classname="col-3"
+                                label="N° Doc"
+                                formik={formik}
+                                callback={handleDocNumberChange}
+                            />
+                            {showConsultButton && (
+                                <div className="col-2">
+                                    <IconButton style={{ width: '40px', height: '40px' }} onClick={handleCheckDocument}>
+                                        <FindInPageIcon />
+                                    </IconButton>
+                                </div>
+                             )}
+                        </div>
+                        <hr style={{margin: '13px 0',border: '1px solid #e9e9e9'}}/>
+                        <div className="row-zyx">
 
                             <InputFormk
                                 name="first_name"
@@ -136,23 +204,9 @@ const ClientMain = ({ title, openModal, setOpenModal, rowselected, setclientsele
                             />
                         </div>
                         <div className="row-zyx">
-                            <UseSelectDomain
-                                classname="col-3"
-                                title="Tipo Doc"
-                                domainname={domains.doc_type}
-                                valueselected={formik.values.doc_type}
-                                namefield="doc_type"
-                                formik={formik}
-                            />
-                            <InputFormk
-                                name="doc_number"
-                                classname="col-3"
-                                label="N° Doc"
-                                formik={formik}
-                            />
                             <InputFormk
                                 name="address"
-                                classname="col-6"
+                                classname="col-12"
                                 label="Dirección"
                                 formik={formik}
                             />

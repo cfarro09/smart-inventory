@@ -585,7 +585,7 @@ const Boooking = () => {
                 {...restProps}
                 style={{
                     ...style,
-                    opacity: restProps.data.id < 0 ? 1 : 0.6,
+                    // opacity: restProps.data.id < 0 ? 1 : 0.6,
                     backgroundColor: restProps.data.color
                 }}
             >

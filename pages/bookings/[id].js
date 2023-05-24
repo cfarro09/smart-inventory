@@ -470,7 +470,7 @@ const Boooking = () => {
 
     const getClients = () => {
         triggeraxios('post', process.env.endpoints.selsimple, SELCLIENTS).then(r => {
-            setclients(validateResArray(r, true).map(x => ({ ...x, description: `${x.first_name} ${x.last_name} - ${x.doc_number}` })));
+            setclients(validateResArray(r, true).map(x => ({ ...x, description: `${x.first_name} ${x.last_name || ''} - ${x.doc_number || ''}` })));
         })
     }
 
@@ -479,7 +479,7 @@ const Boooking = () => {
             await triggeraxios('post', process.env.endpoints.selsimple, SELCLIENTS),
             await triggeraxios('post', process.env.endpoints.selsimple, SELCAMPUS)]
         ).then(r => {
-            setclients(validateResArray(r[0], true).map(x => ({ ...x, description: `${x.first_name} ${x.last_name} - ${x.doc_number}` })));
+            setclients(validateResArray(r[0], true).map(x => ({ ...x, description: `${x.first_name} ${x.last_name || ''} - ${x.doc_number || ''}` })));
             setcampus(validateResArray(r[1], true));
         })
     }, []);

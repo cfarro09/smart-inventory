@@ -110,11 +110,11 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
             let routertmp = router.pathname;
 
             const appfound = [
-                ...user.menu, 
+                ...user.menu,
                 { view: true, application: "report_bi", path: "/report_bi", description: "Reportes BI" },
                 { view: true, application: "form_logs", path: "/form_logs", description: "Logs" }
             ].find(x => x.application === application);
-            
+
 
             if (appfound && appfound.view)
                 return (
@@ -161,6 +161,61 @@ const Aside = React.memo(({ open, setOpen, classes, theme }) => {
                     application="warboard"
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
                 />
+                
+                
+                <Link href={"/share_by_brand"}>
+                    <ListItem
+                        button
+                        style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: 9 }}
+                        className={classes.listItem}
+                    >
+                        <ListItemIcon style={{ minWidth: '45px' }}><ListIcon style={{ color: theme.palette.primary.light }} /></ListItemIcon>
+                        <ListItemText primary="Asistencia" />
+                    </ListItem>
+                </Link>
+                <Link href={"/share_by_brand"}>
+                    <ListItem
+                        button
+                        style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: 9 }}
+                        className={classes.listItem}
+                    >
+                        <ListItemIcon style={{ minWidth: '45px' }}><ListIcon style={{ color: theme.palette.primary.light }} /></ListItemIcon>
+                        <ListItemText primary="Stock" />
+                    </ListItem>
+                </Link>
+                <Link href={"/share_by_brand"}>
+                    <ListItem
+                        button
+                        style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: 9 }}
+                        className={classes.listItem}
+                    >
+                        <ListItemIcon style={{ minWidth: '45px' }}><ListIcon style={{ color: theme.palette.primary.light }} /></ListItemIcon>
+                        <ListItemText primary="Precios" />
+                    </ListItem>
+                </Link>
+                <Link href={"/share_by_brand"}>
+                    <ListItem
+                        button
+                        style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: 9 }}
+                        className={classes.listItem}
+                    >
+                        <ListItemIcon style={{ minWidth: '45px' }}><ListIcon style={{ color: theme.palette.primary.light }} /></ListItemIcon>
+                        <ListItemText primary="Fotografia" />
+                    </ListItem>
+                </Link>
+                <Link href={"/share_by_brand"}>
+                    <ListItem
+                        button
+                        style={{ paddingBottom: '5px', paddingTop: '5px', paddingLeft: 9 }}
+                        className={classes.listItem}
+                    >
+                        <ListItemIcon style={{ minWidth: '45px' }}><ListIcon style={{ color: theme.palette.primary.light }} /></ListItemIcon>
+                        <ListItemText primary="Competencia" />
+                    </ListItem>
+                </Link>
+                
+
+
                 <LinkList
                     application="linear_detail"
                     IconLink={() => <ListIcon style={{ color: theme.palette.primary.light }} />}
